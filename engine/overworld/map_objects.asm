@@ -283,6 +283,21 @@ SetTallGrassFlags:
 	bit SWIMMING_F, [hl]
 	ret nz
 
+; A Pokemon drawn from its party icon is exempt too. The icon is 16x16 with the body low in it, so
+; sinking its bottom half would hide most of the mon. Same range as IsMonIconSprite, inline because
+; that clobbers a.
+	push af
+	ld hl, OBJECT_SPRITE
+	add hl, bc
+	ld a, [hl]
+	sub SPRITE_POKEMON
+	cp SPRITE_VARS - SPRITE_POKEMON
+	jr nc, .not_mon
+	pop af
+	ret
+
+.not_mon
+	pop af
 	call CheckSuperTallGrassTile
 	jr z, .set
 	call CheckGrassTile
