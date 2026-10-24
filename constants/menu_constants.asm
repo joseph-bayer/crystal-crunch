@@ -105,10 +105,12 @@ DEF HMENURETURN_ASM    EQU %11111111
 	const PARTYMENUQUALITY_FOLLOWER
 DEF NUM_PARTYMENUQUALITIES EQU const_value
 
-; Where the follower mark sits in each party menu entry: directly above the left end of the HP
-; bar, which PlacePartyHPBar draws from column 11 of the entry's second row.
-DEF FOLLOWER_MARK_X EQU 11
-DEF FOLLOWER_MARK_Y EQU 1
+; Where the follower mark sits in each party menu entry: under the first letter of the nickname,
+; left of the status. The name row has no room to spare -- a ten-letter nickname runs from column 3
+; to 12 and the HP digits fill the rest -- but columns 3-4 of the second row are blank in every
+; party menu mode.
+DEF FOLLOWER_MARK_X EQU 3
+DEF FOLLOWER_MARK_Y EQU 2
 ; A palette of its own, loaded by InitFollowerMarkBGPal. Borrowing the HP bar's red does not
 ; work: that palette is white/cream/red/black and the bar shows red because its tiles use color
 ; index 2, while a font tile like the mark only ever inks with index 3, which is black there.

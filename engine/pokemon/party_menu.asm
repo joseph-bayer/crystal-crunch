@@ -418,9 +418,8 @@ PlacePartyMonFollowerMark:
 	ld [hl], "★"
 
 ; Color it by hand: the attribute map is a parallel buffer, so the same offset addresses the same
-; cell. This has to happen after PlacePartyHPBar, whose attribute box covers two rows and would
-; otherwise repaint this cell for every mon but the first -- hence FOLLOWER coming last in the
-; quality list, and hence re-applying the layout here the same way PlacePartyHPBar does.
+; cell. Then re-apply the layout the same way PlacePartyHPBar does, so the color reaches the screen.
+; FOLLOWER comes last in the quality list so nothing drawn after it can repaint the cell.
 	ld de, wAttrmap - wTilemap
 	add hl, de
 	ld [hl], FOLLOWER_MARK_PAL

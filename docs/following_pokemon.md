@@ -208,7 +208,9 @@ covers four of the rules.
 jumptable, modelled on `PlacePartyMonGender` — walk the party, step two rows per mon, draw at
 `FOLLOWER_MARK_X`, `FOLLOWER_MARK_Y`. Unlike the gender symbol it does **not** skip eggs.
 
-The glyph is `"★"` (tile `$C3`), placed just above the left end of the mon's HP bar, and it is red.
+The glyph is `"★"` (tile `$C3`), placed on the entry's second row under the first letter of the
+nickname, and it is red. The name row has no free cell: a ten-letter nickname fills columns 3–12 and
+the HP digits 13–19, so a star on that row covers a letter of any long name.
 Getting it red took a dedicated palette. Font tiles are 1bpp and ink with **color index 3**, which
 is black in every palette the party menu otherwise loads — including `PREDEFPAL_HP_RED`, whose red
 sits at index 2 because the HP bar tiles ink with *that* index. So
@@ -544,8 +546,6 @@ explaining what it is for.
 - **The follower now owns one of the eight hardware OBJ palettes on every map.** Maps that already
   used all eight will lose a color. Worth watching in Goldenrod, the Celadon department store and
   the underground.
-- **The follower star has not been checked against a full-length nickname.** It sits at
-  `FOLLOWER_MARK_X` above the HP bar; a ten-character nickname is the case to try.
 - **Deselecting a follower makes it vanish rather than returning to its Poké Ball.** The recall
   animation already exists for warps and should be reused here.
 
