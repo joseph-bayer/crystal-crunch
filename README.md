@@ -25,7 +25,7 @@ This is a hack of Pokémon Crystal meant to make you smile. All systems were des
 
 ### Swarms
 - Daily swarms are announced via the radio on station 12.5, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
-- Most swarms are Red/Blue forms: Pokémon that look like their sprites from Pokémon Red and Blue.
+- Strange looking Pokémon potentially from the past?
 - Team Rocket's Pokémon, left behind as you complete the story, swarm the routes. They all know Thief: one holding nothing can steal your Pokémon's item, which you only get back by catching it.
 - Up to three swarms can be going at once: Arnie's and Anthony's phone calls still start theirs (Yanma on Route 35, Dunsparce in Dark Cave), and a new radio station picks one more every day.
 - Swarms end at midnight.
@@ -111,8 +111,8 @@ This is a hack of Pokémon Crystal meant to make you smile. All systems were des
 - The Day-Care Man stands outside the fence when an egg is ready.
 - Hatched Pokémon show a Poké Ball as the ball they were caught in.
 - Updated the Route 34 map to remove the grass patch in the egg hatching path.
-- Removed the trainer ID penalty (same trainer IDs no longer reduce egg generation chance).
 - The Odd Egg's odds of each kind of Pokémon are more even.
+- Removed the trainer ID penalty (same trainer IDs no longer reduce egg generation chance).
 - Simplified and improved egg generation rates:
 
   | Pokémon Pairing | Egg Generation Chance |
@@ -234,7 +234,8 @@ If you hit a bug, please mention which emulator you're using when you report it.
 ---
 
 ## Code Credits
-- **Built upon the CrystalShireEngine.** See the section below titled "CrystalShireEngine" to see the README for that project. This includes a majority of bugfixes, engine upgrades, and a lot of QoL improvements (like the new box UI).
+- **Pret.** None of this is possible without all the work the pret community has put into the pokecrystal dissasembly.
+- **Built upon the CrystalShireEngine.** CrystalShireEngine is responsible for a multitude of engine improvements, bugfixes, and quality of life improvements (including the new box system!). Please review their [README](https://github.com/fellowship-of-the-roms/CrystalShireEngine) to see all the amazing things CrystalShireEngine provides.
 - **Rebalances and some features based on Crystal Legacy.** Credits: [Crystal Legacy Team](https://github.com/cRz-Shadows/Pokemon_Crystal_Legacy)
   - Trainer Teams
   - Dynamic teams for CHUCK, PRYCE, and JASMINE depending on the order you face them in
@@ -251,88 +252,50 @@ If you hit a bug, please mention which emulator you're using when you report it.
   - Hatch Cycles
   - Move updates
 - Parts of the [Add a new party menu icon](https://github.com/pret/pokecrystal/wiki/Add-a-new-party-menu-icon) tutorial were used and modified for cosmetic form party menu/daycare overworld/box icons. Credits to [Rangi42](https://github.com/Rangi42) for writing the original tutorial and [Cherryello](https://github.com/Cherryello), [mid-kid](https://github.com/mid-kid), [aaaaaa123456789](https://github.com/aaaaaa123456789), [Idain](https://github.com/Idain), [FrenchOrange](https://github.com/FrenchOrange), [SonicRay100](https://github.com/SonicRay100), and [Brianum](https://github.com/Brianum) for their updates to it.
-- Untying shininess from DVs is partially based on a similar implementation in [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
-- New shiny check algorithm from [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
 - Follower Pokémon code by [Vulcandth](https://github.com/vulcandth) and [AtmaBuster](https://github.com/AtmaBuster).
-- Using HMs without knowing them, Fly from the Pokégear map, the Flash prompt and the Ilex Forest HM texts are ported from [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
 - The simplified clock reset follows the [Simplify the Clock Reset Procedure](https://github.com/pret/pokecrystal/wiki/Simplify-the-Clock-Reset-Procedure) tutorial by [SonicRay100](https://github.com/SonicRay100) from the pret/pokecrystal wiki.
-- Move and battle animations are ported from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
 - The Hidden Power stats page follows the [Add a fourth stats page](https://github.com/pret/pokecrystal/wiki/Add-a-fourth-stats-page) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki.
-- The unlimited phone contact list, evening rematch times and the one-byte special phone call fix are ported from [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
-- Answering or declining phone calls is ported from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
 - Trainers offering their number right after battle follows the [Improve the trainer rematch system](https://github.com/pret/pokecrystal/wiki/Improve-the-trainer-rematch-system) tutorial by Grate Oracle Lewot from the pret/pokecrystal wiki.
 - Kurt making Apricorn balls instantly follows the [Kurt Makes Pokeballs Instantly](https://github.com/pret/pokecrystal/wiki/Kurt-Makes-Pokeballs-Instantly) tutorial by [Nayru62](https://github.com/Nayru62) from the pret/pokecrystal wiki (adapted from [Polished Crystal](https://github.com/Rangi42/polishedcrystal)), with the fade back in from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
 
+### Polished Crystal
+Ported from or based on [Polished Crystal](https://github.com/Rangi42/polishedcrystal):
+- Untying shininess from DVs (partially based on its implementation)
+- The new shiny check algorithm
+- Using HMs without knowing them, Fly from the Pokégear map, the Flash prompt and the Ilex Forest HM texts
+- The unlimited phone contact list, evening rematch times and the one-byte special phone call fix
+- More Pokémon able to learn the HMs, Rock Smash and Headbutt
+
+### Sour Crystal
+Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal):
+- Move and battle animations
+  - One line isn't enough for how much work has been put into these animations. They truly make battles feel much more exciting.
+- Answering or declining phone calls
+- More Pokémon able to learn Rock Smash, and Zubat and Golbat able to learn Fly
+
 ## Art Credits
-- SCMidna for Surfing Pikachu front sprites.
-- bloodless for Flying Pikachu back sprite.
-- Kuroko Aizawa, bloodless, and metalflygon08 for Flying Pikachu front sprites.
-- Unown party menu icons from [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
-  - I could not find specific artist credits for these icons. If you made them, please let me know and I'll update this!
-- Sage for Golbat sprite used by Rockets. Colors modified from original.
-- Sage for Arbok sprite used by Rockets. Colors modified from original.
-- Sage for Charmeleon sprite. Colors modified from original.
-- Sage for Charizard sprite used by Rockets. Colors modified from original.
-- Sage for Weezing sprite.
-- Sage for Crobat sprite used by Rockets. Colors modified from original.
-- Sage for Electrode sprite used by Rockets. Colors modified from original.
-- Kester Henrick for blackbelt overworld sprite used for Karate Master.
-- [FrenchOrange](https://github.com/FrenchOrange) for help with the Shaman's overworld sprite.
-- Campfire sprite and fire-pit tiles in the Shaman's house from [Polished Crystal](https://github.com/Rangi42/polishedcrystal).
-- The truck at Vermilion Port is Pokémon Red and Blue's (Game Freak), from [pret/pokered](https://github.com/pret/pokered).
-- [FrenchOrange](https://github.com/FrenchOrange) for Lorelei's and Agatha's trainer sprites.
-- MauveSea for Giovanni's trainer sprite.
-- Most Pokémon party menu icons from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
-- New and redrawn move animation graphics from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
-
----
-
-## Below, you will find the original readme for the CrystalShireEngine
-
----
-
-# CrystalShireEngine (CSE)
-
-CrystalShireEngine (CSE) is an enhanced engine for Pokemon Crystal romhacking.
-
-#### CSE is currently still **under developement**. You will likely experience significant bugs and differences in the engine compared to vanilla pokecrystal. If you wish to use CSE, we highly recommend you join our [discord server](https://discord.gg/dvpf6wcqMn) for support. We need your help to identify bugs, so we may improve the engine for everyone!
-
-## Features
-
-- **Extended 16-bit Indexes:** Pokemon & Moves. Detailed info & usage can be found at the [pokecrystal16 wiki](https://github.com/vulcandth/pokecrystal16/wiki). Credits: [aaaaaa123456789](https://github.com/aaaaaa123456789), [vulcandth](https://github.com/vulcandth), [Rangi42](https://github.com/Rangi42).
-- **Newbox:** Complete overhaul of Bill's PC. Credits: [Rangi42](https://github.com/Rangi42), [FredrIQ](https://github.com/FredrIQ), [vulcandth](https://github.com/vulcandth).
-- **Assembly Optimizations:** Provides minor improvements in CPU cycles and memory usage.
-- **Improved Farcall:** From PolishedCrystal, preserves all registers. Credits: [Rangi42](https://github.com/Rangi42), [FredrIQ](https://github.com/FredrIQ), Pokemon Polished Crystal.
-- **60fps Overworld & CGB Doublespeed Mode:** Experience smoother gameplay with a 60fps overworld and enhanced performance on Color Game Boy. Credits: [vulcandth](https://github.com/vulcandth), [FredrIQ](https://github.com/FredrIQ), [luckytyphlosion](https://github.com/luckytyphlosion).
-- **Running Shoes:** Press the B button to use running shoes, making navigation faster. Credits: [vulcandth](https://github.com/vulcandth), [FredrIQ](https://github.com/FredrIQ), [luckytyphlosion](https://github.com/luckytyphlosion).
-- **Gender-Accurate Link Battle/Trade Rooms:** Resolved the issue where playing as a girl (Kris) would result in the sprite changing to a boy (Chris) in Link Battle or Link Trade rooms. Gender information is now preserved during link communications, allowing for accurate representation of both players. Credits: [vulcandth](https://github.com/vulcandth).
-- **Enhance Tileset Functionality:** Expanded tilesets from 192 to 384 tiles with gateless map connections and allowed tiles to have different attributes in various blocks. Credits: [Rangi42](https://github.com/Rangi42), [vulcandth](https://github.com/vulcandth), Pokemon Polished Crystal.
-- **Enhance Trainer Card Features:** Added a third page for Kanto badges, introduced colors to badges, and fixed missing tops of Gym Leaders' heads on the trainer card.
-- **Unique Colors for Poké Balls:** Added unique colors for each type of Poké Ball. Credits: [SoupPotato](https://github.com/SoupPotato), [Rangi42](https://github.com/Rangi42).
-- **Short Low HP Beep:** Replaced continuous low hp beeping with a shorter sound.
-- **Show Weather Icon:** Added an icon to show the current weather during battles.
-- **Optimize Various Routines and Functions:** Optimized several functions including EnterMapConnection, GetSquareRoot, VBlank routines, LZ decompression, UpdateBGMap, and Multiply and Divide. Credits: [Rangi42](https://github.com/Rangi42), Pokemon Polished Crystal, Pokemon Prism.
-- **Split Maps Section:** Split the 'Maps' section into 'Map Headers' and 'Map Attributes'.
-- **Copy BillsPC_LCDCode to WRAM0:** Copied BillsPC_LCDCode to WRAM0. Credits: [FredrIQ](https://github.com/FredrIQ), Pokemon Polished Crystal.
-- **Optimize and Define LZ Compression:** Improved LZ compression through adding defines, implementing Meithecatte's optimization in ax6's lzcomp, and optimizing lz counts to use 9 bits. Credits: [ariscop](https://github.com/ariscop), Pokemon Polished Crystal.
-- **Port Utils/Farcheck.py:** Ported farcheck.py from Polished Crystal. Credits: [Rangi42](https://github.com/Rangi42), Pokemon Polished Crystal.
-- **Port Prism's LoadMapPart:** Ported LoadMapPart function from Prism. Credits: Pokemon Prism.
-- **Port Battle Pal Changing:** Ported battle pal changing feature from Polished Crystal. Credits: [FredrIQ](https://github.com/FredrIQ), Pokemon Polished Crystal.
-- **Replace Stat Experience with EVs:** Implemented EV system, replacing stat experience.
-- **Dynamic OW OBJ Pal System:** Overworld Objects now load their palette dynamically. Credits: [vulcandth](https://github.com/vulcandth), [Rangi42](https://github.com/Rangi42), Pokemon Polished Crystal, Pokmeon Mystic Crystal.
-- **Dynamic Sprite Reload:** Reloaded dynamic sprites. Credits: [FredrIQ](https://github.com/FredrIQ), Pokemon Polished Crystal.
-- **Smooth Fading Routines** Port smooth fading routines from Polished Crystal/Prism. Credits: [Rangi42](https://github.com/Rangi42), [FredrIQ](https://github.com/FredrIQ), Pokemon Polished Crystal, Pokemon Prism.
-- **newbag:** A refactor of the backpack, which includes the ability to expand pockets in the bag. Credits: [Monstarules](https://github.com/Monstarules)
-- **Sliding Map Sign:** Map sign slides into view, ported from Polished Crystal. Credits: [Rangi42](https://github.com/Rangi42), [FredrIQ](https://github.com/FredrIQ).
-- **Deferred Map Graphics Loading:** Map graphics load after map connections for smoother transitions.
-- **Expanded Battle Animation Limit:** Allows more animation objects for custom battle animations.
-
-
-## Contributions
-
-We warmly welcome contributions to the CrystalShireEngine project. If you're interested in contributing, please contact [vulcandth](https://github.com/vulcandth) on Discord to discuss how you can help!
-
-## Branch Structure
-
-- **core:** The default branch, aimed at integrating optimizations, bug & design flaw fixes, and various other engine improvements to support rom hacking.
-- **gen3, gen4, ...:** Upcoming branches set to incorporate a plethora of features (pokemon, moves, mechanics, etc.) from respective generations into the Crystal engine.
+- **SCMidna**
+  - Surfing Pikachu front sprites
+- **bloodless**
+  - Flying Pikachu back sprite
+  - Flying Pikachu front sprites, with Kuroko Aizawa and metalflygon08
+- **Kuroko Aizawa** and **metalflygon08**
+  - Flying Pikachu front sprites, with bloodless
+- **Sage**
+  - Golbat, Arbok, Charmeleon, Charizard, Crobat and Electrode sprites used by Rockets. Colors modified from original.
+  - Weezing sprite
+- **Kester Henrick**
+  - Blackbelt overworld sprite used for Karate Master
+- **[FrenchOrange](https://github.com/FrenchOrange)**
+  - Lorelei's and Agatha's trainer sprites
+  - Help with the Shaman's overworld sprite
+- **MauveSea**
+  - Giovanni's trainer sprite
+- **[Polished Crystal](https://github.com/Rangi42/polishedcrystal)**
+  - Unown party menu icons. I could not find specific artist credits for these icons. If you made them, please let me know and I'll update this!
+  - Campfire sprite and fire-pit tiles in the Shaman's house
+- **[Sour Crystal](https://github.com/SoupPotato/sourcrystal)**
+  - Most Pokémon party menu icons
+  - New and redrawn move animation graphics
+- **Game Freak**
+  - The truck at Vermilion Port, from Pokémon Red and Blue, via [pret/pokered](https://github.com/pret/pokered)
