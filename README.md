@@ -4,6 +4,10 @@
 
 This is a hack of Pokémon Crystal meant to make you smile. All systems were designed with a pre-Gen 3 mindset. Other hacks already port new features like abilities, new moves, new items, etc. into Crystal (and do it incredibly well), so I don't see a reason to tread the same ground. There are exceptions to this rule when it comes to QoL - for example, the storage system now uses the Gen 3 UI.
 
+## Status
+
+Still in playtesting. Don't be surprised if you find bugs! Future updates may break existing saves.
+
 ## Features
 
 ### All 251 Pokémon
@@ -157,6 +161,18 @@ This is a hack of Pokémon Crystal meant to make you smile. All systems were des
   - Leveling up, haircuts, Daisy's grooming, and battling Gym Leaders give more happiness.
 - Simplified the clock reset
   - Hold **Down + B + Select** at the title screen, then confirm.
+
+---
+
+## Goals
+- A larger variety of forms and swarms
+- A larger variety of Mystery Islands to visit on a daily basis
+- A larger variety of trainers in the Open League
+- An improved Dex
+- Additional trainers and locations in Kanto
+- Customization of trainer color
+- Enhanced tilesets and sprites
+- An large assortment of new systems and QOL improvements
 
 ---
 
