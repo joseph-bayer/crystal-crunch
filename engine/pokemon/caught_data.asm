@@ -168,8 +168,7 @@ SetCaughtData:
 	call GetPartyLocation
 	ld bc, MON_CAUGHTBALL
 	add hl, bc
-	call SetCaughtBallData
-	ret
+	jmp SetCaughtBallData
 SetBoxmonOrEggmonCaughtData:
 	ld a, [wTimeOfDay]
 	inc a
@@ -220,8 +219,7 @@ SetGiftBoxMonCaughtData:
 	
 	; Set the ball data to Poke Ball (3) for box Pokemon
 	ld hl, wBufferMon + MON_CAUGHTBALL
-	ld a, 3  ; Always use Poke Ball for gifts
-	ld [hl], a
+	ld [hl], CAUGHT_POKE_BALL ; Always use Poke Ball for gifts
 	
 	farjp UpdateStorageBoxMonFromTemp
 
@@ -241,8 +239,7 @@ SetGiftPartyMonCaughtData:
 	call GetPartyLocation
 	ld bc, MON_CAUGHTBALL
 	add hl, bc
-	ld a, 3  ; Always use Poke Ball for gifts
-	ld [hl], a
+	ld [hl], CAUGHT_POKE_BALL ; Always use Poke Ball for gifts
 	ret
 
 SetGiftMonCaughtData:
@@ -265,8 +262,7 @@ SetEggMonCaughtData:
 	call SetBoxmonOrEggmonCaughtData
 
 	; Set the caught ball data for eggs
-	ld a, [wPartyCount]
-	dec a
+	ld a, [wCurPartyMon]
 	ld hl, wPartyMon1
 	call GetPartyLocation
 	ld bc, MON_CAUGHTBALL
@@ -278,8 +274,7 @@ SetEggMonCaughtData:
 	jr nz, .ball_already_set  ; Don't overwrite if already set. This will not work if it's set to MASTER_BALL (0)
 	
 	; Set default ball for eggs (Poke Ball)
-	ld a, %00000011  ; Poke Ball
-	ld [hl], a
+	ld [hl], CAUGHT_POKE_BALL
 
 .ball_already_set:
 	pop af
