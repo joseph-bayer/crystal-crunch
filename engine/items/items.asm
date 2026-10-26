@@ -562,103 +562,69 @@ CheckTheItem:
 	ret
 
 ReceiveKeyItem:
-	ld hl, wNumKeyItems
-	ld a, [hli]
-	cp MAX_KEY_ITEMS
-	jr nc, .nope
-	ld c, a
-	ld b, 0
-	add hl, bc
-	ld a, [wCurItem]
-	push hl
-	call GetItemIndexFromID
-	ld a, l
-	pop hl
-	ld [hli], a
-	ld [hl], -1
-	ld hl, wNumKeyItems
-	inc [hl]
+	ld b, SET_FLAG
+	call KeyItemFlagAction
+	call RefreshKeyItemsList
 	scf
-	ret
-
-.nope
-	and a
 	ret
 
 TossKeyItem:
-	ld a, [wCurItemQuantity]
-	ld e, a
-	ld d, 0
-	ld hl, wNumKeyItems
-	ld a, [hl]
-	cp e
-	jr nc, .ok
-	call .Toss
+	call CheckKeyItems
 	ret nc
-	jr .ok2
-
-.ok
-	dec [hl]
-	inc hl
-	add hl, de
-
-.ok2
-	ld d, h
-	ld e, l
-	inc hl
-.loop
-	ld a, [hli]
-	ld [de], a
-	inc de
-	cp -1
-	jr nz, .loop
-	scf
-	ret
-
-.Toss:
-	ld hl, wNumKeyItems
-	ld a, [wCurItem]
-	push hl
-	call GetItemIndexFromID
-	ld a, l
-	pop hl
-	ld c, a
-.loop3
-	inc hl
-	ld a, [hl]
-	cp c
-	jr z, .ok3
-	cp -1
-	jr nz, .loop3
-	xor a
-	ret
-
-.ok3
-	ld a, [wNumKeyItems] ; no-optimize Inefficient WRAM increment/decrement (hl is needed)
-	dec a
-	ld [wNumKeyItems], a
+	ld b, RESET_FLAG
+	call KeyItemFlagAction
+	call RefreshKeyItemsList
 	scf
 	ret
 
 CheckKeyItems:
-	ld a, [wCurItem]
-	push hl
-	call GetItemIndexFromID
-	ld a, l
-	pop hl
-	ld c, a
-	ld hl, wKeyItems
-.loop
-	ld a, [hli]
-	cp c
-	jr z, .done
-	cp -1
-	jr nz, .loop
+	ld b, CHECK_FLAG
+	call KeyItemFlagAction
+	ld a, c
 	and a
+	ret z
+	scf
 	ret
 
-.done
-	scf
+KeyItemFlagAction:
+; Flag action b on the flag of key item [wCurItem]. For CHECK_FLAG, c is nonzero if it's set.
+	push bc
+	ld a, [wCurItem]
+	call GetItemIndexFromID
+	ld e, l
+	ld d, 0
+	ld hl, wKeyItemFlags
+	pop bc
+	jmp FlagAction
+
+RefreshKeyItemsList::
+; Rebuilds wNumKeyItems and wKeyItems from wKeyItemFlags.
+	ld hl, wKeyItems
+	ld bc, 0 ; b = how many, c = which key item
+.loop
+	push hl
+	push bc
+	ld e, c
+	ld d, 0
+	ld hl, wKeyItemFlags
+	ld b, CHECK_FLAG
+	call FlagAction
+	ld a, c
+	pop bc
+	pop hl
+	and a
+	jr z, .next
+	ld a, c
+	ld [hli], a
+	inc b
+.next
+	inc c
+	ld a, c
+	cp NUM_KEY_ITEM_POCKET
+	jr nz, .loop
+	ld [hl], -1
+	ld a, b
+	ld [wNumKeyItems], a
 	ret
 
 ReceiveTMHM:

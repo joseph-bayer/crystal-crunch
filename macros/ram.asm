@@ -388,7 +388,6 @@ MACRO object_struct
 \1JumpHeight::     db
 \1Range::          db
 \1PalIndex::       db
-	ds 6
 \1StructEnd::
 ENDM
 
@@ -405,7 +404,6 @@ MACRO map_object
 \1ObjectSightRange:: db
 \1ObjectScript::     dw
 \1ObjectEventFlag::  dw
-	ds 2
 ENDM
 
 MACRO sprite_oam_struct

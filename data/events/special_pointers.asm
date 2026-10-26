@@ -81,7 +81,6 @@ SpecialsPointers::
 	add_special FindPartyMonAtLeastThatHappy ; unused
 	add_special FindPartyMonThatSpecies
 	add_special FindPartyMonThatSpeciesYourTrainerID
-	add_special UnusedCheckUnusedTwoDayTimer ; unused
 	add_special DayCareMon1
 	add_special DayCareMon2
 	add_special SelectRandomBugContestContestants
@@ -146,7 +145,6 @@ SpecialsPointers::
 	add_special SampleKenjiBreakCountdown
 	add_special BeastsCheck
 	add_special MonCheck
-	add_special StubbedTrainerRankings_Healings
 	add_special RefreshSprites
 	add_special AskRememberPassword
 	add_special LoadMapPalettes

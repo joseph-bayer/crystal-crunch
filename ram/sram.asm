@@ -137,8 +137,6 @@ sBackupNewBoxEnd::
 
 sWritingBackup:: db ; 1 if we're saving, anything else if not.
 
-	ds $ff
-
 
 SECTION "Link Battle Data", SRAM
 
@@ -221,62 +219,3 @@ sNewBoxMons1:: pokedb sNewBoxMons1, MONDB_MAIN_ENTRIES
 SECTION "PokeDB Bank 2", SRAM
 
 sNewBoxMons2:: pokedb sNewBoxMons2, MONDB_MAIN_ENTRIES
-
-
-
-SECTION "SRAM Trainer Rankings", SRAM
-
-sTrainerRankings::
-sTrainerRankingGameTimeHOF:: ds 4
-sTrainerRankingStepCountHOF:: ds 4
-sTrainerRankingHealingsHOF:: ds 4
-sTrainerRankingBattlesHOF:: ds 3
-sTrainerRankingStepCount:: ds 4
-sTrainerRankingBattleTowerWins:: ds 4
-sTrainerRankingTMsHMsTaught:: ds 3
-sTrainerRankingBattles:: ds 3
-sTrainerRankingWildBattles:: ds 3
-sTrainerRankingTrainerBattles:: ds 3
-sTrainerRankingHOFEntries:: ds 3
-sTrainerRankingWildMonsCaught:: ds 3
-sTrainerRankingHookedEncounters:: ds 3
-sTrainerRankingEggsHatched:: ds 3
-sTrainerRankingMonsEvolved:: ds 3
-sTrainerRankingFruitPicked:: ds 3
-sTrainerRankingHealings:: ds 3
-sTrainerRankingMysteryGift:: ds 3
-sTrainerRankingTrades:: ds 3
-sTrainerRankingFly:: ds 3
-sTrainerRankingSurf:: ds 3
-sTrainerRankingWaterfall:: ds 3
-sTrainerRankingWhiteOuts:: ds 3
-sTrainerRankingLuckyNumberShow:: ds 3
-sTrainerRankingPhoneCalls:: ds 3
-sTrainerRankingLinkBattles:: ds 3
-sTrainerRankingSplash:: ds 3
-sTrainerRankingTreeEncounters:: ds 3
-sTrainerRankingColosseumWins:: ds 3
-sTrainerRankingColosseumLosses:: ds 3
-sTrainerRankingColosseumDraws:: ds 3
-sTrainerRankingSelfdestruct:: ds 3
-sTrainerRankingCurrentSlotsStreak:: ds 2
-sTrainerRankingLongestSlotsStreak:: ds 2
-sTrainerRankingTotalSlotsPayouts:: ds 4
-sTrainerRankingTotalBattlePayouts:: ds 4
-sTrainerRankingLongestMagikarp:: ds 2
-sTrainerRankingShortestMagikarp:: ds 2
-sTrainerRankingBugContestScore:: ds 2
-sTrainerRankingsChecksum:: ds 2
-sTrainerRankingsEnd::
-
-sTrainerRankingsBackup:: ds sTrainerRankingsEnd - sTrainerRankings
-
-
-SECTION "SRAM Bank 5", SRAM
-
-s5_a89c:: ds 22
-s5_a8b2:: ds 150
-s5_aa8d:: db
-s5_a89a:: dw
-
-ENDSECTION

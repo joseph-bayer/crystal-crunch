@@ -1,14 +1,5 @@
 INCLUDE "engine/events/battle_tower/battle_tower.asm"
 
-Clears5_a89a:
-	ld a, BANK(s5_a89a)
-	call OpenSRAM
-	ld hl, s5_a89a
-	xor a
-	ld [hli], a
-	ld [hl], a
-	jmp CloseSRAM
-
 CheckBTMonMovesForErrors:
 	ld c, BATTLETOWER_PARTY_LENGTH
 	ld hl, wBT_OTTempMon1Moves

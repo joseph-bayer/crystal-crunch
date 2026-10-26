@@ -420,8 +420,7 @@ RingTwice_StartCall:
 	ld a, CALL_ANSWERED
 	ld [wScriptVar], a
 	call .Ring
-	call .Ring
-	farjp StubbedTrainerRankings_PhoneCalls
+	jr .Ring
 
 .declinable
 ; Ring until the player answers or declines, or the rings run out.
@@ -447,8 +446,7 @@ RingTwice_StartCall:
 	pop bc
 .done
 	call .CallerTextboxWithName
-	call WaitSFX
-	farjp StubbedTrainerRankings_PhoneCalls
+	jmp WaitSFX
 
 .WaitForAnswer:
 ; Wait about half a second for A (answer) or B (decline). Returns carry once one is pressed.
@@ -563,8 +561,7 @@ PhoneCall::
 	ld a, d
 	ld [wPhoneCaller + 1], a
 	call .Ring
-	call .Ring
-	farjp StubbedTrainerRankings_PhoneCalls
+	; fallthrough
 
 .Ring:
 	call Phone_StartRinging

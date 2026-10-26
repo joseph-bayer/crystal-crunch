@@ -274,12 +274,7 @@ wGlobalAnimXOffset:: db
 
 wSpriteAnimDataEnd::
 
-	ds 11
-
-; mobile data
-wc3cc:: ds 1
-wEmailAddress:: ds MOBILE_EMAIL_LENGTH
-	ds 1
+; mobile data, used by the Battle Tower's level menu
 wc3ec:: ds 1
 wc3ed:: ds 1
 wc3ee:: ds 1
@@ -293,7 +288,6 @@ wc3f5:: ds 1
 wc3f6:: ds 1
 wc3f7:: ds 1
 wc3f8:: ds 1
-	ds 3
 wMobileWRAMEnd::
 
 
@@ -1645,10 +1639,6 @@ SECTION "WRAM 1", WRAMX
 
 wGBCOnlyDecompressBuffer:: ; a $540-byte buffer that continues past this SECTION
 
-wBetaTitleSequenceOpeningType::
-; This selected the title screen animation (fire/notes) in pokegold-spaceworld.
-	db
-
 wDefaultSpawnpoint:: db
 
 
@@ -1671,7 +1661,7 @@ wBufferMonSlot:: db
 wLuckyNumberDigitsBuffer:: ds 5
 
 wMonOrItemNameBuffer:: ds NAME_LENGTH
-	ds NAME_LENGTH
+	ds ITEM_NAME_LENGTH - NAME_LENGTH ; PrintText_UsedItemOn copies a whole item name here
 
 
 SECTION UNION "Miscellaneous WRAM 1", WRAMX
@@ -2042,8 +2032,6 @@ wPoisonStepFlagSum:: db
 wPoisonStepPartyFlags:: ds PARTY_LENGTH
 wPoisonStepDataEnd::
 ENDU
-
-	ds 23
 
 
 SECTION "More WRAM 1", WRAMX
@@ -2505,8 +2493,6 @@ wCurBaseDataEnd::
 
 wCurDamage:: dw
 
-wTilesetDataAddress:: dw
-
 wMornEncounterRate::  db
 wDayEncounterRate::   db
 wNiteEncounterRate::  db
@@ -2661,15 +2647,7 @@ wPlayerGender::
 ;	0 male
 ;	1 female
 	db
-; mobile profile
-wPlayerAge:: ds 1
-wPlayerPrefecture:: ds 1
-wPlayerPostalCode:: ds 4
 wCrystalDataEnd::
-
-wCrystalFlags::
-; flags related to mobile profile
-	flag_array 16
 
 wGameData::
 wPlayerData::
@@ -2758,7 +2736,6 @@ wVariableSprites:: ds $100 - SPRITE_VARS
 wMapNameSignFlags:: db
 
 wTimeOfDayPal:: db
-wTimeOfDayPalFlags:: db
 wTimeOfDayPalset:: db
 wCurTimeOfDay:: db
 
@@ -2806,8 +2783,8 @@ wTMsHMs:: ds NUM_TMS + NUM_HMS
 wNumItems:: db
 wItems:: ds MAX_ITEMS * 3 + 1
 
-wNumKeyItems:: db
-wKeyItems:: ds MAX_KEY_ITEMS + 1
+; One flag per key item, numbered by the low byte of its item index (key items start at $0100).
+wKeyItemFlags:: flag_array NUM_KEY_ITEM_POCKET
 
 wNumBalls:: db
 wBalls:: ds MAX_BALLS * 2 + 1
@@ -2833,7 +2810,6 @@ wPlayerState:: db
 wHallOfFameCount:: db
 
 wTradeFlags:: flag_array NUM_NPC_TRADES
-wEmotePal:: db
 wMooMooBerries:: db
 wUndergroundSwitchPositions:: db
 wFarfetchdPosition:: db
@@ -2916,8 +2892,6 @@ wVermilionPortSceneID::                           db
 wFastShip1FSceneID::                              db
 wFastShipB1FSceneID::                             db
 wMountMoonSquareSceneID::                         db
-wMobileTradeRoomSceneID::                         db
-wMobileBattleRoomSceneID::                        db
 
 ; fight counts
 wJackFightCount::    db
@@ -2958,7 +2932,6 @@ wBikeFlags::
 ; bit 1: always on bike
 ; bit 2: downhill
 	db
-	ds 1 ; cleared along with wBikeFlags by ResetBikeFlags
 
 wCurMapSceneScriptPointer:: dw
 
@@ -3014,29 +2987,21 @@ wLuckyNumberDayTimer:: dw
 wSpecialPhoneCallID:: db
 
 wBugContestStartTime:: ds 4 ; day, hour, min, sec
-wUnusedTwoDayTimerOn:: db
-wUnusedTwoDayTimer:: db
-wUnusedTwoDayTimerStartDate:: db
 
-wMobileOrCable_LastSelection:: db
 ; Which island the mystery-island boat went to last, plus one, so that the zero a fresh save starts
-; with means "never sailed". Carved out of the dead mobile-adapter padding below, which keeps it
-; inside the save block without shifting anything after it.
+; with means "never sailed".
 wMysteryIslandLast:: db
 ; The Open League's lineup: an E4_ROSTER_* id per seat, all zero until rolled
-; (engine/events/elite_four_lineup.asm). Also carved out of the padding.
+; (engine/events/elite_four_lineup.asm).
 wEliteFourLineup:: ds NUM_E4_SEATS
 wEliteFourLastChampion:: db ; an E4_ROSTER_* id, set by the Hall of Fame
 wShipwreckCargoSpot:: db ; which of this trip's Shipwreck Beach dig spots (1-10) holds the cargo
-	ds 8 - NUM_E4_SEATS - 2
 wBuenasPassword:: db
 wBlueCardBalance:: db
 wDailyRematchFlags:: ds 4
 wDailyPhoneItemFlags:: ds 4
 wDailyPhoneTimeOfDayFlags:: ds 4
-wKenjiBreakTimer:: ds 2 ; Kenji
-wPlayerMonSelection:: ds 3
-	ds 2
+wKenjiBreakTimer:: db ; Kenji
 
 wStepCount:: db
 wPoisonStepCount:: db
@@ -3046,11 +3011,9 @@ wHappinessStepCount:: db
 
 wParkBallsRemaining::
 wSafariBallsRemaining:: db
-wSafariTimeRemaining:: dw
 
 wPhoneList:: flag_array NUM_PHONE_CONTACTS
 wPhoneListEnd::
-	ds 11 - (wPhoneListEnd - wPhoneList) ; the old 10-slot list's size, so later save data doesn't move
 
 wLuckyNumberShowFlag:: db
 wLuckyIDNumber:: dw
@@ -3489,7 +3452,15 @@ wWindowStackBottom:: ds 1
 ENDSECTION
 
 
-SECTION "Map Icon Turns", WRAMX, BANK[1]
+SECTION "Key Items List", WRAM0
+
+; The key items the player has, in item order, laid out like a pocket for the bag's menus. Not
+; saved: RefreshKeyItemsList rebuilds it from wKeyItemFlags whenever one is gained or lost, and on load.
+wNumKeyItems:: db
+wKeyItems:: ds NUM_KEY_ITEM_POCKET + 1
+
+
+SECTION "Map Icon Turns", WRAM0
 
 ; On the Pokegear map and the Fly map, icons sharing a landmark take turns (MapIcons_Rotate). Its
 ; own section, since both screens use it and neither's state should share its bytes.

@@ -1179,8 +1179,21 @@ _CheckFreeDatabaseEntries:
 	ret
 
 .CountEntries:
-	ld b, (MONDB_ENTRIES + 7) / 8
-	call CountSetBits
+; Counts the set bits itself: CountSetBits writes wNumSetBits, which is in another WRAM bank.
+	lb bc, (MONDB_ENTRIES + 7) / 8, 0
+.count_byte
+	ld a, [hli]
+.count_bit
+	and a
+	jr z, .next_byte
+	srl a
+	jr nc, .count_bit
+	inc c
+	jr .count_bit
+.next_byte
+	dec b
+	jr nz, .count_byte
+	ld a, c
 	cpl
 	add MONDB_ENTRIES + 1
 	ld c, a

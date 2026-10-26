@@ -4,7 +4,6 @@ _InitializeStartDay:
 ClearDailyTimers:
 	xor a
 	ld [wLuckyNumberDayTimer], a
-	ld [wUnusedTwoDayTimer], a
 	ld [wDailyResetTimer], a
 	ret
 
@@ -210,13 +209,6 @@ CheckPokerusTick::
 .done
 	xor a
 	ret
-
-CheckUnusedTwoDayTimer:
-	ld hl, wUnusedTwoDayTimerStartDate
-	call CalcDaysSince
-	call GetDaysSince
-	ld hl, wUnusedTwoDayTimer
-	jr UpdateTimeRemaining
 
 RestartLuckyNumberCountdown:
 	call .GetDaysUntilNextFriday

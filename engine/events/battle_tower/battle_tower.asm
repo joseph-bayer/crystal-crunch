@@ -65,10 +65,8 @@ RunBattleTowerTrainer:
 
 	xor a
 	ld [wLinkMode], a
-	farcall StubbedTrainerRankings_Healings
 	call HealParty
 	call ReadBTTrainerParty
-	call Clears5_a89a
 
 	predef StartBattle
 
@@ -260,8 +258,8 @@ BattleTowerAction:
 	dw BattleTowerAction_GSBall
 	dw BattleTowerAction_EggTicket
 	dw BattleTowerAction_0F
-	dw BattleTowerAction_11
-	dw BattleTowerAction_12
+	dw DoNothing ; BATTLETOWERACTION_11
+	dw DoNothing ; BATTLETOWERACTION_12
 	dw BattleTowerAction_14
 	dw BattleTowerAction_15
 	dw ResetBattleTowerTrainersSRAM
@@ -531,19 +529,6 @@ BattleTowerAction_0F:
 	pop af
 	ldh [rWBK], a
 	ret
-
-BattleTowerAction_11:
-	ld c, FALSE
-	jr Set_s5_aa8d
-
-BattleTowerAction_12:
-	ld c, TRUE
-Set_s5_aa8d:
-	ld a, BANK(s5_aa8d)
-	call OpenSRAM
-	ld a, c
-	ld [s5_aa8d], a
-	jmp CloseSRAM
 
 BattleTowerAction_14:
 	call BattleTower_CheckSaveFileExistsAndIsYours

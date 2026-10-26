@@ -526,6 +526,7 @@ TryLoadSaveFile:
 	call VerifyChecksum
 	jr nz, .backup
 	call LoadPlayerData
+	farcall RefreshKeyItemsList
 	call LoadPokemonData
 	call LoadIndexTables
 	call SaveBackupIndexTables
@@ -546,6 +547,7 @@ TryLoadSaveFile:
 	call VerifyBackupChecksum
 	jr nz, .corrupt
 	call LoadBackupPlayerData
+	farcall RefreshKeyItemsList
 	call LoadBackupPokemonData
 	call LoadBackupIndexTables
 	farcall RestorePartyMonMail

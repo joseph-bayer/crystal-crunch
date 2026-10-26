@@ -104,7 +104,6 @@ endc
 	jr z, .skip_append_save
 	call .SaveMysteryGiftTrainerName
 	call RestoreGSBallFlag ; ??? What the heck is this for?
-	call StubbedTrainerRankings_MysteryGift ; ??? This is a stubbed function, not implemented in the original game. Probably to record # of times mystery gifted for a trainer ranking system in the mobile adaptor GB?
 	call BackupGSBallFlag ; ??? What the heck is this for?
 .skip_append_save
 	ld a, [wMysteryGiftPartnerSentDeco]

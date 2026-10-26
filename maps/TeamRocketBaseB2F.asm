@@ -167,7 +167,6 @@ LanceHealsCommon:
 	closetext
 	special FadeOutToWhite
 	special LoadMapPalettes
-	special StubbedTrainerRankings_Healings
 	playsound SFX_FULL_HEAL
 	special HealParty
 	special FadeInPalettes_EnableDynNoApply

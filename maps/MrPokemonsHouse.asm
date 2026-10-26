@@ -126,7 +126,6 @@ MrPokemonsHouse_OakScript:
 	silentstowfollower
 	special ReloadSpritesNoPalettes
 	playmusic MUSIC_HEAL
-	special StubbedTrainerRankings_Healings
 	special HealParty
 	pause 60
 	faceobject PLAYER, FOLLOWER

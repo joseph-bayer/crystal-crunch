@@ -161,9 +161,6 @@ DEF NUM_DAYTIMES EQU const_value
 
 DEF ANYTIME EQU MORN | DAY | EVE | NITE
 
-; wTimeOfDayPalFlags::
-DEF FORCED_PALSET_F EQU 7
-
 ; wTimeOfDayPalset::
 ; Must be different from any in ReplaceTimeOfDayPals.BrightnessLevels
 DEF DARKNESS_PALSET EQU (MORN_F << 6) | (DAY_F << 4) | (EVE_F << 2) | NITE_F

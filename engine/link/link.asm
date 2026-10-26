@@ -187,11 +187,6 @@ endc
 	ld hl, wTimeCapsulePlayerData
 	call Link_ConvertPartyStruct1to2
 
-	ld a, LOW(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer], a
-	ld a, HIGH(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer + 1], a
-
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -461,12 +456,7 @@ endc
 	ld bc, wOTPartyDataEnd - wOTPartyMons
 	rst CopyBytes
 	call Link_FixOTParty_Gen2
-	jmp c, LinkTimeout ;we got garbage, so just pretend we're disconnected
-	ld a, LOW(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer], a
-	ld a, HIGH(wOTPartyMonOTs)
-	ld [wUnusedNamesPointer + 1], a
-
+	jr c, LinkTimeout ;we got garbage, so just pretend we're disconnected
 	ld de, MUSIC_NONE
 	call PlayMusic
 	ldh a, [hSerialConnectionStatus]
@@ -2381,7 +2371,6 @@ LinkTrade:
 
 .save
 	farcall SaveAfterLinkTrade
-	farcall StubbedTrainerRankings_Trades
 	farcall BackupGSBallFlag
 	ld c, 40
 	call DelayFrames

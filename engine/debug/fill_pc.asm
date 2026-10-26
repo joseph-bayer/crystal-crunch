@@ -36,7 +36,7 @@ FillPCWithEveryForm::
 ; from a debug script. What it sweeps depends on the switches above.
 ;
 ; These go straight into the boxes regardless of how full the party is. The PC holds
-; NUM_BOXES * MONS_PER_BOX = 340 mons across MONDB_ENTRIES * 2 = 350 database entries, but the
+; NUM_BOXES * MONS_PER_BOX = 360 mons across MONDB_ENTRIES * 2 = 370 database entries, but the
 ; allocator rescans the database for every mon and falls back to FlushStorageSystem when it runs
 ; short, so a large sweep is slow rather than instant.
 ;

@@ -17,5 +17,6 @@ BillsPC_DefaultBoxThemes:
 	db THEME_DRAGON
 	db THEME_DARK
 	db THEME_STEEL
+	db THEME_POKEDEX
 	assert_table_length NUM_BOXES
 	db -1 ; end

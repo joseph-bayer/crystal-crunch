@@ -9,11 +9,6 @@ UpdateTimeOfDayPal::
 _TimeOfDayPals::
 ; return carry if pals are changed
 
-; forced pals?
-	ld hl, wTimeOfDayPalFlags
-	bit FORCED_PALSET_F, [hl]
-	jr nz, .dontchange
-
 ; do we need to bother updating?
 	ld a, [wTimeOfDay]
 	ld hl, wCurTimeOfDay

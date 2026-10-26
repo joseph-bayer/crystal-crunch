@@ -263,11 +263,11 @@ DEF MONS_PER_BOX EQU 20
 
 ; each pokedb fills its own SRAM bank, then continues in an extension section in SRAM bank 1
 DEF MONDB_MAIN_ENTRIES EQU 160
-DEF MONDB_EXT_ENTRIES  EQU 15
+DEF MONDB_EXT_ENTRIES  EQU 25
 DEF MONDB_ENTRIES      EQU MONDB_MAIN_ENTRIES + MONDB_EXT_ENTRIES
 DEF MIN_MONDB_SLACK    EQU 10
-DEF NUM_BOXES          EQU (MONDB_ENTRIES * 2 - MIN_MONDB_SLACK) / MONS_PER_BOX ; 17
-	assert NUM_BOXES == 17, "NUM_BOXES should be 17"
+DEF NUM_BOXES          EQU (MONDB_ENTRIES * 2 - MIN_MONDB_SLACK) / MONS_PER_BOX ; 18
+	assert NUM_BOXES == 18, "NUM_BOXES should be 18"
 
 ; hall of fame
 ; hof_mon: species, id, form, dvs, level, nicknames

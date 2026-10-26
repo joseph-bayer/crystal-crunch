@@ -338,10 +338,12 @@ WRAM0
 	"WRAM"
 	align 8
 	"wSpriteAnims"
+	"Key Items List"
 	align 8
 	"Sprites"
 	"Tilemap"
 	"Miscellaneous"
+	"Map Icon Turns"
 	align 8
 	"Overworld Map"
 	"Vermilion Port Truck"
@@ -356,7 +358,6 @@ WRAMX 1
 	"More WRAM 1"
 	"Enemy Party"
 	"Party"
-	"Used Storage"
 WRAMX 2
 	"Pic Animations"
 	align 8
@@ -375,6 +376,7 @@ WRAMX 5
 	"Battle Animations"
 	org $d500
 	"Pokedex Listings"
+	"Used Storage"
 WRAMX 6
 	"Scratch RAM"
 WRAMX 7
@@ -405,8 +407,6 @@ SRAM $03
 	"PokeDB Bank 2"
 SRAM $04
 SRAM $05
-	"SRAM Trainer Rankings"
-	"SRAM Bank 5"
 SRAM $06
 SRAM $07
 HRAM
