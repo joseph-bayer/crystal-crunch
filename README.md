@@ -8,6 +8,35 @@ This is a hack of Pokémon Crystal meant to make you smile. All systems were des
 
 Still in playtesting. Don't be surprised if you find bugs! Future updates may break existing saves.
 
+## Download
+
+Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/crystal-for-friends/releases/latest) and apply it to your own Pokémon Crystal ROM. See [How do I patch the game?](#how-do-i-patch-the-game) for the steps.
+
+## Screenshots
+
+<p>
+<img src="screenshots/1-title.png">
+<img src="screenshots/2-starters.png">
+<img src="screenshots/3-rattatas.png">
+<img src="screenshots/4-newbox.png">
+<img src="screenshots/5-overworld-mon.png">
+<img src="screenshots/6-guild-swarm.png">
+<img src="screenshots/7-swarms-on-map.png">
+<img src="screenshots/8-rb-form-jiggly.png">
+<img src="screenshots/9-rematches-on-map.png">
+<img src="screenshots/10-gifts-on-map.png">
+<img src="screenshots/11-overworld-mon.png">
+<img src="screenshots/12-overworld-beasts.png">
+<img src="screenshots/13-shamans-house.png">
+<img src="screenshots/14-hidden-power-stats.png">
+<img src="screenshots/15-overworld-unown.png">
+<img src="screenshots/16-daycare-outside-fence.png">
+<img src="screenshots/17-egg-follower.png">
+<img src="screenshots/18-apricorn-forest.png">
+<img src="screenshots/19-open-league-erika.png">
+<img src="screenshots/20-5-color-brock.png">
+</p>
+
 ## Features
 
 ### All 251 Pokémon
@@ -86,6 +115,7 @@ Still in playtesting. Don't be surprised if you find bugs! Future updates may br
 - A trainer with a rematch or gift waiting won't call again until you go see them.
 
 ### HMs
+- More Pokémon can learn the HMs, Rock Smash and Headbutt, following Polished Crystal's and Sour Crystal's learnsets. For example, Zubat and Golbat can learn Fly.
 - You can use an HM outside of battle if a Pokémon in your party can learn it, as long as you have the HM in your bag. It doesn't have to know the move.
 - Rock Smash works the same way once you've received its TM, even if you've since taught it.
 - Headbutt still has to be known.
@@ -176,34 +206,18 @@ Still in playtesting. Don't be surprised if you find bugs! Future updates may br
 
 ---
 
-## Screenshots
-
-<p>
-<img src="screenshots/1-title.png">
-<img src="screenshots/2-starters.png">
-<img src="screenshots/3-rattatas.png">
-<img src="screenshots/4-newbox.png">
-<img src="screenshots/5-overworld-mon.png">
-<img src="screenshots/6-guild-swarm.png">
-<img src="screenshots/7-swarms-on-map.png">
-<img src="screenshots/8-rb-form-jiggly.png">
-<img src="screenshots/9-rematches-on-map.png">
-<img src="screenshots/10-gifts-on-map.png">
-<img src="screenshots/11-overworld-mon.png">
-<img src="screenshots/12-overworld-beasts.png">
-<img src="screenshots/13-shamans-house.png">
-<img src="screenshots/14-hidden-power-stats.png">
-<img src="screenshots/15-overworld-unown.png">
-<img src="screenshots/16-daycare-outside-fence.png">
-<img src="screenshots/17-egg-follower.png">
-<img src="screenshots/18-apricorn-forest.png">
-<img src="screenshots/19-open-league-erika.png">
-<img src="screenshots/20-5-color-brock.png">
-</p>
-
----
-
 ## FAQ
+
+### How do I patch the game?
+
+1. Download `crystal-crunch-<version>.bps` from the [latest release](https://github.com/joseph-bayer/crystal-for-friends/releases/latest).
+2. You need your own unmodified **Pokémon Crystal (USA, Europe) (Rev 1)** ROM, also called version 1.1. Its SHA1 is `f2f52230b536214ef7c9924f483392993e226cfb`.
+3. Open [ROM Patcher JS](https://www.marcrobledo.com/RomPatcher.js/) in your browser. It works on a computer or a phone, with nothing to install. Choose your ROM, then the `.bps`, and click **Apply patch**. It saves the patched game as a new `.gbc` file.
+4. Load the patched `.gbc` in an emulator (see below).
+
+If the patcher says the ROM is wrong, it's a different version (such as 1.0) or it has been modified.
+
+The release's `.patch` file is a 3DS Virtual Console patch for trading and battling over Wi-Fi. Bundle it with your patched `.gbc` into a `.cia` using [poke-cia](https://github.com/vulcandth/poke-cia).
 
 ### Which emulator should I use?
 

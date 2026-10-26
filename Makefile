@@ -41,11 +41,18 @@ RGBFIX  ?= $(RGBDS)rgbfix
 RGBGFX  ?= $(RGBDS)rgbgfx
 RGBLINK ?= $(RGBDS)rgblink
 
+PYTHON ?= python
+
+# `make release` patches this unmodified Pokémon Crystal (USA, Europe) (Rev 1) ROM
+BASEROM ?= baserom.gbc
+BASEROM_SHA1 := f2f52230b536214ef7c9924f483392993e226cfb
+VERSION ?= $(shell git describe --tags --always --dirty)
+
 
 ### Build targets
 
 .SUFFIXES:
-.PHONY: all crystal clean tidy tools check_trainer_art
+.PHONY: all crystal clean tidy tools check_trainer_art release
 .SECONDEXPANSION:
 .PRECIOUS:
 .SECONDARY:
@@ -54,6 +61,12 @@ all: crystal crystal_debug crystal_vc
 crystal:       pokecrystal.gbc
 crystal_debug: pokecrystal_debug.gbc
 crystal_vc:    pokecrystal.patch
+
+# The files to upload to a GitHub release: a BPS patch for the game and the 3DS Virtual Console patch
+release: pokecrystal.gbc pokecrystal.patch
+	mkdir -p release
+	$(PYTHON) utils/make_bps.py $(BASEROM) pokecrystal.gbc release/crystal-crunch-$(VERSION).bps --sha1 $(BASEROM_SHA1)
+	cp pokecrystal.patch release/crystal-crunch-$(VERSION).patch
 
 clean: tidy
 	find gfx \
