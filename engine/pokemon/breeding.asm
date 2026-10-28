@@ -669,10 +669,10 @@ GetEggFrontpic:
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
 	call GetBaseData
-	ld a, MON_DVS
+	ld a, MON_SPECIES
 	call GetPartyParamLocation
-	; predef GetUnownLetter ; TODO: handle form passing when breeding
-	xor a
+	ld a, EGG
+	call GetMonDrawForm ; the egg's pattern, from the species inside
 	ld [wForm], a
 	pop de
 	predef_jump GetMonFrontpic

@@ -208,6 +208,10 @@ check_trainer_art:
 gfx/pokemon/egg/front.2bpp: gfx/pokemon/egg/front.png gfx/pokemon/egg/front.gbcpal
 gfx/pokemon/egg/front.2bpp: rgbgfx += --colors gbc:$(word 2,$^)
 
+# Neither does the Elekid egg pattern
+gfx/pokemon/egg_elekid/front.2bpp: gfx/pokemon/egg_elekid/front.png gfx/pokemon/egg_elekid/front.gbcpal
+gfx/pokemon/egg_elekid/front.2bpp: rgbgfx += --colors gbc:$(word 2,$^)
+
 # Apricorn Snorlax has its own colours but no back sprite, so its palette comes from the front alone
 gfx/pokemon/snorlax_apricorn/normal.gbcpal: gfx/pokemon/snorlax_apricorn/front.gbcpal
 	tools/gbcpal $(tools/gbcpal) $@ $^

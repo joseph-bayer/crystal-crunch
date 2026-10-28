@@ -801,6 +801,8 @@ WeezingRBBackpic:       	INCBIN "gfx/pokemon/weezing_rb/back.2bpp.lz"
 
 SECTION "Pics 22", ROMX
 
+EggElekidPic:           	INCBIN "gfx/pokemon/egg_elekid/front.animated.2bpp.lz"
+
 HorseaRBFrontpic:       	INCBIN "gfx/pokemon/horsea_rb/front.animated.2bpp.lz"
 HorseaRBBackpic:        	INCBIN "gfx/pokemon/horsea_rb/back.2bpp.lz"
 SeadraRBFrontpic:       	INCBIN "gfx/pokemon/seadra_rb/front.animated.2bpp.lz"

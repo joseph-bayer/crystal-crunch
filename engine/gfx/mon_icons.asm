@@ -333,9 +333,10 @@ InitPartyMenuIcon:
 	ld a, [hl]
 	ld [wCurIcon], a
 
-	ld a, MON_FORM
+	ld a, MON_SPECIES
 	call GetPartyParamLocation
-	ld a, [hl]
+	ld a, [wCurIcon]
+	call GetMonDrawForm ; an egg's pattern, or the mon's own form
 	ld [wForm], a
 
 	call GetMemIconGFX
@@ -538,12 +539,9 @@ endr
 	add hl, de
 	push hl
 
-	ld a, [wCurIcon]
-	cp EGG
+; An egg takes the cosmetic path too: the EGG row of the icon table holds one icon per egg
+; pattern, picked by wForm.
 	push hl
-	ld hl, IconPointers - (3 * 2)
-	jr z, .is_egg
-.check_cosmetic_form
 	ld a, [wCurIcon]
 	push hl
 	call GetPokemonIndexFromID ; icon mon 16bit index now in hl
@@ -571,7 +569,6 @@ endr
 	add hl, hl
 	ld de, IconPointers
 	add hl, de
-.is_egg
 	ld a, [hli]
 	ld d, [hl]
 	ld e, a

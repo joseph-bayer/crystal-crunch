@@ -1025,13 +1025,27 @@ GetMonFramesPointer:
 	ret
 
 .egg
-	ld a, BANK(EggFrames)
+; Every egg pattern runs the egg's animation script, but over its own frames.
+	ld a, [wPokeAnimForm] ; the egg's pattern
+	ld c, a
+	ld b, 0
+	ld hl, EggFramesPointers
+	ld a, 3
+	rst AddNTimes
+	ld a, [hli]
 	ld [wPokeAnimFramesBank], a
-	ld a, LOW(EggFrames)
+	ld a, [hli]
 	ld [wPokeAnimFramesAddr], a
-	ld a, HIGH(EggFrames)
+	ld a, [hl]
 	ld [wPokeAnimFramesAddr + 1], a
 	ret
+
+EggFramesPointers:
+; indexed by egg pattern (EGG_*_PATTERN)
+	table_width 3
+	dba EggFrames
+	dba EggElekidFrames
+	assert_table_length NUM_EGG_PATTERNS
 
 GetMonBitmaskPointer:
 	call PokeAnim_IsEgg
@@ -1085,15 +1099,27 @@ GetMonBitmaskPointer:
 	ret
 
 .egg
-	ld c, BANK(EggBitmasks)
-	ld hl, EggBitmasks
-	ld a, c
+; Every egg pattern runs the egg's animation script, but with its own bitmasks.
+	ld a, [wPokeAnimForm] ; the egg's pattern
+	ld c, a
+	ld b, 0
+	ld hl, EggBitmasksPointers
+	ld a, 3
+	rst AddNTimes
+	ld a, [hli]
 	ld [wPokeAnimBitmaskBank], a
-	ld a, l
+	ld a, [hli]
 	ld [wPokeAnimBitmaskAddr], a
-	ld a, h
+	ld a, [hl]
 	ld [wPokeAnimBitmaskAddr + 1], a
 	ret
+
+EggBitmasksPointers:
+; indexed by egg pattern (EGG_*_PATTERN)
+	table_width 3
+	dba EggBitmasks
+	dba EggElekidBitmasks
+	assert_table_length NUM_EGG_PATTERNS
 
 PokeAnim_GetSpeciesOrMonWithForm:
 	; Get species ID and convert to index for table lookup

@@ -255,7 +255,11 @@ _CGB_StatsScreenHPPals:
 	add hl, bc
 	call LoadPalette_White_Col1_Col2_Black ; hp palette
 	ld a, [wCurPartySpecies]
-	ld bc, wTempMonForm
+	ld hl, wTempMon
+	call GetMonDrawForm ; an egg's pattern, or the mon's own form
+	ld [wForm], a
+	ld bc, wForm
+	ld a, [wCurPartySpecies]
 	call GetPlayerOrMonPalettePointer
 	call LoadPalette_White_Col1_Col2_Black ; mon palette
 	ld hl, ExpBarPalette
@@ -687,14 +691,14 @@ _CGB_Evolution:
 	jr .got_palette
 
 .pokemon
-	ld hl, wPartyMon1Form
+	ld hl, wPartyMon1
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld a, [wCurPartyMon]
 	rst AddNTimes
-	ld c, l
-	ld b, h
-	ld a, [hl]
+	ld a, [wPlayerHPPal] ; EGG while an egg hatches
+	call GetMonDrawForm ; the egg's pattern, or the mon's own form
 	ld [wForm], a
+	ld bc, wForm
 	ld a, [wPlayerHPPal]
 	call GetPlayerOrMonPalettePointer
 	call LoadPalette_White_Col1_Col2_Black

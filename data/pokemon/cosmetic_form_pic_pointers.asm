@@ -2,7 +2,7 @@
 ; Each entry corresponds to a Pokemon species (indexed by species ID)
 ; Entries for Pokemon with cosmetic forms point to their form-specific pointer tables
 ; Entries for Pokemon without cosmetic forms are null (0)
-	dw 0					; EGG
+	dw EggPicPointers			; EGG - each egg pattern has its own pic
 	dw 0					; NULL
 	dw 0					; NULL
 	dw 0					; NULL
@@ -477,6 +477,15 @@ TentacruelPicPointers::
 	dba TentacruelRBFrontpic
 	dba TentacruelRBBackpic
 	assert_table_length NUM_TENTACRUEL_FORMS
+
+EggPicPointers::
+; entries correspond to egg patterns (EGG_*_PATTERN), not forms; an egg has no back pic
+	table_width 3 * 2
+	dba EggPic
+	dbw -1, -1
+	dba EggElekidPic
+	dbw -1, -1
+	assert_table_length NUM_EGG_PATTERNS
 
 IgglybuffPicPointers::
 ; entries correspond to Igglybuff's forms, two apiece

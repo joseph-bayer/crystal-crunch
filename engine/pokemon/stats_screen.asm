@@ -115,6 +115,11 @@ MonStatsInit:
 	jr StatsScreen_SetJumptableIndex
 
 .egg
+; The egg page draws its pic and animation from wForm: give it the egg's pattern.
+	ld a, EGG
+	ld hl, wTempMon
+	call GetMonDrawForm
+	ld [wForm], a
 	ld h, 1
 	jr StatsScreen_SetJumptableIndex
 

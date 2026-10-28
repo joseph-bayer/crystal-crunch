@@ -422,9 +422,11 @@ GetFollowerIconSprite:
 	push af
 	ld a, [wFollowerPartyNum]
 	dec a ; wFollowerPartyNum is 1-based
-	ld hl, wPartyMon1Form
+	ld hl, wPartyMon1
 	call GetPartyLocation
-	ld a, [hl]
+	pop af
+	push af
+	call GetMonDrawForm ; an egg's pattern, or the mon's own form
 	ld [wForm], a ; LoadOverworldMonIcon reads this for cosmetic forms and Unown letters
 	pop af
 	ld e, a
@@ -683,11 +685,14 @@ _GetSpritePalette::
 	push af
 	ld a, [wFollowerPartyNum]
 	dec a ; wFollowerPartyNum is 1-based
-	ld hl, wPartyMon1Form
+	ld hl, wPartyMon1
 	call GetPartyLocation
-	ld b, h
-	ld c, l ; bc = the follower's form byte, its shiny bit included
 	pop af ; a = the follower's species
+	push af
+	call GetMonDrawForm ; an egg's pattern, or the mon's own form
+	ld [wForm], a
+	ld bc, wForm ; the follower's draw form, its shiny bit included
+	pop af
 	farcall GetArrangedMonIconColors ; bc = the light color, de = the dark one
 	call StoreFollowerPalette
 	ld c, PAL_OW_FOLLOWER

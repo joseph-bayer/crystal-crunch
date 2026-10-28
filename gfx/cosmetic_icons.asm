@@ -31,3 +31,9 @@ PikachuFlyIcon::   INCBIN "gfx/icons/pikachu_fly.2bpp"
 
 SnorlaxPlainIcon::    INCBIN "gfx/icons/snorlax.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
 SnorlaxApricornIcon:: INCBIN "gfx/icons/snorlax_apricorn.2bpp"
+
+IgglybuffPlainIcon:: INCBIN "gfx/icons/igglybuff.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
+IgglybuffBetaIcon::  INCBIN "gfx/icons/igglybuff_beta.2bpp"
+
+EggPlainIcon::  INCBIN "gfx/icons/egg.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
+EggElekidIcon:: INCBIN "gfx/icons/egg_elekid.2bpp"

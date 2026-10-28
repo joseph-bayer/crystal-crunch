@@ -641,3 +641,11 @@ DEF NUM_SCIZOR_FORMS EQU const_value ; 3
   const PINSIR_VINE_FORM	; 1
   const PINSIR_SLATE_FORM	; 2
 DEF NUM_PINSIR_FORMS EQU const_value ; 3
+
+; Egg patterns: which egg graphics an egg is drawn with, picked by the species inside (see
+; SpecialEggPatterns). A pattern stands where a form number would in the EGG rows of the cosmetic
+; tables, so it must fit in FORM_MASK.
+  const_def 0
+  const EGG_PLAIN_PATTERN  ; 0
+  const EGG_ELEKID_PATTERN ; 1
+DEF NUM_EGG_PATTERNS EQU const_value ; 2

@@ -2,7 +2,7 @@
 ; Each entry corresponds to a Pokemon species (indexed by species ID)
 ; Entries for Pokemon with cosmetic forms point to their form-specific pointer tables
 ; Entries for Pokemon without cosmetic forms are null (0)
-	dw 0					; EGG
+	dw EggPalettes				; EGG - each egg pattern has its own colors
 	dw 0					; NULL
 	dw 0					; NULL
 	dw 0					; NULL

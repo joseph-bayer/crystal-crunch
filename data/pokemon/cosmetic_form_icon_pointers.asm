@@ -2,7 +2,7 @@
 ; Each entry corresponds to a Pokemon species (indexed by species ID)
 ; Entries for Pokemon with cosmetic forms point to their form-specific pointer tables
 ; Entries for Pokemon without cosmetic forms are null (0)
-	dw 0					; EGG
+	dw EggIconPointers			; EGG - each egg pattern has its own icon
 	dw 0					; NULL
 	dw 0					; NULL
 	dw 0					; NULL
@@ -181,7 +181,7 @@ CosmeticFormIconPointersTable:
 	dw 0					; LANTURN (ab) - no cosmetic forms
 	dw 0					; PICHU (ac) - no cosmetic forms
 	dw 0					; CLEFFA (ad) - no cosmetic forms
-	dw 0					; IGGLYBUFF (ae) - no cosmetic forms
+	dw IgglybuffIconPointers		; IGGLYBUFF (ae) - has cosmetic forms
 	dw 0					; TOGEPI (af) - no cosmetic forms
 	dw 0					; TOGETIC (b0) - no cosmetic forms
 	dw 0					; NATU (b1) - no cosmetic forms
@@ -274,6 +274,19 @@ SnorlaxIconPointers:
 	dw SnorlaxPlainIcon
 	dw SnorlaxApricornIcon
 	assert_table_length NUM_SNORLAX_FORMS
+
+IgglybuffIconPointers:
+	table_width 2, IgglybuffIconPointers
+	dw IgglybuffPlainIcon
+	dw IgglybuffBetaIcon
+	assert_table_length NUM_IGGLYBUFF_FORMS
+
+EggIconPointers:
+; indexed by egg pattern (EGG_*_PATTERN), not by form
+	table_width 2, EggIconPointers
+	dw EggPlainIcon
+	dw EggElekidIcon
+	assert_table_length NUM_EGG_PATTERNS
 
 UnownIconPointers:
 	table_width 2, UnownIconPointers

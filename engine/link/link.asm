@@ -2186,11 +2186,12 @@ LinkTrade:
 	ld [wPlayerTrademonDVs], a
 	ld a, [hl]
 	ld [wPlayerTrademonDVs + 1], a
-; form
-	ld hl, wPartyMon1Form
+; form, as drawn: the trade screens only display it, and an egg shows its pattern
+	ld hl, wPartyMon1
 	ld a, [wCurTradePartyMon]
 	call GetPartyLocation
-	ld a, [hl]
+	ld a, [wPlayerTrademonSpecies]
+	call GetMonDrawForm
 	ld [wPlayerTrademonForm], a
 ; caught data
 	ld a, [wCurTradePartyMon]
@@ -2239,11 +2240,12 @@ LinkTrade:
 	ld [wOTTrademonDVs], a
 	ld a, [hl]
 	ld [wOTTrademonDVs + 1], a
-; form
-	ld hl, wOTPartyMon1Form
+; form, as drawn: the trade screens only display it, and an egg shows its pattern
+	ld hl, wOTPartyMon1
 	ld a, [wCurOTTradePartyMon]
 	call GetPartyLocation
-	ld a, [hl]
+	ld a, [wOTTrademonSpecies]
+	call GetMonDrawForm
 	ld [wOTTrademonForm], a
 ; caught data
 	ld a, [wCurOTTradePartyMon]

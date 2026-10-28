@@ -142,6 +142,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Fewer step cycles required to hatch eggs.
 - Updated "hatching soon" and egg animation logic to scale down with the lower overall cycles.
 - Eggs have blue spots when shiny.
+- Eggs that will hatch into Elekid have their own pattern.
 - The Day-Care Man stands outside the fence when an egg is ready.
 - Hatched Pokémon show a Poké Ball as the ball they were caught in.
 - Updated the Route 34 map to remove the grass patch in the egg hatching path.

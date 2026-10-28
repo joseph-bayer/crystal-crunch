@@ -650,20 +650,26 @@ InitPartyMenuMonOBPals:
 	push de
 
 	ld a, e
-	ld hl, wPartyMon1Form
-	call GetPartyLocation
-	ld b, h
-	ld c, l ; bc = this mon's form byte, its shiny bit included
-
-	pop de
-	push de
-	ld a, e
 	add LOW(wPartySpecies)
 	ld l, a
 	adc HIGH(wPartySpecies)
 	sub l
 	ld h, a
 	ld a, [hl]
+	push af ; the species, EGG for an egg
+
+	ld a, e
+	ld hl, wPartyMon1
+	call GetPartyLocation
+	pop af
+	push af
+	call GetMonDrawForm ; an egg's pattern or the mon's own form, its shiny bit included
+	ld [wForm], a
+	ld bc, wForm
+	pop af
+
+	pop de
+	push de
 	call LoadMonIconOBPal ; e already names the palette this slot owns
 
 	pop de

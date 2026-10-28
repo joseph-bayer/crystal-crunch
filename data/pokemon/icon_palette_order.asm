@@ -218,7 +218,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; SKIPLOOM
 	db ICON_PAL_NORMAL                   ; JUMPLUFF
 	db ICON_PAL_NORMAL                   ; AIPOM
-	db ICON_PAL_SWAP                     ; SUNKERN
+	db ICON_PAL_NORMAL                   ; SUNKERN
 	db ICON_PAL_NORMAL                   ; SUNFLORA
 	db ICON_PAL_NORMAL                   ; YANMA
 	db ICON_PAL_SWAP                     ; WOOPER

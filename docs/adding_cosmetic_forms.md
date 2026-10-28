@@ -8,6 +8,7 @@ what a Pokémon looks like and nothing else: same stats, moves, type and evoluti
 - [The constant](#the-constant)
 - [The tables](#the-tables)
 - [Putting the form on a Pokémon](#putting-the-form-on-a-pokémon)
+- [Egg patterns](#egg-patterns)
 - [Gotchas](#gotchas)
 - [Checklist](#checklist)
 
@@ -139,7 +140,7 @@ On top of either kind, three rows are taken only when they apply:
 | Row | Take it when | Who has it |
 |---|---|---|
 | Palettes | a redraw uses different colors from the species (a redraw in the species' colors, or in greys, leaves it 0) | Pikachu and every recolor |
-| Party icons | some form has its own icon | Pikachu (Surf, Fly), Unown, Snorlax (Apricorn) |
+| Party icons | some form has its own icon | Pikachu (Surf, Fly), Unown, Snorlax (Apricorn), Igglybuff (Beta) |
 | Symbol | some form shows a glyph beside its name | Pikachu (RB), Golbat (Rocket) |
 | Dimensions | some form is a different pic size from the species | Pikachu, Magikarp |
 
@@ -235,6 +236,38 @@ For quick testing, a wandering-mon row on Route 29 at a high weight is the easie
 form on a new game. The table there is fixed at four rows per time of day, so replace a row rather
 than adding one, and mark it `; TESTING`.
 
+
+## Egg patterns
+
+An egg can be drawn with its own pattern, picked by the species inside it: an egg that will hatch
+into Elekid has the Elekid pattern. This uses the same machinery as forms. Every master table has an
+`EGG` row above its label (species -3), and filling it gives `EGG` a per-pattern table, exactly like a
+species' per-form table. The only difference is where the number comes from. An egg's `MON_FORM` byte
+is the inner mon's form (Scyther, Pinsir and the RB lines inherit one), so the pattern is never
+stored. `GetMonDrawForm` (`home/pokemon.asm`) works it out each time an egg is drawn, from
+`SpecialEggPatterns` and the species inside, and keeps the egg's own shiny bit. Every place that draws
+a party, PC, trade or follower mon calls it and hands the result over in `wForm`, with `bc = wForm`
+for the palette loaders. Nothing is saved, so eggs made before a pattern existed, or traded in, get
+it too.
+
+To add a pattern, worked for Elekid:
+
+| What | Where |
+|---|---|
+| The art | `gfx/pokemon/egg_<species>/front.png`, the egg's 40x120 three-frame layout, plus a hand-written `shiny.pal`. No back sprite, no `anim.asm`: every pattern runs the egg's animation scripts |
+| Makefile | two lines, like the egg's, so the front takes its colors from its own `front.gbcpal` |
+| The icon | `gfx/icons/egg_<species>.png`, 16x32, four greys, `INCBIN` in `gfx/cosmetic_icons.asm` |
+| The constant | `EGG_<SPECIES>_PATTERN` after the others in `constants/pokemon_constants.asm`; `NUM_EGG_PATTERNS` follows |
+| Which eggs | a `dw SPECIES` / `db EGG_<SPECIES>_PATTERN` row in `SpecialEggPatterns` (`home/pokemon.asm`) |
+| Pic | `INCBIN` in a `Pics N` section, then a row in `EggPicPointers` (`data/pokemon/cosmetic_form_pic_pointers.asm`), `dbw -1, -1` for the back |
+| Icon | a row in `EggIconPointers` (`data/pokemon/cosmetic_form_icon_pointers.asm`) |
+| Palettes | a row in `EggPalettes` (`data/pokemon/cosmetic_palettes.asm`): its `front.gbcpal` and `shiny.pal` |
+| Frames and bitmask | `INCLUDE` the generated `frames.asm` in `gfx/pokemon/johto_frames.asm` and `bitmask.asm` in `gfx/pokemon/bitmasks.asm`, then rows in `EggFramesPointers` and `EggBitmasksPointers` (`engine/gfx/pic_animation.asm`) |
+
+Every per-pattern table asserts `NUM_EGG_PATTERNS`, so a missed one fails the build. The `EGG` rows of
+the animation, bitmask, frame, dimension and symbol tables stay 0: the egg animation loaders keep
+their own egg branch, which picks frames and bitmasks by pattern, and a non-zero animation row would
+send eggs down the form path instead.
 
 ## Gotchas
 

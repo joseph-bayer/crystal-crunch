@@ -2,6 +2,16 @@
 ; only the middle two colors are included, not black or white.
 ; Shiny palettes are defined directly, not generated.
 
+EggPalettes:
+; indexed by egg pattern (EGG_*_PATTERN), not by form. Eggs have no back sprite, so the normal
+; colors come from front.gbcpal.
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/egg/front.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/egg/shiny.pal"
+INCBIN	"gfx/pokemon/egg_elekid/front.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/egg_elekid/shiny.pal"
+	assert_table_length NUM_EGG_PATTERNS
+
 PikachuPalettes:
 	; 2 middle palettes, normal and shiny, with 2 colors each
 	table_width COLOR_SIZE * 2 * 2

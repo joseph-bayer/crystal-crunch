@@ -628,8 +628,7 @@ PCIconLoop:
 .not_holding
 	call GetStorageBoxMon
 	jr z, .blank
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	ld a, [wBufferMonAltSpecies]
 	ld [wCurIcon], a
 	ld [hli], a
@@ -721,14 +720,31 @@ BillsPC_GetMonPalAddr:
 	pop de
 	ret
 
+BillsPC_SetIconForm:
+; Put the buffer mon's draw form in wForm: an egg's pattern, or the mon's own form.
+	call BillsPC_GetDrawForm
+	ld [wForm], a
+	ret
+
+BillsPC_GetDrawForm:
+; out: a = the buffer mon's draw form, shiny bit included; everything else preserved
+	assert wBufferMonForm - wBufferMon == MON_FORM
+	push hl
+	ld a, [wBufferMonAltSpecies]
+	ld hl, wBufferMon
+	call GetMonDrawForm
+	pop hl
+	ret
+
 WriteIconPaletteData:
 ; Write box slot c's palette data. If b is zero, write party palette instead.
 ; (This is the same input as various "box mon data" functions).
 	push hl
 	push de
 	push bc
+	call BillsPC_SetIconForm
 	ld a, [wBufferMonAltSpecies]
-	ld bc, wBufferMonForm ; the form and shiny bit are read from here
+	ld bc, wForm ; the form drawn with (an egg's pattern), its shiny bit included
 	farcall GetArrangedMonIconColors
 	ld h, b
 	ld l, c
@@ -903,8 +919,7 @@ CheckPartyShift:
 	ld c, e
 	call GetStorageBoxMon
 	jr z, .no_form_data_shift
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	jr .got_form_data_shift
 .no_form_data_shift:
 	xor a
@@ -1011,8 +1026,7 @@ _GetCursorMon:
 	; Prepare frontpic. Split into decompression + loading to make sure we
 	; refresh the pokepic and the palette in a single frame (decompression
 	; is unpredictable, but bpp copy can be relied upon).
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 
 	ld a, [wBufferMonAltSpecies]
 	ld [wCurPartySpecies], a
@@ -1108,7 +1122,8 @@ _GetCursorMon:
 	call FillBoxWithByte
 
 	; Colors
-	ld bc, wBufferMonForm
+	call BillsPC_SetIconForm
+	ld bc, wForm ; the form drawn with (an egg's pattern), its shiny bit included
 	ld a, [wBufferMonAltSpecies]
 	farcall GetMonNormalOrShinyPalettePointer
 	ld de, wBillsPC_PokepicPal
@@ -1905,8 +1920,7 @@ BillsPC_Switch:
 	push bc
 	call GetStorageBoxMon
 	jr z, .no_boxmon_data_pickup
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	jr .got_boxmon_data_pickup
 .no_boxmon_data_pickup:
 	xor a
@@ -2093,8 +2107,7 @@ BillsPC_FinishQuickAnim:
 	ld c, e
 	call GetStorageBoxMon
 	jr z, .no_boxmon_data_quick_anim
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	jr .got_boxmon_data_quick_anim
 .no_boxmon_data_quick_anim:
 	xor a
@@ -2753,8 +2766,7 @@ BillsPC_ReleaseAll:
 	push bc
 	call GetStorageBoxMon
 	jr z, .no_boxmon_data_release_all
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	jr .got_boxmon_data_release_all
 .no_boxmon_data_release_all:
 	xor a
@@ -2869,8 +2881,7 @@ BillsPC_Release:
 	push bc
 	call GetStorageBoxMon
 	jr z, .no_boxmon_data_release
-	ld a, [wBufferMonForm]
-	ld [wForm], a
+	call BillsPC_SetIconForm
 	jr .got_boxmon_data_release
 .no_boxmon_data_release:
 	xor a
@@ -3336,9 +3347,7 @@ BillsPC_PlaceHeldMon:
 	push bc
 	call GetStorageBoxMon
 	ld a, 0 ; no-optimize a = 0 (xor a would clobber GetStorageBoxMon's z flag)
-	jr z, .no_dest_mon
-	ld a, [wBufferMonForm]
-.no_dest_mon:
+	call nz, BillsPC_GetDrawForm
 	ld [wForm], a
 	pop bc
 
@@ -3406,9 +3415,7 @@ BillsPC_PlaceHeldMon:
 	ld c, e
 	call GetStorageBoxMon
 	ld a, 0 ; no-optimize a = 0 (xor a would clobber GetStorageBoxMon's z flag)
-	jr z, .no_dest_mon2
-	ld a, [wBufferMonForm]
-.no_dest_mon2:
+	call nz, BillsPC_GetDrawForm
 	ld [wForm], a
 	pop bc
 

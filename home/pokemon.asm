@@ -303,3 +303,63 @@ GetNickname::
 	pop bc
 	pop hl
 	ret
+
+GetMonDrawForm::
+; The form byte to draw a mon with. An egg is drawn with the pattern of the species inside it (from
+; SpecialEggPatterns) plus the egg's own shiny bit; anything else with its own form byte. The stored
+; byte is never changed.
+; in: a = the mon's species-list value (EGG for an egg), hl = its party_struct
+; out: a = the form byte; bc, de and hl preserved
+	assert MON_SPECIES == 0
+	assert EGG_PLAIN_PATTERN == 0
+	assert NUM_EGG_PATTERNS - 1 <= FORM_MASK, "egg patterns must fit in FORM_MASK"
+	push bc
+	push de
+	push hl
+	ld bc, MON_FORM
+	add hl, bc
+	ld c, [hl] ; c = the stored form byte
+	pop hl
+	push hl
+	cp EGG
+	ld a, c
+	jr nz, .done
+	and SHINY_MASK
+	ld b, a ; b = the egg's shiny bit
+	ld a, [hl] ; the species inside
+	call GetPokemonIndexFromID
+	ld d, h
+	ld e, l ; de = its 16-bit index
+	ld hl, SpecialEggPatterns
+.loop
+	ld a, [hli]
+	ld c, a
+	or [hl]
+	jr z, .got_pattern ; the end: a = EGG_PLAIN_PATTERN
+	ld a, [hli]
+	cp d
+	jr nz, .next
+	ld a, c
+	cp e
+	jr nz, .next
+	ld a, [hl]
+	jr .got_pattern
+
+.next
+	inc hl
+	jr .loop
+
+.got_pattern
+	or b
+.done
+	pop hl
+	pop de
+	pop bc
+	ret
+
+SpecialEggPatterns:
+; Species whose eggs are drawn with a pattern of their own, by 16-bit index. Any other egg uses
+; EGG_PLAIN_PATTERN. Each pattern needs a row in the EGG tables listed in adding_cosmetic_forms.md.
+	dw ELEKID
+	db EGG_ELEKID_PATTERN
+	dw 0 ; end
