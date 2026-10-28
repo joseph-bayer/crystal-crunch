@@ -449,16 +449,16 @@ PokeBallEffect:
 	and a
 	jr nz, .caught
 	ld a, [wThrownBallWobbleCount]
-	cp 1
+	dec a ; 1
 	ld hl, BallBrokeFreeText
 	jmp z, .shake_and_break_free
-	cp 2
+	dec a ; 2
 	ld hl, BallAppearedCaughtText
 	jmp z, .shake_and_break_free
-	cp 3
+	dec a ; 3
 	ld hl, BallAlmostHadItText
 	jmp z, .shake_and_break_free
-	cp 4
+	dec a ; 4
 	ld hl, BallSoCloseText
 	jmp z, .shake_and_break_free
 
@@ -2094,7 +2094,7 @@ EscapeRopeEffect:
 	call EscapeRopeFunction
 
 	ld a, [wItemEffectSucceeded]
-	cp 1
+	dec a
 	jmp z, UseDisposableItem
 	ret
 
@@ -2613,7 +2613,7 @@ BasementKeyEffect:
 SacredAshEffect:
 	farcall _SacredAsh
 	ld a, [wItemEffectSucceeded]
-	cp $1
+	dec a
 	ret nz
 	jr UseDisposableItem
 
