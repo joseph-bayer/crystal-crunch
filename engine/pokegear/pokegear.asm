@@ -453,6 +453,9 @@ PokegearClock_Joypad:
 	and PAD_BUTTONS
 	jr nz, .quit
 	ld a, [hl]
+	and PAD_LEFT
+	jr nz, .left
+	ld a, [hl]
 	and PAD_RIGHT
 	ret z
 	ld a, [wPokegearFlags]
@@ -475,6 +478,28 @@ PokegearClock_Joypad:
 	lb bc, POKEGEARCARD_RADIO, POKEGEARSTATE_RADIOINIT
 .done
 	jmp Pokegear_SwitchPage
+
+.left
+; Left on the clock wraps round to the last card owned.
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_RADIO_CARD_F, a
+	jr z, .left_no_radio_card
+	lb bc, POKEGEARCARD_RADIO, POKEGEARSTATE_RADIOINIT
+	jr .done
+
+.left_no_radio_card
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_PHONE_CARD_F, a
+	jr z, .left_no_phone_card
+	lb bc, POKEGEARCARD_PHONE, POKEGEARSTATE_PHONEINIT
+	jr .done
+
+.left_no_phone_card
+	ld a, [wPokegearFlags]
+	bit POKEGEAR_MAP_CARD_F, a
+	ret z
+	lb bc, POKEGEARCARD_MAP, POKEGEARSTATE_MAPCHECKREGION
+	jr .done
 
 .quit
 	ld hl, wJumptableIndex
@@ -845,9 +870,10 @@ PokegearMap_ContinueMap:
 	jr .done
 
 .no_phone
+; With no card to the right, wrap round to the clock.
 	ld a, [wPokegearFlags]
 	bit POKEGEAR_RADIO_CARD_F, a
-	ret z
+	jr z, .left
 	lb bc, POKEGEARCARD_RADIO, POKEGEARSTATE_RADIOINIT
 	jr .done
 
@@ -1101,6 +1127,9 @@ PokegearRadio_Joypad:
 	ld a, [hl]
 	and PAD_LEFT
 	jr nz, .left
+	ld a, [hl]
+	and PAD_RIGHT
+	jr nz, .no_map ; the radio is the last card, so Right wraps round to the clock
 	ld hl, wPokegearRadioChannelAddr
 	ld a, [hli]
 	ld h, [hl]
@@ -1178,9 +1207,10 @@ PokegearPhone_Joypad:
 	jr .switch_page
 
 .right
+; With no radio card, wrap round to the clock.
 	ld a, [wPokegearFlags]
 	bit POKEGEAR_RADIO_CARD_F, a
-	ret z
+	jr z, .no_map
 	lb bc, POKEGEARCARD_RADIO, POKEGEARSTATE_RADIOINIT
 .switch_page
 	jmp Pokegear_SwitchPage
