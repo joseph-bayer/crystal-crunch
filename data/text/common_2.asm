@@ -449,6 +449,11 @@ _RodNothingText::
 	text "Not even a nibble!"
 	prompt
 
+_RodNothingFishAgainText::
+	text "Not even a nibble!"
+	line "Fish again?"
+	done
+
 _CantGetOffBikeText::
 	text "You can't get off"
 	line "here!"

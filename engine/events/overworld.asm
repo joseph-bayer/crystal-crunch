@@ -1522,13 +1522,44 @@ FishFunction:
 	ret
 
 .FishTable:
-	dw .TryFish
+	dw TryFishCast
 	dw .FishNoBite
 	dw .FishGotSomething
 	dw .FailFish
 	dw .FishNoFish
 
-.TryFish:
+.FailFish:
+	ld a, JUMPTABLE_EXIT
+	ret
+
+.FishGotSomething:
+	ld a, $1
+	ld [wFishingResult], a
+	ld hl, Script_GotABite
+	call QueueScript
+	ld a, JUMPTABLE_EXIT | $1
+	ret
+
+.FishNoBite:
+	ld a, $2
+	ld [wFishingResult], a
+	ld hl, Script_NotEvenANibble
+	call QueueScript
+	ld a, JUMPTABLE_EXIT | $1
+	ret
+
+.FishNoFish:
+	xor a
+	ld [wFishingResult], a
+	ld hl, Script_NotEvenANibble2
+	call QueueScript
+	ld a, JUMPTABLE_EXIT | $1
+	ret
+
+TryFishCast:
+; Checks the tile the player faces and rolls a bite with the rod in wFishingRodUsed.
+; Returns a = 1 (no bite), 2 (bite), 3 (can't fish here) or 4 (no fish on this map).
+; A bite also sets wTempWildMonSpecies, wCurPartyLevel and wBattleType.
 	ld a, [wPlayerState]
 	cp PLAYER_SURF
 	jr z, .fail
@@ -1571,37 +1602,23 @@ FishFunction:
 	ld a, $1
 	ret
 
-.FailFish:
-	ld a, JUMPTABLE_EXIT
-	ret
-
-.FishGotSomething:
-	ld a, $1
-	ld [wFishingResult], a
-	ld hl, Script_GotABite
-	call QueueScript
-	ld a, JUMPTABLE_EXIT | $1
-	ret
-
-.FishNoBite:
-	ld a, $2
-	ld [wFishingResult], a
-	ld hl, Script_NotEvenANibble
-	call QueueScript
-	ld a, JUMPTABLE_EXIT | $1
-	ret
-
-.FishNoFish:
-	xor a
-	ld [wFishingResult], a
-	ld hl, Script_NotEvenANibble2
-	call QueueScript
-	ld a, JUMPTABLE_EXIT | $1
-	ret
-
 Script_NotEvenANibble:
 	scall Script_FishCastRod
-	writetext RodNothingText
+	writetext RodNothingFishAgainText
+	yesorno
+	iffalse Script_NotEvenANibble_FallThrough
+	; put the rod away first, so the cast shows again and nothing draws the rod tip while its
+	; tile is overwritten: by the shadow, by closing the box and by the font reload
+	callasm PutTheRodAway
+	loademote EMOTE_SHADOW
+	closetext
+	; closing the box reloaded the sprites over the font: load it again before the rod's
+	; graphics, as the bag leaves it on the first cast
+	reanchormap
+	pause 8
+	callasm RetryFishing
+	ifequal 2, Script_GotABite
+	ifequal 1, Script_NotEvenANibble
 	sjump Script_NotEvenANibble_FallThrough
 
 Script_NotEvenANibble2:
@@ -1657,6 +1674,11 @@ Script_GotABite:
 	fish_cast_rod
 	step_end
 
+RetryFishing:
+	call TryFishCast
+	ld [wScriptVar], a
+	ret
+
 Fishing_CheckFacingUp:
 	ld a, [wPlayerDirection]
 	and $c
@@ -1698,6 +1720,10 @@ RodBiteText:
 
 RodNothingText:
 	text_far _RodNothingText
+	text_end
+
+RodNothingFishAgainText:
+	text_far _RodNothingFishAgainText
 	text_end
 
 BikeFunction:

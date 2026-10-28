@@ -185,6 +185,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 ### Misc.
 - Kurt makes Apricorn balls instantly, and can make several at once.
+- When nothing bites, you're asked "Fish again?" so you can recast without reopening the bag.
 - When a Repel wears off and you have another of the same kind, you're asked whether to use another.
 - Turn around after healing in the Pokémon Center so you don't accidentally heal again.
 - Minor update to Goldenrod's layout so it's easier to get to the underground and the bike shop.
