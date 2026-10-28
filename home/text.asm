@@ -502,9 +502,16 @@ _ContText::
 	ld a, [wLinkMode]
 	or a
 	call z, UnloadBlinkingCursor
-	; fallthrough
+	jr _ContTextNoPause.not_instant
 
 _ContTextNoPause::
+; At instant text speed, hold the line a moment before scrolling it away.
+	ld a, [wOptions]
+	and TEXT_DELAY_MASK
+	jr nz, .not_instant
+	ld c, 15
+	call DelayFrames
+.not_instant
 	push de
 	call TextScroll
 	call TextScroll

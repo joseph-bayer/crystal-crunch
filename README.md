@@ -194,6 +194,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
   - Leveling up, haircuts, Daisy's grooming, and battling Gym Leaders give more happiness.
 - Simplified the clock reset
   - Hold **Down + B + Select** at the title screen, then confirm.
+- Text speed defaults to FAST, and there's a new INSTANT speed.
 
 ---
 
@@ -290,6 +291,7 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - The Hidden Power stats page follows the [Add a fourth stats page](https://github.com/pret/pokecrystal/wiki/Add-a-fourth-stats-page) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki.
 - Trainers offering their number right after battle follows the [Improve the trainer rematch system](https://github.com/pret/pokecrystal/wiki/Improve-the-trainer-rematch-system) tutorial by Grate Oracle Lewot from the pret/pokecrystal wiki.
 - Kurt making Apricorn balls instantly follows the [Kurt Makes Pokeballs Instantly](https://github.com/pret/pokecrystal/wiki/Kurt-Makes-Pokeballs-Instantly) tutorial by [Nayru62](https://github.com/Nayru62) from the pret/pokecrystal wiki (adapted from [Polished Crystal](https://github.com/Rangi42/polishedcrystal)), with the fade back in from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
+- The INSTANT text speed follows the [Add a new text scrolling speed](https://github.com/pret/pokecrystal/wiki/Add-a-new-text-scrolling-speed) tutorial from the pret/pokecrystal wiki, written and edited by mid-kid, pigeon-crystal, 7Soul, SonicRay100, WinUser-Generic and wfowler1.
 - Being asked to use another Repel when one wears off follows the [Automatically reuse Repel](https://github.com/pret/pokecrystal/wiki/Automatically-reuse-Repel) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki, with later edits by TOMsk1992 and DamienDoury, adapted for 16-bit items.
 
 ### Polished Crystal
