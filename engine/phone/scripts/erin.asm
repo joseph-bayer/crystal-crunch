@@ -3,12 +3,10 @@ ErinPhoneCalleeScript:
 	checkflag ENGINE_ERIN_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_ERIN_SATURDAY_NIGHT
+	checkflag ENGINE_ERIN_SATURDAY
 	iftrue .NotSaturday
 	readvar VAR_WEEKDAY
-	ifnotequal SATURDAY, .NotSaturday
-	checktime EVE | NITE
-	iftrue ErinSaturdayNight
+	ifequal SATURDAY, ErinSaturday
 
 .NotSaturday:
 	farsjump ErinWorkingHardScript
@@ -22,7 +20,7 @@ ErinPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Female
 	checkflag ENGINE_ERIN_READY_FOR_REMATCH
 	iftrue .GenericCall
-	checkflag ENGINE_ERIN_SATURDAY_NIGHT
+	checkflag ENGINE_ERIN_SATURDAY
 	iftrue .GenericCall
 	farscall PhoneScript_Random3
 	ifequal 0, ErinWantsBattle
@@ -31,8 +29,8 @@ ErinPhoneCallerScript:
 .GenericCall:
 	farsjump Phone_GenericCall_Female
 
-ErinSaturdayNight:
-	setflag ENGINE_ERIN_SATURDAY_NIGHT
+ErinSaturday:
+	setflag ENGINE_ERIN_SATURDAY
 
 ErinWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_46

@@ -3,12 +3,10 @@ ArniePhoneCalleeScript:
 	checkflag ENGINE_ARNIE_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_ARNIE_TUESDAY_MORNING
+	checkflag ENGINE_ARNIE_TUESDAY
 	iftrue .NotTuesday
 	readvar VAR_WEEKDAY
-	ifnotequal TUESDAY, .NotTuesday
-	checktime MORN
-	iftrue ArnieTuesdayMorning
+	ifequal TUESDAY, ArnieTuesday
 
 .NotTuesday:
 	checkswarm SWARM_YANMA
@@ -28,7 +26,7 @@ ArniePhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_ARNIE_READY_FOR_REMATCH
 	iftrue .Swarm
-	checkflag ENGINE_ARNIE_TUESDAY_MORNING
+	checkflag ENGINE_ARNIE_TUESDAY
 	iftrue .Swarm
 	farscall PhoneScript_Random2
 	ifequal 0, ArnieWantsBattle
@@ -40,8 +38,8 @@ ArniePhoneCallerScript:
 	ifequal 0, ArnieFoundRare
 	farsjump Phone_GenericCall_Male
 
-ArnieTuesdayMorning:
-	setflag ENGINE_ARNIE_TUESDAY_MORNING
+ArnieTuesday:
+	setflag ENGINE_ARNIE_TUESDAY
 
 ArnieWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_35

@@ -3,12 +3,10 @@ ChadPhoneCalleeScript:
 	checkflag ENGINE_CHAD_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_CHAD_FRIDAY_MORNING
+	checkflag ENGINE_CHAD_FRIDAY
 	iftrue .NotFriday
 	readvar VAR_WEEKDAY
-	ifnotequal FRIDAY, .NotFriday
-	checktime MORN
-	iftrue ChadFridayMorning
+	ifequal FRIDAY, ChadFriday
 
 .NotFriday:
 	farsjump ChadHangUpScript
@@ -22,7 +20,7 @@ ChadPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_CHAD_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_CHAD_FRIDAY_MORNING
+	checkflag ENGINE_CHAD_FRIDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, ChadWantsBattle
@@ -34,8 +32,8 @@ ChadPhoneCallerScript:
 	ifequal 0, ChadFoundRare
 	farsjump Phone_GenericCall_Male
 
-ChadFridayMorning:
-	setflag ENGINE_CHAD_FRIDAY_MORNING
+ChadFriday:
+	setflag ENGINE_CHAD_FRIDAY
 
 ChadWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_38

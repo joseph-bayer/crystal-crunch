@@ -3,12 +3,10 @@ VancePhoneCalleeScript:
 	checkflag ENGINE_VANCE_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_VANCE_WEDNESDAY_NIGHT
+	checkflag ENGINE_VANCE_WEDNESDAY
 	iftrue .NotWednesday
 	readvar VAR_WEEKDAY
-	ifnotequal WEDNESDAY, .NotWednesday
-	checktime EVE | NITE
-	iftrue VanceWednesdayNight
+	ifequal WEDNESDAY, VanceWednesday
 
 .NotWednesday:
 	farsjump VanceLookingForwardScript
@@ -22,7 +20,7 @@ VancePhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_VANCE_READY_FOR_REMATCH
 	iftrue .WantsBattle
-	checkflag ENGINE_VANCE_WEDNESDAY_NIGHT
+	checkflag ENGINE_VANCE_WEDNESDAY
 	iftrue .WantsBattle
 	farscall PhoneScript_Random3
 	ifequal 0, VanceWantsRematch
@@ -31,8 +29,8 @@ VancePhoneCallerScript:
 .WantsBattle:
 	farsjump Phone_GenericCall_Male
 
-VanceWednesdayNight:
-	setflag ENGINE_VANCE_WEDNESDAY_NIGHT
+VanceWednesday:
+	setflag ENGINE_VANCE_WEDNESDAY
 
 VanceWantsRematch:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_44

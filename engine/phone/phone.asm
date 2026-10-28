@@ -202,7 +202,37 @@ PhoneContactIsWaiting:
 	scf
 	ret
 
+PhoneContactHasRematchDay:
+; Returns carry if calling contact c today would set up a rematch: it's their rematch day, no call
+; has set one up today, and no rematch is already waiting.
+	ld a, c
+	push bc
+	ld hl, PhoneContactRematchDays
+	ld bc, 3
+	rst AddNTimes
+	pop bc
+	call GetWeekday
+	cp [hl]
+	jr nz, .no
+	inc hl
+	push bc
+	call PhoneContactIsWaiting.CheckFlag
+	pop bc
+	jr c, .no
+	ld a, c
+	ld hl, PhoneContactWaitingFlags
+	ld bc, 4
+	rst AddNTimes
+	call PhoneContactIsWaiting.CheckFlag
+	ccf
+	ret
+
+.no
+	and a
+	ret
+
 INCLUDE "data/phone/waiting_flags.asm"
+INCLUDE "data/phone/rematch_days.asm"
 
 CheckSpecialPhoneCall::
 	ld a, [wSpecialPhoneCallID]
@@ -859,7 +889,7 @@ DebugPhoneSetWaitingFlags:
 DebugPhoneClearWaitingFlags::
 ; Clears every rematch, item and weekly-window flag.
 	assert wDailyPhoneItemFlags == wDailyRematchFlags + 4
-	assert wDailyPhoneTimeOfDayFlags == wDailyPhoneItemFlags + 4
+	assert wDailyPhoneRematchDayFlags == wDailyPhoneItemFlags + 4
 	xor a
 	ld hl, wDailyRematchFlags
 	ld bc, 4 * 3

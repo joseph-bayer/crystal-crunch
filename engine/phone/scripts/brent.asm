@@ -3,12 +3,10 @@ BrentPhoneCalleeScript:
 	checkflag ENGINE_BRENT_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_BRENT_MONDAY_MORNING
+	checkflag ENGINE_BRENT_MONDAY
 	iftrue .NotMonday
 	readvar VAR_WEEKDAY
-	ifnotequal MONDAY, .NotMonday
-	checktime MORN
-	iftrue BrentMondayMorning
+	ifequal MONDAY, BrentMonday
 
 .NotMonday:
 	farsjump BrentHangUpScript
@@ -22,7 +20,7 @@ BrentPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_BRENT_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_BRENT_MONDAY_MORNING
+	checkflag ENGINE_BRENT_MONDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, BrentWantsBattle
@@ -32,8 +30,8 @@ BrentPhoneCallerScript:
 	ifequal 0, BrentBillTrivia
 	farsjump Phone_GenericCall_Male
 
-BrentMondayMorning:
-	setflag ENGINE_BRENT_MONDAY_MORNING
+BrentMonday:
+	setflag ENGINE_BRENT_MONDAY
 
 BrentWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_43

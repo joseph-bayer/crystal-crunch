@@ -3,12 +3,10 @@ JackPhoneCalleeScript:
 	checkflag ENGINE_JACK_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_JACK_MONDAY_MORNING
+	checkflag ENGINE_JACK_MONDAY
 	iftrue .NotMonday
 	readvar VAR_WEEKDAY
-	ifnotequal MONDAY, .NotMonday
-	checktime MORN
-	iftrue JackMondayMorning
+	ifequal MONDAY, JackMonday
 
 .NotMonday:
 	farsjump JackPhoneTipsScript
@@ -22,7 +20,7 @@ JackPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_JACK_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_JACK_MONDAY_MORNING
+	checkflag ENGINE_JACK_MONDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, JackWantsToBattle
@@ -34,8 +32,8 @@ JackPhoneCallerScript:
 	ifequal 0, JackFindsRare
 	farsjump Phone_GenericCall_Male
 
-JackMondayMorning:
-	setflag ENGINE_JACK_MONDAY_MORNING
+JackMonday:
+	setflag ENGINE_JACK_MONDAY
 
 JackWantsToBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_NATIONAL_PARK

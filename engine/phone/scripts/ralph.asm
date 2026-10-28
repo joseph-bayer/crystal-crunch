@@ -3,12 +3,10 @@ RalphPhoneCalleeScript:
 	checkflag ENGINE_RALPH_READY_FOR_REMATCH
 	iftrue .Rematch
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_RALPH_WEDNESDAY_MORNING
+	checkflag ENGINE_RALPH_WEDNESDAY
 	iftrue .CheckSwarm
 	readvar VAR_WEEKDAY
-	ifnotequal WEDNESDAY, .CheckSwarm
-	checktime MORN
-	iftrue Ralph_WednesdayMorning
+	ifequal WEDNESDAY, Ralph_Wednesday
 .CheckSwarm:
 	checkflag ENGINE_QWILFISH_SWARM
 	iftrue .ReportSwarm
@@ -27,7 +25,7 @@ RalphPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_RALPH_READY_FOR_REMATCH
 	iftrue .CheckSwarm
-	checkflag ENGINE_RALPH_WEDNESDAY_MORNING
+	checkflag ENGINE_RALPH_WEDNESDAY
 	iftrue .CheckSwarm
 	farscall PhoneScript_Random2
 	ifequal 0, Ralph_FightMe
@@ -36,8 +34,8 @@ RalphPhoneCallerScript:
 	ifequal 0, Ralph_SetUpSwarm
 	farsjump Phone_GenericCall_Male
 
-Ralph_WednesdayMorning:
-	setflag ENGINE_RALPH_WEDNESDAY_MORNING
+Ralph_Wednesday:
+	setflag ENGINE_RALPH_WEDNESDAY
 Ralph_FightMe:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_32
 	setflag ENGINE_RALPH_READY_FOR_REMATCH

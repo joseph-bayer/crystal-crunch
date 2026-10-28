@@ -113,6 +113,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Answer or decline calls: press **A** to answer, **B** to decline. Mom, Prof. Oak, Bill and Prof. Elm can't be declined.
 - Fewer filler calls: trainers are more likely to call about a rematch or a gift.
 - A trainer with a rematch or gift waiting won't call again until you go see them.
+- Call a trainer on their rematch day, at any time, to set up a rematch. On that day a VS icon shows next to their name in your contacts until you call.
 
 ### HMs
 - More Pokémon can learn the HMs, Rock Smash and Headbutt, following Polished Crystal's and Sour Crystal's learnsets. For example, Zubat and Golbat can learn Fly.
@@ -294,7 +295,7 @@ Ported from or based on [Polished Crystal](https://github.com/Rangi42/polishedcr
 - Untying shininess from DVs (partially based on its implementation)
 - The new shiny check algorithm
 - Using HMs without knowing them, Fly from the Pokégear map, the Flash prompt and the Ilex Forest HM texts
-- The unlimited phone contact list, evening rematch times and the one-byte special phone call fix
+- The unlimited phone contact list and the one-byte special phone call fix
 - More Pokémon able to learn the HMs, Rock Smash and Headbutt
 
 ### Sour Crystal

@@ -3,12 +3,10 @@ GavenPhoneCalleeScript:
 	checkflag ENGINE_GAVEN_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_GAVEN_THURSDAY_MORNING
+	checkflag ENGINE_GAVEN_THURSDAY
 	iftrue .NotThursday
 	readvar VAR_WEEKDAY
-	ifnotequal THURSDAY, .NotThursday
-	checktime MORN
-	iftrue GavenThursdayMorningScript
+	ifequal THURSDAY, GavenThursday
 
 .NotThursday:
 	farsjump GavenHangUpNotThursdayScript
@@ -22,7 +20,7 @@ GavenPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_GAVEN_READY_FOR_REMATCH
 	iftrue .WaitingForBattle
-	checkflag ENGINE_GAVEN_THURSDAY_MORNING
+	checkflag ENGINE_GAVEN_THURSDAY
 	iftrue .WaitingForBattle
 	farscall PhoneScript_Random2
 	ifequal 0, GavenWantsRematch
@@ -32,8 +30,8 @@ GavenPhoneCallerScript:
 	ifequal 0, GavenFoundRare
 	farsjump Phone_GenericCall_Male
 
-GavenThursdayMorningScript:
-	setflag ENGINE_GAVEN_THURSDAY_MORNING
+GavenThursday:
+	setflag ENGINE_GAVEN_THURSDAY
 
 GavenWantsRematch:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_26

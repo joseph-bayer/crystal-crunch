@@ -3,14 +3,12 @@ AlanPhoneCalleeScript:
 	checkflag ENGINE_ALAN_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_ALAN_WEDNESDAY_AFTERNOON
+	checkflag ENGINE_ALAN_WEDNESDAY
 	iftrue .NotWednesday
+	readvar VAR_WEEKDAY
+	ifequal WEDNESDAY, AlanWednesday
 	checkflag ENGINE_ALAN_HAS_FIRE_STONE
 	iftrue .FireStone
-	readvar VAR_WEEKDAY
-	ifnotequal WEDNESDAY, .NotWednesday
-	checktime DAY
-	iftrue AlanWednesdayDay
 
 .NotWednesday:
 	farsjump AlanHangUpScript
@@ -41,7 +39,7 @@ AlanPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_ALAN_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_ALAN_WEDNESDAY_AFTERNOON
+	checkflag ENGINE_ALAN_WEDNESDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, AlanWantsBattle
@@ -49,8 +47,8 @@ AlanPhoneCallerScript:
 .Leftover:
 	farsjump Phone_GenericCall_Male
 
-AlanWednesdayDay:
-	setflag ENGINE_ALAN_WEDNESDAY_AFTERNOON
+AlanWednesday:
+	setflag ENGINE_ALAN_WEDNESDAY
 
 AlanWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_36

@@ -3,14 +3,12 @@ TullyPhoneCalleeScript:
 	checkflag ENGINE_TULLY_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_TULLY_SUNDAY_NIGHT
+	checkflag ENGINE_TULLY_SUNDAY
 	iftrue .NotSunday
+	readvar VAR_WEEKDAY
+	ifequal SUNDAY, TullySunday
 	checkflag ENGINE_TULLY_HAS_WATER_STONE
 	iftrue .WaterStone
-	readvar VAR_WEEKDAY
-	ifnotequal SUNDAY, .NotSunday
-	checktime EVE | NITE
-	iftrue TullySundayNight
 
 .NotSunday:
 	farsjump TullyNoItemScript
@@ -41,7 +39,7 @@ TullyPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_TULLY_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_TULLY_SUNDAY_NIGHT
+	checkflag ENGINE_TULLY_SUNDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, TullyWantsBattle
@@ -49,8 +47,8 @@ TullyPhoneCallerScript:
 .Leftover:
 	farsjump Phone_GenericCall_Male
 
-TullySundayNight:
-	setflag ENGINE_TULLY_SUNDAY_NIGHT
+TullySunday:
+	setflag ENGINE_TULLY_SUNDAY
 
 TullyWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_42

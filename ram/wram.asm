@@ -3000,7 +3000,7 @@ wBuenasPassword:: db
 wBlueCardBalance:: db
 wDailyRematchFlags:: ds 4
 wDailyPhoneItemFlags:: ds 4
-wDailyPhoneTimeOfDayFlags:: ds 4
+wDailyPhoneRematchDayFlags:: ds 4
 wKenjiBreakTimer:: db ; Kenji
 
 wStepCount:: db

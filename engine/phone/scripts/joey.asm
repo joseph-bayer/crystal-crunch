@@ -3,12 +3,10 @@ JoeyPhoneCalleeScript:
 	checkflag ENGINE_JOEY_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_JOEY_MONDAY_AFTERNOON
+	checkflag ENGINE_JOEY_MONDAY
 	iftrue .NotMonday
 	readvar VAR_WEEKDAY
-	ifnotequal MONDAY, .NotMonday
-	checktime DAY
-	iftrue JoeyMondayAfternoon
+	ifequal MONDAY, JoeyMonday
 
 .NotMonday:
 	special RandomPhoneMon
@@ -23,7 +21,7 @@ JoeyPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_JOEY_READY_FOR_REMATCH
 	iftrue .Generic
-	checkflag ENGINE_JOEY_MONDAY_AFTERNOON
+	checkflag ENGINE_JOEY_MONDAY
 	iftrue .Generic
 	farscall PhoneScript_Random3
 	ifequal 0, JoeyWantsBattle
@@ -32,8 +30,8 @@ JoeyPhoneCallerScript:
 .Generic:
 	farsjump Phone_GenericCall_Male
 
-JoeyMondayAfternoon:
-	setflag ENGINE_JOEY_MONDAY_AFTERNOON
+JoeyMonday:
+	setflag ENGINE_JOEY_MONDAY
 
 JoeyWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_30

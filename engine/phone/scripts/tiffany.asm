@@ -3,14 +3,12 @@ TiffanyPhoneCalleeScript:
 	checkflag ENGINE_TIFFANY_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_TIFFANY_TUESDAY_AFTERNOON
+	checkflag ENGINE_TIFFANY_TUESDAY
 	iftrue .NotTuesday
+	readvar VAR_WEEKDAY
+	ifequal TUESDAY, TiffanyTuesday
 	checkflag ENGINE_TIFFANY_HAS_PINK_BOW
 	iftrue .HasItem
-	readvar VAR_WEEKDAY
-	ifnotequal TUESDAY, .NotTuesday
-	checktime DAY
-	iftrue TiffanyTuesdayAfternoon
 
 .NotTuesday:
 	farsjump TiffanyNoItemScript
@@ -40,7 +38,7 @@ TiffanyPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_TIFFANY_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_TIFFANY_TUESDAY_AFTERNOON
+	checkflag ENGINE_TIFFANY_TUESDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, .WantsBattle
@@ -59,8 +57,8 @@ TiffanyPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Female
 	sjump TiffanyWantsBattle
 
-TiffanyTuesdayAfternoon:
-	setflag ENGINE_TIFFANY_TUESDAY_AFTERNOON
+TiffanyTuesday:
+	setflag ENGINE_TIFFANY_TUESDAY
 
 TiffanyWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_43

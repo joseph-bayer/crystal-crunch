@@ -3,12 +3,10 @@ AnthonyPhoneCalleeScript:
 	checkflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_ANTHONY_FRIDAY_NIGHT
+	checkflag ENGINE_ANTHONY_FRIDAY
 	iftrue .NotFriday
 	readvar VAR_WEEKDAY
-	ifnotequal FRIDAY, .NotFriday
-	checktime EVE | NITE
-	iftrue AnthonyFridayNight
+	ifequal FRIDAY, AnthonyFriday
 
 .NotFriday:
 	checkswarm SWARM_DUNSPARCE
@@ -28,7 +26,7 @@ AnthonyPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_ANTHONY_READY_FOR_REMATCH
 	iftrue .TriesSwarm
-	checkflag ENGINE_ANTHONY_FRIDAY_NIGHT
+	checkflag ENGINE_ANTHONY_FRIDAY
 	iftrue .TriesSwarm
 	farscall PhoneScript_Random2
 	ifequal 0, AnthonyWantsBattle
@@ -38,8 +36,8 @@ AnthonyPhoneCallerScript:
 	ifequal 0, AnthonyTriesDunsparceSwarm
 	farsjump Phone_GenericCall_Male
 
-AnthonyFridayNight:
-	setflag ENGINE_ANTHONY_FRIDAY_NIGHT
+AnthonyFriday:
+	setflag ENGINE_ANTHONY_FRIDAY
 
 AnthonyWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_33

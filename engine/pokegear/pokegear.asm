@@ -7,6 +7,7 @@
 DEF NUM_POKEGEAR_CARDS EQU const_value
 
 DEF PHONE_DISPLAY_HEIGHT EQU 4
+DEF PHONE_REMATCH_ICON_TILE EQU $5e ; the last two tiles of gfx/pokegear/pokegear.png
 
 ; PokegearJumptable.Jumptable indexes
 	const_def
@@ -1238,7 +1239,11 @@ PokegearPhone_MakePhoneCall:
 	set NO_TEXT_SCROLL, [hl]
 	ld a, $1
 	ldh [hInMenu], a
-	call PokegearPhone_UpdateCursor
+	; the call may have set up a rematch, so the VS icon may go
+	xor a
+	ldh [hBGMapMode], a
+	call PokegearPhone_UpdateDisplayList
+	call PokegearPhone_ApplyTilemap
 	ld hl, wJumptableIndex
 	inc [hl]
 	ret
@@ -1332,7 +1337,7 @@ PokegearPhone_GetDPad:
 	xor a
 	ldh [hBGMapMode], a
 	call PokegearPhone_UpdateDisplayList
-	jmp WaitBGMap
+	jr PokegearPhone_ApplyTilemap
 
 PokegearPhone_UpdateCursor:
 	ld a, " "
@@ -1368,6 +1373,7 @@ PokegearPhone_UpdateDisplayList:
 .loop
 	push de
 	call PokegearPhone_GetCellNumberFromE
+	push bc
 	ld d, c
 	hlcoord 2, 4
 	ld a, [wPokegearPhoneDisplayPosition]
@@ -1377,6 +1383,8 @@ PokegearPhone_UpdateDisplayList:
 	ld d, h
 	ld e, l
 	call GetCallerClassAndName
+	pop bc
+	call PokegearPhone_PlaceRematchIcon
 	pop de
 	inc e
 	ld a, [wPokegearPhoneDisplayPosition] ; no-optimize Inefficient WRAM increment/decrement
@@ -1385,6 +1393,28 @@ PokegearPhone_UpdateDisplayList:
 	cp PHONE_DISPLAY_HEIGHT
 	jr c, .loop
 	jr PokegearPhone_UpdateCursor
+
+PokegearPhone_PlaceRematchIcon:
+; The VS icon at the end of contact c's name row, if calling them today would set up a rematch.
+	call PhoneContactHasRematchDay
+	ret nc
+	hlcoord 17, 4
+	ld a, [wPokegearPhoneDisplayPosition]
+	ld bc, 2 * SCREEN_WIDTH
+	rst AddNTimes
+	ld a, PHONE_REMATCH_ICON_TILE
+	ld [hli], a
+	inc a
+	ld [hl], a
+	ret
+
+PokegearPhone_ApplyTilemap:
+; Tiles and attributes together, so the VS icon keeps its colors when the list or a menu over it
+; redraws. Then WaitBGMap, as before.
+	call TownMapPals
+	ld b, 0 ; leave the palettes be
+	farcall _SafeCopyTilemapAtOnce
+	jmp WaitBGMap
 
 PokegearPhone_DeletePhoneNumber:
 	call PokegearPhone_GetCellNumber
@@ -1479,7 +1509,7 @@ PokegearPhoneContactSubmenu:
 	xor a
 	ld [wPokegearPhoneSubmenuCursor], a
 	call .UpdateCursor
-	call WaitBGMap
+	call PokegearPhone_ApplyTilemap
 .loop
 	push de
 	call JoyTextDelay
@@ -1521,8 +1551,7 @@ PokegearPhoneContactSubmenu:
 	xor a
 	ldh [hBGMapMode], a
 	call PokegearPhone_UpdateDisplayList
-	ld a, $1
-	ldh [hBGMapMode], a
+	call PokegearPhone_ApplyTilemap
 	pop hl
 	ldh a, [hJoyPressed]
 	and PAD_B
@@ -1555,7 +1584,7 @@ PokegearPhoneContactSubmenu:
 	call PokegearPhone_UpdateDisplayList
 	ld hl, PokegearAskWhoCallText
 	call PrintText
-	call WaitBGMap
+	call PokegearPhone_ApplyTilemap
 .CancelDelete:
 	scf
 	ret

@@ -3,14 +3,12 @@ WadePhoneCalleeScript:
 	checkflag ENGINE_WADE_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_WADE_TUESDAY_NIGHT
+	checkflag ENGINE_WADE_TUESDAY
 	iftrue .NotTuesday
+	readvar VAR_WEEKDAY
+	ifequal TUESDAY, WadeTuesday
 	checkflag ENGINE_WADE_HAS_ITEM
 	iftrue .HasItem
-	readvar VAR_WEEKDAY
-	ifnotequal TUESDAY, .NotTuesday
-	checktime EVE | NITE
-	iftrue WadeTuesdayNight
 
 .NotTuesday:
 	farscall PhoneScript_Random2
@@ -59,7 +57,7 @@ WadePhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_WADE_READY_FOR_REMATCH
 	iftrue .next
-	checkflag ENGINE_WADE_TUESDAY_NIGHT
+	checkflag ENGINE_WADE_TUESDAY
 	iftrue .next
 	farscall PhoneScript_Random2
 	ifequal 0, WadeWantsBattle2
@@ -72,8 +70,8 @@ WadePhoneCallerScript:
 .ContestToday:
 	farsjump PhoneScript_BugCatchingContest
 
-WadeTuesdayNight:
-	setflag ENGINE_WADE_TUESDAY_NIGHT
+WadeTuesday:
+	setflag ENGINE_WADE_TUESDAY
 
 WadeWantsBattle2:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_31

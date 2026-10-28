@@ -3,14 +3,12 @@ DanaPhoneCalleeScript:
 	checkflag ENGINE_DANA_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_DANA_THURSDAY_NIGHT
+	checkflag ENGINE_DANA_THURSDAY
 	iftrue .NotThursday
+	readvar VAR_WEEKDAY
+	ifequal THURSDAY, DanaThursday
 	checkflag ENGINE_DANA_HAS_THUNDERSTONE
 	iftrue .HasThunderstone
-	readvar VAR_WEEKDAY
-	ifnotequal THURSDAY, .NotThursday
-	checktime EVE | NITE
-	iftrue DanaThursdayNight
 
 .NotThursday:
 	farsjump DanaHangUpScript
@@ -41,7 +39,7 @@ DanaPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_DANA_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_DANA_THURSDAY_NIGHT
+	checkflag ENGINE_DANA_THURSDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, DanaWantsBattle
@@ -51,8 +49,8 @@ DanaPhoneCallerScript:
 	ifequal 0, DanaFoundRare
 	farsjump Phone_GenericCall_Female
 
-DanaThursdayNight:
-	setflag ENGINE_DANA_THURSDAY_NIGHT
+DanaThursday:
+	setflag ENGINE_DANA_THURSDAY
 
 DanaWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_38

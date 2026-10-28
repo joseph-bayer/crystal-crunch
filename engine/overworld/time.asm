@@ -127,7 +127,7 @@ rept 3
 	ld [hli], a
 endr
 	ld [hl], a
-	ld hl, wDailyPhoneTimeOfDayFlags
+	ld hl, wDailyPhoneRematchDayFlags
 rept 3
 	ld [hli], a
 endr

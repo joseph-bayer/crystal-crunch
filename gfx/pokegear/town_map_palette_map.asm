@@ -26,4 +26,4 @@ ENDM
 	townmappals CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     CITY
 	townmappals CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     BORDER
 	townmappals CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     CITY,     CITY
-	townmappals BORDER,   BORDER,   BORDER,   BORDER,   BORDER,   BORDER,   BORDER,   BORDER
+	townmappals BORDER,   BORDER,   BORDER,   BORDER,   BORDER,   BORDER,   POI,      POI      ; the contact list's VS icon

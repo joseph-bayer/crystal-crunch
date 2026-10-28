@@ -3,14 +3,12 @@ JosePhoneCalleeScript:
 	checkflag ENGINE_JOSE_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_JOSE_SATURDAY_NIGHT
+	checkflag ENGINE_JOSE_SATURDAY
 	iftrue .NotSaturday
+	readvar VAR_WEEKDAY
+	ifequal SATURDAY, JoseSaturday
 	checkflag ENGINE_JOSE_HAS_STAR_PIECE
 	iftrue .HasItem
-	readvar VAR_WEEKDAY
-	ifnotequal SATURDAY, .NotSaturday
-	checktime EVE | NITE
-	iftrue JoseSaturdayNight
 
 .NotSaturday:
 	farsjump JoseHangUpScript
@@ -34,7 +32,7 @@ JosePhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_JOSE_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_JOSE_SATURDAY_NIGHT
+	checkflag ENGINE_JOSE_SATURDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, JoseWantsBattle
@@ -44,8 +42,8 @@ JosePhoneCallerScript:
 	ifequal 0, JoseFoundRare
 	farsjump Phone_GenericCall_Male
 
-JoseSaturdayNight:
-	setflag ENGINE_JOSE_SATURDAY_NIGHT
+JoseSaturday:
+	setflag ENGINE_JOSE_SATURDAY
 
 JoseWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_27

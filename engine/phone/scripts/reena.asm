@@ -3,12 +3,10 @@ ReenaPhoneCalleeScript:
 	checkflag ENGINE_REENA_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_REENA_SUNDAY_MORNING
+	checkflag ENGINE_REENA_SUNDAY
 	iftrue .NotSunday
 	readvar VAR_WEEKDAY
-	ifnotequal SUNDAY, .NotSunday
-	checktime MORN
-	iftrue ReenaSundayMorning
+	ifequal SUNDAY, ReenaSunday
 
 .NotSunday:
 	farsjump ReenaForwardScript
@@ -22,7 +20,7 @@ ReenaPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Female
 	checkflag ENGINE_REENA_READY_FOR_REMATCH
 	iftrue .Generic
-	checkflag ENGINE_REENA_SUNDAY_MORNING
+	checkflag ENGINE_REENA_SUNDAY
 	iftrue .Generic
 	farscall PhoneScript_Random2
 	ifequal 0, ReenaWantsBattle
@@ -30,8 +28,8 @@ ReenaPhoneCallerScript:
 .Generic:
 	farsjump Phone_GenericCall_Female
 
-ReenaSundayMorning:
-	setflag ENGINE_REENA_SUNDAY_MORNING
+ReenaSunday:
+	setflag ENGINE_REENA_SUNDAY
 
 ReenaWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_27

@@ -3,12 +3,10 @@ LizPhoneCalleeScript:
 	checkflag ENGINE_LIZ_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_LIZ_THURSDAY_AFTERNOON
+	checkflag ENGINE_LIZ_THURSDAY
 	iftrue .NotThursday
 	readvar VAR_WEEKDAY
-	ifnotequal THURSDAY, .NotThursday
-	checktime DAY
-	iftrue LizThursdayAfternoon
+	ifequal THURSDAY, LizThursday
 
 .NotThursday:
 	special RandomPhoneMon
@@ -22,7 +20,7 @@ LizPhoneCallerScript:
 	gettrainername STRING_BUFFER_3, PICNICKER, LIZ1
 	checkflag ENGINE_LIZ_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_LIZ_THURSDAY_AFTERNOON
+	checkflag ENGINE_LIZ_THURSDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, .WantsBattle
@@ -39,8 +37,8 @@ LizPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Female
 	sjump LizWantsBattle
 
-LizThursdayAfternoon:
-	setflag ENGINE_LIZ_THURSDAY_AFTERNOON
+LizThursday:
+	setflag ENGINE_LIZ_THURSDAY
 
 LizWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_32

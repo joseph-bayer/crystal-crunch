@@ -3,12 +3,10 @@ ToddPhoneCalleeScript:
 	checkflag ENGINE_TODD_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_TODD_SATURDAY_MORNING
+	checkflag ENGINE_TODD_SATURDAY
 	iftrue .NotSaturday
 	readvar VAR_WEEKDAY
-	ifnotequal SATURDAY, .NotSaturday
-	checktime MORN
-	iftrue ToddSaturdayMorning
+	ifequal SATURDAY, ToddSaturday
 
 .NotSaturday:
 	checkflag ENGINE_GOLDENROD_DEPT_STORE_SALE_IS_ON
@@ -27,7 +25,7 @@ ToddPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Male
 	checkflag ENGINE_TODD_READY_FOR_REMATCH
 	iftrue .TryForSale
-	checkflag ENGINE_TODD_SATURDAY_MORNING
+	checkflag ENGINE_TODD_SATURDAY
 	iftrue .TryForSale
 	farscall PhoneScript_Random2
 	ifequal 0, ToddWantsBattle
@@ -43,8 +41,8 @@ ToddPhoneCallerScript:
 	ifequal 0, ToddFoundRare
 	farsjump Phone_GenericCall_Male
 
-ToddSaturdayMorning:
-	setflag ENGINE_TODD_SATURDAY_MORNING
+ToddSaturday:
+	setflag ENGINE_TODD_SATURDAY
 
 ToddWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_34

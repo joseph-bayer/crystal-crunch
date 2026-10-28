@@ -3,12 +3,10 @@ BethPhoneCalleeScript:
 	checkflag ENGINE_BETH_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_BETH_FRIDAY_AFTERNOON
+	checkflag ENGINE_BETH_FRIDAY
 	iftrue .NotFriday
 	readvar VAR_WEEKDAY
-	ifnotequal FRIDAY, .NotFriday
-	checktime DAY
-	iftrue BethFridayAfternoon
+	ifequal FRIDAY, BethFriday
 
 .NotFriday:
 	farsjump BethHangUpScript
@@ -22,7 +20,7 @@ BethPhoneCallerScript:
 	farscall PhoneScript_GreetPhone_Female
 	checkflag ENGINE_BETH_READY_FOR_REMATCH
 	iftrue .Generic
-	checkflag ENGINE_BETH_FRIDAY_AFTERNOON
+	checkflag ENGINE_BETH_FRIDAY
 	iftrue .Generic
 	farscall PhoneScript_Random2
 	ifequal 0, BethWantsBattle
@@ -30,8 +28,8 @@ BethPhoneCallerScript:
 .Generic:
 	farsjump Phone_GenericCall_Female
 
-BethFridayAfternoon:
-	setflag ENGINE_BETH_FRIDAY_AFTERNOON
+BethFriday:
+	setflag ENGINE_BETH_FRIDAY
 
 BethWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_26

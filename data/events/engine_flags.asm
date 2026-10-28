@@ -167,30 +167,30 @@ EngineFlags:
 	engine_flag wDailyPhoneItemFlags, 8 ; tiffany has pink bow
 	engine_flag wDailyPhoneItemFlags, 9 ; wilton has item (see EVENT_WILTON_HAS_*** in constants/event_flags.asm)
 
-	engine_flag wDailyPhoneTimeOfDayFlags,  0 ; jack
-	engine_flag wDailyPhoneTimeOfDayFlags,  1 ; huey
-	engine_flag wDailyPhoneTimeOfDayFlags,  2 ; gaven
-	engine_flag wDailyPhoneTimeOfDayFlags,  3 ; beth
-	engine_flag wDailyPhoneTimeOfDayFlags,  4 ; jose
-	engine_flag wDailyPhoneTimeOfDayFlags,  5 ; reena
-	engine_flag wDailyPhoneTimeOfDayFlags,  6 ; joey
-	engine_flag wDailyPhoneTimeOfDayFlags,  7 ; wade
-	engine_flag wDailyPhoneTimeOfDayFlags,  8 ; ralph
-	engine_flag wDailyPhoneTimeOfDayFlags,  9 ; liz
-	engine_flag wDailyPhoneTimeOfDayFlags, 10 ; anthony
-	engine_flag wDailyPhoneTimeOfDayFlags, 11 ; todd
-	engine_flag wDailyPhoneTimeOfDayFlags, 12 ; gina
-	engine_flag wDailyPhoneTimeOfDayFlags, 13 ; arnie
-	engine_flag wDailyPhoneTimeOfDayFlags, 14 ; alan
-	engine_flag wDailyPhoneTimeOfDayFlags, 15 ; dana
-	engine_flag wDailyPhoneTimeOfDayFlags, 16 ; chad
-	engine_flag wDailyPhoneTimeOfDayFlags, 17 ; tully
-	engine_flag wDailyPhoneTimeOfDayFlags, 18 ; brent
-	engine_flag wDailyPhoneTimeOfDayFlags, 19 ; tiffany
-	engine_flag wDailyPhoneTimeOfDayFlags, 20 ; vance
-	engine_flag wDailyPhoneTimeOfDayFlags, 21 ; wilton
-	engine_flag wDailyPhoneTimeOfDayFlags, 22 ; parry
-	engine_flag wDailyPhoneTimeOfDayFlags, 23 ; erin
+	engine_flag wDailyPhoneRematchDayFlags,  0 ; jack
+	engine_flag wDailyPhoneRematchDayFlags,  1 ; huey
+	engine_flag wDailyPhoneRematchDayFlags,  2 ; gaven
+	engine_flag wDailyPhoneRematchDayFlags,  3 ; beth
+	engine_flag wDailyPhoneRematchDayFlags,  4 ; jose
+	engine_flag wDailyPhoneRematchDayFlags,  5 ; reena
+	engine_flag wDailyPhoneRematchDayFlags,  6 ; joey
+	engine_flag wDailyPhoneRematchDayFlags,  7 ; wade
+	engine_flag wDailyPhoneRematchDayFlags,  8 ; ralph
+	engine_flag wDailyPhoneRematchDayFlags,  9 ; liz
+	engine_flag wDailyPhoneRematchDayFlags, 10 ; anthony
+	engine_flag wDailyPhoneRematchDayFlags, 11 ; todd
+	engine_flag wDailyPhoneRematchDayFlags, 12 ; gina
+	engine_flag wDailyPhoneRematchDayFlags, 13 ; arnie
+	engine_flag wDailyPhoneRematchDayFlags, 14 ; alan
+	engine_flag wDailyPhoneRematchDayFlags, 15 ; dana
+	engine_flag wDailyPhoneRematchDayFlags, 16 ; chad
+	engine_flag wDailyPhoneRematchDayFlags, 17 ; tully
+	engine_flag wDailyPhoneRematchDayFlags, 18 ; brent
+	engine_flag wDailyPhoneRematchDayFlags, 19 ; tiffany
+	engine_flag wDailyPhoneRematchDayFlags, 20 ; vance
+	engine_flag wDailyPhoneRematchDayFlags, 21 ; wilton
+	engine_flag wDailyPhoneRematchDayFlags, 22 ; parry
+	engine_flag wDailyPhoneRematchDayFlags, 23 ; erin
 
 	engine_flag wPlayerSpriteSetupFlags, PLAYERSPRITESETUP_FEMALE_TO_MALE_F
 

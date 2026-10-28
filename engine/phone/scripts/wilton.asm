@@ -3,14 +3,12 @@ WiltonPhoneCalleeScript:
 	checkflag ENGINE_WILTON_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Male
-	checkflag ENGINE_WILTON_THURSDAY_MORNING
+	checkflag ENGINE_WILTON_THURSDAY
 	iftrue .NotThursday
+	readvar VAR_WEEKDAY
+	ifequal THURSDAY, WiltonThursday
 	checkflag ENGINE_WILTON_HAS_ITEM
 	iftrue .HasItem
-	readvar VAR_WEEKDAY
-	ifnotequal THURSDAY, .NotThursday
-	checktime MORN
-	iftrue WiltonThursdayMorning
 
 .NotThursday:
 	farsjump WiltonHaventFoundAnythingScript
@@ -34,7 +32,7 @@ WiltonPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_WILTON_READY_FOR_REMATCH
 	iftrue .GenericCall
-	checkflag ENGINE_WILTON_THURSDAY_MORNING
+	checkflag ENGINE_WILTON_THURSDAY
 	iftrue .GenericCall
 	farscall PhoneScript_Random2
 	ifequal 0, WiltonWantsBattle
@@ -42,8 +40,8 @@ WiltonPhoneCallerScript:
 .GenericCall:
 	farsjump Phone_GenericCall_Male
 
-WiltonThursdayMorning:
-	setflag ENGINE_WILTON_THURSDAY_MORNING
+WiltonThursday:
+	setflag ENGINE_WILTON_THURSDAY
 
 WiltonWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_44

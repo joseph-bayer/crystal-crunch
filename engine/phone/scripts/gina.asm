@@ -3,14 +3,12 @@ GinaPhoneCalleeScript:
 	checkflag ENGINE_GINA_READY_FOR_REMATCH
 	iftrue .WantsBattle
 	farscall PhoneScript_AnswerPhone_Female
-	checkflag ENGINE_GINA_SUNDAY_AFTERNOON
+	checkflag ENGINE_GINA_SUNDAY
 	iftrue .NotSunday
+	readvar VAR_WEEKDAY
+	ifequal SUNDAY, GinaSunday
 	checkflag ENGINE_GINA_HAS_LEAF_STONE
 	iftrue .HasLeafStone
-	readvar VAR_WEEKDAY
-	ifnotequal SUNDAY, .NotSunday
-	checktime DAY
-	iftrue GinaSundayDay
 
 .NotSunday:
 	checkflag ENGINE_ROCKETS_IN_RADIO_TOWER
@@ -48,7 +46,7 @@ GinaPhoneCallerScript:
 .NoItem:
 	checkflag ENGINE_GINA_READY_FOR_REMATCH
 	iftrue .Leftover
-	checkflag ENGINE_GINA_SUNDAY_AFTERNOON
+	checkflag ENGINE_GINA_SUNDAY
 	iftrue .Leftover
 	farscall PhoneScript_Random2
 	ifequal 0, GinaWantsBattle
@@ -56,8 +54,8 @@ GinaPhoneCallerScript:
 .Leftover:
 	farsjump Phone_GenericCall_Female
 
-GinaSundayDay:
-	setflag ENGINE_GINA_SUNDAY_AFTERNOON
+GinaSunday:
+	setflag ENGINE_GINA_SUNDAY
 
 GinaWantsBattle:
 	getlandmarkname STRING_BUFFER_5, LANDMARK_ROUTE_34
