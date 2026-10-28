@@ -7,7 +7,8 @@ if DEF(_DEBUG)
 
 DebugStoryScript::
 ; The Scientist: ELM's lab (the beasts menu's FORCE SHINY covers the starters too), the beasts and
-; Unown, the Open League, swarms, and warps (the Rocket Base, Cerulean Cave 1F).
+; Unown, the Open League, swarms, warps (the Rocket Base, Cerulean Cave 1F), and Kurt's two places
+; at home.
 	faceplayer
 	opentext
 	writetext DebugStoryText
@@ -19,6 +20,7 @@ DebugStoryScript::
 	ifequal 3, .EliteFourLineup
 	ifequal 4, .Swarms
 	ifequal 5, .Warps
+	ifequal 6, .Kurt
 	closetext
 	end
 
@@ -67,20 +69,61 @@ DebugStoryScript::
 	warp CERULEAN_CAVE_1F, 24, 16
 	end
 
+.Kurt:
+; Kurt's own flags only: the Rockets, Azalea's Slowpokes and the rival scene stay as they are.
+; KurtsHouseKurtCallback places him the next time the house loads.
+	loadmenu .KurtMenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .KurtFrontRoom
+	ifequal 2, .KurtMakingBalls
+	closetext
+	end
+
+.KurtFrontRoom:
+	setevent EVENT_CLEARED_SLOWPOKE_WELL
+	clearflag ENGINE_KURT_MAKING_BALLS
+	writetext DebugKurtFrontRoomText
+	waitbutton
+	closetext
+	end
+
+.KurtMakingBalls:
+	setevent EVENT_CLEARED_SLOWPOKE_WELL
+	setflag ENGINE_KURT_MAKING_BALLS
+	writetext DebugKurtMakingBallsText
+	waitbutton
+	closetext
+	end
+
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 14, 11
+	menu_coords 0, 0, 14, 15
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 6 ; items
+	db 7 ; items
 	db "ELM'S LAB@"
 	db "BEASTS@"
 	db "E4 LINEUP@"
 	db "SWARMS@"
 	db "WARPS@"
+	db "KURT@"
+	db "CANCEL@"
+
+.KurtMenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 15, 7
+	dw .KurtMenuData
+	db 1 ; default option
+
+.KurtMenuData:
+	db STATICMENU_CURSOR ; flags
+	db 3 ; items
+	db "FRONT ROOM@"
+	db "MAKING BALLS@"
 	db "CANCEL@"
 
 .WarpsMenuHeader:
@@ -232,6 +275,18 @@ DebugToolsScript::
 
 DebugStoryText:
 	text "DEBUG: story."
+	done
+
+DebugKurtFrontRoomText:
+	text "DEBUG: KURT is"
+	line "home, in the front"
+	cont "room."
+	done
+
+DebugKurtMakingBallsText:
+	text "DEBUG: KURT is"
+	line "making BALLS until"
+	cont "tomorrow."
 	done
 
 DebugBattlesText:

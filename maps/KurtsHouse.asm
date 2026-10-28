@@ -4,6 +4,8 @@
 	const KURTSHOUSE_SLOWPOKE
 	const KURTSHOUSE_KURT2
 	const KURTSHOUSE_TWIN2
+	const KURTSHOUSE_SUNKERN2
+	const KURTSHOUSE_SUNKERN1
 
 	const_def 1 ; locked Pokémon ID table entries, used for species checking
 	const KURTSHOUSE_INDEX_RED_APRICORN
@@ -42,6 +44,7 @@ KurtsHouseKurtCallback:
 	appear KURTSHOUSE_KURT1
 	disappear KURTSHOUSE_TWIN2
 	appear KURTSHOUSE_TWIN1
+	appear KURTSHOUSE_SUNKERN1
 	endcallback
 
 .MakingBalls:
@@ -49,6 +52,7 @@ KurtsHouseKurtCallback:
 	appear KURTSHOUSE_KURT2
 	disappear KURTSHOUSE_TWIN1
 	appear KURTSHOUSE_TWIN2
+	disappear KURTSHOUSE_SUNKERN1 ; the other Sunkern shares KURT2's flag
 .Done:
 	endcallback
 
@@ -445,6 +449,24 @@ KurtsHouseSlowpoke:
 	closetext
 	end
 
+KurtsHouseSunkern1:
+	opentext
+	writetext KurtsHouseSunkernText
+	cry SUNKERN
+	waitbutton
+	closetext
+	end
+
+KurtsHouseSunkern2:
+	opentext
+	writetext KurtsHouseSunkernText
+	cry SUNKERN
+	promptbutton
+	writetext KurtsHouseSunkernWatchingText
+	waitbutton
+	closetext
+	end
+
 KurtsHouseOakPhoto:
 	jumptext KurtsHouseOakPhotoText
 
@@ -692,6 +714,15 @@ KurtsHouseSlowpokeText:
 	line "Yawn?"
 	done
 
+KurtsHouseSunkernText:
+	text "SUNKERN: Kern!"
+	done
+
+KurtsHouseSunkernWatchingText:
+	text "It's watching KURT"
+	line "work on APRICORNS."
+	done
+
 KurtsHouseOakPhotoText:
 	text "…A young PROF."
 	line "OAK?"
@@ -727,3 +758,5 @@ KurtsHouse_MapEvents:
 	object_event  6,  3, SPRITE_SLOWPOKE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, KurtsHouseSlowpoke, EVENT_KURTS_HOUSE_SLOWPOKE
 	object_event 14,  3, SPRITE_KURT, SPRITEMOVEDATA_STANDING_UP, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Kurt2, EVENT_KURTS_HOUSE_KURT_2
 	object_event 11,  4, SPRITE_TWIN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, KurtsGranddaughter2, EVENT_KURTS_HOUSE_GRANDDAUGHTER_2
+	object_event 15,  3, SPRITE_OW_MON_1, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, KurtsHouseSunkern2, EVENT_KURTS_HOUSE_KURT_2
+	object_event  2,  2, SPRITE_OW_MON_1, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, KurtsHouseSunkern1, EVENT_KURTS_HOUSE_SUNKERN_1

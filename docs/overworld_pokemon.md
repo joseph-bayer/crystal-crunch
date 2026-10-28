@@ -52,8 +52,8 @@ places:
 
 1. **A rolled encounter**, if this map has one in that slot — see
    [wandering wild Pokémon](#wandering-wild-pokémon).
-2. **`data/maps/overworld_mons.asm`**, a sparse table keyed by map, for the fixed NPCs. 27 maps,
-   32 entries, about 200 bytes. It is scanned rather than cached, which keeps it out of WRAM and
+2. **`data/maps/overworld_mons.asm`**, a sparse table keyed by map, for the fixed NPCs. 54 maps,
+   61 entries, about 350 bytes. It is scanned rather than cached, which keeps it out of WRAM and
    therefore out of the save.
 
 The four slots fill in a fixed order — a map's static entries first, then its grass slots, then

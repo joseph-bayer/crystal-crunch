@@ -88,6 +88,9 @@ OverworldMonObjects:
 	ow_mon_map KOGAS_ROOM
 	ow_mon CROBAT,     PLAIN_FORM
 
+	ow_mon_map KURTS_HOUSE
+	ow_mon SUNKERN,    PLAIN_FORM
+
 	ow_mon_map LANCES_ROOM
 	ow_mon DRAGONITE,  PLAIN_FORM
 

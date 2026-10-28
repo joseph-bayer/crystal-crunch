@@ -1533,6 +1533,8 @@
 	const EVENT_SHIPWRECK_DIG_SPOT_8
 	const EVENT_SHIPWRECK_DIG_SPOT_9
 	const EVENT_SHIPWRECK_DIG_SPOT_10
+; Johto people
+	const EVENT_KURTS_HOUSE_SUNKERN_1 ; hidden while KURT2 is at his machine
 
 ; Ported Gen 1 maps (gen1-map-porter)
 	const EVENT_CERULEAN_CAVE_1F_HIDDEN_PP_UP
