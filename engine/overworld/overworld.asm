@@ -79,7 +79,18 @@ RefreshSprites::
 	ldh [hUsedSpriteIndex], a
 	call ReloadSpriteIndex
 	call LoadMiscTiles
+	call RefreshFollowerPalette
 	jmp PopBCDEHL
+
+RefreshFollowerPalette:
+; The follower's mon can change while its object stays out -- a Day-Care deposit, a PC release, a
+; trade -- and ReloadSpriteIndex only redraws its graphics. Work its colors out again;
+; StoreFollowerPalette frees the loaded copy when they changed, so the scan reloads them.
+	ld a, [wObject1Sprite]
+	cp SPRITE_FOLLOWER
+	ret nz
+	call GetSpritePalette
+	farjp CheckForUsedObjPals
 
 ReloadSpriteIndex::
 ; Reloads sprites using hUsedSpriteIndex.
@@ -730,7 +741,7 @@ StoreFollowerPalette:
 	ld [hli], a
 	ld a, d
 	ld [hl], a
-	; fallthrough
+	jr InvalidateFollowerPalette
 
 ClaimOverworldMonPalette::
 ; Hand back the PAL_OW_MON_* index carrying these two colors on this map, claiming a fresh one if
