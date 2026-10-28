@@ -985,11 +985,53 @@ DoRepelStep:
 	ld [wRepelEffect], a
 	ret nz
 
+	; offer another of the same Repel if the bag still has one
+	call CheckRepelTypeInBag
 	ld a, BANK(RepelWoreOffScript)
 	ld hl, RepelWoreOffScript
+	jr nc, .got_script
+	assert BANK(UseAnotherRepelScript) == BANK(RepelWoreOffScript)
+	ld hl, UseAnotherRepelScript
+.got_script
 	call CallScript
 	scf
 	ret
+
+CheckRepelTypeInBag:
+; Puts the Repel last used in wCurItem.
+; Returns carry if the bag still holds one.
+	call LoadRepelTypeItem
+	ret nc
+	ld hl, wNumItems
+	jmp CheckItem
+
+LoadRepelTypeItem::
+; Puts the Repel last used in wCurItem and returns carry.
+; Returns no carry if none is recorded.
+	ld a, [wRepelType]
+	and REPEL_TYPE_MASK
+	ret z
+	dec a
+	add a
+	ld e, a
+	ld d, 0
+	ld hl, RepelTypeItems
+	add hl, de
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	call GetItemIDFromIndex
+	ld [wCurItem], a
+	scf
+	ret
+
+RepelTypeItems:
+; item indexes, in REPEL_TYPE_* order from REPEL_TYPE_REPEL
+	table_width 2
+	dw REPEL
+	dw SUPER_REPEL
+	dw MAX_REPEL
+	assert_table_length NUM_REPEL_TYPES
 
 DoPlayerEvent:
 	ld a, [wScriptRunning]

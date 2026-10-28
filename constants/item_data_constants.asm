@@ -50,6 +50,16 @@ DEF MAX_PC_ITEMS  EQU 50
 
 DEF MAX_ITEM_STACK EQU 99
 
+; wRepelType values (only the bits in REPEL_TYPE_MASK; the rest of the byte is free)
+	const_def
+	const REPEL_TYPE_NONE        ; 0
+	const REPEL_TYPE_REPEL       ; 1
+	const REPEL_TYPE_SUPER_REPEL ; 2
+	const REPEL_TYPE_MAX_REPEL   ; 3
+DEF NUM_REPEL_TYPES EQU const_value - 1
+DEF REPEL_TYPE_MASK EQU %00000011
+	assert NUM_REPEL_TYPES <= REPEL_TYPE_MASK, "REPEL_TYPE_MASK is too small"
+
 ; mail
 DEF MAIL_LINE_LENGTH      EQU $10
 DEF MAIL_MSG_LENGTH       EQU $20

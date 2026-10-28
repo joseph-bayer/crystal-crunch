@@ -2099,15 +2099,15 @@ EscapeRopeEffect:
 	ret
 
 SuperRepelEffect:
-	ld b, 200
+	lb bc, 200, REPEL_TYPE_SUPER_REPEL
 	jr UseRepel
 
 MaxRepelEffect:
-	ld b, 250
+	lb bc, 250, REPEL_TYPE_MAX_REPEL
 	jr UseRepel
 
 RepelEffect:
-	ld b, 100
+	lb bc, 100, REPEL_TYPE_REPEL
 
 UseRepel:
 	ld a, [wRepelEffect]
@@ -2117,6 +2117,11 @@ UseRepel:
 
 	ld a, b
 	ld [wRepelEffect], a
+	; record which Repel this is, keeping the byte's other bits
+	ld a, [wRepelType]
+	and ~REPEL_TYPE_MASK
+	or c
+	ld [wRepelType], a
 	jmp UseItemText
 
 RepelUsedEarlierIsStillInEffectText:

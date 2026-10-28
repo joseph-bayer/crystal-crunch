@@ -3019,6 +3019,7 @@ wLuckyNumberShowFlag:: db
 wLuckyIDNumber:: dw
 
 wRepelEffect:: db ; If a Repel is in use, it contains the nr of steps it's still active
+wRepelType:: db ; bits 0-1: which Repel is in use (REPEL_TYPE_* constants); bits 2-7 are free
 wBikeStep:: dw
 wKurtApricornQuantity:: db
 

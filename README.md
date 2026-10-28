@@ -185,6 +185,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 ### Misc.
 - Kurt makes Apricorn balls instantly, and can make several at once.
+- When a Repel wears off and you have another of the same kind, you're asked whether to use another.
 - Turn around after healing in the Pokémon Center so you don't accidentally heal again.
 - Minor update to Goldenrod's layout so it's easier to get to the underground and the bike shop.
 - The Bug Catching Contest is rebalanced, and includes overworld encounters.
@@ -289,6 +290,7 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - The Hidden Power stats page follows the [Add a fourth stats page](https://github.com/pret/pokecrystal/wiki/Add-a-fourth-stats-page) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki.
 - Trainers offering their number right after battle follows the [Improve the trainer rematch system](https://github.com/pret/pokecrystal/wiki/Improve-the-trainer-rematch-system) tutorial by Grate Oracle Lewot from the pret/pokecrystal wiki.
 - Kurt making Apricorn balls instantly follows the [Kurt Makes Pokeballs Instantly](https://github.com/pret/pokecrystal/wiki/Kurt-Makes-Pokeballs-Instantly) tutorial by [Nayru62](https://github.com/Nayru62) from the pret/pokecrystal wiki (adapted from [Polished Crystal](https://github.com/Rangi42/polishedcrystal)), with the fade back in from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
+- Being asked to use another Repel when one wears off follows the [Automatically reuse Repel](https://github.com/pret/pokecrystal/wiki/Automatically-reuse-Repel) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki, with later edits by TOMsk1992 and DamienDoury, adapted for 16-bit items.
 
 ### Polished Crystal
 Ported from or based on [Polished Crystal](https://github.com/Rangi42/polishedcrystal):
