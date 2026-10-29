@@ -8,6 +8,7 @@
 	const ROUTE36_ARTHUR
 	const ROUTE36_FLORIA
 	const ROUTE36_SUICUNE
+	const ROUTE36_SUDOWOODO_RESPAWN
 	const ROUTE36_WILD_MON_1
 	const ROUTE36_WILD_MON_2
 
@@ -83,7 +84,27 @@ WateredWeirdTreeScript:: ; export (for when you use Squirtbottle from pack)
 	disappear ROUTE36_WEIRD_TREE
 	variablesprite SPRITE_WEIRD_TREE, SPRITE_TWIN
 	reloadmapafterbattle
+Route36SudowoodoCaughtScript:
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_SUDOWOODO
+.NotCaught:
 	end
+
+Route36SudowoodoRespawnScript:
+; Back after the Elite Four, as its own object: SPRITE_WEIRD_TREE now draws Route 37's twins
+	waitsfx
+	playsound SFX_SANDSTORM
+	applymovement ROUTE36_SUDOWOODO_RESPAWN, SudowoodoShakeMovement
+	opentext
+	writetext Route36SudowoodoRespawnText
+	waitbutton
+	closetext
+	loadwildmon SUDOWOODO, 20
+	startbattle
+	disappear ROUTE36_SUDOWOODO_RESPAWN
+	reloadmapafterbattle
+	sjump Route36SudowoodoCaughtScript
 
 DidntUseSquirtbottleScript:
 	closetext
@@ -414,6 +435,11 @@ UsedSquirtbottleText:
 	line "SQUIRTBOTTLE."
 	done
 
+Route36SudowoodoRespawnText:
+	text "The weird tree"
+	line "attacked!"
+	done
+
 SudowoodoAttackedText:
 	text "The weird tree"
 	line "doesn't like the"
@@ -665,6 +691,7 @@ Route36_MapEvents:
 	object_event 46,  6, SPRITE_YOUNGSTER, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ArthurScript, EVENT_ROUTE_36_ARTHUR_OF_THURSDAY
 	object_event 33, 12, SPRITE_LASS, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route36FloriaScript, EVENT_FLORIA_AT_SUDOWOODO
 	object_event 21,  6, SPRITE_SUICUNE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_SAW_SUICUNE_ON_ROUTE_36
+	object_event 35,  9, SPRITE_SUDOWOODO, SPRITEMOVEDATA_SUDOWOODO, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route36SudowoodoRespawnScript, EVENT_ROUTE_36_SUDOWOODO_RESPAWN
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors, and the event flag is -1 -- whether one is standing

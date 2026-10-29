@@ -482,7 +482,7 @@
 	const EVENT_ROUTE_10_NORTH_ZAPDOS
 	const EVENT_ROUTE_20_ARTICUNO
 	const EVENT_VICTORY_ROAD_MOLTRES
-; Set when the legendary is caught (not knocked out or fled), for a future respawn after the E4
+; Set when the legendary is caught (not knocked out or fled); a caught one never respawns after the E4
 	const EVENT_CAUGHT_ARTICUNO
 	const EVENT_CAUGHT_ZAPDOS
 	const EVENT_CAUGHT_MOLTRES
@@ -491,6 +491,17 @@
 	const EVENT_CAUGHT_SUICUNE
 	const EVENT_CAUGHT_RAIKOU
 	const EVENT_CAUGHT_ENTEI
+; The other one-offs that respawn after the E4 (RespawnLegendariesScript)
+	const EVENT_FOUGHT_CELEBI
+	const EVENT_CAUGHT_CELEBI
+	const EVENT_CAUGHT_SUDOWOODO
+	const EVENT_ROUTE_36_SUDOWOODO_RESPAWN
+	const EVENT_CAUGHT_SNORLAX
+	const EVENT_CAUGHT_APRICORN_SNORLAX
+	const EVENT_VERMILION_SNORLAX_RESPAWN ; the respawned Vermilion Snorlax, on Route 11
+	const EVENT_CAUGHT_RED_GYARADOS
+	const EVENT_CAUGHT_ROCKET_ELECTRODE ; any one of the three
+	const EVENT_CELEBI_RETURNS ; the Ilex shrine offers a rematch
 	const EVENT_BEAT_RIVAL_IN_MT_MOON
 	const EVENT_MET_BILLS_GRANDPA
 	const EVENT_SHOWED_LICKITUNG_TO_BILLS_GRANDPA
@@ -532,7 +543,7 @@
 	const EVENT_GOT_ODD_EGG
 	const_skip ; unused
 	const EVENT_GOT_GS_BALL_FROM_GOLDENROD_POKEMON_CENTER
-; Unused: next 167 events
+; Unused: next 143 events
 
 	const_next 1000
 ; Trainer flags

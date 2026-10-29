@@ -723,6 +723,7 @@ SECTION "Crystal Events", ROMX
 
 INCLUDE "engine/events/battle_tower/load_trainer.asm"
 INCLUDE "engine/events/odd_egg.asm"
+INCLUDE "engine/events/legendary_respawn.asm"
 
 
 SECTION "Newbox", ROMX

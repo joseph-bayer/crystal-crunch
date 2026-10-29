@@ -95,6 +95,14 @@ RedGyarados:
 	disappear LAKEOFRAGE_GYARADOS
 .NotBeaten:
 	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_RED_GYARADOS
+.NotCaught:
+; The first battle always comes before the hideout is cleared, so after that this is a rematch
+; after the Elite Four: no second Red Scale, and Lance stays away.
+	checkevent EVENT_CLEARED_ROCKET_HIDEOUT
+	iftrue .Rematch
 	opentext
 	giveitem RED_SCALE
 	waitsfx
@@ -105,6 +113,7 @@ RedGyarados:
 	closetext
 	setscene 0 ; Lake of Rage does not have a scene variable
 	appear LAKEOFRAGE_LANCE
+.Rematch:
 	end
 
 LakeOfRageGrampsScript:

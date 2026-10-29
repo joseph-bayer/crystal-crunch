@@ -456,6 +456,7 @@ one of its grass slots for the visit, and the battle against it is a roamer batt
 | Roamer battle from a slot | `IsOverworldMonBattleBeast` in `SetUpOverworldMonBattle`; `EndOverworldMonBattle` forgets the slot |
 | Moving, and holding still after battles | `UpdateRoamMons` / `UpdateRoamMonsAfterBattle` in `engine/overworld/wildmons.asm` |
 | Shininess rolls | `RollBeastsAtBurnedTower`, `RollTinTowerSuicuneShiny`, `RollLegendaryShiny` in `engine/overworld/wildmons.asm` |
+| Release, and the respawn after the Elite Four | `InitRoamRaikou` / `InitRoamEntei` in `engine/overworld/wildmons.asm`; `RespawnRoamingBeasts` in `engine/events/legendary_respawn.asm` refills a knocked-out, uncaught beast at L50 with a new shiny roll |
 | Beast sprites in their own colors | `_GetSpritePalette.GetBeast` in `engine/overworld/overworld.asm` |
 | Pokégear map icons | `PokegearMap_InitMonIcons` in `engine/pokegear/pokegear.asm`, icon slots 3 and 4 |
 | Debug tools | the Super Nerd in the player's room, debug builds only (`PlayersHouseDebugBeastsScript`) |

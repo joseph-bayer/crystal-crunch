@@ -61,6 +61,10 @@ VermilionSnorlax:
 	disappear VERMILIONCITY_BIG_SNORLAX
 	setevent EVENT_FOUGHT_SNORLAX
 	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_SNORLAX
+.NotCaught:
 	end
 
 VermilionGymBadgeGuy:

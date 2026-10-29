@@ -6,6 +6,7 @@ the game's own copy of the screen (wTilemap) and its variables are exact."""
 
 import io
 import os
+import re
 from pathlib import Path
 
 from pyboy import PyBoy
@@ -183,10 +184,12 @@ class Game:
 		raise HarnessTimeout("%r never appeared on screen. The screen:\n%s" % (text, self.screen_text()))
 
 	def choose(self, item, tries=20):
-		"""Move a menu's cursor to the row showing `item`, then press A."""
+		"""Move a menu's cursor to the row showing `item`, then press A. `item` must stand on its own,
+		not inside a longer word: "NO" is not the NO in "SNORLAX"."""
+		alone = re.compile(r"(?<![A-Za-z])%s(?![A-Za-z])" % re.escape(item))
 		for _ in range(tries):
 			lines = self.screen_lines()
-			target = next((row for row, line in enumerate(lines) if item in line), None)
+			target = next((row for row, line in enumerate(lines) if alone.search(line)), None)
 			cursor = next((row for row, line in enumerate(lines) if CURSOR in line), None)
 			if target is None or cursor is None:
 				self.wait(10)

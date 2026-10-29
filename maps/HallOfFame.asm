@@ -54,6 +54,7 @@ HallOfFameEnterScript:
 	setevent EVENT_OLIVINE_PORT_SPRITES_BEFORE_HALL_OF_FAME
 	clearevent EVENT_OLIVINE_PORT_SPRITES_AFTER_HALL_OF_FAME
 	setmapscene SPROUT_TOWER_3F, SCENE_SPROUTTOWER3F_NOOP
+	farscall RespawnLegendariesScript ; before halloffame saves the game
 	special HealParty
 	checkevent EVENT_GOT_SS_TICKET_FROM_ELM
 	iftrue .LanceCall

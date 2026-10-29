@@ -538,7 +538,7 @@ RollTinTowerSuicuneShiny::
 	ld hl, wRoamMon3Form
 	; fallthrough
 
-RollLegendaryShiny:
+RollLegendaryShiny::
 ; in: hl = a legendary's form byte
 ; Sets its shiny bit at 1/512 (1/256, then LEGENDARY_SHINY_NUMERATOR/256). Shiny stays shiny.
 	ld a, [hl]
@@ -567,38 +567,46 @@ endc
 	ret
 
 InitRoamMons:
-; initialize wRoamMon structs
-
-; species
-	ld hl, RAIKOU
-	call GetPokemonIDFromIndex
-	ld [wRoamMon1Species], a
-	ld hl, ENTEI
-	call GetPokemonIDFromIndex
-	ld [wRoamMon2Species], a
-
-; level
+; Release Raikou and Entei at L40, as the Burned Tower does. Their DVs and forms are left alone.
 	ld a, 40
-	ld [wRoamMon1Level], a
-	ld [wRoamMon2Level], a
+	call InitRoamRaikou
+	ld a, 40
+	jr InitRoamEntei
 
-; raikou starting map
-	ld a, GROUP_ROUTE_42
-	ld [wRoamMon1MapGroup], a
-	ld a, MAP_ROUTE_42
-	ld [wRoamMon1MapNumber], a
+InitRoamRaikou::
+; in: a = level
+; Puts Raikou on its release route, Route 42, with HP 0 so its first battle rolls new stats.
+	ld bc, GROUP_ROUTE_42 << 8 | MAP_ROUTE_42
+	ld de, wRoamMon1
+	ld hl, RAIKOU
+	jr InitRoamMon
 
-; entei starting map
-	ld a, GROUP_ROUTE_37
-	ld [wRoamMon2MapGroup], a
-	ld a, MAP_ROUTE_37
-	ld [wRoamMon2MapNumber], a
+InitRoamEntei::
+; in: a = level
+; Puts Entei on its release route, Route 37, with HP 0 so its first battle rolls new stats.
+	ld bc, GROUP_ROUTE_37 << 8 | MAP_ROUTE_37
+	ld de, wRoamMon2
+	ld hl, ENTEI
+	; fallthrough
 
-; hp
+InitRoamMon:
+; in: a = level, b = map group, c = map number, de = roam struct, hl = species index
+	push af
+	call GetPokemonIDFromIndex
+	assert wRoamMon1Species == wRoamMon1 && wRoamMon1Level == wRoamMon1Species + 1 		&& wRoamMon1MapGroup == wRoamMon1Level + 1 && wRoamMon1MapNumber == wRoamMon1MapGroup + 1 		&& wRoamMon1HP == wRoamMon1MapNumber + 1
+	ld [de], a
+	inc de
+	pop af
+	ld [de], a
+	inc de
+	ld a, b
+	ld [de], a
+	inc de
+	ld a, c
+	ld [de], a
+	inc de
 	xor a ; generate new stats
-	ld [wRoamMon1HP], a
-	ld [wRoamMon2HP], a
-
+	ld [de], a
 	ret
 
 UpdateRoamMonsAfterBattle::

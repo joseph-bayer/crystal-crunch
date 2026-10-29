@@ -57,6 +57,10 @@ ApricornForestClearingSnorlax:
 	disappear APRICORNFORESTCLEARING_BIG_SNORLAX
 	setevent EVENT_APRICORN_FOREST_CLEARING_SNORLAX
 	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_APRICORN_SNORLAX
+.NotCaught:
 	end
 
 ApricornForestClearingSnorlaxSleepingText:

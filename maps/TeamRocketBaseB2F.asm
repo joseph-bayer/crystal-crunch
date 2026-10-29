@@ -227,6 +227,8 @@ RocketElectrode1:
 	iftrue TeamRocketBaseB2FReloadMap
 	disappear TEAMROCKETBASEB2F_ELECTRODE1
 	disappear TEAMROCKETBASEB2F_ELECTRODE4
+	checkevent EVENT_CLEARED_ROCKET_HIDEOUT ; back after the Elite Four; the puzzle stays solved
+	iftrue TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_1
 	iffalse TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_2
@@ -234,6 +236,7 @@ RocketElectrode1:
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_3
 	iffalse TeamRocketBaseB2FReloadMap
 	reloadmapafterbattle
+	scall TeamRocketBaseB2FElectrodeCaughtScript
 	special PlayMapMusic
 	applymovement PLAYER, RocketBasePlayerLeavesElectrodesMovement1
 	sjump RocketBaseElectrodeScript
@@ -245,6 +248,8 @@ RocketElectrode2:
 	iftrue TeamRocketBaseB2FReloadMap
 	disappear TEAMROCKETBASEB2F_ELECTRODE2
 	disappear TEAMROCKETBASEB2F_ELECTRODE5
+	checkevent EVENT_CLEARED_ROCKET_HIDEOUT ; back after the Elite Four; the puzzle stays solved
+	iftrue TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_1
 	iffalse TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_2
@@ -252,6 +257,7 @@ RocketElectrode2:
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_3
 	iffalse TeamRocketBaseB2FReloadMap
 	reloadmapafterbattle
+	scall TeamRocketBaseB2FElectrodeCaughtScript
 	special PlayMapMusic
 	applymovement PLAYER, RocketBasePlayerLeavesElectrodesMovement2
 	sjump RocketBaseElectrodeScript
@@ -263,6 +269,8 @@ RocketElectrode3:
 	iftrue TeamRocketBaseB2FReloadMap
 	disappear TEAMROCKETBASEB2F_ELECTRODE3
 	disappear TEAMROCKETBASEB2F_ELECTRODE6
+	checkevent EVENT_CLEARED_ROCKET_HIDEOUT ; back after the Elite Four; the puzzle stays solved
+	iftrue TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_1
 	iffalse TeamRocketBaseB2FReloadMap
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_2
@@ -270,12 +278,19 @@ RocketElectrode3:
 	checkevent EVENT_TEAM_ROCKET_BASE_B2F_ELECTRODE_3
 	iffalse TeamRocketBaseB2FReloadMap
 	reloadmapafterbattle
+	scall TeamRocketBaseB2FElectrodeCaughtScript
 	special PlayMapMusic
 	applymovement PLAYER, RocketBasePlayerLeavesElectrodesMovement3
 	sjump RocketBaseElectrodeScript
 
 TeamRocketBaseB2FReloadMap:
 	reloadmapafterbattle
+TeamRocketBaseB2FElectrodeCaughtScript:
+; Once any Rocket Electrode is caught, none come back after the Elite Four
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_ROCKET_ELECTRODE
+.NotCaught:
 	end
 
 RocketBaseElectrodeScript:

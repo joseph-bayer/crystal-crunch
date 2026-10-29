@@ -43,6 +43,7 @@ TinTower1FNPCsCallback:
 	clearevent EVENT_TIN_TOWER_1F_WISE_TRIO_2
 	setevent EVENT_TIN_TOWER_1F_WISE_TRIO_1
 .GotRainbowWing:
+	scall TinTower1FRematchSuicuneShinyScript
 	checkevent EVENT_FOUGHT_HO_OH
 	iffalse .Done
 	appear TINTOWER1F_EUSINE
@@ -75,12 +76,29 @@ TinTower1FNPCsCallback:
 	endcallback
 
 .FoughtSuicune:
+; A Suicune that wasn't caught can be back for a rematch after the Elite Four
+	checkevent EVENT_CAUGHT_SUICUNE
+	iffalse .SuicuneNotCaught
 	disappear TINTOWER1F_SUICUNE
+.SuicuneNotCaught:
+	scall TinTower1FRematchSuicuneShinyScript
 	disappear TINTOWER1F_RAIKOU
 	disappear TINTOWER1F_ENTEI
 	clearevent EVENT_TIN_TOWER_1F_WISE_TRIO_1
 	setevent EVENT_TIN_TOWER_1F_WISE_TRIO_2
 	endcallback
+
+TinTower1FRematchSuicuneShinyScript:
+; Its shiny roll comes before its sprite shows, so the two agree
+	checkevent EVENT_FOUGHT_SUICUNE
+	iffalse .Done
+	checkevent EVENT_CAUGHT_SUICUNE
+	iftrue .Done
+	checkevent EVENT_TIN_TOWER_1F_SUICUNE
+	iftrue .Done
+	callasm RollTinTowerSuicuneShiny
+.Done:
+	end
 
 TinTower1FStairsCallback:
 	checkevent EVENT_GOT_RAINBOW_WING
@@ -184,6 +202,21 @@ TinTower1FSuicuneBattleScript:
 	special FadeOutMusic
 	pause 20
 	playmapmusic
+	end
+
+TinTower1FSuicuneRematchScript:
+; Only after the Elite Four: the first battle is the scene above
+	cry SUICUNE
+	pause 15
+	loadwildmon SUICUNE, 40
+	loadvar VAR_BATTLETYPE, BATTLETYPE_SUICUNE
+	startbattle
+	disappear TINTOWER1F_SUICUNE
+	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_SUICUNE
+.NotCaught:
 	end
 
 TinTower1FSage1Script:
@@ -565,7 +598,7 @@ TinTower1F_MapEvents:
 	def_bg_events
 
 	def_object_events
-	object_event  9,  9, SPRITE_SUICUNE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_SUICUNE
+	object_event  9,  9, SPRITE_SUICUNE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, TinTower1FSuicuneRematchScript, EVENT_TIN_TOWER_1F_SUICUNE
 	object_event  7,  9, SPRITE_RAIKOU, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_RAIKOU
 	object_event 12,  9, SPRITE_ENTEI, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, ObjectEvent, EVENT_TIN_TOWER_1F_ENTEI
 	object_event  8,  3, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_SLOW, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, TinTower1FEusine, EVENT_TIN_TOWER_1F_EUSINE

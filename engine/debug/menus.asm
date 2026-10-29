@@ -7,8 +7,8 @@ if DEF(_DEBUG)
 
 DebugStoryScript::
 ; The Scientist: ELM's lab (the beasts menu's FORCE SHINY covers the starters too), the beasts and
-; Unown, the Open League, swarms, warps (the Rocket Base, Cerulean Cave 1F), and Kurt's two places
-; at home.
+; Unown, the Open League, swarms, warps (the Rocket Base, Cerulean Cave 1F), the legendaries'
+; respawn, and Kurt's two places at home.
 	faceplayer
 	opentext
 	writetext DebugStoryText
@@ -20,7 +20,8 @@ DebugStoryScript::
 	ifequal 3, .EliteFourLineup
 	ifequal 4, .Swarms
 	ifequal 5, .Warps
-	ifequal 6, .Kurt
+	ifequal 6, .Legends
+	ifequal 7, .Kurt
 	closetext
 	end
 
@@ -69,6 +70,140 @@ DebugStoryScript::
 	warp CERULEAN_CAVE_1F, 24, 16
 	end
 
+.Legends:
+; The Elite Four respawn without the Elite Four, the wings Lugia and Ho-Oh need, and a warp beside
+; each one-off. Raikou and Entei are under BEASTS instead.
+	loadmenu .LegendsMenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .RespawnNow
+	ifequal 2, .GiveWings
+	ifequal 3, .LegendWarps1
+	ifequal 4, .LegendWarps2
+	closetext
+	end
+
+.RespawnNow:
+	farscall RespawnLegendariesScript
+	writetext DebugRespawnText
+	waitbutton
+	closetext
+	end
+
+.GiveWings:
+	giveitem SILVER_WING
+	giveitem RAINBOW_WING
+	writetext DebugWingsText
+	waitbutton
+	closetext
+	end
+
+.LegendWarps1:
+	loadmenu .LegendWarps1MenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .Zapdos
+	ifequal 2, .Articuno
+	ifequal 3, .Moltres
+	ifequal 4, .Lugia
+	ifequal 5, .HoOh
+	ifequal 6, .Suicune
+	ifequal 7, .Mewtwo
+	closetext
+	end
+
+.LegendWarps2:
+	loadmenu .LegendWarps2MenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .Mew
+	ifequal 2, .Celebi
+	ifequal 3, .Sudowoodo
+	ifequal 4, .VermilionSnorlax
+	ifequal 5, .ApricornSnorlax
+	ifequal 6, .RedGyarados
+	ifequal 7, .Electrodes
+	closetext
+	end
+
+.Zapdos:
+	closetext
+	warp ROUTE_10_NORTH, 4, 10
+	end
+
+.Articuno:
+; On the shore; it's out on the water
+	closetext
+	warp ROUTE_20, 31, 9
+	end
+
+.Moltres:
+	closetext
+	warp VICTORY_ROAD, 17, 32
+	end
+
+.Lugia:
+; At the chamber's entrance; it's out on the water
+	closetext
+	warp WHIRL_ISLAND_LUGIA_CHAMBER, 9, 13
+	end
+
+.HoOh:
+	closetext
+	warp TIN_TOWER_ROOF, 9, 6
+	end
+
+.Suicune:
+; At the door, where its scene starts if it's still armed
+	closetext
+	warp TIN_TOWER_1F, 9, 15
+	end
+
+.Mewtwo:
+	closetext
+	warp CERULEAN_CAVE_B1F, 27, 14
+	end
+
+.Mew:
+; In front of the truck
+	closetext
+	warp VERMILION_PORT, 14, 11
+	end
+
+.Celebi:
+; In front of the shrine
+	closetext
+	warp ILEX_FOREST, 8, 23
+	end
+
+.Sudowoodo:
+	closetext
+	warp ROUTE_36, 34, 9
+	end
+
+.VermilionSnorlax:
+; Its respawn spot on Route 11, not Vermilion City
+	closetext
+	warp ROUTE_11, 30, 13
+	end
+
+.ApricornSnorlax:
+	closetext
+	warp APRICORN_FOREST_CLEARING, 8, 4
+	end
+
+.RedGyarados:
+; On the shore; it's out on the water
+	closetext
+	warp LAKE_OF_RAGE, 20, 26
+	end
+
+.Electrodes:
+; On the tile the B1F stairs arrive at
+	closetext
+	warp TEAM_ROCKET_BASE_B2F, 3, 14
+	end
+
 .Kurt:
 ; Kurt's own flags only: the Rockets, Azalea's Slowpokes and the rival scene stay as they are.
 ; KurtsHouseKurtCallback places him the next time the house loads.
@@ -98,18 +233,19 @@ DebugStoryScript::
 
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 14, 15
+	menu_coords 0, 0, 14, 17
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 7 ; items
+	db 8 ; items
 	db "ELM'S LAB@"
 	db "BEASTS@"
 	db "E4 LINEUP@"
 	db "SWARMS@"
 	db "WARPS@"
+	db "LEGENDS@"
 	db "KURT@"
 	db "CANCEL@"
 
@@ -124,6 +260,57 @@ DebugStoryScript::
 	db 3 ; items
 	db "FRONT ROOM@"
 	db "MAKING BALLS@"
+	db "CANCEL@"
+
+.LegendsMenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 14, 11
+	dw .LegendsMenuData
+	db 1 ; default option
+
+.LegendsMenuData:
+	db STATICMENU_CURSOR ; flags
+	db 5 ; items
+	db "RESPAWN NOW@"
+	db "GIVE WINGS@"
+	db "WARPS 1@"
+	db "WARPS 2@"
+	db "CANCEL@"
+
+.LegendWarps1MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 14, 17
+	dw .LegendWarps1MenuData
+	db 1 ; default option
+
+.LegendWarps1MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 8 ; items
+	db "ZAPDOS@"
+	db "ARTICUNO@"
+	db "MOLTRES@"
+	db "LUGIA@"
+	db "HO-OH@"
+	db "SUICUNE@"
+	db "MEWTWO@"
+	db "CANCEL@"
+
+.LegendWarps2MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 16, 17
+	dw .LegendWarps2MenuData
+	db 1 ; default option
+
+.LegendWarps2MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 8 ; items
+	db "MEW@"
+	db "CELEBI@"
+	db "SUDOWOODO@"
+	db "SNORLAX RT 11@"
+	db "SNORLAX FOREST@"
+	db "RED GYARADOS@"
+	db "ELECTRODES@"
 	db "CANCEL@"
 
 .WarpsMenuHeader:
@@ -275,6 +462,17 @@ DebugToolsScript::
 
 DebugStoryText:
 	text "DEBUG: story."
+	done
+
+DebugRespawnText:
+	text "DEBUG: legendaries"
+	line "respawned."
+	done
+
+DebugWingsText:
+	text "DEBUG: got the"
+	line "SILVER and RAINBOW"
+	cont "WINGS."
 	done
 
 DebugKurtFrontRoomText:

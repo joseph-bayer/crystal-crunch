@@ -4,6 +4,7 @@
 	const ROUTE11_YOUNGSTER3
 	const ROUTE11_YOUNGSTER4
 	const ROUTE11_FRUIT_TREE
+	const ROUTE11_BIG_SNORLAX
 	const ROUTE11_WILD_MON_1
 	const ROUTE11_WILD_MON_2
 	const ROUTE11_WILD_MON_3
@@ -56,6 +57,33 @@ TrainerPsychicFidel:
 	writetext PsychicFidelAfterBattleText
 	waitbutton
 	closetext
+	end
+
+Route11SnorlaxScript:
+; Vermilion's Snorlax, back after the Elite Four. It wakes to the Poke Flute channel; talking to it
+; already means standing beside it, so unlike Vermilion's there is no test of where the player is.
+	opentext
+	readmem wMapMusic
+	ifequal MUSIC_POKE_FLUTE_CHANNEL, .Awake
+	writetext Route11SnorlaxSleepingText
+	waitbutton
+	closetext
+	end
+
+.Awake:
+	writetext Route11RadioNearSnorlaxText
+	pause 15
+	cry SNORLAX
+	closetext
+	loadvar VAR_BATTLETYPE, BATTLETYPE_FORCEITEM
+	loadwildmon SNORLAX, 50
+	startbattle
+	disappear ROUTE11_BIG_SNORLAX
+	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_SNORLAX
+.NotCaught:
 	end
 
 Route11Sign:
@@ -143,6 +171,21 @@ PsychicFidelAfterBattleText:
 	cont "in your #MON."
 	done
 
+Route11SnorlaxSleepingText:
+	text "SNORLAX is snoring"
+	line "peacefully…"
+	done
+
+Route11RadioNearSnorlaxText:
+	text "The #GEAR was"
+	line "placed near the"
+	cont "sleeping SNORLAX…"
+
+	para "…"
+
+	para "SNORLAX woke up!"
+	done
+
 Route11SignText:
 	text "ROUTE 11"
 	done
@@ -164,6 +207,7 @@ Route11_MapEvents:
 	object_event 28,  7, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerPsychicHerman, -1
 	object_event  8,  6, SPRITE_YOUNGSTER, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerPsychicFidel, -1
 	object_event 32,  2, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route11FruitTree, -1
+	object_event 31, 13, SPRITE_BIG_SNORLAX, SPRITEMOVEDATA_BIGDOLLSYM, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route11SnorlaxScript, EVENT_VERMILION_SNORLAX_RESPAWN
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors. Slots run static, then grass, then water -- the

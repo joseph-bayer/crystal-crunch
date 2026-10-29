@@ -430,6 +430,8 @@ IlexForestTrainerTips:
 	jumptext IlexForestTrainerTipsText
 
 IlexForestShrineScript:
+	checkevent EVENT_CELEBI_RETURNS
+	iftrue IlexForestCelebiReturnsScript
 	checkevent EVENT_FOREST_IS_RESTLESS
 	iftrue .ForestIsRestless
 	sjump .DontDoCelebiEvent
@@ -468,12 +470,14 @@ IlexForestShrineScript:
 	pause 20
 	clearflag ENGINE_FOREST_IS_RESTLESS
 	special CelebiShrineEvent
+	setevent EVENT_FOUGHT_CELEBI
 	loadwildmon CELEBI, 30
 	startbattle
 	reloadmapafterbattle
 	pause 20
 	special CheckCaughtCelebi
 	iffalse .DidntCatchCelebi
+	setevent EVENT_CAUGHT_CELEBI
 	appear ILEXFOREST_KURT
 	applymovement ILEXFOREST_KURT, IlexForestKurtStepsUpMovement
 	opentext
@@ -483,6 +487,27 @@ IlexForestShrineScript:
 	applymovement ILEXFOREST_KURT, IlexForestKurtStepsDownMovement
 	disappear ILEXFOREST_KURT
 .DidntCatchCelebi:
+	end
+
+IlexForestCelebiReturnsScript:
+; Celebi back after the Elite Four: only the battle, no GS Ball and no Kurt
+	opentext
+	writetext Text_ShrineCelebiReturns
+	waitbutton
+	closetext
+	pause 20
+	cry CELEBI
+	pause 15
+	loadvar VAR_BATTLETYPE, BATTLETYPE_CELEBI
+	loadwildmon CELEBI, 30
+	startbattle
+	clearevent EVENT_CELEBI_RETURNS
+	setevent EVENT_FOUGHT_CELEBI
+	reloadmapafterbattle
+	special CheckBattleCaughtResult
+	iffalse .NotCaught
+	setevent EVENT_CAUGHT_CELEBI
+.NotCaught:
 	end
 
 MovementData_Farfetchd_Pos1_Pos2:
@@ -923,6 +948,17 @@ Text_ShrineCelebiEvent:
 
 	para "Want to put the GS"
 	line "BALL here?"
+	done
+
+Text_ShrineCelebiReturns:
+	text "ILEX FOREST"
+	line "SHRINE…"
+
+	para "The shrine feels"
+	line "warm…"
+
+	para "Something is"
+	line "coming!"
 	done
 
 Text_InsertGSBall:

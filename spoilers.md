@@ -10,6 +10,7 @@
 - Mewtwo (level 75) waits at the bottom of Cerulean Cave, which opens once you have all 16 badges. Catching it leaves a Berserk Gene behind.
 - Mew (level 60) hides under the old truck at Vermilion Port once you've caught 250 species.
 - Celebi: solve the Ho-Oh puzzle in the Ruins of Alph.
+- A legendary you knock out, run from or black out to comes back each time you beat the Elite Four. One you catch never comes back. This covers the birds, Lugia, Ho-Oh, Mewtwo, Mew, Suicune (it waits in Tin Tower 1F for a rematch), Celebi (the Ilex Forest shrine calls it back, no GS Ball needed), Raikou and Entei (see the README), Sudowoodo, both Snorlax, the Red Gyarados and the Rocket Base Electrodes (until you catch one of them). The Vermilion Snorlax comes back on Route 11, so Diglett's Cave stays open.
 
 ## Fossils
 - Solve the fossil Pokemon puzzles in the Ruins of Alph for each respective fossil.

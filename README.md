@@ -72,6 +72,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Roaming legendaries appear in the overworld now instead of in the grass.
 - The location of the roaming legendaries can be tracked on the Pokégear map immediately after the Burned Tower event.
 - A roaming legendary stays put while you're on its route, so you can walk up to it. It only moves on when you leave, or after you battle it.
+- If you knock out Raikou or Entei, it will start roaming again after your next Elite Four win.
 - Check [What are the shiny rates?](#what-are-the-shiny-rates) for updates to shiny mechanics surrounding the roaming legendaries.
 
 ### Cosmetic Forms
@@ -187,6 +188,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Kurt makes Apricorn balls instantly, and can make several at once.
 - When nothing bites, you're asked "Fish again?" so you can recast without reopening the bag.
 - When a Repel wears off and you have another of the same kind, you're asked whether to use another.
+- Legendaries and one-of-a-kind Pokémon you knock out or run from come back after you beat the Elite Four. One you catch never comes back.
 - Turn around after healing in the Pokémon Center so you don't accidentally heal again.
 - Minor update to Goldenrod's layout so it's easier to get to the underground and the bike shop.
 - The Bug Catching Contest is rebalanced, and includes overworld encounters.
