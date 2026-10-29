@@ -40,6 +40,11 @@ gfx/pokemon/*/*/frames.asm
 # precompiled python
 *.pyc
 *$py.class
+__pycache__/
+
+# regression test runs
+/tests/.cache/
+.pytest_cache/
 
 # save game files
 *.sgm

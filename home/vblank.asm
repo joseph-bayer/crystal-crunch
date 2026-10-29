@@ -108,6 +108,7 @@ VBlank_Normal::
 	ld hl, hVBlankCounter
 	inc [hl]
 
+if !DEF(_TEST) ; the test ROM's Random runs a fixed sequence that only it advances
 	; advance random variables
 	ldh a, [rDIV]
 	ld b, a
@@ -120,6 +121,7 @@ VBlank_Normal::
 	ldh a, [hRandomSub]
 	sbc b
 	ldh [hRandomSub], a
+endc
 
 	xor a
 	ld [wVBlankOccurred], a

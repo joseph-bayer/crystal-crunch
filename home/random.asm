@@ -11,6 +11,44 @@ Random::
 
 ; This leaves a with the value in hRandomSub.
 
+if DEF(_TEST)
+; The test ROM runs a fixed sequence instead: a 16-bit xorshift over hRandomAdd and hRandomSub,
+; which VBlank leaves alone, so a result depends only on how many numbers were asked for.
+; xorshift16: x ^= x << 7; x ^= x >> 9; x ^= x << 8.
+	push bc
+	push hl
+	ldh a, [hRandomAdd]
+	ld c, a
+	ldh a, [hRandomSub]
+	ld b, a ; bc = x
+	or c
+	jr nz, .seeded
+	lb bc, $5e, $ed ; the fixed seed; a zero state would stay zero forever
+.seeded
+	ld h, b
+	ld l, c
+rept 7
+	add hl, hl
+endr
+	ld a, l
+	xor c
+	ld c, a
+	ld a, h
+	xor b
+	ld b, a ; x ^= x << 7
+	srl a ; a is still the high byte
+	xor c
+	ld c, a ; x ^= x >> 9 -- only the low byte is touched
+	xor b
+	ld b, a ; x ^= x << 8 -- only the high byte is touched
+	ld a, c
+	ldh [hRandomAdd], a
+	ld a, b
+	ldh [hRandomSub], a
+	pop hl
+	pop bc
+	ret
+else
 	push bc
 
 	ldh a, [rDIV]
@@ -27,6 +65,7 @@ Random::
 
 	pop bc
 	ret
+endc
 
 BattleRandom::
 ; _BattleRandom lives in another bank.

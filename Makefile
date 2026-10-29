@@ -25,6 +25,7 @@ rom_obj := \
 pokecrystal_obj       := $(rom_obj:.o=.o)
 pokecrystal_debug_obj := $(rom_obj:.o=_debug.o)
 pokecrystal_vc_obj    := $(rom_obj:.o=_vc.o)
+pokecrystal_test_obj  := $(rom_obj:.o=_test.o)
 
 
 ### Build tools
@@ -52,7 +53,7 @@ VERSION ?= $(shell git describe --tags --always --dirty)
 ### Build targets
 
 .SUFFIXES:
-.PHONY: all crystal clean tidy tools check_trainer_art release
+.PHONY: all crystal clean tidy tools check_trainer_art release test
 .SECONDEXPANSION:
 .PRECIOUS:
 .SECONDARY:
@@ -61,6 +62,11 @@ all: crystal crystal_debug crystal_vc
 crystal:       pokecrystal.gbc
 crystal_debug: pokecrystal_debug.gbc
 crystal_vc:    pokecrystal.patch
+crystal_test:  pokecrystal_test.gbc
+
+# The regression tests in tests/, run against the test ROM: a debug ROM with a fixed random sequence
+test: crystal_test
+	$(PYTHON) -m pytest tests
 
 # The files to upload to a GitHub release: a BPS patch for the game and the 3DS Virtual Console patch
 release: pokecrystal.gbc pokecrystal.patch
@@ -96,9 +102,13 @@ tidy:
 	      $(patches:.patch=_vc.sym) \
 	      $(patches:.patch=_vc.map) \
 	      $(patches:%.patch=vc/%.constants.sym) \
+	      pokecrystal_test.gbc \
+	      pokecrystal_test.sym \
+	      pokecrystal_test.map \
 	      $(pokecrystal_obj) \
 	      $(pokecrystal_debug_obj) \
 	      $(pokecrystal_vc_obj) \
+	      $(pokecrystal_test_obj) \
 	      rgbdscheck.o
 	$(MAKE) clean -C tools/
 
@@ -111,6 +121,7 @@ RGBASMFLAGS = -Q8 -P includes.asm -Weverything -Wtruncation=1
 $(pokecrystal_obj):       RGBASMFLAGS +=
 $(pokecrystal_debug_obj): RGBASMFLAGS += -D _DEBUG
 $(pokecrystal_vc_obj):    RGBASMFLAGS += -D _CRYSTAL_VC
+$(pokecrystal_test_obj):  RGBASMFLAGS += -D _DEBUG -D _TEST
 
 %.patch: %_vc.gbc %.gbc vc/%.patch.template
 	tools/make_patch $*_vc.sym $^ $@
@@ -137,12 +148,14 @@ endef
 $(foreach obj, $(pokecrystal_obj), $(eval $(call DEP,$(obj),$(obj:.o=.asm))))
 $(foreach obj, $(pokecrystal_debug_obj), $(eval $(call DEP,$(obj),$(obj:_debug.o=.asm))))
 $(foreach obj, $(pokecrystal_vc_obj), $(eval $(call DEP,$(obj),$(obj:_vc.o=.asm))))
+$(foreach obj, $(pokecrystal_test_obj), $(eval $(call DEP,$(obj),$(obj:_test.o=.asm))))
 
 endif
 
 
 pokecrystal_opt         = -Cjv -t PM_CRYSTAL -i BYTE -n 0 -k 01 -l 0x33 -m MBC3+TIMER+RAM+BATTERY -r 3 -p 0
 pokecrystal_debug_opt   = -Cjv -t PM_CRYSTAL -i BYTE -n 0 -k 01 -l 0x33 -m MBC3+TIMER+RAM+BATTERY -r 3 -p 0
+pokecrystal_test_opt    = -Cjv -t PM_CRYSTAL -i BYTE -n 0 -k 01 -l 0x33 -m MBC3+TIMER+RAM+BATTERY -r 3 -p 0
 pokecrystal_vc_opt      = -Cjv -t PM_CRYSTAL -i BYTE -n 0 -k 01 -l 0x33 -m MBC3+TIMER+RAM+BATTERY -r 3 -p 0
 
 .gbc: tools/bankends

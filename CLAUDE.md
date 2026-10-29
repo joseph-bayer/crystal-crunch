@@ -24,28 +24,32 @@ make crystal            # pokecrystal.gbc          (main ROM)
 make crystal_debug      # pokecrystal_debug.gbc    (assembles with -D _DEBUG)
 make crystal_vc         # pokecrystal.patch        (Virtual Console patch, -D _CRYSTAL_VC)
 make all                # all three
+make crystal_test       # pokecrystal_test.gbc     (debug + -D _TEST, for make test; not in all)
 make -j"$(nproc)"       # parallel build
 make clean              # tidy + delete generated graphics (.2bpp/.1bpp/.lz/.gbcpal, generated bitmask.asm/frames.asm)
 make tidy               # delete ROMs, .o, .sym, .map only
 make tools              # rebuild tools/ alone
 ```
 
-Each ROM variant compiles the *same* sources into its own object set (`*.o`, `*_debug.o`, `*_vc.o`) with different `-D` flags — so a change guarded by `_DEBUG` still has to assemble in all three.
+Each ROM variant compiles the *same* sources into its own object set (`*.o`, `*_debug.o`, `*_vc.o`, `*_test.o`) with different `-D` flags — so a change guarded by `_DEBUG` or `_TEST` still has to assemble in all four.
 
 Assembler flags are `-Q8 -P includes.asm -Weverything -Wtruncation=1`. `-P includes.asm` preincludes every macro and constant file into every translation unit, which is why `.asm` files rarely include constants themselves. **Adding a new constants or macros file requires registering it in `includes.asm`** — note the ordering constraint there (`16_bit_locking_constants.asm` must come after the translation constants).
 
 VS Code tasks exist for these (`Build Debug ROM` is the default build task). Debugging runs `pokecrystal_debug.gbc` under the **Emulicious** debugger (`.vscode/launch.json`, port 58870).
 
-## Verification (there is no test suite)
+## Verification
 
-Correctness is enforced by assemble-time asserts, linker layout, and lint scripts — not tests. The gates are:
+Correctness is enforced by assemble-time asserts, linker layout, lint scripts, and scripted in-game tests. The gates are:
 
 ```bash
-make -j"$(nproc)"            # must assemble AND link; asserts are the real test suite
+make -j"$(nproc)"            # must assemble AND link; asserts catch layout and table mistakes
 python utils/optimize.py     # peephole/optimization lint; accepts paths, defaults to '.'
 python utils/farcheck.py     # flags farcall/farjp to labels in the same bank (and vice versa)
 python utils/unreferenced.py # finds unreferenced labels
+make test                    # builds pokecrystal_test.gbc and runs tests/ under PyBoy (pip install pyboy pytest)
 ```
+
+The tests (`tests/`, see `tests/README.md`) drive the `crystal_test` ROM — the debug ROM plus `-D _TEST`, whose `Random` is a fixed-seed sequence — from a scripted new game, and check memory rather than pixels, since PyBoy draws this hack's backgrounds wrong. They are not run in CI yet.
 
 CI (`.github/workflows/`) runs two jobs:
 
@@ -55,6 +59,8 @@ CI (`.github/workflows/`) runs two jobs:
 The `AGENTS.md` workflow for avoiding optimize.py regressions: snapshot `python utils/optimize.py > .opt.old` before changes, re-run into `.opt.new` after, and `diff -u` the two. Delete `.opt.*` before committing — they must never be committed.
 
 Since CI only lints changed files, a clean `optimize.py` run on *your* changed files is the bar, not a clean run repo-wide.
+
+**Every bug fix gets a regression test.** When you fix a bug, add a scripted test for it under `tests/` in the same change, so `make test` catches it if it comes back. If the harness can't express it yet, say so and keep it on the list of tests to write.
 
 ## Style
 
