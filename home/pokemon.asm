@@ -363,3 +363,80 @@ SpecialEggPatterns:
 	dw ELEKID
 	db EGG_ELEKID_PATTERN
 	dw 0 ; end
+
+if DEF(_DEBUG)
+DebugForceSwarmMonShiny::
+; For a wandering mon being rolled: whether the swarm supplied it and FORCE SHINY is on.
+; out: nz if both. Preserves bc, de and hl.
+	ld a, [wOverworldMonRollFromSwarm]
+	and a
+	ret z
+	; fallthrough
+
+DebugForceShinyOn::
+; Whether the Scientist's BEASTS -> FORCE SHINY is on, which swarm shinies honor in a debug build.
+; out: nz if it is. Preserves bc, de and hl.
+	push bc
+	push de
+	push hl
+	ld de, EVENT_DEBUG_FORCE_SHINY_BEASTS
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	pop hl
+	pop de
+	pop bc
+	ret
+endc
+
+RollAltShiny::
+; A mon a roll has just made shiny is an alternate shiny ALT_SHINY_NUMERATOR times in
+; ALT_SHINY_DENOMINATOR. Every species gets the bit; only those in AltShinyPalettes look different.
+; in: a = its form byte
+; out: a = the form byte, with ALT_SHINY_MASK set if it's an alternate. Preserves bc, de and hl.
+	push bc
+	ld c, ALT_SHINY_THRESHOLD
+	jr _RollAltShiny
+
+RollOverworldMonAltShiny::
+; For a wandering mon the roll has just made shiny: at an alternate-shiny swarm's odds when that
+; swarm supplied it, otherwise the ordinary odds.
+; in: a = its form byte
+; out: a = the form byte. Preserves bc, de and hl.
+	push bc
+	ld b, a
+	ld a, [wOverworldMonRollFromSwarm]
+	and a
+	jr z, .got_odds ; not the swarm's
+	ld a, [wOverworldMonSwarmAltShiny]
+	and a
+.got_odds
+	ld a, b
+	pop bc
+	jr z, RollAltShiny
+	; fallthrough
+
+RollSwarmAltShiny::
+; The same, at an alternate-shiny swarm's odds (SWARM_ALT_SHINY_NUMERATOR).
+	push bc
+	ld c, SWARM_ALT_SHINY_THRESHOLD
+	; fallthrough
+
+_RollAltShiny:
+	ld b, a
+	and SHINY_MASK
+	jr z, .done
+.roll
+	call Random ; preserves bc
+	cp ALT_SHINY_RANGE
+	jr nc, .roll ; reroll the few numbers past an even split, so the odds are exact
+	cp c
+	jr nc, .done
+	ld a, b
+	or ALT_SHINY_MASK
+	ld b, a
+.done
+	ld a, b
+	pop bc
+	ret

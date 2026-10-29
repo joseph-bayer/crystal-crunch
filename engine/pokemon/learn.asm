@@ -204,7 +204,7 @@ LearnMove:
 	ld bc, MON_FORM
 	add hl, bc
 	ld a, [hl]
-	and SHINY_MASK ; only preserve shiny bit. Clear everything else.
+	and SHINY_MASK | ALT_SHINY_MASK ; only keep its shininess. Clear everything else.
 	ld [hl], a
 .done
 	

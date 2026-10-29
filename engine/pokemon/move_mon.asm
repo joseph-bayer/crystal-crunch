@@ -1311,6 +1311,7 @@ GivePoke::
 	jr nc, .done ; not shiny or forced shiny
 	ld a, [wForm]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [hl], a
 	jr .done
 
@@ -1348,6 +1349,7 @@ GivePoke::
 	jr nc, .done ; not shiny or forced shiny
 	ld a, [wForm]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [wBufferMonForm], a
 .update_storage_box_mon_from_temp
 	farcall UpdateStorageBoxMonFromTemp
@@ -1364,9 +1366,7 @@ GivePoke::
 	jr nz, .skip_shiny ; 255/256 not shiny
 	call Random
 	cp GIFT_SHINY_NUMERATOR ; 128/256 still not shiny
-	ret nc ; not shiny
-	; It's shiny!
-	ret
+	ret ; carry: it's shiny
 .skip_shiny
 	xor a ; clear carry flag
 	ret

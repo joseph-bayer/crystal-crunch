@@ -50,8 +50,7 @@ GiveShuckle:
 	ld hl, wPartyMon1Form
 	rst AddNTimes ; form at hl
 
-	ld a, SHUCKLE_SHUCKIE_NEUTRAL_FORM
-	ld [hl], a
+	ld [hl], SHUCKLE_SHUCKIE_NEUTRAL_FORM
 
 ; Check for Shininess (1/512 chance for gift mon).
 	call Random
@@ -64,6 +63,7 @@ GiveShuckle:
 	; Make shiny
 	ld a, [hl]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [hl], a
 
 .nickname

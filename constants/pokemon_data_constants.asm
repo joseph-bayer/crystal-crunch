@@ -176,7 +176,8 @@ DEF MOVES_HIGH_MASK EQU %00111111
 
 ; form byte
 DEF SHINY_MASK EQU %10000000
-DEF ALT_SHINY_MASK EQU %01000000 ; reserved for alternate shiny palettes; not read yet
+DEF ALT_SHINY_F EQU 6
+DEF ALT_SHINY_MASK EQU 1 << ALT_SHINY_F ; a shiny drawn in its species' alternate shiny colors, if it has them
 DEF FORM_MASK  EQU %00011111
 DEF ALL_FORMS  EQU $ff ; MultiFormEggTable: every form passes to the egg
 ; bit 5 is the only one of MON_FORM still going spare. ELMS_STARTER_FORM borrows it in arguments --
@@ -217,6 +218,16 @@ DEF OVERWORLD_MON_EXTRA_SHINY_NUMERATOR EQU 1 ; 1/256
 ; and holds an item half the time; these are the same rolls with a thumb on the scale.
 DEF OVERWORLD_MON_MIN_DV EQU 6 ; out of 15, applied to each DV as a floor
 DEF OVERWORLD_MON_NO_ITEM_CHANCE EQU 20 percent ; against a grass encounter's 50%
+
+; Alternate shinies: once a roll has made a mon shiny, it is an alternate shiny this many times in
+; ALT_SHINY_DENOMINATOR (only species in AltShinyPalettes look any different). RollAltShiny rolls a
+; number below ALT_SHINY_RANGE, rerolling the rest, so these odds are exact.
+DEF ALT_SHINY_DENOMINATOR EQU 5
+DEF ALT_SHINY_NUMERATOR EQU 1 ; 1/5
+DEF SWARM_ALT_SHINY_NUMERATOR EQU 4 ; 4/5, for a swarm with SWARM_ALT_SHINY
+DEF ALT_SHINY_RANGE EQU 256 - 256 % ALT_SHINY_DENOMINATOR
+DEF ALT_SHINY_THRESHOLD EQU ALT_SHINY_NUMERATOR * ALT_SHINY_RANGE / ALT_SHINY_DENOMINATOR
+DEF SWARM_ALT_SHINY_THRESHOLD EQU SWARM_ALT_SHINY_NUMERATOR * ALT_SHINY_RANGE / ALT_SHINY_DENOMINATOR
 
 ; These numerators do not have a preceding 1/256 check, resulting in a denominator of 256.
 DEF SHINY_EGG_ONE_SHINY_PARENT_NUMERATOR EQU 4 ; 4/256 = 1/64

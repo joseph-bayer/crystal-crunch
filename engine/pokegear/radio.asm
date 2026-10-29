@@ -126,6 +126,7 @@ RadioJumptable:
 	dw SwarmRadio5       ; $5c
 	dw SwarmRadio6       ; $5d
 	dw SwarmRadioNone2   ; $5e
+	dw SwarmRadioAltShiny4 ; $5f
 	assert_table_length NUM_RADIO_SEGMENTS
 
 PrintRadioLine:
@@ -163,7 +164,7 @@ RadioScroll:
 	ld a, [wNextRadioLine]
 	ld [wCurRadioLine], a
 	ld a, [wNumRadioLinesPrinted]
-	cp 1
+	dec a ; 1
 	call nz, CopyBottomLineToTopLine
 	jmp ClearBottomLine
 
@@ -1402,15 +1403,29 @@ SwarmRadio1:
 
 SwarmRadio2:
 	farcall IsDailySwarmRocket
-	ld hl, SwarmRadioText2
-	jr nc, .got_text
 	ld hl, SwarmRadioRocketText2
+	jr c, .got_text
+	farcall IsDailySwarmAltShiny
+	ld hl, SwarmRadioAltShinyText2
+	jr c, .got_text
+	ld hl, SwarmRadioText2
 .got_text
 	ld a, SWARM_RADIO_3
 	jmp NextRadioLine
 
 SwarmRadio3:
+	farcall IsDailySwarmAltShiny
 	ld hl, SwarmRadioText3
+	ld a, SWARM_RADIO_4
+	jr nc, .got_text
+; An alternate-shiny swarm's name needs a line of its own, so "spotted at" gets one more
+	ld hl, SwarmRadioAltShinyText3
+	ld a, SWARM_RADIO_ALT_SHINY_4
+.got_text
+	jmp NextRadioLine
+
+SwarmRadioAltShiny4:
+	ld hl, SwarmRadioAltShinyText4
 	ld a, SWARM_RADIO_4
 	jmp NextRadioLine
 
@@ -1477,6 +1492,18 @@ SwarmRadioRocketText5:
 
 SwarmRadioRocketText6:
 	text_far _SwarmRadioRocketText6
+	text_end
+
+SwarmRadioAltShinyText2:
+	text_far _SwarmRadioAltShinyText2
+	text_end
+
+SwarmRadioAltShinyText3:
+	text_far _SwarmRadioAltShinyText3
+	text_end
+
+SwarmRadioAltShinyText4:
+	text_far _SwarmRadioAltShinyText4
 	text_end
 
 SwarmRadioNoneText1:

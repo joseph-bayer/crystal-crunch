@@ -3177,6 +3177,7 @@ wOverworldMonSwarmTerrain:: db ; SWARM_GRASS or SWARM_WATER
 wOverworldMonSwarmRows:: db
 wOverworldMonSwarmSpecies:: dw
 wOverworldMonSwarmForm:: db
+wOverworldMonSwarmAltShiny:: db ; SWARM_ALT_SHINY if the swarm's shinies are alternates at its odds, else 0
 wOverworldMonRollFromSwarm:: db ; nonzero while .RollForm rolls a mon the swarm supplied
 wSwarmRespawnPending:: db ; set by RerollSwarmOverworldMons, spent by PlacePopulationAndSpawn
 

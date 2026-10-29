@@ -585,6 +585,31 @@ GetArrangedMonIconColors::
 	ld d, [hl]
 	ret
 
+GetShinyIcon::
+; The icon a shiny mon shows: "<ALT_SHINY>" when it draws in its alternate colors, "⁂" otherwise.
+; in: a = species ID, bc = address of its form byte (shiny)
+; out: a = the icon's tile. Preserves bc, de and hl.
+	push hl
+	call GetMonNormalOrShinyPalettePointer
+	ld a, l
+	sub LOW(AltShinyPalettes)
+	ld a, h
+	sbc HIGH(AltShinyPalettes)
+	jr c, .ordinary ; before the table
+	ld a, l
+	sub LOW(AltShinyPalettes.End)
+	ld a, h
+	sbc HIGH(AltShinyPalettes.End)
+	jr nc, .ordinary ; past it
+	ld a, "<ALT_SHINY>"
+	pop hl
+	ret
+
+.ordinary
+	ld a, "⁂"
+	pop hl
+	ret
+
 GetMonPicColors::
 ; The two colors a mon's pic draws with, in its palette's own order (no icon arrangement).
 ; in: a = species ID, bc = address of its form byte, its shiny bit included
@@ -790,9 +815,62 @@ GetMonPalettePointer:
 	add hl, bc
 	ret
 
-; a = 8bit mon species id
-; bc = form address
 GetMonNormalOrShinyPalettePointer:
+; in: a = 8bit mon species id, bc = form address
+; out: hl = the two colors this mon draws with: normal, shiny, or its alternate shiny
+	push af
+	call .NormalOrShiny
+	pop af
+	push af
+	ld a, [bc]
+	or ~(SHINY_MASK | ALT_SHINY_MASK)
+	inc a ; zero only if both bits were set
+	jr z, .alternate
+	pop af
+	ret
+
+.alternate
+; Its species' row in AltShinyPalettes, if it has one; otherwise the ordinary shiny colors stand.
+	pop af
+	push hl
+	push bc
+	push de
+	call GetPokemonIndexFromID
+	ld d, h
+	ld e, l ; de = its species index
+	ld hl, AltShinyPalettes
+.alt_loop
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	ld b, a ; bc = this row's species index
+	or c
+	jr z, .no_alternate ; the end
+	ld a, b
+	cp d
+	jr nz, .next_alt
+	ld a, c
+	cp e
+	jr z, .got_alternate
+.next_alt
+rept 2 * COLOR_SIZE
+	inc hl
+endr
+	jr .alt_loop
+
+.got_alternate
+	pop de
+	pop bc
+	pop af ; drop the shiny colors
+	ret
+
+.no_alternate
+	pop de
+	pop bc
+	pop hl
+	ret
+
+.NormalOrShiny:
 	push af
 	push de
 	call GetPokemonIndexFromID
@@ -1250,6 +1328,8 @@ INCLUDE "data/pokemon/palettes.asm"
 INCLUDE "data/trainers/palettes.asm"
 
 INCLUDE "data/pokemon/cosmetic_palettes.asm"
+
+INCLUDE "data/pokemon/alt_shiny_palettes.asm"
 ; The master table, CosmeticFormPalettePointersTable, is read with GetFarWord and has a section of
 ; its own (main.asm); the per-form tables it points to stay here, beside PokemonPalettes.
 

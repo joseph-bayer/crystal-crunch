@@ -396,8 +396,7 @@ StatsScreen_InitUpperHalf:
 	call StatsScreen_PlacePageSwitchArrows
 	call StatsScreen_PlaceShinyIcon
 	call PlaceCaughtBall
-	call PlaceCosmeticFormSymbol
-	ret
+	jr PlaceCosmeticFormSymbol
 
 .PlaceHPBar:
 	ld hl, wTempMonHP
@@ -467,9 +466,11 @@ StatsScreen_PlacePageSwitchArrows:
 StatsScreen_PlaceShinyIcon:
 	ld bc, wTempMonForm
 	farcall CheckShininess
-  ret nc
+	ret nc
+	ld a, [wTempMonSpecies]
+	farcall GetShinyIcon
 	hlcoord 19, 0
-	ld [hl], "⁂"
+	ld [hl], a
 	ret
 
 PlaceCaughtBall:

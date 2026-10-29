@@ -131,13 +131,14 @@ MACRO swarm_def
 ;\1: the species that swarms
 ;\2: its form byte -- a *_FORM constant, optionally | SHINY_MASK for one that is always shiny
 ;\3: the map it swarms on
-;\4: SWARM_GRASS or SWARM_WATER, the encounters it replaces, optionally | SWARM_ROCKET
+;\4: SWARM_GRASS or SWARM_WATER, the encounters it replaces, optionally | SWARM_ROCKET and/or
+;    | SWARM_ALT_SHINY
 ;\5: optional: an event flag that must be set before the radio offers it, or SWARM_NO_GATE
 ;\6: optional: a move every mon of this swarm knows on top of its level-up moves
 	dw \1
 	db \2
 	map_id \3
-	assert !((\4) & ~(SWARM_TERRAIN_MASK | SWARM_ROCKET)), "unknown bits in swarm terrain \4"
+	assert !((\4) & ~(SWARM_TERRAIN_MASK | SWARM_ROCKET | SWARM_ALT_SHINY)), "unknown bits in swarm terrain \4"
 	db \4
 	IF _NARG >= 5
 		dw \5

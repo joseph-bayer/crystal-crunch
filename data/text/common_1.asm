@@ -606,6 +606,25 @@ _SwarmRadioRocketText6::
 	line "them behind…"
 	done
 
+; An alternate-shiny swarm: "Oddly colored" takes the name's line, so the report runs one line
+; longer than the plain one
+_SwarmRadioAltShinyText2::
+	text_start
+	line "Oddly colored"
+	done
+
+_SwarmRadioAltShinyText3::
+	text_start
+	line "@"
+	text_ram wMonOrItemNameBuffer
+	text " were"
+	done
+
+_SwarmRadioAltShinyText4::
+	text_start
+	line "spotted at"
+	done
+
 _SwarmRadioNoneText1::
 	text_start
 	line "GUILD: No reports"

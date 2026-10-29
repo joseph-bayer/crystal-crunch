@@ -146,10 +146,10 @@ ChangeHappiness:
 	cp SHUCKLE_SHUCKIE_NEUTRAL_FORM ; Is it shuckie in his neutral form?
 	ret nz ; not shuckie neutral form, so do nothing
 	ld a, [hl]
-	and SHINY_MASK
+	and SHINY_MASK | ALT_SHINY_MASK
 	ld b, a
 	ld a, SHUCKLE_SHUCKIE_HAPPY_FORM
-	or b ; preserve shiny bit
+	or b ; keep its shininess
 	ld [hl], a
 	ret
 

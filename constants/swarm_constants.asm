@@ -15,6 +15,11 @@ DEF SWARM_TERRAIN_MASK EQU %00000001
 DEF SWARM_ROCKET_F EQU 7
 DEF SWARM_ROCKET EQU 1 << SWARM_ROCKET_F
 	assert !(SWARM_ROCKET & SWARM_TERRAIN_MASK), "SWARM_ROCKET overlaps the terrain"
+; OR'd into a row's terrain: its shinies are alternate shinies SWARM_ALT_SHINY_NUMERATOR times in
+; ALT_SHINY_DENOMINATOR instead of ALT_SHINY_NUMERATOR.
+DEF SWARM_ALT_SHINY_F EQU 6
+DEF SWARM_ALT_SHINY EQU 1 << SWARM_ALT_SHINY_F
+	assert !(SWARM_ALT_SHINY & (SWARM_TERRAIN_MASK | SWARM_ROCKET)), "SWARM_ALT_SHINY overlaps another terrain bit"
 
 ; A row's story gate when it has none (event flag 0 is a real flag)
 DEF SWARM_NO_GATE EQU -1
@@ -46,6 +51,10 @@ DEF FIRST_STUDIED_SWARM EQU const_value
 	const SWARM_WEEZING_ROCKET    ; 18
 	const SWARM_CHARMELEON_ROCKET ; 19
 	const SWARM_ARBOK_ROCKET      ; 20
+	const SWARM_SCYTHER_ALT_SHINY ; 21
+	const SWARM_DRATINI_ALT_SHINY ; 22
+	const SWARM_MAGIKARP_ALT_SHINY ; 23
+	const SWARM_MARILL_ALT_SHINY ; 24
 DEF NUM_SWARMS EQU const_value - 1
 
 DEF MAX_ACTIVE_SWARMS EQU 3 ; Arnie's call, Anthony's call, and the radio's daily roll

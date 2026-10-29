@@ -14,6 +14,7 @@ DebugSwarmScript::
 	ifequal 1, .NewDay
 	ifequal 2, .RocketStory
 	ifequal 3, .RocketSwarm
+	ifequal 4, .AltShinySwarm
 	closetext
 	end
 
@@ -71,18 +72,33 @@ DebugSwarmScript::
 	closetext
 	end
 
+.AltShinySwarm:
+; Makes one of the swarms whose shinies are alternates 4 times in 5 today's swarm, whatever its
+; story flag says. It starts when 12.5 is heard. BEASTS -> FORCE SHINY makes every one shiny.
+	loadmenu .AltShinyMenuHeader
+	verticalmenu
+	closewindow
+	ifequal 5, .Cancel
+	ifequal 0, .Cancel
+	callasm DebugSwarmSetAltShiny
+	writetext DebugSwarmRocketText
+	waitbutton
+	closetext
+	end
+
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 15, 9
+	menu_coords 0, 0, 15, 11
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 4 ; items
+	db 5 ; items
 	db "NEW DAY@"
 	db "ROCKET STORY@"
 	db "ROCKET SWARM@"
+	db "ALT SHINY@"
 	db "CANCEL@"
 
 .StoryMenuHeader:
@@ -97,6 +113,21 @@ DebugSwarmScript::
 	db "NOT STARTED@"
 	db "HIDEOUT DONE@"
 	db "TOWER DONE@"
+	db "CANCEL@"
+
+.AltShinyMenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 15, 11
+	dw .AltShinyMenuData
+	db 1 ; default option
+
+.AltShinyMenuData:
+	db STATICMENU_CURSOR ; flags
+	db 5 ; items, in SWARM_*_ALT_SHINY order
+	db "SCYTHER@"
+	db "DRATINI@"
+	db "MAGIKARP@"
+	db "MARILL@"
 	db "CANCEL@"
 
 .RocketMenuHeader:
@@ -135,6 +166,17 @@ DebugSwarmSetRocket:
 	call DebugSwarmClearDay
 	ld a, [wScriptVar]
 	add SWARM_GOLBAT_ROCKET - 1
+	ld [wDailySwarm], a
+	ret
+
+DebugSwarmSetAltShiny:
+; in: wScriptVar = 1-4, the alternate-shiny menu's pick
+	assert SWARM_DRATINI_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 1 \
+		&& SWARM_MAGIKARP_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 2 \
+		&& SWARM_MARILL_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 3, "the alternate-shiny menu expects these ids in a row"
+	call DebugSwarmClearDay
+	ld a, [wScriptVar]
+	add SWARM_SCYTHER_ALT_SHINY - 1
 	ld [wDailySwarm], a
 	ret
 

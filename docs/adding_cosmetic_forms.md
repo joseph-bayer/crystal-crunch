@@ -9,6 +9,7 @@ what a Pokémon looks like and nothing else: same stats, moves, type and evoluti
 - [The tables](#the-tables)
 - [Putting the form on a Pokémon](#putting-the-form-on-a-pokémon)
 - [Egg patterns](#egg-patterns)
+- [Alternate shinies](#alternate-shinies)
 - [Gotchas](#gotchas)
 - [Checklist](#checklist)
 
@@ -21,7 +22,7 @@ A Pokémon's form lives in its `MON_FORM` byte (`SAVEMON_FORM` in the PC), packe
 | Bits | Mask | Meaning |
 |---|---|---|
 | 0-4 | `FORM_MASK` | the form number; 0 is `PLAIN_FORM` |
-| 6 | `ALT_SHINY_MASK` | reserved, unread |
+| 6 | `ALT_SHINY_MASK` | an alternate shiny; only read when bit 7 is set too (see [Alternate shinies](#alternate-shinies)) |
 | 7 | `SHINY_MASK` | shiny; a stored flag here, not derived from DVs |
 
 Form numbers are per species and 0-indexed, so a species can have up to 32. Every place that draws
@@ -268,6 +269,36 @@ Every per-pattern table asserts `NUM_EGG_PATTERNS`, so a missed one fails the bu
 the animation, bitmask, frame, dimension and symbol tables stay 0: the egg animation loaders keep
 their own egg branch, which picks frames and bitmasks by pattern, and a non-zero animation row would
 send eggs down the form path instead.
+
+## Alternate shinies
+
+A shiny can be an **alternate shiny**: `ALT_SHINY_MASK` set beside `SHINY_MASK`, drawn in a second
+set of shiny colors. It's per species, not per form, the same way a species' forms all share one
+shiny palette today.
+
+**How it's rolled.** Wherever a roll has just made a mon shiny, `RollAltShiny` (`home/pokemon.asm`)
+sets the bit `ALT_SHINY_NUMERATOR` times in `ALT_SHINY_DENOMINATOR` (1 in 5). A swarm row with
+`SWARM_ALT_SHINY` uses `SWARM_ALT_SHINY_NUMERATOR` (4 in 5) through `RollSwarmAltShiny`, both for its
+grass battles and its wandering mon (`RollOverworldMonAltShiny`). Every species gets the bit, so
+adding an alternate later also changes how existing shinies of that species look. Shininess that's
+written in data (trainer parties, NPC trades, a `givepoke` with a shiny form, the Odd Egg) isn't
+rolled, so it never gets the bit unless the data sets it. Eggs roll their own; they don't inherit
+it. Evolution, the PC and trades keep the whole form byte, and the move deleter, move learning and
+Shuckie's form change keep both shiny bits.
+
+**How it shows.** `GetMonNormalOrShinyPalettePointer` (`engine/gfx/color.asm`) returns the species'
+row in `AltShinyPalettes` when both bits are set, so battle, party, PC, stats, the follower and
+Pokémon NPCs all follow. The stats screen and both battle HUDs show `<ALT_SHINY>` instead of `⁂`
+(`GetShinyIcon`), only when the species actually has an alternate.
+
+**Adding one:**
+
+1. `gfx/pokemon/<species>/alt_shiny.pal`: two `RGB` lines, in the same order as the species'
+   `shiny.pal` (the pic's light color, then its dark one).
+2. A row in `data/pokemon/alt_shiny_palettes.asm`: `dw SPECIES`, then `INCLUDE` the file, before the
+   `dw 0` end marker.
+
+That's all; nothing else is per species.
 
 ## Gotchas
 

@@ -569,6 +569,7 @@ endc
 .shiny
 	ld a, [hl]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [hl], a
 	ret
 
@@ -599,7 +600,9 @@ InitRoamMon:
 ; in: a = level, b = map group, c = map number, de = roam struct, hl = species index
 	push af
 	call GetPokemonIDFromIndex
-	assert wRoamMon1Species == wRoamMon1 && wRoamMon1Level == wRoamMon1Species + 1 		&& wRoamMon1MapGroup == wRoamMon1Level + 1 && wRoamMon1MapNumber == wRoamMon1MapGroup + 1 		&& wRoamMon1HP == wRoamMon1MapNumber + 1
+	assert wRoamMon1Species == wRoamMon1 && wRoamMon1Level == wRoamMon1Species + 1 \
+		&& wRoamMon1MapGroup == wRoamMon1Level + 1 && wRoamMon1MapNumber == wRoamMon1MapGroup + 1 \
+		&& wRoamMon1HP == wRoamMon1MapNumber + 1
 	ld [de], a
 	inc de
 	pop af
@@ -1179,11 +1182,18 @@ ApplySwarmToWildSlot:
 	ld a, [hl]
 	ld [wTempWildMonMove + 1], a
 	pop hl
-	ld a, [hl]
 ; The form reaches the battle through the same byte loadwildmon uses, which the battle takes whole
 ; and skips its own shiny roll for. So the swarm's shininess is rolled into that byte here. A plain
 ; form that comes out not shiny is 0, which leaves the battle's ordinary form and shiny rolls in
 ; charge -- hence about 1/482 for a plain-form swarm rather than exactly 1/512.
+	push hl
+	inc hl
+	inc hl
+	inc hl ; past the form and map, to the terrain
+	ld a, [hl]
+	pop hl
+	ld c, a ; RollSwarmShiny reads its SWARM_ALT_SHINY bit
+	ld a, [hl]
 	call RollSwarmShiny
 	ld [wTempWildMonForm], a
 	pop hl ; the slot's own species, displaced
@@ -1196,8 +1206,8 @@ ApplySwarmToWildSlot:
 	ret
 
 RollSwarmShiny:
-; in: a = a swarm mon's form byte
-; out: a = that byte, with SHINY_MASK set if this one is shiny
+; in: a = a swarm mon's form byte, c = its row's terrain byte
+; out: a = that byte, with SHINY_MASK set if this one is shiny, and ALT_SHINY_MASK if an alternate
 ; The same two stages as every other shiny roll: a 1/256 gate, then SWARM_SHINY_NUMERATOR out of 256.
 ; A row that is always shiny already carries the bit and keeps it.
 	ld b, a
@@ -1205,6 +1215,10 @@ RollSwarmShiny:
 	jr nz, .done
 if DEF(_DEBUG) && SWARM_DEBUG_FORCE_SHINY
 	jr .shiny
+endc
+if DEF(_DEBUG)
+	call DebugForceShinyOn
+	jr nz, .shiny
 endc
 	call Random ; preserves bc
 	and a
@@ -1215,7 +1229,9 @@ endc
 .shiny
 	ld a, b
 	or SHINY_MASK
-	ret
+	bit SWARM_ALT_SHINY_F, c
+	jmp z, RollAltShiny
+	jmp RollSwarmAltShiny
 
 .done
 	ld a, b
@@ -1352,15 +1368,29 @@ DailySwarmBroadcast::
 IsDailySwarmRocket::
 ; For the radio, which picks Team Rocket's lines for their mon.
 ; out: carry if today's swarm is one of SWARM_ROCKET's rows
+	call GetDailySwarmTerrain
+	add a
+	assert SWARM_ROCKET_F == 7
+	ret
+
+IsDailySwarmAltShiny::
+; For the radio, which reports oddly colored mon for an alternate-shiny swarm.
+; out: carry if today's swarm is one of SWARM_ALT_SHINY's rows
+	call GetDailySwarmTerrain
+	add a
+	add a
+	assert SWARM_ALT_SHINY_F == 6
+	ret
+
+GetDailySwarmTerrain:
+; out: a = today's swarm's terrain byte, or 0 if there is none
 	ld a, [wDailySwarm]
 	and a
-	ret z ; `and a` has cleared carry
+	ret z
 	call GetSwarmRow
 	ld bc, 2 + 1 + 2
 	add hl, bc ; past the species, form and map, to the terrain
 	ld a, [hl]
-	add a
-	assert SWARM_ROCKET_F == 7
 	ret
 
 StartDailySwarm::
@@ -1490,6 +1520,12 @@ GetSwarmSpeciesForMap::
 	ld a, [hli]
 	ld b, [hl]
 	ld c, a
+	inc hl
+	inc hl
+	inc hl ; past the form and map, to the terrain
+	ld a, [hl]
+	and SWARM_ALT_SHINY
+	ld [wOverworldMonSwarmAltShiny], a ; for the overworld roll's alternate-shiny odds
 	pop hl
 	ld a, [hl]
 	scf

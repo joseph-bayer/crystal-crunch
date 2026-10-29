@@ -4673,8 +4673,13 @@ PrintPlayerHUD:
 	ld a, [wBattleMonForm]
 	and SHINY_MASK
 	jr z, .add_form_symbol
+	push bc
+	ld a, [wBattleMonSpecies]
+	ld bc, wBattleMonForm
+	farcall GetShinyIcon
+	pop bc
 	hlcoord 12, 8
-	ld [hl], "⁂"
+	ld [hl], a
 
 .add_form_symbol
 	ld a, [wBattleMonSpecies]
@@ -4858,8 +4863,11 @@ DrawEnemyHUD:
 	ld a, [wEnemyMonForm]
 	and SHINY_MASK
 	jr z, .add_form_symbol
+	ld a, [wEnemyMonSpecies]
+	ld bc, wEnemyMonForm
+	farcall GetShinyIcon
 	hlcoord 3, 1
-	ld [hl], "⁂"
+	ld [hl], a
 
 .add_form_symbol
 	ld a, [wEnemyMonSpecies]
@@ -6640,16 +6648,17 @@ LoadEnemyMon:
 	ld a, [hl]
 	ld [wEnemyMonForm], a
 	and SHINY_MASK
-	jr nz, .Finish ; already shiny
+	jmp nz, .Finish ; already shiny
 	call Random
 	and a
-	jr nz, .Finish ; 255/256 not shiny
+	jmp nz, .Finish ; 255/256 not shiny
 	call Random
 	cp LEGENDARY_SHINY_NUMERATOR
 	jr nc, .Finish ; 128/256 still not shiny
 	; It's shiny!
 	ld a, [hl]
 	or SHINY_MASK ; set shiny bit
+	call RollAltShiny
 	ld [hl], a
 	ld [wEnemyMonForm], a
 
@@ -6693,6 +6702,7 @@ LoadEnemyMon:
 	; It's shiny!
 	ld a, [wEnemyMonForm]
 	or SHINY_MASK ; set shiny bit
+	call RollAltShiny
 	ld [wEnemyMonForm], a
 	jr .Finish
 
@@ -6706,6 +6716,7 @@ LoadEnemyMon:
 	; It's shiny!
 	ld a, [wEnemyMonForm]
 	or SHINY_MASK ; set shiny bit
+	call RollAltShiny
 	ld [wEnemyMonForm], a
 	jr .Finish
 .TrainerForm:

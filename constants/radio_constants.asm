@@ -101,6 +101,7 @@ DEF NUM_RADIO_CHANNELS EQU const_value
 	const SWARM_RADIO_5          ; 5c
 	const SWARM_RADIO_6          ; 5d
 	const SWARM_RADIO_NONE_2     ; 5e
+	const SWARM_RADIO_ALT_SHINY_4 ; 5f
 DEF NUM_RADIO_SEGMENTS EQU const_value
 
 ; PlayRadioStationPointers indexes (see engine/pokegear/pokegear.asm)

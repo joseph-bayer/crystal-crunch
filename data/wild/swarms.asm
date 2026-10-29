@@ -49,5 +49,12 @@ SwarmTable::
 	swarm_def CHARMELEON, CHARMELEON_ROCKET_FORM, ROUTE_37, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER,    THIEF
 	swarm_def ARBOK,      ARBOK_ROCKET_FORM,      ROUTE_39, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER,    THIEF
 
+	; Alternate-shiny swarms: a shiny here is an alternate shiny 4 times in 5 instead of 1 in 5.
+	swarm_def SCYTHER,    PLAIN_FORM,             NATIONAL_PARK, SWARM_GRASS | SWARM_ALT_SHINY
+	; - Below Blackthorn, once Clair is beaten
+	swarm_def DRATINI,    PLAIN_FORM,             ROUTE_45, SWARM_WATER | SWARM_ALT_SHINY, EVENT_BEAT_CLAIR
+	swarm_def MAGIKARP,   PLAIN_FORM,             LAKE_OF_RAGE, SWARM_WATER | SWARM_ALT_SHINY
+	swarm_def MARILL,     PLAIN_FORM,             ROUTE_42, SWARM_GRASS | SWARM_ALT_SHINY
+
 
 	assert_table_length NUM_SWARMS

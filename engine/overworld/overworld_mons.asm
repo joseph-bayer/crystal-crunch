@@ -774,6 +774,10 @@ if DEF(_DEBUG) && SWARM_DEBUG_FORCE_SHINY
 	and a
 	jr nz, .make_shiny
 endc
+if DEF(_DEBUG)
+	call DebugForceSwarmMonShiny
+	jr nz, .make_shiny
+endc
 	call Random
 	and a
 	ret nz ; 255/256 not shiny, the same gate every other shiny roll uses
@@ -797,6 +801,7 @@ endc
 .make_shiny
 	ld a, [wOverworldMonRollBuffer + OW_MON_FORM]
 	or SHINY_MASK
+	call RollOverworldMonAltShiny
 	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
 
 .note_shiny

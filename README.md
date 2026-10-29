@@ -59,6 +59,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 ### Swarms
 - Daily swarms are announced via the radio on station 12.5, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
 - Strange looking Pokémon potentially from the past?
+- Swarms with higher chances to have alternate shiny colors.
 - Team Rocket's Pokémon, left behind as you complete the story, swarm the routes. They all know Thief: one holding nothing can steal your Pokémon's item, which you only get back by catching it.
 - Up to three swarms can be going at once: Arnie's and Anthony's phone calls still start theirs (Yanma on Route 35, Dunsparce in Dark Cave), and a new radio station picks one more every day.
 - Swarms end at midnight.
@@ -254,6 +255,7 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - Starters
   - In Elm's lab the three starters stand on the table. All three are rolled at once when you walk in, at **1/512** each, and are visibly shiny. Save before entering to hunt for a shiny starter!
 - Bug Catching Contest **1/512**
+- Alternate shinies: when a Pokémon has been determined to be shiny, there is a 1/5 chance it will be an alternate shiny instead.
 - Celebi **1/512**, rolled just before it appears at the Ilex Forest shrine, so a shiny Celebi is shiny in the scene before the battle too.
 - Odd Egg **always shiny**
 - Eggs

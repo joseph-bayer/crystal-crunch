@@ -42,7 +42,12 @@ FillPCWithEveryForm::
 ;
 ; It calls SendMonIntoBox rather than GivePoke, which would print "was sent to BILL's PC" and
 ; offer a nickname prompt for every one of them. That also means no gift shiny roll, so the
-; sweep is a clean set of normal colors.
+; sweep is a clean set of normal colors. After it come the species with an alternate shiny, every
+; form of each as an ordinary shiny and then its alternate.
+	call .Sweep
+	jr .AltShinies
+
+.Sweep:
 if FILL_PC_MAX_MONS
 	ld b, FILL_PC_MAX_MONS ; b is the budget throughout, and survives .StoreOne on the stack
 endc
@@ -84,8 +89,12 @@ if !FILL_PC_ALL_UNOWN_LETTERS
 	cp LOW(UNOWN) ; PlayersHouse2F records that storing Unown this early can crash
 	jr z, .next_species
 endc
+	call .HasAltShiny
+	jr c, .next_species ; it comes after the sweep, with its shinies
 	ld e, 0
 .form_loop
+	call .IsLookAlike
+	jr c, .next_form
 	push bc
 	call .StoreOne
 	pop bc
@@ -95,6 +104,7 @@ if FILL_PC_MAX_MONS
 	ret z ; the budget is spent
 endc
 
+.next_form
 	push bc
 	ld l, d
 	ld h, 0
@@ -111,6 +121,102 @@ endc
 	jr nz, .species_loop
 	ret
 endc
+
+.AltShinies:
+; After the sweep, every form of each species with an alternate shiny, in its normal colors, as an
+; ordinary shiny and as its alternate, side by side.
+	ld hl, AltShinyPalettes
+.alt_loop
+	push hl
+	ld a, BANK(AltShinyPalettes)
+	call GetFarWord
+	ld a, h
+	or l
+	ld d, l ; species index; NUM_POKEMON fits in a byte
+	pop hl
+	ret z ; the end
+	push hl
+	ld l, d
+	ld h, 0
+	call .LookUpFormCount
+	ld e, 0
+.alt_form_loop
+	push af ; the form count
+	push de
+	call .StoreOne
+	ld a, e
+	or SHINY_MASK
+	ld e, a
+	call .StoreOne
+	ld a, e
+	or ALT_SHINY_MASK
+	ld e, a
+	call .StoreOne
+	pop de
+	pop af
+	inc e
+	cp e
+	jr nz, .alt_form_loop
+	pop hl
+	ld bc, 2 + 2 * COLOR_SIZE ; past this row's species and two colors
+	add hl, bc
+	jr .alt_loop
+
+.HasAltShiny:
+; in: d = species index. out: carry if it has an alternate shiny. Preserves bc and de.
+	push bc
+	ld hl, AltShinyPalettes
+.has_alt_loop
+	push hl
+	ld a, BANK(AltShinyPalettes)
+	call GetFarWord
+	ld a, h
+	or l
+	jr z, .no_alt ; the end
+	ld a, l
+	cp d ; NUM_POKEMON fits in a byte, so the high byte is always zero
+	jr z, .has_alt
+	pop hl
+	ld bc, 2 + 2 * COLOR_SIZE ; past this row's species and two colors
+	add hl, bc
+	jr .has_alt_loop
+
+.has_alt
+	pop hl
+	pop bc
+	scf
+	ret
+
+.no_alt
+	pop hl
+	pop bc
+	ret ; `or l` has cleared carry
+
+.IsLookAlike:
+; in: d = species index, e = form. out: carry if the sweep leaves this form out. Preserves bc and de.
+	push hl
+	ld hl, .LookAlikeForms
+.look_alike_loop
+	ld a, [hli]
+	and a
+	jr z, .not_look_alike ; the end; `and a` has cleared carry
+	inc hl ; NUM_POKEMON fits in a byte, so the high byte is always zero
+	cp d
+	ld a, [hli] ; the form
+	jr nz, .look_alike_loop
+	cp e
+	jr nz, .look_alike_loop
+	scf
+.not_look_alike
+	pop hl
+	ret
+
+.LookAlikeForms:
+; Forms that look like the plain one and only carry a number for an evolution, so the sweep's
+; boxes aren't spent on duplicates.
+	dwb ZUBAT,   ZUBAT_UNUSED_FORM
+	dwb KOFFING, KOFFING_UNUSED_FORM
+	dw 0
 
 .StoreOne:
 ; in: d = species index, e = cosmetic form. Returns carry if the mon was stored. Preserves de.
@@ -145,12 +251,17 @@ endc
 if !FILL_PC_FORM_SPECIES_ONLY
 .GetFormCount:
 ; in: hl = species index. out: a = how many forms to sweep, at least 1. Preserves de.
-; Every other per-form table is indexed by species and says nothing about its own length, so the
-; counts live here rather than being derived from one of them.
 if !FILL_PC_INCLUDE_FORMS
 	ld a, 1
 	ret
-else
+endc
+	; fallthrough
+endc
+
+.LookUpFormCount:
+; in: hl = species index. out: a = how many forms it has, at least 1. Preserves de.
+; Every other per-form table is indexed by species and says nothing about its own length, so the
+; counts live here rather than being derived from one of them.
 	push de
 	ld de, .FormCounts
 .lookup_loop
@@ -180,8 +291,6 @@ else
 	ld a, 1
 	pop de
 	ret
-endc
-endc
 
 .FormCounts:
 ; Ordered so a six-box budget still reaches every species here. Magikarp leads because it is

@@ -925,6 +925,7 @@ DayCare_InitBreeding:
 	ret nc
 	ld a, [wEggMonForm]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [wEggMonForm], a
 	ld [wTempMonForm], a
 	ret
@@ -936,6 +937,7 @@ DayCare_InitBreeding:
 	ret nc
 	ld a, [wEggMonForm]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [wEggMonForm], a
 	ld [wTempMonForm], a
 	ret
@@ -949,6 +951,7 @@ DayCare_InitBreeding:
 	ret nc
 	ld a, [wEggMonForm]
 	or SHINY_MASK
+	call RollAltShiny
 	ld [wEggMonForm], a
 	ld [wTempMonForm], a
 	ret
