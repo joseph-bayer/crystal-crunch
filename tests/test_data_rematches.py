@@ -16,9 +16,7 @@ import pytest
 from harness import data
 
 # Steps down a ladder known to be there, as (earlier, later), until they're rebalanced.
-KNOWN_WEAKER = {
-	("BRENT1", "BRENT2"), # two Pokémon at 26, then one at 33
-}
+KNOWN_WEAKER = set() # Brent's (two Pokémon at 26, then one at 33) was rebalanced
 
 
 def rematch_ladders():
