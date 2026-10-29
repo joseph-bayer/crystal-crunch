@@ -167,7 +167,7 @@ if DEF(_DEBUG)
 	givepoke DITTO, 50
 
 	givepoke AMPHAROS, 50
-	givepoke GENGAR, 50
+	; givepoke GENGAR, 50
 	; A form Pikachu to make the follower, for the doll test below.
 	; givepoke PIKACHU, 50, NO_ITEM, PIKACHU_FLY_FORM
 	; An egg, for testing egg followers -- select it in the party and it walks around with you.
