@@ -5,6 +5,9 @@
 	const CHERRYGROVECITY_YOUNGSTER
 	const CHERRYGROVECITY_FISHER
 	const CHERRYGROVECITY_WILD_MON_1
+	const CHERRYGROVECITY_WILD_MON_2
+	const CHERRYGROVECITY_WILD_MON_3
+	const CHERRYGROVECITY_WILD_MON_4
 	; const CHERRYGROVECITY_MYSTERY_GIFT_NPC
 
 CherrygroveCity_MapScripts:
@@ -694,5 +697,8 @@ CherrygroveCity_MapEvents:
 	object_event  7, 12, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MysticWaterGuy, -1
 ; A wandering Pokemon out on the water. SWIM_WANDER_NOCLIP keeps it off dry land and lets it swim
 ; onto the player; you meet it by surfing into it, or by facing it and pressing A.
-	object_event 10, 12, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  8, 10, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 10, 13, SPRITE_OW_MON_2, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  2, 11, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  6,  7, SPRITE_OW_MON_4, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	; object_event 30,  6, SPRITE_SCIENTIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, MysteryGiftDemoNPC, -1

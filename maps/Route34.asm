@@ -14,7 +14,6 @@
 	const ROUTE34_POKE_BALL
 	const ROUTE34_WILD_MON_1
 	const ROUTE34_WILD_MON_2
-	const ROUTE34_WILD_MON_3
 
 Route34_MapScripts:
 	def_scene_scripts
@@ -781,4 +780,3 @@ Route34_MapEvents:
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
 	object_event 13, 29, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event 15,  9, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
-	object_event  4, 22, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

@@ -2,6 +2,8 @@
 	const MOUNTMOON_RIVAL
 	const MOUNTMOON_WILD_MON_1
 	const MOUNTMOON_WILD_MON_2
+	const MOUNTMOON_WILD_MON_3
+	const MOUNTMOON_WILD_MON_4
 
 MountMoon_MapScripts:
 	def_scene_scripts
@@ -186,3 +188,5 @@ MountMoon_MapEvents:
 ; rolled mon, not by a flag.
 	object_event  6, 13, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event 10,  3, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 23, 15, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 27,  4, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

@@ -2,6 +2,8 @@
 	const DIGLETTSCAVE_POKEFAN_M
 	const DIGLETTSCAVE_WILD_MON_1
 	const DIGLETTSCAVE_WILD_MON_2
+	const DIGLETTSCAVE_WILD_MON_3
+	const DIGLETTSCAVE_WILD_MON_4
 
 DiglettsCave_MapScripts:
 	def_scene_scripts
@@ -48,3 +50,5 @@ DiglettsCave_MapEvents:
 ; rolled mon, not by a flag.
 	object_event 15, 22, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event  6, 15, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  2,  8, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 11, 19, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

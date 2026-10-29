@@ -10,6 +10,7 @@
 	const ROUTE2_WILD_MON_1
 	const ROUTE2_WILD_MON_2
 	const ROUTE2_WILD_MON_3
+	const ROUTE2_WILD_MON_4
 
 Route2_MapScripts:
 	def_scene_scripts

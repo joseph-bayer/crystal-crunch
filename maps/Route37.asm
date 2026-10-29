@@ -8,6 +8,8 @@
 	const ROUTE37_FRUIT_TREE3
 	const ROUTE37_WILD_MON_1
 	const ROUTE37_WILD_MON_2
+	const ROUTE37_WILD_MON_3
+	const ROUTE37_WILD_MON_4
 
 Route37_MapScripts:
 	def_scene_scripts
@@ -260,5 +262,7 @@ Route37_MapEvents:
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors, and the event flag is -1 -- whether one is standing
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
-	object_event  8,  4, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
-	object_event 16, 13, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  9,  2, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 17, 12, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  6,  4, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 15, 15, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

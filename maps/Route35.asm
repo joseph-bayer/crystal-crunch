@@ -12,6 +12,8 @@
 	const ROUTE35_POKE_BALL
 	const ROUTE35_WILD_MON_1
 	const ROUTE35_WILD_MON_2
+	const ROUTE35_WILD_MON_3
+	const ROUTE35_WILD_MON_4
 
 Route35_MapScripts:
 	def_scene_scripts

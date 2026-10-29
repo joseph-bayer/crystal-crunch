@@ -4,6 +4,9 @@
 	const ROUTE17_BIKER3
 	const ROUTE17_BIKER4
 	const ROUTE17_WILD_MON_1
+	const ROUTE17_WILD_MON_2
+	const ROUTE17_WILD_MON_3
+	const ROUTE17_WILD_MON_4
 
 Route17_MapScripts:
 	def_scene_scripts
@@ -156,3 +159,6 @@ Route17_MapEvents:
 ; The event flag is -1: whether one is standing here is decided by whether its slot holds a
 ; rolled mon, not by a flag.
 	object_event 11,  4, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 16, 24, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 17, 50, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  2, 34, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

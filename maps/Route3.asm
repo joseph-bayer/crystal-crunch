@@ -5,6 +5,8 @@
 	const ROUTE3_FISHER2
 	const ROUTE3_WILD_MON_1
 	const ROUTE3_WILD_MON_2
+	const ROUTE3_WILD_MON_3
+	const ROUTE3_WILD_MON_4
 
 Route3_MapScripts:
 	def_scene_scripts

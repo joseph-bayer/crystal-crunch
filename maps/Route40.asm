@@ -13,6 +13,8 @@
 	const ROUTE40_STANDING_YOUNGSTER
 	const ROUTE40_WILD_MON_1
 	const ROUTE40_WILD_MON_2
+	const ROUTE40_WILD_MON_3
+	const ROUTE40_WILD_MON_4
 
 Route40_MapScripts:
 	def_scene_scripts

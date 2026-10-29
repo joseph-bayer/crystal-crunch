@@ -2,6 +2,8 @@
 	const CINNABARISLAND_BLUE
 	const CINNABARISLAND_WILD_MON_1
 	const CINNABARISLAND_WILD_MON_2
+	const CINNABARISLAND_WILD_MON_3
+	const CINNABARISLAND_WILD_MON_4
 
 CinnabarIsland_MapScripts:
 	def_scene_scripts
@@ -151,3 +153,5 @@ CinnabarIsland_MapEvents:
 ; rolled mon, not by a flag.
 	object_event 12, 16, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event  1,  5, SPRITE_OW_MON_2, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  4, 15, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  2, 10, SPRITE_OW_MON_4, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

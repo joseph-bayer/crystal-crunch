@@ -24,7 +24,7 @@ OverworldWildMonsGrass:
 ; =================
 
 	def_ow_wildmons ROUTE_29
-	db 2 ; how many can be out at once -- one SPRITE_OW_MON_n object each
+	db 4 ; how many can be out at once -- one SPRITE_OW_MON_n object each
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 50, PIDGEY,      2, PLAIN_FORM, 0,                  NO_MOVE
@@ -64,7 +64,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_31
-	db 2 ; how many can be out at once
+	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 34, LEDYBA,      4, PLAIN_FORM, 0,                  NO_MOVE
@@ -164,7 +164,8 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 ; The park outside the contest. Its grass table's first four slots per time of day, with the slot
-; odds they have there (30, 30, 20, 10); the remainder lands on the fourth, as a short roster does.
+; odds they have there (30, 30, 20, 10), with the fourth taking the other 10 too so each time
+; of day totals 100.
 ; The Persian owns slot 1, so these three take SPRITE_OW_MON_2..4.
 	def_ow_wildmons NATIONAL_PARK
 	db 3 ; how many can be out at once
@@ -173,17 +174,17 @@ OverworldWildMonsGrass:
 	ow_wildmon 30, NIDORAN_M,  14, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 30, NIDORAN_F,  15, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 20, SUNKERN,    17, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, WEEDLE,     10, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, WEEDLE,     10, PLAIN_FORM, 0,                  NO_MOVE
 	; day
 	ow_wildmon 30, NIDORAN_F,  15, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 30, NIDORAN_M,  14, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 20, WEEDLE,     10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SUNKERN,    13, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, SUNKERN,    13, PLAIN_FORM, 0,                  NO_MOVE
 	; nite
 	ow_wildmon 30, PSYDUCK,    13, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 30, MURKROW,    17, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 20, SPINARAK,   14, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, HOOTHOOT,   15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, HOOTHOOT,   15, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_36
@@ -207,7 +208,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_37
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 50, PIDGEY,     16, PLAIN_FORM, 0,                  NO_MOVE
@@ -227,7 +228,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_38
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 34, TAUROS,     21, PLAIN_FORM, 0,                  NO_MOVE
@@ -287,7 +288,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_43
-	db 1 ; how many can be out at once
+	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 34, FURRET,     21, PLAIN_FORM, 0,                  NO_MOVE
@@ -368,7 +369,7 @@ OverworldWildMonsGrass:
 
 
 	def_ow_wildmons RUINS_OF_ALPH_OUTSIDE
-	db 1 ; how many can be out at once
+	db 2 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 80, NATU,       21, PLAIN_FORM, 0,                  NO_MOVE
@@ -432,7 +433,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ICE_PATH_1F
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 30, SWINUB,     21, PLAIN_FORM, 0,                  NO_MOVE
@@ -452,7 +453,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ICE_PATH_B1F
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 35, SWINUB,     32, PLAIN_FORM, 0,                  NO_MOVE
@@ -472,7 +473,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ICE_PATH_B2F_BLACKTHORN_SIDE
-	db 1 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 35, SWINUB,     32, PLAIN_FORM, 0,                  NO_MOVE
@@ -492,7 +493,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ICE_PATH_B3F
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 40, JYNX,       35, PLAIN_FORM, 0,                  NO_MOVE
@@ -693,7 +694,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons SLOWPOKE_WELL_B2F
-	db 1 ; how many can be out at once
+	db 2 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 50, ZUBAT,      21, PLAIN_FORM, 0,                  NO_MOVE
@@ -733,7 +734,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons BURNED_TOWER_1F
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 35, RATICATE,   15, PLAIN_FORM, 0,                  NO_MOVE
@@ -753,7 +754,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons UNION_CAVE_1F
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 42, GEODUDE,     8, PLAIN_FORM, 0,                  NO_MOVE
@@ -897,7 +898,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_5
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 31, PIDGEY,     13, PLAIN_FORM, 0,                  NO_MOVE
@@ -977,7 +978,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_9
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 31, RATTATA,    15, PLAIN_FORM, 0,                  NO_MOVE
@@ -1117,7 +1118,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_17
-	db 1 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 40, FEAROW,     30, PLAIN_FORM, 0,                  NO_MOVE
@@ -1301,7 +1302,7 @@ OverworldWildMonsGrass:
 ; ==============
 
 	def_ow_wildmons DIGLETTS_CAVE
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 40, DIGLETT,     3, PLAIN_FORM, 0,                  NO_MOVE
@@ -1321,7 +1322,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons MOUNT_MOON
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 36, GEODUDE,     8, PLAIN_FORM, 0,                  NO_MOVE
@@ -1361,7 +1362,7 @@ OverworldWildMonsGrass:
 	end_ow_wildmons
 
 	def_ow_wildmons ROCK_TUNNEL_B1F
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 34, CUBONE,     42, PLAIN_FORM, 0,                  NO_MOVE
@@ -1490,7 +1491,7 @@ OverworldWildMonsWater:
 ; Whether a water Pokemon rides on top of the water or swims in it is decided by its species, in
 ; data/wild/surface_mons.asm, not by these rows.
 	def_ow_wildmons CHERRYGROVE_CITY
-	db 1 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  20, PLAIN_FORM, 0,                  RAPID_SPIN
@@ -1507,6 +1508,46 @@ OverworldWildMonsWater:
 	ow_wildmon 30, TENTACOOL,  15, PLAIN_FORM, 0,                  RAPID_SPIN
 	ow_wildmon 10, TENTACRUEL, 20, PLAIN_FORM, 0,                  RAPID_SPIN
 	ow_wildmon 1,  TENTACRUEL, 18, PLAIN_FORM, 0,                  AURORA_BEAM
+	end_ow_wildmons
+
+	def_ow_wildmons ROUTE_30
+	db 1 ; how many can be out at once
+	db 100 percent ; the chance each one shows up
+	; morn
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
+	; day
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
+	; nite
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
+	end_ow_wildmons
+
+	def_ow_wildmons ROUTE_31
+	db 1 ; how many can be out at once
+	db 100 percent ; the chance each one shows up
+	; morn
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
+	; day
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
+	; nite
+	ow_wildmon 50, POLIWAG,    15, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 15, POLIWHIRL,  20, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 5,  POLIWHIRL,  22, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_32
@@ -1530,7 +1571,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_34
-	db 1 ; how many can be out at once
+	db 0 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  20, PLAIN_FORM, 0,                  RAPID_SPIN
@@ -1590,7 +1631,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_41
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 50, TENTACOOL,  20, PLAIN_FORM, 0,                  RAPID_SPIN
@@ -1670,7 +1711,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons CIANWOOD_CITY
-	db 4 ; how many can be out at once
+	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  20, PLAIN_FORM, 0,                  RAPID_SPIN
@@ -1710,7 +1751,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons OLIVINE_CITY
-	db 1 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  20, PLAIN_FORM, 0,                  RAPID_SPIN
@@ -1750,7 +1791,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons VIOLET_CITY
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, POLIWAG,    20, PLAIN_FORM, 0,                  NO_MOVE
@@ -2061,7 +2102,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_19
-	db 3 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  35, PLAIN_FORM, 0,                  HAZE
@@ -2261,7 +2302,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons CINNABAR_ISLAND
-	db 2 ; how many can be out at once
+	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  35, PLAIN_FORM, 0,                  HAZE
@@ -2321,7 +2362,7 @@ OverworldWildMonsWater:
 	end_ow_wildmons
 
 	def_ow_wildmons VERMILION_CITY
-	db 4 ; how many can be out at once
+	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
 	ow_wildmon 59, TENTACOOL,  35, PLAIN_FORM, 0,                  HAZE

@@ -8,6 +8,8 @@
 	const ROUTE38_BEAUTY2
 	const ROUTE38_WILD_MON_1
 	const ROUTE38_WILD_MON_2
+	const ROUTE38_WILD_MON_3
+	const ROUTE38_WILD_MON_4
 
 Route38_MapScripts:
 	def_scene_scripts
@@ -487,3 +489,5 @@ Route38_MapEvents:
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
 	object_event 10,  5, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event 20,  7, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 27,  6, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  8, 11, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

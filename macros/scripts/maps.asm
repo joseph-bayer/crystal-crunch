@@ -102,6 +102,9 @@ MACRO def_object_events
 	REDEF _NUM_OBJECT_EVENTS EQUS "_NUM_OBJECT_EVENTS_\@"
 	db {_NUM_OBJECT_EVENTS}
 	DEF {_NUM_OBJECT_EVENTS} = 0
+	; how many distinct Pokemon-colored sprites this map's objects show; see object_event
+	REDEF _MON_PALS EQUS "_MON_PALS_\@"
+	DEF {_MON_PALS} = 0
 ENDM
 
 MACRO ow_mon_map
@@ -151,6 +154,23 @@ MACRO object_event
 	; the dummy PlayerObjectTemplate object_event has no def_object_events
 	if DEF(_NUM_OBJECT_EVENTS)
 		DEF {_NUM_OBJECT_EVENTS} += 1
+		assert {_NUM_OBJECT_EVENTS} <= NUM_OBJECTS - 2, \
+			"a map has more object_events than NUM_OBJECTS - 2 (the player and the follower take two)"
+		; Every sprite GetMonSprite draws as a Pokemon, with palette 0, takes its colors from one of
+		; NUM_OW_MON_PALS entries, and one past them is drawn in palette 0, flat red. The entries
+		; reset only when the map loads, so every such object on the map counts, not only those on
+		; screen together. Repeats of one sprite id share an entry; each SPRITE_OW_MON_n is one slot,
+		; so it counts once too. Variable sprites (dolls) can't be resolved here and are left out.
+		if (\9) == 0 && ((\3) >= SPRITE_POKEMON && (\3) < SPRITE_OW_MON + NUM_OW_MON_SLOTS \
+			|| (\3) == SPRITE_DAY_CARE_MON_1 || (\3) == SPRITE_DAY_CARE_MON_2 \
+			|| (\3) == SPRITE_SUICUNE || (\3) == SPRITE_ENTEI || (\3) == SPRITE_RAIKOU)
+			if !DEF({_MON_PALS}_{d:\3})
+				DEF {_MON_PALS}_{d:\3} EQU 1
+				DEF {_MON_PALS} += 1
+				assert {_MON_PALS} <= NUM_OW_MON_PALS, \
+					"a map shows more distinct Pokemon sprites than NUM_OW_MON_PALS; the extra is drawn red"
+			endc
+		endc
 	endc
 ENDM
 

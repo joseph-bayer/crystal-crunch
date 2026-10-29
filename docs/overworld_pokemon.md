@@ -20,6 +20,7 @@ Two features, built in that order, sharing one mechanism.
 - [Populations](#populations)
 - [Swarms](#swarms)
 - [Roaming beasts](#roaming-beasts)
+- [Checks](#checks)
 - [Bugs worth remembering](#bugs-worth-remembering)
 - [Known gaps](#known-gaps)
 
@@ -62,7 +63,9 @@ owns. Without that, a roll into slot 1 would redraw the static mon that slot bel
 Route 39 Miltank herd becoming whatever wandered in.
 
 Objects may share a slot: the six Rocket Base Electrode and the four Route 39 Miltank each declare
-one entry between them. Route 45 sits at the four-slot ceiling with four grass slots. The Red
+one entry between them. Many maps with wandering mon sit at the four-slot ceiling; the ones below
+it are held there by the [four-color limit](#four-pokémon-colors-per-map), by the object limit (on
+Route 32), or by lack of room on the map. The Red
 Gyarados is deliberately *not* a slot: it keeps vanilla's `SPRITE_GYARADOS` icon sprite in the NPC
 red and `SPRITEMOVEDATA_POKEMON` bobbing, so the lake's three Magikarp share the map with it.
 
@@ -107,10 +110,42 @@ reload after a battle on a [population](#populations) map. Without the second, a
 population claims a new entry per reshuffle, fills all four in a couple of battles, and every
 later member falls back to palette 0 — red.
 
-**The budget is eight hardware OBJ palettes and the follower permanently owns one.** Measured
-across every map: 32 maps have one distinct mon, four have two, two have three. If a map ever
-needs more, the claim returns carry and the object falls back to a flat overworld color rather
-than misdrawing.
+**The budget is eight hardware OBJ palettes and the follower permanently owns one.** That is why
+`wOverworldMonPals` has only `NUM_OW_MON_PALS` = 4 entries.
+
+### Four Pokémon colors per map
+
+A map can show **four distinct Pokémon color pairs**, and the four are shared by everything that
+takes one, not only the wandering mon.
+
+- **What counts:** any object `GetMonSprite` draws as a Pokémon, with palette byte `0`:
+  - the `SPRITE_OW_MON_1`..`_4` slots, wandering or static (each slot is one);
+  - `SpriteMons` sprites, `SPRITE_UNOWN` to `SPRITE_HO_OH`, such as Vermilion's Machop;
+  - the day-care mon, `SPRITE_DAY_CARE_MON_1` / `_2`;
+  - Raikou, Entei and Suicune's own sprites, including Suicune's one-time sightings, since they
+    share a visit with the wanderers;
+  - dolls, through variable sprites (the player's room only).
+- **What doesn't:** an object with its own palette byte skips the claim, as the Red Gyarados
+  (`PAL_NPC_RED`) and the silver beast statues do. `SPRITE_SURF`, the big Snorlax, Lapras and Onix
+  and the other ordinary sprites aren't Pokémon sprites to this code. The follower has its own
+  index, `PAL_OW_FOLLOWER`.
+- **When it's spent:** a claim happens when an object spawns, and the table only resets when the
+  map loads (and on the two `RefreshOverworldMonPalettes` paths). So it counts every distinct mon
+  that appears during one visit, not only the ones on screen together. An empty slot and an object
+  hidden by its event flag claim nothing.
+- **Past it:** no crash and no wrong graphics, but the fifth pair's mon is drawn in palette 0,
+  **flat red**. A beast that misses keeps its classic sprite-table color, which looks normal. Which
+  object misses depends on spawn order.
+
+Two wanderers of one species share an entry, but the roll can't promise that, so each slot is
+budgeted as one. A map's slots plus its other Pokémon sprites must come to four or fewer, which is
+why Route 36 and Route 42 stop at three wanderers (Suicune), Route 34 at two (the day-care mon),
+and Vermilion City and Cianwood City at three water mon (the Machop; Suicune). Both build checks in
+[Checks](#checks) enforce it.
+
+A second limit is per screen: when all eight hardware palettes are in use, `MarkUsedPal`
+overwrites hardware slot 7, so some on-screen object shows the wrong colors until it scrolls
+away. That depends on how many NPC colors share a screen with the mon, not on the mon alone.
 
 
 ## Sprites are built from menu icons
@@ -451,10 +486,57 @@ How it works:
 
 Known gaps:
 
-- On Routes 33, 39, 42, 43 and 44 there is only one grass slot, so with both beasts there only one
-  can be met that visit. The Pokégear still shows both.
+- On Route 42 there is only one grass slot (Suicune's sighting holds it to three wanderers, two of
+  them on water), so with both beasts there only one can be met that visit. The Pokégear still
+  shows both. The same goes for Routes 33, 39 and 44, which also have one grass slot; Route 43
+  has three.
 - `KeepSwarmClearOfPlayer` can empty a beast's slot after a swarm battle if its spawn tile is the
   player's tile, which leaves it out for the rest of the visit.
+
+
+## Checks
+
+Getting a map's wandering mon wrong assembles cleanly and shows up only in play, as a slot that
+never appears, a mon drawn red or a script moving the wrong object. Two layers catch it.
+
+**Asserts in `object_event`** (`macros/scripts/maps.asm`), on every map, every build:
+
+- **The object limit.** A map may have `NUM_OBJECTS - 2` = 17 objects; the player and the follower
+  take the other two. An 18th fails the build.
+- **The four-color limit.** `def_object_events` opens a per-map count, and each object with
+  palette `0` whose sprite is a Pokémon sprite (`SPRITE_POKEMON` up to the last `SPRITE_OW_MON_n`,
+  the two day-care ids, the three beast ids) adds one the first time its sprite id appears. More
+  than `NUM_OW_MON_PALS` fails the build. This works inside one map file because each
+  `SPRITE_OW_MON_n` is one slot, so a map's objects alone say how many slots it shows. Variable
+  sprites (dolls) can't be resolved at assembly and are left out.
+
+**`utils/ow_mon_check.py`**, by hand, like `utils/farcheck.py`:
+
+```bash
+python utils/ow_mon_check.py
+```
+
+It reads the map constants, `data/maps/attributes.asm`, every `maps/*.asm`, the static table, both
+roster tables and the populations, prints one line per problem and exits 1, or prints nothing and
+exits 0. It reports a map when:
+
+- the highest `SPRITE_OW_MON_n` on it isn't static + grass + water (or static + population), capped
+  at four;
+- a rolled slot doesn't have exactly one `OBJECTTYPE_WILDMON` object;
+- it has more than 17 objects;
+- its slots plus its other palette-0 Pokémon sprites come to more than four;
+- its `object_const_def` names wanderers `<MAP>_WILD_MON_n` and they don't match its wandering
+  objects: one constant per wanderer, at the same index, numbered from 1. A list that stops short
+  is harmless; one with a constant after a short list names the wrong object, which is how
+  Cianwood's boarding script once moved a wanderer instead of the sailor.
+
+The Bug Catching Contest names its members `NATIONALPARKBUGCONTEST_MEMBER_n`, not `_WILD_MON_n`,
+so the constant check skips that map; the others still apply.
+
+**Adding a wanderer** to a map is the roster's count byte, one `object_event` at the end of the
+list, and one `const <MAP>_WILD_MON_n` at the end of `object_const_def`. On a map with both
+terrains, adding a grass slot renumbers each water object's `SPRITE_OW_MON_n` up by one, since
+slots fill grass first. Then build and run the lint.
 
 
 ## Bugs worth remembering

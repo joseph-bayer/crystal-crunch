@@ -1,6 +1,9 @@
 	object_const_def
 	const ICEPATHB2FBLACKTHORNSIDE_POKE_BALL
 	const ICEPATHB2FBLACKTHORNSIDE_WILD_MON_1
+	const ICEPATHB2FBLACKTHORNSIDE_WILD_MON_2
+	const ICEPATHB2FBLACKTHORNSIDE_WILD_MON_3
+	const ICEPATHB2FBLACKTHORNSIDE_WILD_MON_4
 
 IcePathB2FBlackthornSide_MapScripts:
 	def_scene_scripts
@@ -34,3 +37,6 @@ IcePathB2FBlackthornSide_MapEvents:
 ; The event flag is -1: whether one is standing here is decided by whether its slot
 ; holds a rolled mon, not by a flag.
 	object_event  4,  4, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  1, 12, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  9, 11, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  9,  2, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

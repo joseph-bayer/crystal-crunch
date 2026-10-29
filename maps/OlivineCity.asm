@@ -4,6 +4,9 @@
 	const OLIVINECITY_SAILOR2
 	const OLIVINECITY_OLIVINE_RIVAL
 	const OLIVINECITY_WILD_MON_1
+	const OLIVINECITY_WILD_MON_2
+	const OLIVINECITY_WILD_MON_3
+	const OLIVINECITY_WILD_MON_4
 
 OlivineCity_MapScripts:
 	def_scene_scripts
@@ -329,3 +332,6 @@ OlivineCity_MapEvents:
 ; Palette 0 so they take the mon's own colors, and the event flag is -1 -- whether one is standing
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
 	object_event  5, 27, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 26, 18, SPRITE_OW_MON_2, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 35, 27, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 23, 29, SPRITE_OW_MON_4, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

@@ -4,6 +4,8 @@
 	const ROCKTUNNELB1F_POKE_BALL3
 	const ROCKTUNNELB1F_WILD_MON_1
 	const ROCKTUNNELB1F_WILD_MON_2
+	const ROCKTUNNELB1F_WILD_MON_3
+	const ROCKTUNNELB1F_WILD_MON_4
 
 RockTunnelB1F_MapScripts:
 	def_scene_scripts
@@ -48,3 +50,5 @@ RockTunnelB1F_MapEvents:
 ; rolled mon, not by a flag.
 	object_event 19, 19, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event  7,  9, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 26,  8, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 11,  5, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

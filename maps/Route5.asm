@@ -2,6 +2,8 @@
 	const ROUTE5_POKEFAN_M
 	const ROUTE5_WILD_MON_1
 	const ROUTE5_WILD_MON_2
+	const ROUTE5_WILD_MON_3
+	const ROUTE5_WILD_MON_4
 
 Route5_MapScripts:
 	def_scene_scripts
@@ -64,3 +66,5 @@ Route5_MapEvents:
 ; rolled mon, not by a flag.
 	object_event 12,  6, SPRITE_OW_MON_1, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event  7,  2, SPRITE_OW_MON_2, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 11,  3, SPRITE_OW_MON_3, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  8,  7, SPRITE_OW_MON_4, SPRITEMOVEDATA_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

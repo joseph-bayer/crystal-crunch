@@ -9,6 +9,8 @@
 	const VIOLETCITY_POKE_BALL2
 	const VIOLETCITY_WILD_MON_1
 	const VIOLETCITY_WILD_MON_2
+	const VIOLETCITY_WILD_MON_3
+	const VIOLETCITY_WILD_MON_4
 
 VioletCity_MapScripts:
 	def_scene_scripts
@@ -317,3 +319,5 @@ VioletCity_MapEvents:
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
 	object_event 29, 12, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event 15, 13, SPRITE_OW_MON_2, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 13,  2, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 31,  6, SPRITE_OW_MON_4, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

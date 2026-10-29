@@ -14,6 +14,7 @@
 	const LAKEOFRAGE_WILD_MON_1
 	const LAKEOFRAGE_WILD_MON_2
 	const LAKEOFRAGE_WILD_MON_3
+	const LAKEOFRAGE_WILD_MON_4
 
 LakeOfRage_MapScripts:
 	def_scene_scripts

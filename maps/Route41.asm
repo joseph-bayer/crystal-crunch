@@ -11,6 +11,8 @@
 	const ROUTE41_SWIMMER_GIRL5
 	const ROUTE41_WILD_MON_1
 	const ROUTE41_WILD_MON_2
+	const ROUTE41_WILD_MON_3
+	const ROUTE41_WILD_MON_4
 
 Route41_MapScripts:
 	def_scene_scripts
@@ -368,3 +370,5 @@ Route41_MapEvents:
 ; here is decided by whether its slot holds a rolled mon, not by a flag.
 	object_event 25, 30, SPRITE_OW_MON_1, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
 	object_event 25,  3, SPRITE_OW_MON_2, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event 21, 49, SPRITE_OW_MON_3, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1
+	object_event  4, 36, SPRITE_OW_MON_4, SPRITEMOVEDATA_SWIM_WANDER_NOCLIP, 2, 2, -1, -1, 0, OBJECTTYPE_WILDMON, 0, ObjectEvent, -1

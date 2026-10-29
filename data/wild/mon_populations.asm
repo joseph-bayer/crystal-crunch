@@ -22,7 +22,7 @@ MonPopulations:
 ; The Bug Catching Contest, on the park as it is during the contest. The contest's own roster,
 ; weights and level ranges, line for line; Scyther and Pinsir take a random wild colour the way a
 ; grass encounter of theirs does. Species mode: every battle reshuffles what is out.
-	def_population NATIONAL_PARK_BUG_CONTEST, POP_REROLL_SPECIES, 3
+	def_population NATIONAL_PARK_BUG_CONTEST, POP_REROLL_SPECIES, 4
 	spawn_area 5,  3,  12, 4  ; top really tall grass 1
 	spawn_area 4,  10, 31, 17 ; top really tall grass 2
 	spawn_area 4,  20, 31, 27 ; bottom tall grass 1
