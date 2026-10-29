@@ -2,11 +2,11 @@
 
 > **Disclaimer:** Generative AI was used as a code assistant for some systems programming. All art/maps/dialogue (and everything creative) was made by myself and the community or was commissioned from real artists.
 
-This is a hack of Pokémon Crystal meant to make you smile. All systems were designed with a pre-Gen 3 mindset. Other hacks already port new features like abilities, new moves, new items, etc. into Crystal (and do it incredibly well), so I don't see a reason to tread the same ground. There are exceptions to this rule when it comes to QoL - for example, the storage system now uses the Gen 3 UI.
+This is an enhancement hack of Pokémon Crystal that spices things up with followers, overworld mon, lots of new forms for existing Pokémon, an attempt to make Unown more important to your journey, a bunch of easter eggs and quality life improvements, and so much more. All systems were designed with a pre-Gen 3 mindset. Other hacks already port new features like abilities, moves, and items from later generations into Crystal (and do it incredibly well), so I don't see a reason to tread the same ground. There are exceptions to this rule when it comes to QoL - for example, the storage system now uses the Gen 3 UI.
 
 ## Status
 
-Still in playtesting. Don't be surprised if you find bugs! Future updates may break existing saves.
+Still in playtesting. Don't be surprised if you find bugs! Future updates may break existing saves. More features, quality of life improvements, and easter eggs are in the pipeline.
 
 ## Download
 
