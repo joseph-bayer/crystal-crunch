@@ -142,8 +142,12 @@ endc
 	ld e, 0
 .alt_form_loop
 	push af ; the form count
-	push de
+	call .IsLookAlike
+	jr c, .alt_next_form
 	call .StoreOne
+	call .IsShinyLookAlike
+	jr c, .alt_next_form
+	push de
 	ld a, e
 	or SHINY_MASK
 	ld e, a
@@ -153,6 +157,7 @@ endc
 	ld e, a
 	call .StoreOne
 	pop de
+.alt_next_form
 	pop af
 	inc e
 	cp e
@@ -192,8 +197,16 @@ endc
 	pop bc
 	ret ; `or l` has cleared carry
 
+.IsShinyLookAlike:
+; in: d = species index, e = form. out: carry if this form is shiny (and alternate) in exactly the
+; plain form's colors, so only its normal colors are worth a box slot. Preserves bc and de.
+	push hl
+	ld hl, .ShinyLookAlikeForms
+	jr .look_alike_loop
+
 .IsLookAlike:
-; in: d = species index, e = form. out: carry if the sweep leaves this form out. Preserves bc and de.
+; in: d = species index, e = form. out: carry if this form looks just like the plain one, so the
+; fill leaves it out. Preserves bc and de.
 	push hl
 	ld hl, .LookAlikeForms
 .look_alike_loop
@@ -212,10 +225,24 @@ endc
 	ret
 
 .LookAlikeForms:
-; Forms that look like the plain one and only carry a number for an evolution, so the sweep's
+; Forms drawn exactly like the plain one, which only carry a number for an evolution, so the
 ; boxes aren't spent on duplicates.
-	dwb ZUBAT,   ZUBAT_UNUSED_FORM
-	dwb KOFFING, KOFFING_UNUSED_FORM
+	dwb ZUBAT,    ZUBAT_UNUSED_FORM
+	dwb KOFFING,  KOFFING_UNUSED_FORM
+	dwb PICHU,    PICHU_UNUSED_1_FORM
+	dwb PICHU,    PICHU_UNUSED_2_FORM
+	dwb RAICHU,   RAICHU_SURF_FORM
+	dwb RAICHU,   RAICHU_FLY_FORM
+	dwb GYARADOS, GYARADOS_XS_FORM
+	dwb GYARADOS, GYARADOS_XL_FORM
+	dw 0
+
+.ShinyLookAlikeForms:
+; Recolors whose shiny is the plain form's shiny, as is their alternate.
+	dwb SCYTHER, SCYTHER_FOREST_GREEN_FORM
+	dwb SCYTHER, SCYTHER_TEAL_FORM
+	dwb SCIZOR,  SCIZOR_CRIMSON_FORM
+	dwb SCIZOR,  SCIZOR_DUSTY_ROSE_FORM
 	dw 0
 
 .StoreOne:
