@@ -532,6 +532,12 @@ RollElmsLabStarters::
 	ld b, a
 	jmp EventFlagAction
 
+RollCelebiShiny::
+; Right before Celebi appears at the shrine: a fresh 1/512, kept in a flag so the shrine's animation
+; and the battle agree.
+	ld de, EVENT_CELEBI_SHINY
+	jr RollElmsLabStarters.Roll
+
 RollTinTowerSuicuneShiny::
 ; As Tin Tower 1F loads with Suicune there: another 1/512 chance if it isn't shiny yet, rolled
 ; before its sprite appears.

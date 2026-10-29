@@ -254,6 +254,7 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - Starters
   - In Elm's lab the three starters stand on the table. All three are rolled at once when you walk in, at **1/512** each, and are visibly shiny. Save before entering to hunt for a shiny starter!
 - Bug Catching Contest **1/512**
+- Celebi **1/512**, rolled just before it appears at the Ilex Forest shrine, so a shiny Celebi is shiny in the scene before the battle too.
 - Odd Egg **always shiny**
 - Eggs
 

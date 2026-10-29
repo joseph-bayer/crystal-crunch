@@ -1513,6 +1513,8 @@
 	const EVENT_ELMS_LAB_CYNDAQUIL_SHINY
 	const EVENT_ELMS_LAB_TOTODILE_SHINY
 	const EVENT_ELMS_LAB_CHIKORITA_SHINY
+; Ilex Forest: whether the Celebi about to appear at the shrine was rolled shiny (RollCelebiShiny)
+	const EVENT_CELEBI_SHINY
 ; Elm's lab: the leftover starter wandering in front of the table, set to hide it. Rebuilt on every
 ; load by ElmsLabObjectsCallback.
 	const EVENT_CYNDAQUIL_WANDERING_IN_ELMS_LAB

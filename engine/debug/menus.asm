@@ -71,8 +71,8 @@ DebugStoryScript::
 	end
 
 .Legends:
-; The Elite Four respawn without the Elite Four, the wings Lugia and Ho-Oh need, and a warp beside
-; each one-off. Raikou and Entei are under BEASTS instead.
+; The Elite Four respawn without the Elite Four, the wings Lugia and Ho-Oh need, a warp beside each
+; one-off, and Celebi's GS Ball event set up again. Raikou and Entei are under BEASTS instead.
 	loadmenu .LegendsMenuHeader
 	verticalmenu
 	closewindow
@@ -80,6 +80,7 @@ DebugStoryScript::
 	ifequal 2, .GiveWings
 	ifequal 3, .LegendWarps1
 	ifequal 4, .LegendWarps2
+	ifequal 5, .CelebiEvent
 	closetext
 	end
 
@@ -96,6 +97,17 @@ DebugStoryScript::
 	writetext DebugWingsText
 	waitbutton
 	closetext
+	end
+
+.CelebiEvent:
+; The GS Ball and a restless forest, as Kurt leaves them, so the shrine plays Celebi's arrival again.
+; Repeatable; BEASTS -> FORCE SHINY makes Celebi shiny.
+	giveitem GS_BALL
+	setevent EVENT_FOREST_IS_RESTLESS
+	setflag ENGINE_FOREST_IS_RESTLESS
+	clearevent EVENT_CELEBI_RETURNS
+	closetext
+	warp ILEX_FOREST, 8, 23
 	end
 
 .LegendWarps1:
@@ -264,17 +276,18 @@ DebugStoryScript::
 
 .LegendsMenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 14, 11
+	menu_coords 0, 0, 14, 13
 	dw .LegendsMenuData
 	db 1 ; default option
 
 .LegendsMenuData:
 	db STATICMENU_CURSOR ; flags
-	db 5 ; items
+	db 6 ; items
 	db "RESPAWN NOW@"
 	db "GIVE WINGS@"
 	db "WARPS 1@"
 	db "WARPS 2@"
+	db "CELEBI EVENT@"
 	db "CANCEL@"
 
 .LegendWarps1MenuHeader:

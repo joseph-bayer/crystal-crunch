@@ -8,6 +8,7 @@ CelebiShrineEvent:
 
 	ld a, PAL_OW_GREEN
 	farcall CopySpritePalToOBPal7
+	call CelebiEvent_ShinyPalette
 
 	call LoadCelebiGFX
 	depixel 0, 10, 7, 0
@@ -65,6 +66,32 @@ endr
 	ld bc, wShadowOAMEnd - wShadowOAMSprite04
 	xor a
 	jmp ByteFill
+
+CelebiEvent_ShinyPalette:
+; A shiny Celebi (rolled before the shrine scene, RollCelebiShiny) flies in its battle sprite's
+; light shiny color and white, instead of the overworld green.
+	ld de, EVENT_CELEBI_SHINY
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	ret z
+	ld a, SHINY_MASK ; the plain form, shiny
+	ld [wTempByteValue], a
+	ld hl, CELEBI
+	call GetPokemonIDFromIndex
+	ld bc, wTempByteValue
+	farcall GetMonPicColors ; bc = the light color, de = the dark one
+	ld d, b ; the light color shades the sprite...
+	ld e, c
+	ld bc, PALRGB_WHITE ; ...and white fills what the pic's dark color would
+	ld hl, wOBPals1 palette 7
+	farcall WriteIconPalette
+	ld hl, wOBPals2 palette 7
+	farcall WriteIconPalette
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ret
 
 LoadCelebiGFX:
 	farcall ClearSpriteAnims

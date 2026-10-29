@@ -144,7 +144,7 @@ def test_celebi_returns_to_the_shrine(game):
 	talk(game, "up")
 	game.wait_for_text("SHRINE…")
 	game.press("a")
-	game.wait_for_text("warm…")
+	game.wait_for_text("funny…")
 	answer_prompts(game, lambda: game.peek("wBattleMode") == 1)
 	wait_for_battle_menu(game)
 	assert L.enemy_species(game) == L.species_index("CELEBI")

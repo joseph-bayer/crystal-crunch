@@ -585,6 +585,20 @@ GetArrangedMonIconColors::
 	ld d, [hl]
 	ret
 
+GetMonPicColors::
+; The two colors a mon's pic draws with, in its palette's own order (no icon arrangement).
+; in: a = species ID, bc = address of its form byte, its shiny bit included
+; out: bc = color 1 (the light one), de = color 2 (the dark one)
+	call GetMonNormalOrShinyPalettePointer ; hl = this mon's two colors
+	ld a, [hli]
+	ld c, a
+	ld a, [hli]
+	ld b, a
+	ld a, [hli]
+	ld e, a
+	ld d, [hl]
+	ret
+
 LoadMonIconOBPal::
 ; Load one mon's own colors into one OBJ palette, bookended white and black.
 ; in: a = species ID, bc = address of its form byte, e = which OBJ palette (0-7)

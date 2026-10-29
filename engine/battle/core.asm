@@ -1489,7 +1489,7 @@ HandleFutureSight:
 	ret z
 	dec a
 	ld [hl], a
-	cp $1
+	dec a ; 1 turn left
 	ret nz
 
 	ld hl, BattleText_TargetWasHitByFutureSight
@@ -2693,7 +2693,7 @@ AskUseNextPokemon:
 
 .pressed_b
 	ld a, [wMenuCursorY]
-	cp $1 ; YES
+	dec a ; YES
 	jr z, .loop
 	ld hl, wPartyMon1Speed
 	ld de, wEnemyMonSpeed
@@ -4672,11 +4672,9 @@ PrintPlayerHUD:
 .add_shiny_symbol
 	ld a, [wBattleMonForm]
 	and SHINY_MASK
-	or a
 	jr z, .add_form_symbol
 	hlcoord 12, 8
-	ld a, "⁂"
-	ld [hl], a
+	ld [hl], "⁂"
 
 .add_form_symbol
 	ld a, [wBattleMonSpecies]
@@ -4859,11 +4857,9 @@ DrawEnemyHUD:
 	push de
 	ld a, [wEnemyMonForm]
 	and SHINY_MASK
-	or a
 	jr z, .add_form_symbol
 	hlcoord 3, 1
-	ld a, "⁂"
-	ld [hl], a
+	ld [hl], "⁂"
 
 .add_form_symbol
 	ld a, [wEnemyMonSpecies]
@@ -4954,13 +4950,13 @@ BattleMenu:
 	ld a, $1
 	ldh [hBGMapMode], a
 	ld a, [wBattleMenuCursorPosition]
-	cp $1
+	dec a ; 1
 	jr z, BattleMenu_Fight
-	cp $3
-	jr z, BattleMenu_Pack
-	cp $2
+	dec a ; 2
 	jmp z, BattleMenu_PKMN
-	cp $4
+	dec a ; 3
+	jr z, BattleMenu_Pack
+	dec a ; 4
 	jmp z, BattleMenu_Run
 	jr .loop
 
@@ -5088,11 +5084,11 @@ BattleMenuPKMN_Loop:
 	jr c, BattleMenuPKMN_Loop ; .PressedB
 	call PlaceHollowCursor
 	ld a, [wMenuCursorY]
-	cp $1 ; SWITCH
+	dec a ; SWITCH
 	jr z, TryPlayerSwitch
-	cp $2 ; STATS
+	dec a ; STATS
 	jr z, .Stats
-	cp $3 ; CANCEL
+	dec a ; CANCEL
 	jr z, .Cancel
 	jr .loop
 
@@ -5376,7 +5372,8 @@ MoveSelectionScreen:
 	ld a, b
 	ld [w2DMenuCursorInitX], a
 	ld a, [wMoveSelectionMenuType]
-	cp $1
+	dec a
+	ld a, 1
 	jr z, .skip_inc
 	ld a, [wCurMoveNum]
 	inc a
@@ -6389,7 +6386,7 @@ LoadEnemyMon:
 	ld a, MAGIKARP_XL_FORM
 	ld [wForm], a
 	ld [wEnemyMonForm], a
-	jr .Happiness
+	; fallthrough
 
 .Happiness:
 ; Set happiness
@@ -6623,12 +6620,14 @@ LoadEnemyMon:
 	ld a, [wBattleType]
 	cp BATTLETYPE_SUICUNE
 	jr z, .suicune_form
+	cp BATTLETYPE_CELEBI
+	jr z, .celebi_form
 	cp BATTLETYPE_FORCESHINY
 	jr nz, .generate_roam_mon_shininess
 	ld a, [wEnemyMonForm]
 	or SHINY_MASK ; set shiny bit
 	ld [wEnemyMonForm], a
-	jr .Finish
+	jmp .Finish
 
 .generate_roam_mon_shininess
 	ld a, [wBattleType]
@@ -6660,6 +6659,20 @@ LoadEnemyMon:
 ; Suicune's form was rolled before its sprite appeared (RollBeastsAtBurnedTower,
 ; RollTinTowerSuicuneShiny), so the battle uses it as stored.
 	ld a, [wRoamMon3Form]
+	ld [wEnemyMonForm], a
+	jr .Finish
+
+.celebi_form
+; Celebi's shininess was rolled before it appeared (RollCelebiShiny), so the shrine's animation and
+; the battle agree.
+	ld de, EVENT_CELEBI_SHINY
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	ld a, c
+	and a
+	jr z, .Finish
+	ld a, [wEnemyMonForm]
+	or SHINY_MASK
 	ld [wEnemyMonForm], a
 	jr .Finish
 

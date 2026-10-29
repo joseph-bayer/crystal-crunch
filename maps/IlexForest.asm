@@ -469,6 +469,7 @@ IlexForestShrineScript:
 	turnobject FOLLOWER, DOWN
 	pause 20
 	clearflag ENGINE_FOREST_IS_RESTLESS
+	callasm RollCelebiShiny ; before it appears, so the animation and the battle agree
 	special CelebiShrineEvent
 	setevent EVENT_FOUGHT_CELEBI
 	loadwildmon CELEBI, 30
@@ -496,6 +497,7 @@ IlexForestCelebiReturnsScript:
 	waitbutton
 	closetext
 	pause 20
+	callasm RollCelebiShiny
 	cry CELEBI
 	pause 15
 	loadvar VAR_BATTLETYPE, BATTLETYPE_CELEBI
@@ -954,11 +956,9 @@ Text_ShrineCelebiReturns:
 	text "ILEX FOREST"
 	line "SHRINE…"
 
-	para "The shrine feels"
-	line "warm…"
+	para "You feel funny…"
 
-	para "Something is"
-	line "coming!"
+	para "Oh?"
 	done
 
 Text_InsertGSBall:
