@@ -40,6 +40,10 @@ PokemonTableGarbageCollection:
 	___conversion_bitmap_check_structs wBugContestFirstPlaceMon, wBugContestSecondPlaceMon - wBugContestFirstPlaceMon, 3, .set_bit
 	___conversion_bitmap_check_values .set_bit, wBufferMonSpecies, wTempMonSpecies, wContestMonSpecies, \
 	                                            wBattleMonSpecies, wEnemyMonSpecies, wOddEggSpecies, wBaseSpecies
+	; Bill's PC keeps the IDs of the icons it shows, and of the held and quick-move icons, and
+	; redraws from them. Outside the PC these bytes are other data, which only holds a few slots.
+	assert wBillsPC_QuickIcon + 1 - wBillsPC_PartyList == PARTY_LENGTH + MONS_PER_BOX + 2
+	___conversion_bitmap_check_structs wBillsPC_PartyList, 1, PARTY_LENGTH + MONS_PER_BOX + 2, .set_bit
 	pop af
 	ldh [rSVBK], a
 	___conversion_bitmap_free_unused wPokemonIndexTable, MON_TABLE
