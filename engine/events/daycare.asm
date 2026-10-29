@@ -866,7 +866,7 @@ DayCare_InitBreeding:
 	; If the result is 3, we'll assign form 5 (Green)
 	add b
 	ld b, a
-	cp 1
+	dec a ; 1
 	ld a, SMEARGLE_PURPLE_FORM
 	ld [wEggMonForm], a
 	ld [wTempMonForm], a
@@ -932,7 +932,7 @@ DayCare_InitBreeding:
 .one_parent_shiny:
 	; One parent is shiny - higher chance for shiny offspring
 	call Random
-	cp SHINY_EGG_TWO_SHINY_PARENTS_NUMERATOR ; 4/256 = 1/64 chance
+	cp SHINY_EGG_ONE_SHINY_PARENT_NUMERATOR ; 4/256 = 1/64 chance
 	ret nc
 	ld a, [wEggMonForm]
 	or SHINY_MASK
