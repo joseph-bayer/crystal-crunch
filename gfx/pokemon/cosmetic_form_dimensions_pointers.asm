@@ -80,9 +80,9 @@ CosmeticFormDimensionsPointersTable:
 	dw 0					; WEEPINBELL (46)
 	dw 0					; VICTREEBEL (47)
 	dw 0					; TENTACOOL (48)
-	dw 0					; TENTACRUEL (49)
+	dw TentacruelDimensions			; TENTACRUEL (49) - its RB form is smaller
 	dw 0					; GEODUDE (4a)
-	dw 0					; GRAVELER (4b)
+	dw GravelerDimensions			; GRAVELER (4b) - its RB form is smaller
 	dw 0					; GOLEM (4c)
 	dw 0					; PONYTA (4d)
 	dw 0					; RAPIDASH (4e)

@@ -127,8 +127,8 @@ IconPaletteOrders:
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; HYPNO
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; KRABBY
 	db ICON_PAL_NORMAL                   ; KINGLER
-	db ICON_PAL_NORMAL                   ; VOLTORB
-	db ICON_PAL_NORMAL                   ; ELECTRODE
+	db ICON_PAL_NORMAL | ICON_PAL_OFFWHITE ; VOLTORB
+	db ICON_PAL_NORMAL | ICON_PAL_OFFWHITE ; ELECTRODE
 	db ICON_PAL_NORMAL                   ; EXEGGCUTE
 	db ICON_PAL_NORMAL                   ; EXEGGUTOR
 	db ICON_PAL_NORMAL                   ; CUBONE
@@ -151,7 +151,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; STARMIE
 	db ICON_PAL_NORMAL                   ; MR__MIME
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; SCYTHER
-	db ICON_PAL_OFFWHITE                 ; JYNX
+	db ICON_PAL_SWAP                     ; JYNX
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; ELECTABUZZ
 	db ICON_PAL_NORMAL                   ; MAGMAR
 	db ICON_PAL_OFFWHITE                 ; PINSIR
@@ -161,7 +161,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; LAPRAS
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; DITTO
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; EEVEE
-	db ICON_PAL_NORMAL                   ; VAPOREON
+	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; VAPOREON
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; JOLTEON
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; FLAREON
 	db ICON_PAL_NORMAL                   ; PORYGON
@@ -174,7 +174,7 @@ IconPaletteOrders:
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; ARTICUNO
 	db ICON_PAL_NORMAL                   ; ZAPDOS
 	db ICON_PAL_NORMAL                   ; MOLTRES
-	db ICON_PAL_NORMAL                   ; DRATINI
+	db ICON_PAL_NORMAL | ICON_PAL_OFFWHITE; DRATINI
 	db ICON_PAL_OFFWHITE                 ; DRAGONAIR
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; DRAGONITE
 	db ICON_PAL_NORMAL                   ; MEWTWO
@@ -209,7 +209,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; MAREEP
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; FLAAFFY
 	db ICON_PAL_NORMAL                   ; AMPHAROS
-	db ICON_PAL_NORMAL                   ; BELLOSSOM
+	db ICON_PAL_SWAP                     ; BELLOSSOM
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; MARILL
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; AZUMARILL
 	db ICON_PAL_NORMAL                   ; SUDOWOODO
@@ -223,7 +223,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; YANMA
 	db ICON_PAL_SWAP                     ; WOOPER
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; QUAGSIRE
-	db ICON_PAL_NORMAL                   ; ESPEON
+	db ICON_PAL_SWAP                     ; ESPEON
 	db ICON_PAL_NORMAL                   ; UMBREON
 	db ICON_PAL_NORMAL                   ; MURKROW
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; SLOWKING
@@ -250,7 +250,7 @@ IconPaletteOrders:
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; SWINUB
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; PILOSWINE
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; CORSOLA
-	db ICON_PAL_NORMAL                   ; REMORAID
+	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; REMORAID
 	db ICON_PAL_NORMAL                   ; OCTILLERY
 	db ICON_PAL_OFFWHITE                 ; DELIBIRD
 	db ICON_PAL_NORMAL                   ; MANTINE
@@ -260,7 +260,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; KINGDRA
 	db ICON_PAL_SWAP                     ; PHANPY
 	db ICON_PAL_NORMAL                   ; DONPHAN
-	db ICON_PAL_NORMAL                   ; PORYGON2
+	db ICON_PAL_SWAP                     ; PORYGON2
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; STANTLER
 	db ICON_PAL_NORMAL                   ; SMEARGLE
 	db ICON_PAL_NORMAL                   ; TYROGUE

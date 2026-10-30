@@ -324,8 +324,7 @@ Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal
 - **Kuroko Aizawa** and **metalflygon08**
   - Flying Pikachu front sprites, with bloodless
 - **Sage**
-  - Golbat, Arbok, Charmeleon, Charizard, Crobat and Electrode sprites used by Rockets. Colors modified from original.
-  - Weezing sprite
+  - Golbat, Arbok, Charmeleon, Charizard, Crobat, Weezing, and Electrode sprites used by Rockets. Colors modified from original.
 - **Kester Henrick**
   - Blackbelt overworld sprite used for Karate Master
 - **[FrenchOrange](https://github.com/FrenchOrange)**
@@ -339,5 +338,6 @@ Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal
 - **[Sour Crystal](https://github.com/SoupPotato/sourcrystal)**
   - Most Pokémon party menu icons
   - New and redrawn move animation graphics
+  - Most Pokémon front and back sprites, with their animations and many of their normal and shiny colors, by SoupPotato
 - **Game Freak**
   - The truck at Vermilion Port, from Pokémon Red and Blue, via [pret/pokered](https://github.com/pret/pokered)
