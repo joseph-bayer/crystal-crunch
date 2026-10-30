@@ -56,7 +56,8 @@ def collision(map_file):
 	width, height = (int(n) for n in re.search(
 		r"map_const %s,\s+(\d+),\s+(\d+)" % const, _read("constants/map_constants.asm")).groups())
 	tileset = re.search(r"map %s, TILESET_(\w+)" % map_file, _read("data/maps/maps.asm")).group(1).lower()
-	blocks_file = re.search(r"%s_Blocks:\s*\n\s*INCBIN \"([^\"]+)\"" % map_file,
+	# Maps sharing blocks stack their labels over one INCBIN (NationalPark, NationalParkBugContest)
+	blocks_file = re.search(r"%s_Blocks:\s*\n(?:\w+_Blocks:\s*\n)*\s*INCBIN \"([^\"]+)\"" % map_file,
 		_read("data/maps/blocks.asm")).group(1)
 	table = [re.findall(r"[A-Z_0-9]+", line.split("tilecoll")[1].split(";")[0])
 		for line in _read("data/tilesets/%s_collision.asm" % tileset).splitlines()

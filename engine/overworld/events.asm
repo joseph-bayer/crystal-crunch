@@ -632,20 +632,8 @@ ObjectEventTypeArray:
 	ret
 
 .wildmon
-; Facing one and pressing A starts the battle, the same as walking onto it. bc is the map object
-; and hLastTalked is already set, which is everything the battle needs.
-	ld hl, MAPOBJECT_SPRITE
-	add hl, bc
-	ld a, [hl]
-	call TryClaimOverworldMonBattle
-	jr nc, .no_wildmon
-	ldh a, [hLastTalked]
-	ld [wOverworldMonBattleObject], a
-	ld a, BANK(OverworldMonBattleScript)
-	ld hl, OverworldMonBattleScript
-	jmp CallScript
-
-.no_wildmon
+; Pressing A on one does nothing: only walking onto it starts the battle. Otherwise a mon swimming
+; by the shore could be fought from land, before the player can Surf to its levels.
 	xor a
 	ret
 

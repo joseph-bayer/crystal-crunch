@@ -136,14 +136,57 @@ LoadTrainer_continue::
 	ret
 
 CheckFollowerBetweenObjectAndPlayer::
+; Returns z when the follower stands on the tile next to the player on the side an object facing
+; direction c (OW_*) sees them from: between the two. Both coordinates have to match. Comparing
+; only the column made a follower anywhere to the player's left block every right-facing trainer,
+; and with nobody following, the empty follower struct sits at column 0, left of everything.
+; A hidden follower never blocks: Surf and the like leave its last position behind.
 	push bc
-	farcall GetFollowerDirectionFromPlayer
-	ld a, c
-	xor 1
-	add a
-	add a
-	pop bc
+	push de
+	ld d, c
+	ld bc, wObject1Struct
+	call DoesObjectHaveASprite
+	jr z, .not_between
+	ld a, [wFollowerFlags]
+	bit FOLLOWER_INVISIBLE_F, a
+	jr nz, .not_between
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	bit INVISIBLE_F, [hl]
+	jr nz, .not_between
+	ld a, [wPlayerMapX]
+	ld b, a
+	ld a, [wPlayerMapY]
+	ld c, a
+	ld a, d
+	cp OW_DOWN ; the object is above the player
+	jr nz, .not_down
+	dec c
+	jr .compare
+.not_down
+	cp OW_UP ; below
+	jr nz, .not_up
+	inc c
+	jr .compare
+.not_up
+	cp OW_LEFT ; to the right
+	jr nz, .right
+	inc b
+	jr .compare
+.right ; to the left
+	dec b
+.compare
+	ld a, [wObject1MapX]
+	cp b
+	jr nz, .done
+	ld a, [wObject1MapY]
 	cp c
+	jr .done
+.not_between
+	or 1
+.done
+	pop de
+	pop bc
 	ret
 
 FacingPlayerDistance_bc::

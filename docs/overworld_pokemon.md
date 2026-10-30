@@ -168,12 +168,12 @@ flipping between its own down and up frames.
 
 ## Wandering wild Pokémon
 
-A Pokémon that wanders a route. Walk onto it, or face it and press A, and it starts a **wild**
-battle — with the mon you were looking at.
+A Pokémon that wanders a route. Walk onto it and it starts a **wild** battle — with the mon you
+were looking at.
 
 | Piece | Where |
 | --- | --- |
-| `OBJECTTYPE_WILDMON`, the proximity and talk triggers, the battle script | `engine/overworld/events.asm` |
+| `OBJECTTYPE_WILDMON`, the proximity trigger, the battle script | `engine/overworld/events.asm` |
 | The roll, the masks, the battle setup | `engine/overworld/overworld_mons.asm` |
 | Rosters | `data/wild/overworld_mons.asm` |
 | Which water species ride on the surface | `data/wild/surface_mons.asm` |
@@ -328,12 +328,13 @@ encounter struct, so a perk that has to act during the *battle* still has its fl
 
 ## Meeting one
 
-Two triggers, sharing `TryClaimOverworldMonBattle`:
+**Walk onto it.** `OW_MON_TRIGGER_DISTANCE` is `0` — the same tile. They do not block the player
+(the player's bump check takes the same exit the follower uses), and `NOCLIP_OBJS` lets them walk
+onto *you*.
 
-- **Walk onto it.** `OW_MON_TRIGGER_DISTANCE` is `0` — the same tile. They do not block the player
-  (the player's bump check takes the same exit the follower uses), and `NOCLIP_OBJS` lets them walk
-  onto *you*.
-- **Face it and press A.** `.wildmon` in `ObjectEventTypeArray`.
+Pressing A on one does nothing (`.wildmon` in `ObjectEventTypeArray`). It used to start the battle
+too, which let a mon swimming by the shore be fought from land long before Surf — a level 20
+Poliwhirl in Route 30's pond on the way to Mr. Pokémon.
 
 The overlap check requires the mon to be **standing**, not mid-step. An object's map coordinates
 change when a step *begins*, not when the sprite arrives, so without that a mon walking towards you
@@ -576,7 +577,7 @@ jumps straight into `RandomStepDuration_Slow`, which parks the object on `OBJECT
 - **They swim and walk with the follower's hop**, which suits a Sentret and may not suit a
   Tentacool.
 - **A mon can be dodged.** If you step onto one that is mid-step and it steps away, no battle. It
-  cannot soft-lock, because pressing A always works.
+  cannot soft-lock: they never block the player, so stepping onto one again always works.
 - **`OW_MON_DEBUG_FORCE_SHINY_SLOT`** in `engine/overworld/overworld_mons.asm` forces a slot shiny
   in `_DEBUG` builds. Testing a rate by walking in and out of a route a few hundred times is not a
   test; what needs checking is whether the sprite and the battle agree.

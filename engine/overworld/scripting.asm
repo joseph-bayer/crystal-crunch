@@ -934,6 +934,15 @@ Script_appear:
 Script_appear_skipinput::
 	ld a, b
 	call GetScriptObject
+	cp FOLLOWER
+	jr nz, .appear
+; With nobody following, the follower map object has no sprite, and appearing it anyway builds an
+; object struct with sprite 0 whose tiles get loaded over everyone else's.
+	ld a, [wMap1ObjectSprite]
+	and a
+	ret z
+	ld a, FOLLOWER
+.appear
 	call UnmaskCopyMapObjectStruct
 	ldh a, [hMapObjectIndex]
 	ld b, 0 ; clear
@@ -2482,10 +2491,17 @@ Script_stowfollower:
 
 Script_appearfollower:
 	farcall _AppearFollower
-	jmp DoScriptWait
+	jr DoFollowerBallWait
 
 Script_appearfolloweronestep:
 	farcall _AppearFollowerOneStep
+; fallthrough
+DoFollowerBallWait:
+; With nobody following there is no ball to open and no delay was set. Waiting on a delay of 0
+; would wrap around and freeze the script for 256 frames.
+	ld a, [wScriptDelay]
+	and a
+	ret z
 	jmp DoScriptWait
 
 Script_savefollowercoords:

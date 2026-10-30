@@ -49,7 +49,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 ### Wild Pokémon in the Overworld
 - Many routes and towns have Pokémon wandering in the open.
-- Walk into one, or face it and press **A**, to start a wild battle.
+- Walk into one to start a wild battle.
 - What you see is what you fight - a shiny out in the grass is shiny in the battle.
 - They are worth chasing: better DVs, far more likely to be holding an item, and better shiny odds than the same Pokémon in the grass.
 - Some know egg moves or otherwise unobtainable moves.

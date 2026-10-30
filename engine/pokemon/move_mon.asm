@@ -6,8 +6,18 @@ TryAddMonToParty:
 	ld de, wPartyCount
 	ld a, [wMonType]
 	and $f
-	jr z, .getpartylocation ; PARTYMON
+	jr z, .partymon
 	ld de, wOTPartyCount
+	jr .getpartylocation
+
+.partymon
+; The first mon into an empty party follows you, as in a new game. Choosing nobody takes a party,
+; so this never overrules a choice.
+	ld a, [de]
+	and a
+	jr nz, .getpartylocation
+	inc a
+	ld [wFollowerPartySlot], a
 
 .getpartylocation
 	; Do we have room for it?
