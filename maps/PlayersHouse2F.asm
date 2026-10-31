@@ -164,9 +164,12 @@ if DEF(_DEBUG)
 	; DEBUG: RB form breeding -- a beta Kingdra and a Ditto, in party
 	; slots 4 and 5. Their eggs should always hatch an RB Horsea.
 	givepoke KINGDRA, 50, NO_ITEM, KINGDRA_BETA_FORM
-	givepoke DITTO, 50
+	; givepoke DITTO, 50
 
 	givepoke AMPHAROS, 50
+	; DEBUG: Substitute -- a level 5 Caterpie, whose small HP is quick to bring under a quarter.
+	givepoke CATERPIE, 5
+	givepokemove SUBSTITUTE, wPartyMon6, 0
 	; givepoke GENGAR, 50
 	; A form Pikachu to make the follower, for the doll test below.
 	; givepoke PIKACHU, 50, NO_ITEM, PIKACHU_FLY_FORM

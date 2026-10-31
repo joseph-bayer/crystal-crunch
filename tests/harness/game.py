@@ -37,17 +37,25 @@ def rom_path():
 
 
 class Game:
-	def __init__(self, rom=None):
+	def __init__(self, rom=None, save=None):
+		"""`save`: a .sav file to start with, as the cartridge's battery-backed RAM. It's only read,
+		never written back."""
 		rom = Path(rom or rom_path())
 		self.rom = rom
-		self.pyboy = PyBoy(
-			str(rom),
-			window="null",
-			sound_emulated=False,
-			cgb=True,
-			symbols=str(rom.with_suffix(".sym")),
-			log_level="ERROR",
-		)
+		ram = open(save, "rb") if save else None
+		try:
+			self.pyboy = PyBoy(
+				str(rom),
+				window="null",
+				sound_emulated=False,
+				cgb=True,
+				symbols=str(rom.with_suffix(".sym")),
+				log_level="ERROR",
+				ram_file=ram,
+			)
+		finally:
+			if ram:
+				ram.close()
 		self.pyboy.set_emulation_speed(0)
 		# The clock is the one input from outside the emulator; frozen, every run sees the same time.
 		self.pyboy.rtc_lock_experimental(True)
@@ -194,10 +202,11 @@ class Game:
 			if target is None or cursor is None:
 				self.wait(10)
 				continue
+			# Held a little longer than a plain press: the title and start menus miss a 3-frame A now and
+			# then, and in the bag, after switching pockets, a 3-frame press every 28 frames was missed
+			# every time (causes not pinned down); 6 frames work.
 			if cursor == target:
-				self.press("a")
+				self.press("a", hold=6)
 				return
-			# Held a little longer than a plain press: in the bag, after switching pockets, a 3-frame
-			# press every 28 frames was missed every time (cause not pinned down); 6 and 30 work.
 			self.press("down" if cursor < target else "up", hold=6, after=30)
 		raise HarnessTimeout("couldn't choose %r. The screen:\n%s" % (item, self.screen_text()))

@@ -730,9 +730,10 @@ LoadNote:
 	ld a, [hl]
 	sub e
 	ld e, a
-	sbc d
-	add e
-	ld d, a
+; d -= carry. Not sbc d / add e: that gives 2e - d - carry, and upward slides go too fast.
+	jr nc, .no_borrow
+	dec d
+.no_borrow
 	ld hl, CHANNEL_PITCH_SLIDE_TARGET + 1
 	add hl, bc
 	ld a, [hl]

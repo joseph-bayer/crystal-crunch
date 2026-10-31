@@ -104,6 +104,7 @@ def test_fish_again_recast(game, direction):
 	game.press(direction, after=10)
 	cast_good_rod(game, NO_BITE_SEED)
 	game.wait_for_text("Fish again?")
+	game.wait_for_text("▶YES", step=1)
 
 	# The rod tip as the first cast drew it, and the font as the bag left it: both are right here
 	rod_tip = {tile: tile_data(game, tile) for tile in ROD_TIP_TILES}

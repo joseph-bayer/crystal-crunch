@@ -276,6 +276,7 @@ _CardFlip:
 	jmp c, .Increment
 	ld hl, wCardFlipNumCardsPlayed
 	inc [hl]
+	ld a, [hl]
 	cp 12
 	jr c, .KeepTheCurrentDeck
 	call CardFlip_InitTilemap
@@ -864,7 +865,7 @@ CardFlip_CheckWinCondition:
 .Jigglypuff:
 	ld a, [wCardFlipFaceUpCard]
 	and $3
-	cp $1
+	cp $1 ; no-optimize a == 1
 	jr z, .WinTwelve
 	jmp .Lose
 
@@ -1152,7 +1153,7 @@ ChooseCard_HandleJoypad:
 	ld a, [wCardFlipCursorY]
 	and a
 	jr z, .mon_pair_left
-	cp $1
+	cp $1 ; no-optimize a == 1
 	jr z, .mon_group_left
 	ld a, [hl]
 	and a
@@ -1210,7 +1211,7 @@ ChooseCard_HandleJoypad:
 	ld a, [wCardFlipCursorX]
 	and a
 	jr z, .num_pair_up
-	cp $1
+	cp $1 ; no-optimize a == 1
 	jr z, .num_gp_up
 	ld a, [hl]
 	and a

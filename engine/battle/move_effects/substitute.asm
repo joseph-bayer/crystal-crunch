@@ -27,8 +27,9 @@ BattleCommand_Substitute:
 	ld a, [hld]
 	sub b
 	ld e, a
-	sbc e
-	add [hl]
+	ld a, [hl]
+; sbc a / add [hl] would give the same high byte, but its carry no longer means the HP ran out.
+	sbc 0 ; no-optimize a = X +/- carry
 	ld d, a
 	jr c, .too_weak_to_sub
 	ld a, d

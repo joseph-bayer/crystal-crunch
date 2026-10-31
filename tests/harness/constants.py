@@ -22,26 +22,28 @@ def _consts(path):
 	const_next, in order."""
 	values = {}
 	value = 0
+	step = 1
 	for line in Path(path).read_text(encoding="utf-8").splitlines():
 		code = line.split(";", 1)[0].strip()
 		if re.match(r"object_const_def\b", code):
 			value = 2 # the macro's const_def 2: the player and the follower come first
 			continue
-		m = re.match(r"const_def\b\s*(\S*)", code)
+		m = re.match(r"const_def\b\s*([^,]*)(?:,\s*(.+))?", code)
 		if m:
-			value = _number(m.group(1)) if m.group(1) else 0
+			value = _number(m.group(1)) if m.group(1).strip() else 0
+			step = _number(m.group(2)) if m.group(2) else 1
 			continue
 		m = re.match(r"const_next\s+(\S+)", code)
 		if m:
 			value = _number(m.group(1))
 			continue
 		if re.match(r"const_skip\b", code):
-			value += 1
+			value += step
 			continue
 		m = re.match(r"const\s+(\w+)", code)
 		if m:
 			values[m.group(1)] = value
-			value += 1
+			value += step
 	return values
 
 

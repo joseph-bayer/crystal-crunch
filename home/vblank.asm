@@ -291,6 +291,8 @@ VBlank_Serial::
 
 	call UpdateJoypad
 
+	call AskSerial
+
 	jmp VBlank_SoundOnly
 
 VBlank_Credits::

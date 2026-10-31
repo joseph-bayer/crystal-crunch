@@ -33,7 +33,7 @@ CheckPlayerMoveTypeMatchups:
 
 ; not very effective
 	ld a, e
-	cp 1 ; 0.1
+	cp 1 ; no-optimize a == 1 (0.1)
 	jr nc, .next
 	ld e, 1
 	jr .next
@@ -73,6 +73,7 @@ CheckPlayerMoveTypeMatchups:
 	ld a, [wBattleMonType2]
 	cp b
 	jr z, .ok2
+	ld hl, wEnemyMonType1 ; .DecreaseScore may have moved hl
 	call CheckTypeMatchup
 	ld a, [wTypeMatchup]
 	cp EFFECTIVE + 1 ; 1.0 + 0.1
@@ -163,7 +164,7 @@ CheckAbleToSwitch:
 	jr z, .no_perish
 
 	ld a, [wEnemyPerishCount]
-	cp 1
+	cp 1 ; no-optimize a == 1
 	jr nz, .no_perish
 
 	; Perish count is 1
@@ -468,7 +469,7 @@ FindEnemyMonsWithASuperEffectiveMove:
 	pop hl
 	cp 2
 	jr z, .done2 ; at least one move is super-effective
-	cp 1
+	cp 1 ; no-optimize a == 1
 	jr nz, .next ; no move does more than half damage
 
 	; encourage this pokemon

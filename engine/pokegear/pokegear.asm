@@ -1539,7 +1539,10 @@ PokegearPhoneContactSubmenu:
 	xor a
 	ld [wPokegearPhoneSubmenuCursor], a
 	call .UpdateCursor
+; de points at the menu's strings, which moving the cursor reads; applying the tilemap clobbers it.
+	push de
 	call PokegearPhone_ApplyTilemap
+	pop de
 .loop
 	push de
 	call JoyTextDelay
@@ -1605,6 +1608,16 @@ PokegearPhoneContactSubmenu:
 .Delete:
 	ld hl, PokegearAskDeleteText
 	call MenuTextbox
+; The YES/NO box covers the VS icons of the lower contacts, and a menu redraws tiles alone, so it
+; would keep their colors. Its area takes the box's colors first.
+	call TownMapPals
+	hlcoord SCREEN_WIDTH - 6, 7, wAttrmap
+	lb bc, 5, 6
+	xor a
+	call FillBoxWithByte
+	ld b, 0 ; leave the palettes be
+	farcall _SafeCopyTilemapAtOnce
+	call WaitBGMap
 	call YesNoBox
 	call ExitMenu
 	jr c, .CancelDelete
@@ -1614,8 +1627,9 @@ PokegearPhoneContactSubmenu:
 	call PokegearPhone_UpdateDisplayList
 	ld hl, PokegearAskWhoCallText
 	call PrintText
-	call PokegearPhone_ApplyTilemap
 .CancelDelete:
+; The icons' colors back, where the box was.
+	call PokegearPhone_ApplyTilemap
 	scf
 	ret
 
