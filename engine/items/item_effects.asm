@@ -217,6 +217,7 @@ ItemEffectsKeyItems:
 	dw NoEffect           ; OLD_AMBER
 	dw NoEffect           ; HELIX_FOSSIL
 	dw NoEffect           ; DOME_FOSSIL
+	dw BadgeCaseEffect    ; BADGE_CASE
 .IndirectEnd:
 
 ItemEffectsBalls:
@@ -2299,6 +2300,13 @@ BlueCardEffect:
 .BlueCardBalanceText:
 	text_far _BlueCardBalanceText
 	text_end
+
+BadgeCaseEffect:
+if DEF(_DEBUG)
+	farjp DebugBadgeCase
+else
+	jmp NoEffect
+endc
 
 CoinCaseEffect:
 	ld hl, .CoinCaseCountText

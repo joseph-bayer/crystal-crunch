@@ -877,8 +877,7 @@ _CGB_TrainerCardKanto:
 	ld a, FALKNER ; KRIS
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld a, BROCK
-	call GetTrainerPalettePointer
+	ld hl, .BrockFacePalette
 	call LoadPalette_White_Col1_Col2_Black
 	ld a, LT_SURGE ; ERIKA
 	call GetTrainerPalettePointer
@@ -969,6 +968,12 @@ _CGB_TrainerCardKanto:
 
 .BadgePalettes:
 INCLUDE "gfx/trainer_card/kanto_badges.pal"
+
+.BrockFacePalette:
+; The card's face of Brock is its own drawing, colored skin and dark. His battle pic's palette A
+; holds his clothes since it was split into three palettes, so it can't color the face.
+	RGB 30, 18, 14
+	RGB 14, 07, 10
 
 _CGB_MoveList:
 	ld de, wBGPals1

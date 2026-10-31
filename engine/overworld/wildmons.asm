@@ -333,6 +333,7 @@ ChooseWildEncounter:
 	add hl, bc ; this selects our mon
 	push bc ; c = the slot's offset, for ApplySwarmToWildSlot
 	ld a, [hli]
+	farcall LevelFromBadges
 	ld b, a
 ; If the Pokemon is encountered by surfing, we need to give the levels some variety.
 	call CheckOnWater

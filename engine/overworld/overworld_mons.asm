@@ -562,6 +562,7 @@ RollOverworldMons::
 	ld a, [hli]
 	ld [de], a
 	ld a, [hli]
+	farcall LevelFromBadges
 	ld [wOverworldMonRollBuffer + OW_MON_LEVEL], a
 	ld a, [hli]
 	ld [wOverworldMonRollBuffer + OW_MON_FORM], a

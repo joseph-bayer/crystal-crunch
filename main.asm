@@ -29,6 +29,8 @@ INCLUDE "engine/gfx/color.asm"
 SECTION "Elite Four Lineup", ROMX
 
 INCLUDE "engine/events/elite_four_lineup.asm"
+; In the same section: TrainerMonLevel ends by jumping to EliteFourSeatMonLevel.
+INCLUDE "engine/battle/level_scaling.asm"
 
 
 SECTION "Elite Four OpenLeague Text", ROMX
@@ -539,6 +541,7 @@ SECTION "Debug Menus", ROMX
 
 INCLUDE "engine/debug/menus.asm"
 INCLUDE "engine/debug/swarm.asm"
+INCLUDE "engine/debug/badge_case.asm"
 
 
 ; Its own section because the rosters outgrew bank3F: the grass and water tables are 100 bytes per

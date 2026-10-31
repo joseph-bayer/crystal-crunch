@@ -197,6 +197,7 @@ ItemDescriptionsKeyItems:
 	dw OldAmberDesc     ; 0116
 	dw DomeFossilDesc   ; 0117
 	dw HelixFossilDesc  ; 0118
+	dw BadgeCaseDesc    ; 0119
 .IndirectEnd:
 
 ItemDescriptionsBalls:
@@ -748,6 +749,10 @@ DomeFossilDesc:
 HelixFossilDesc:
 	db   "A fossilized"
 	next "#mon shell.@"
+
+BadgeCaseDesc:
+	db   "Debug: sets how"
+	next "many badges.@"
 
 MysteryBerryDesc:
 	db   "A self-restore"

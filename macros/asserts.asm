@@ -62,7 +62,7 @@ ENDM
 MACRO ow_wildmon
 ;\1: weight, out of 100 within its time of day
 ;\2: species
-;\3: level
+;\3: level, or LEVEL_FROM_BADGES +/- n to scale with badges
 ;\4: form byte: a *_FORM constant, optionally | SHINY_MASK for one that is always shiny
 ;\5: OW_PERK_* flags, or 0
 ;\6: a move it always knows on top of its level-up set, or NO_MOVE

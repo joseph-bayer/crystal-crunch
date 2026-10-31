@@ -111,7 +111,7 @@ class PokemonDataExtractor:
             
             # Check for Pokemon encounter
             if current_location:
-                pokemon_match = re.search(r'dbw\s+\d+,\s+([A-Z_]+)', line)
+                pokemon_match = re.search(r'dbw\s+[^,]+,\s+([A-Z_]+)', line)  # a level may be LEVEL_FROM_BADGES +/- n
                 if pokemon_match:
                     pokemon = pokemon_match.group(1)
                     if pokemon in self.pokemon_list:

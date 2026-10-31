@@ -168,6 +168,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - A few towns keep a specialty item: Charcoal in Azalea, Surf Mail in Olivine and Cerulean, LiteBlueMail in Vermilion.
 - Blackthorn's mart, the department stores, and specialty shops keep fixed stock; Blackthorn and the department stores sell TMs.
 
+### Scaling Side Areas
+- Some routes have scaling trainers and/or scaling Pokémon to make sure they're the right level based on your badge count
+- Scaled trainer Pokémon evolve to fit their level (a Geodude early, a Golem late); wild ones keep their species.
+
 ### Caught Ball
 - The ball that a Pokémon is caught in is displayed on the stats screen.
 
@@ -307,6 +311,7 @@ Ported from or based on [Polished Crystal](https://github.com/Rangi42/polishedcr
 - Using HMs without knowing them, Fly from the Pokégear map, the Flash prompt and the Ilex Forest HM texts
 - The unlimited phone contact list and the one-byte special phone call fix
 - More Pokémon able to learn the HMs, Rock Smash and Headbutt
+- Badge-scaled trainer and wild levels: the `LEVEL_FROM_BADGES` encoding and the base level per badge count
 
 ### Sour Crystal
 Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal):

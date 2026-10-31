@@ -69,6 +69,7 @@ if DEF(_DEBUG)
 	giveitem BICYCLE
 	giveitem GOOD_ROD
 	giveitem PASS ; Magnet Train
+	giveitem BADGE_CASE ; sets the badge count
 	giveitem THUNDERSTONE, 10
 	giveitem FIRE_STONE, 10
 	giveitem WATER_STONE, 10

@@ -6,7 +6,11 @@ rematch had lower levels or fewer Pokémon than the one before it.
 
 The order is the script's, not the constants' numbers: Hiker Anthony's first battle is ANTHONY2,
 then his rematches load ANTHONY1, ANTHONY3 and so on. So each trainer's parties are taken in the
-order their map file first names them, in its `trainer` event and `loadtrainer` lines."""
+order their map file first names them, in its `trainer` event and `loadtrainer` lines.
+
+A party whose levels scale with badges (Erin's first) is taken at 8 badges, the fewest the Elite
+Four allows, since her next rematch waits for the Elite Four, or at its map's badge cap if that's
+lower."""
 
 import re
 import subprocess
@@ -18,10 +22,13 @@ from harness import data
 # Steps down a ladder known to be there, as (earlier, later), until they're rebalanced.
 KNOWN_WEAKER = set() # Brent's (two Pokémon at 26, then one at 33) was rebalanced
 
+ELITE_FOUR_BADGES = 8
+
 
 def rematch_ladders():
-	"""[(class, base name, [trainer constants in play order])] for every trainer whose numbered
-	parties (NAME1, NAME2, ...) a map loads two or more of with `loadtrainer`."""
+	"""[(class, base name, [trainer constants in play order], map's badge cap or None)] for every
+	trainer whose numbered parties (NAME1, NAME2, ...) a map loads two or more of with
+	`loadtrainer`."""
 	ladders = []
 	for path, battles in data.trainer_battles().items():
 		loaded = {(cls, name) for cls, name in re.findall(r"loadtrainer\s+(\w+),\s*(\w+)", data.read(path))}
@@ -33,14 +40,16 @@ def rematch_ladders():
 			order = seen.setdefault((cls, m.group(1)), [])
 			if name not in order:
 				order.append(name)
+		map_name = data.map_constants_by_file().get(path.split("/")[-1][:-4])
+		cap = data.badge_scaling_caps().get(map_name)
 		for (cls, base), order in seen.items():
 			if sum((cls, name) in loaded for name in order) >= 2:
-				ladders.append((cls, base, order))
+				ladders.append((cls, base, order, cap))
 	return ladders
 
 
-def strength(party):
-	levels = [mon["level"] for mon in party["mons"]]
+def strength(party, cap=None):
+	levels = [data.level_at(mon["level"], ELITE_FOUR_BADGES, cap) for mon in party["mons"]]
 	return max(levels), min(levels), len(levels)
 
 
@@ -48,10 +57,10 @@ def weaker_steps(rev=None):
 	"""Each step down a ladder: (earlier, its strength, later, its strength)."""
 	groups = data.parties(rev)
 	found = []
-	for cls, base, order in rematch_ladders():
+	for cls, base, order, cap in rematch_ladders():
 		previous = None
 		for name in order:
-			current = (name, strength(data.party(groups, cls, name)))
+			current = (name, strength(data.party(groups, cls, name), cap))
 			if previous and any(now < before for now, before in zip(current[1], previous[1])):
 				found.append((previous[0], previous[1], name, current[1]))
 			previous = current
@@ -65,7 +74,7 @@ def describe(found):
 
 def test_ladders_found():
 	"""The scripts still name the rematch ladders this check walks."""
-	names = {base for _, base, _ in rematch_ladders()}
+	names = {base for _, base, _, _ in rematch_ladders()}
 	assert {"ALAN", "JACK", "ERIN", "TIFFANY", "ANTHONY", "JOEY"} <= names
 
 

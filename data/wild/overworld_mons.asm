@@ -557,80 +557,80 @@ OverworldWildMonsGrass:
 	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; day
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; nite
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MARILL,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MARILL,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons MOUNT_MORTAR_1F_OUTSIDE
 	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; day
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; nite
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MARILL,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MARILL,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons MOUNT_MORTAR_2F_INSIDE
 	db 1 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 34, GRAVELER,   31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, MACHOKE,    32, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, GEODUDE,    31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, RATICATE,   30, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GRAVELER,   LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, MACHOKE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, GEODUDE,    LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, RATICATE,   LEVEL_FROM_BADGES - 7, PLAIN_FORM, 0,                  NO_MOVE
 	; day
-	ow_wildmon 34, GRAVELER,   31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, MACHOKE,    32, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, GEODUDE,    31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, RATICATE,   30, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GRAVELER,   LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, MACHOKE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, GEODUDE,    LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, RATICATE,   LEVEL_FROM_BADGES - 7, PLAIN_FORM, 0,                  NO_MOVE
 	; nite
-	ow_wildmon 31, GRAVELER,   31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 32, GEODUDE,    31, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 21, RATICATE,   30, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 16, GOLBAT,     30, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 31, GRAVELER,   LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 32, GEODUDE,    LEVEL_FROM_BADGES - 6, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 21, RATICATE,   LEVEL_FROM_BADGES - 7, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 16, GOLBAT,     LEVEL_FROM_BADGES - 7, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons MOUNT_MORTAR_B1F
 	db 1 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; day
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MACHOP,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MACHOP,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	; nite
-	ow_wildmon 34, GEODUDE,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 33, ZUBAT,      20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 22, MARILL,     21, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, GOLBAT,     22, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 34, GEODUDE,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 33, ZUBAT,      LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 22, MARILL,     LEVEL_FROM_BADGES - 4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 11, GOLBAT,     LEVEL_FROM_BADGES - 3, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
 	def_ow_wildmons SILVER_CAVE_ROOM_1
@@ -1921,40 +1921,40 @@ OverworldWildMonsWater:
 	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 59, GOLDEEN,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     25, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    25, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    28, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 17, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 9, PLAIN_FORM, 0,                  PSYBEAM
 	; day
-	ow_wildmon 59, GOLDEEN,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     25, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    25, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    28, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 17, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 9, PLAIN_FORM, 0,                  PSYBEAM
 	; nite
-	ow_wildmon 59, GOLDEEN,    20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     25, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    25, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    28, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 17, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 12, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 9, PLAIN_FORM, 0,                  PSYBEAM
 	end_ow_wildmons
 
 	def_ow_wildmons MOUNT_MORTAR_B1F
 	db 3 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
 	; morn
-	ow_wildmon 59, GOLDEEN,    15, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    20, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    23, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 10, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 2, PLAIN_FORM, 0,                  PSYBEAM
 	; day
-	ow_wildmon 59, GOLDEEN,    15, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    20, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    23, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 10, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 2, PLAIN_FORM, 0,                  PSYBEAM
 	; nite
-	ow_wildmon 59, GOLDEEN,    15, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, MARILL,     20, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    20, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  SEAKING,    23, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 59, GOLDEEN,    LEVEL_FROM_BADGES - 10, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, MARILL,     LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 10, SEAKING,    LEVEL_FROM_BADGES - 5, PLAIN_FORM, 0,                  PSYBEAM
+	ow_wildmon 1,  SEAKING,    LEVEL_FROM_BADGES - 2, PLAIN_FORM, 0,                  PSYBEAM
 	end_ow_wildmons
 
 	def_ow_wildmons SILVER_CAVE_ROOM_2

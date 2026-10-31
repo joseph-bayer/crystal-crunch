@@ -2861,9 +2861,9 @@ PokemaniacGroup:
 
 	next_list_item ; POKEMANIAC (15)
 	db "MILLER@", TRAINERTYPE_NORMAL
-	db 20
+	db LEVEL_FROM_BADGES
 	dw NIDOKING
-	db 20
+	db LEVEL_FROM_BADGES
 	dw NIDOQUEEN
 	db -1 ; end
 
@@ -4295,15 +4295,15 @@ SuperNerdGroup:
 
 	next_list_item ; SUPER_NERD (13)
 	db "HUGH@", TRAINERTYPE_MOVES
-	db 39
-	dw SEADRA
+	db LEVEL_FROM_BADGES + 2
+	dw KINGDRA
 	dw SMOKESCREEN, TWISTER, SURF, WATERFALL
 	db -1 ; end
 
 	next_list_item ; SUPER_NERD (14)
 	db "MARKUS@", TRAINERTYPE_MOVES
-	db 19
-	dw SLOWPOKE
+	db LEVEL_FROM_BADGES - 1
+	dw SLOWBRO
 	dw CURSE, WATER_GUN, GROWL, STRENGTH
 	db -1 ; end
 
@@ -4613,15 +4613,15 @@ HikerGroup:
 
 	next_list_item ; HIKER (11)
 	db "BAILEY@", TRAINERTYPE_NORMAL
-	db 40
+	db LEVEL_FROM_BADGES + 2
 	dw GOLEM
-	db 40
+	db LEVEL_FROM_BADGES + 2
 	dw GOLEM
-	db 40
+	db LEVEL_FROM_BADGES + 2
 	dw GOLEM
-	db 40
+	db LEVEL_FROM_BADGES + 2
 	dw GOLEM
-	db 40
+	db LEVEL_FROM_BADGES + 2
 	dw GOLEM
 	db -1 ; end
 
@@ -5116,10 +5116,10 @@ BlackbeltGroup:
 
 	next_list_item ; BLACKBELT_T (6)
 	db "KIYO@", TRAINERTYPE_MOVES
-	db 24
+	db LEVEL_FROM_BADGES + 2
 	dw HITMONLEE
 	dw ROLLING_KICK, JUMP_KICK, MEDITATE, STRENGTH
-	db 24
+	db LEVEL_FROM_BADGES + 2
 	dw HITMONCHAN
 	dw MACH_PUNCH, PURSUIT, DIZZY_PUNCH, THUNDERPUNCH
 	db -1 ; end
@@ -5440,13 +5440,13 @@ PicnickerGroup:
 
 	next_list_item ; PICNICKER (10)
 	db "ERIN@", TRAINERTYPE_NORMAL
-	db 40
+	db LEVEL_FROM_BADGES + 3
 	dw RAPIDASH
-	db 38
+	db LEVEL_FROM_BADGES + 1
 	dw NIDOQUEEN
-	db 38
+	db LEVEL_FROM_BADGES + 1
 	dw RAICHU
-	db 40
+	db LEVEL_FROM_BADGES + 3
 	dw RAPIDASH
 	db -1 ; end
 
@@ -5694,11 +5694,11 @@ CamperGroup:
 
 	next_list_item ; CAMPER (11)
 	db "TED@", TRAINERTYPE_NORMAL
-	db 40
+	db LEVEL_FROM_BADGES + 3
 	dw URSARING
-	db 40
+	db LEVEL_FROM_BADGES + 3
 	dw PRIMEAPE
-	db 40
+	db LEVEL_FROM_BADGES + 3
 	dw NIDOKING
 	db -1 ; end
 

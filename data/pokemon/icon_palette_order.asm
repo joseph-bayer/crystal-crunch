@@ -49,7 +49,7 @@ IconPaletteOrders:
 	db ICON_PAL_OFFWHITE                 ; RATTATA
 	db ICON_PAL_NORMAL                   ; RATICATE
 	db ICON_PAL_SWAP                     ; SPEAROW
-	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; FEAROW
+	db ICON_PAL_NORMAL                   ; FEAROW
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; EKANS
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; ARBOK
 	db ICON_PAL_NORMAL                   ; PIKACHU

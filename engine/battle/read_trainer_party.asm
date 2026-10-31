@@ -24,9 +24,34 @@ ReadTrainerParty:
 	ld a, [wOtherTrainerID]
 	cp CAL2
 	jr z, .cal2
-	ld a, [wOtherTrainerClass]
 .not_cal2
+	call FindTrainerParty
+	call GetNextTrainerDataByte
+	ld [wOtherTrainerType], a
+	ld d, h
+	ld e, l
+	call ReadTrainerPartyPieces
+	farcall EliteFourSeatFinishParty
 
+.done
+	jmp ComputeTrainerReward
+
+; Fighting the Myster Gift Trainer (Cal2)
+.cal2
+	ld a, BANK(sMysteryGiftTrainer)
+	call OpenSRAM
+	ld a, TRAINERTYPE_MOVES
+	ld [wOtherTrainerType], a
+	ld de, sMysteryGiftTrainer
+	call ReadTrainerPartyPieces
+	call CloseSRAM
+	jr .done
+
+
+FindTrainerParty:
+; Point hl at the trainer type byte of party wOtherTrainerID in class wOtherTrainerClass, with the
+; group's bank in wTrainerGroupBank.
+	ld a, [wOtherTrainerClass]
 	dec a
 	ld c, a
 	ld b, 0
@@ -60,28 +85,7 @@ ReadTrainerParty:
 	call GetNextTrainerDataByte
 	cp "@"
 	jr nz, .skip_name
-
-	call GetNextTrainerDataByte
-	ld [wOtherTrainerType], a
-	ld d, h
-	ld e, l
-	call ReadTrainerPartyPieces
-	farcall EliteFourSeatFinishParty
-
-.done
-	jmp ComputeTrainerReward
-
-; Fighting the Myster Gift Trainer (Cal2)
-.cal2
-	ld a, BANK(sMysteryGiftTrainer)
-	call OpenSRAM
-	ld a, TRAINERTYPE_MOVES
-	ld [wOtherTrainerType], a
-	ld de, sMysteryGiftTrainer
-	call ReadTrainerPartyPieces
-	call CloseSRAM
-	jr .done
-
+	ret
 
 ReadTrainerPartyPieces:
 	ld h, d
@@ -94,21 +98,17 @@ ReadTrainerPartyPieces:
 	cp -1 ; Trainer party terminator
 	ret z
 
-	; Store level in wCurPartyLevel
-	ld [wCurPartyLevel], a
-	; An Elite Four seat sets its own levels and team size
-	farcall EliteFourSeatMonLevel
+	; Store level in wCurPartyLevel and get the species in de, both scaled by badges if the byte
+	; asks for it. An Elite Four seat sets its own levels and team size.
+	farcall TrainerMonLevel
 	ret c
 
-	; hl = pointer to species low byte
-	call GetNextTrainerDataByte
+	; Past the species
+	inc hl
+	inc hl
 	push hl
-	push af
-	; hl = pointer to species high byte
-	call GetNextTrainerDataByte
-	ld h, a ; high byte of species
-	pop af
-	ld l, a ; low byte of species
+	ld h, d
+	ld l, e
 	call GetPokemonIDFromIndex
 	ld [wCurPartySpecies], a
 
@@ -117,7 +117,6 @@ ReadTrainerPartyPieces:
 	ld [wMonType], a
 	predef TryAddMonToParty
 	pop hl
-	inc hl ;because hl was pushed before the last call to GetNextTrainerDataByte
 
 	ld a, [wOtherTrainerType]
 	and TRAINERTYPE_FORM
@@ -398,35 +397,8 @@ SetTrainerBattleLevel:
 	and a
 	ret nz
 
-	ld a, [wOtherTrainerClass]
-	dec a
-	ld c, a
-	ld b, 0
-	ld hl, TrainerGroups
-	add hl, bc
-	add hl, bc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
-
-	ld a, [wOtherTrainerID]
-	ld b, a
-.skip_trainer
-	dec b
-	jr z, .got_trainer
-.skip_party
-	ld a, [hli]
-	cp $ff
-	jr nz, .skip_party
-	jr .skip_trainer
-.got_trainer
-
-.skip_name
-	ld a, [hli]
-	cp "@"
-	jr nz, .skip_name
-
-	inc hl
-	ld a, [hl]
-	ld [wCurPartyLevel], a
-	ret
+; The first Pokemon's level, found the way ReadTrainerParty finds the party
+	call FindTrainerParty
+	inc hl ; the trainer type
+	call GetNextTrainerDataByte
+	farjp SetLevelFromByte

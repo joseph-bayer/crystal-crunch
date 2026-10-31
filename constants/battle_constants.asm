@@ -1,6 +1,16 @@
 ; significant level values
 DEF MAX_LEVEL EQU 100
 DEF MIN_LEVEL EQU 2
+; A trainer party or wild slot level byte above MAX_LEVEL scales with the player's badges: the base
+; level for their badge count (BadgeBaseLevels) plus (byte - LEVEL_FROM_BADGES), kept within
+; MIN_LEVEL to MAX_LEVEL. Offsets of -77 to +77 fit: db LEVEL_FROM_BADGES - 2
+DEF LEVEL_FROM_BADGES EQU 178
+; A scaled trainer entry names the final species it grows toward, and is shown as the stage of that
+; line its level reaches (a wild slot keeps its species). Evolutions that don't go by level count as
+; reached at these levels.
+DEF SCALED_ITEM_EVO_LEVEL      EQU 40
+DEF SCALED_TRADE_EVO_LEVEL     EQU 40
+DEF SCALED_HAPPINESS_EVO_LEVEL EQU 35
 DEF EGG_LEVEL EQU 5
 
 ; maximum moves known per mon

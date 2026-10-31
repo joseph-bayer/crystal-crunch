@@ -34,7 +34,6 @@ ROM0
 	"Follower Script Home"
 ROMX $01
 	"bank1"
-	"Tileset Data 10"
 ROMX $02
 	"bank2"
 	"Tileset Data 9"
@@ -104,6 +103,7 @@ ROMX $17
 	"Map Scripts 3"
 ROMX $18
 	"Map Scripts 4"
+	"Tileset Data 10"
 ROMX $19
 	"Crystal Phone Text"
 ROMX $1a
@@ -124,6 +124,7 @@ ROMX $21
 	"bank21"
 ROMX $22
 	"Crystal Features 2"
+	"Battle Tower"
 ROMX $23
 	"bank23"
 ROMX $24
@@ -210,7 +211,6 @@ ROMX $46
 	"mobile46"
 	"Fade System"
 ROMX $47
-	"Battle Tower"
 	"Overworld Mons"
 ROMX $48
 	"Pic Pointers"

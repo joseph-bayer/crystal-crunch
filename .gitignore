@@ -53,6 +53,8 @@ __pycache__/
 *.sn*
 *.sa*
 *.sg1
+# except the old releases' saves the regression tests load
+!/tests/fixtures/saves/*.sav
 
 # working notes: specs and plans, kept out of the repo
 /plans/

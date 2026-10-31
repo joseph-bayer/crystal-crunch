@@ -250,9 +250,100 @@ def trainer_group_labels():
 	return dict(zip(classes, labels))
 
 
+LEVEL_FROM_BADGES = 178
+MIN_LEVEL = 2
+MAX_LEVEL = 100
+
+
+@lru_cache(maxsize=None)
+def badge_base_levels():
+	"""BadgeBaseLevels: the base level for each badge count, 0 to 16."""
+	return [int(n) for n in re.findall(r"^\tdb +(\d+)", read("data/trainers/badge_base_levels.asm"), re.M)]
+
+
+class ScaledLevel:
+	"""A party level written LEVEL_FROM_BADGES + offset: the base level for the player's badge count
+	plus the offset, kept within MIN_LEVEL to MAX_LEVEL. It has no level of its own, so it doesn't
+	compare with a plain one; ask for it at a badge count."""
+
+	def __init__(self, offset):
+		self.offset = offset
+
+	def at(self, badges, cap=None):
+		"""The level with this many badges, counting no more than `cap` (a map's, see
+		badge_scaling_caps)."""
+		if cap is not None:
+			badges = min(badges, cap)
+		return max(MIN_LEVEL, min(MAX_LEVEL, badge_base_levels()[badges] + self.offset))
+
+	def __eq__(self, other):
+		return isinstance(other, ScaledLevel) and other.offset == self.offset
+
+	def __hash__(self):
+		return hash(("ScaledLevel", self.offset))
+
+	def __repr__(self):
+		return "LEVEL_FROM_BADGES %+d" % self.offset
+
+
+def party_level(text):
+	"""A party level byte as written: an int, or a ScaledLevel."""
+	m = re.fullmatch(r"LEVEL_FROM_BADGES\s*(?:([+-])\s*(\d+))?", text.strip())
+	if m:
+		offset = int(m.group(2) or 0)
+		return ScaledLevel(-offset if m.group(1) == "-" else offset)
+	return int(text)
+
+
+def level_at(level, badges, cap=None):
+	"""A party level at a badge count, on a map with this badge cap: a plain level is itself."""
+	return level.at(badges, cap) if isinstance(level, ScaledLevel) else level
+
+
+@lru_cache(maxsize=None)
+def badge_scaling_caps():
+	"""{MAP_CONST: the most badges its scaled levels count}, from BadgeScalingCaps."""
+	text = read("data/trainers/badge_scaling_caps.asm")
+	return {m: int(cap) for m, cap in re.findall(r"map_id (\w+)\s*\n\s*db (\d+)", text)}
+
+
+@lru_cache(maxsize=None)
+def map_constants_by_file():
+	"""{map file name (Route46): its constant (ROUTE_46)}, from data/maps/attributes.asm."""
+	return dict(re.findall(r"map_attributes (\w+), (\w+),", read("data/maps/attributes.asm")))
+
+
+WILD_TABLES = {
+	"grass": ("data/wild/johto_grass.asm", "def_grass_wildmons", r"dbw\s+(.+?),\s*(\w+)$"),
+	"water": ("data/wild/johto_water.asm", "def_water_wildmons", r"dbw\s+(.+?),\s*(\w+)$"),
+	# the wandering mon's rosters: grass first, then water, a map in either or both
+	"wanderers": ("data/wild/overworld_mons.asm", "def_ow_wildmons",
+		r"ow_wildmon\s+\w+,\s*(\w+),\s*(.+?),"),
+}
+
+
+def wild_tables(kind, rev=None):
+	"""[(map, [(level, species)])] for one kind of wild table, in file order (a map can appear twice
+	among the wanderers: once for grass, once for water). A level is an int or a ScaledLevel."""
+	path, opener, row = WILD_TABLES[kind]
+	result = []
+	for line in read(path, rev).splitlines():
+		c = code(line)
+		m = re.match(opener + r"\s+(\w+)", c)
+		if m:
+			result.append((m.group(1), []))
+			continue
+		m = re.match(row, c)
+		if m and result:
+			level, species = m.groups() if kind != "wanderers" else m.groups()[::-1]
+			result[-1][1].append((party_level(level), species))
+	return result
+
+
 def parse_parties(text):
 	"""{group label: [party]}. A party is {"name", "type", "mons"}; a mon is {"level", "species",
-	"form", "item", "moves"}, with the fields its trainer type has."""
+	"form", "item", "moves"}, with the fields its trainer type has. A level is an int, or a
+	ScaledLevel for a LEVEL_FROM_BADGES one."""
 	groups = {}
 	group = None
 	party = None
@@ -266,7 +357,7 @@ def parse_parties(text):
 		has_moves = "MOVES" in party["type"]
 		i = 0
 		while i < len(words):
-			mon = {"level": int(words[i]), "species": words[i + 1], "form": None, "item": None,
+			mon = {"level": party_level(words[i]), "species": words[i + 1], "form": None, "item": None,
 				"moves": None}
 			i += 2
 			if has_form:
