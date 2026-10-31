@@ -43,11 +43,19 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Where to find the legendaries is in [spoilers.md](spoilers.md).
 
 ### Following Pokémon
+<details>
+<summary>Show details</summary>
+
 - Press **Select** on a party member to make it your follower.
 - A fainted follower waits in its Poké Ball, and comes back out when you heal it.
 - Eggs can follow you too!
 
+</details>
+
 ### Wild Pokémon in the Overworld
+<details>
+<summary>Show details</summary>
+
 - Many routes and towns have Pokémon wandering in the open.
 - Walk into one to start a wild battle.
 - What you see is what you fight - a shiny out in the grass is shiny in the battle.
@@ -56,7 +64,12 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - A chime plays when you walk into an area that has a shiny in it.
 - Who turns up is decided fresh each time you enter an area, so it is worth passing back through.
 
-### Swarms
+</details>
+
+### Swarm System Overhaul
+<details>
+<summary>Show details</summary>
+
 - Daily swarms are announced via the radio on station 12.5, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
 - Strange looking Pokémon potentially from the past?
 - Swarms with higher chances to have alternate shiny colors.
@@ -69,18 +82,33 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Swarm Pokémon replace some overworld Pokémon on the route. Battle one and all of the route's wandering Pokémon are rolled again, to increase the chance of finding shinies.
 - Active swarms are marked on the Pokégear map and the Fly map. When icons share a spot, they take turns showing.
 
+</details>
+
 ### Roaming Legendaries
+<details>
+<summary>Show details</summary>
+
 - Roaming legendaries appear in the overworld now instead of in the grass.
 - The location of the roaming legendaries can be tracked on the Pokégear map immediately after the Burned Tower event.
 - A roaming legendary stays put while you're on its route, so you can walk up to it. It only moves on when you leave, or after you battle it.
 - If you knock out Raikou or Entei, it will start roaming again after your next Elite Four win.
 - Check [What are the shiny rates?](#what-are-the-shiny-rates) for updates to shiny mechanics surrounding the roaming legendaries.
 
+</details>
+
 ### Cosmetic Forms
+<details>
+<summary>Show details</summary>
+
 - Many Pokémon have new cosmetic forms - see the [screenshots](#screenshots), or [spoilers.md](spoilers.md) for where to find some of them.
 - *Note:* Some forms will have a symbol that displays on the battle and stats screen to indicate that they're different. Not all forms will have this.
 
-### Hidden Power
+</details>
+
+### Hidden Power System Overhaul
+<details>
+<summary>Show details</summary>
+
 - Every Pokémon's Hidden Power attack power can be increased via various methods. The attack power starts at **20** and caps at **70**. Unown cap at **120**.
 - Every 256 steps a Pokémon's Hidden Power attack power can go up via the following methods:
   - Pokémon holding a new item, the **GLYPH SHARD**, get a 25% chance to increase their power.
@@ -92,12 +120,22 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
   - She gives you your first GLYPH SHARD.
   - She teaches Hidden Power for free, any time.
 
+</details>
+
 ### The Open League
+<details>
+<summary>Show details</summary>
+
 - Once you hold all 16 badges, the Elite Four opens up: every run is a new, random lineup of four Elite Four members and a Champion.
 - The lineup is drawn from the Elite Four, the Johto and Kanto Gym Leaders, Lorelei and Agatha from Red and Blue, and a few surprises.
 - Kanto Gym Leaders tell you they're joining right after you beat them.
 
-### Pokégear
+</details>
+
+### Pokégear Upgrades
+<details>
+<summary>Show details</summary>
+
 - Press **Select** on the Pokégear map or the Fly map to switch what the map shows:
 
   | View | Shows |
@@ -109,7 +147,12 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - When there are more trainers than fit on screen, they take turns showing.
 - Press **Start** to slide over to the other region's map, once you've visited Indigo Plateau. On the Fly map, **Left** and **Right** still work too.
 
-### Phone
+</details>
+
+### Phone Upgrades
+<details>
+<summary>Show details</summary>
+
 - No more full phone: you can register every trainer who offers you their number.
 - Trainers offer their number right after you beat them.
 - Answer or decline calls: press **A** to answer, **B** to decline. Mom, Prof. Oak, Bill and Prof. Elm can't be declined.
@@ -117,22 +160,37 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - A trainer with a rematch or gift waiting won't call again until you go see them.
 - Call a trainer on their rematch day, at any time, to set up a rematch. On that day a VS icon shows next to their name in your contacts until you call.
 
-### HMs
-- More Pokémon can learn the HMs, Rock Smash and Headbutt, following Polished Crystal's and Sour Crystal's learnsets. For example, Zubat and Golbat can learn Fly.
+</details>
+
+### Pokémon don't need to learn HM moves
+<details>
+<summary>Show details</summary>
+
 - You can use an HM outside of battle if a Pokémon in your party can learn it, as long as you have the HM in your bag. It doesn't have to know the move.
 - Rock Smash works the same way once you've received its TM, even if you've since taught it.
 - Headbutt still has to be known.
+- More Pokémon can learn the HMs, Rock Smash and Headbutt, following Polished Crystal's and Sour Crystal's learnsets. For example, Zubat and Golbat can learn Fly.
 - HM moves can be forgotten like any other move, and Pokémon that know them can be released.
 - Fly from the Pokégear map: press **A** on a town you've visited. The Pokémon that would fly is shown on the town.
 - In a dark area, press **A** to prompt Flash.
 
+</details>
+
 ### Daily Events
+<details>
+<summary>Show details</summary>
+
 - The Bug Catching Contest now appears on Sundays as well (on top of Tuesdays, Thursdays, and Saturdays).
 - A Sailor in Cianwood will take you to a mystery island once a day, where you can find new places to explore, rare Pokémon, and more.
 - Once a day, find rare variants in swarms by tuning into radio channel 12.5.
 - Mystery Gift with various NPCs once per day for rare items.
 
-### Mystery Gift
+</details>
+
+### Mystery Gift Overhaul
+<details>
+<summary>Show details</summary>
+
 - Improved rarity distribution - uncommon, rare, and super rare items appear more often.
 - Upgraded rewards - all evolution items can be obtained by Mystery Gifting with NPCs.
 - Locations
@@ -141,7 +199,12 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
   - Charlie (Silph Co. 1F)
 - Limit once per day, per NPC.
 
-### Breeding
+</details>
+
+### Breeding Upgrades
+<details>
+<summary>Show details</summary>
+
 - Fewer step cycles required to hatch eggs.
 - Updated "hatching soon" and egg animation logic to scale down with the lower overall cycles.
 - Eggs have blue spots when shiny.
@@ -158,38 +221,50 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
   | Same species | 50% |
   | Different species | 25% |
 
+</details>
+
 ### Type Rebalance
+<details>
+<summary>Show details</summary>
+
 - Dark-type moves are now Physical.
 - Ghost-type moves are now Special.
 - Dragon-type moves are now Physical.
 
+</details>
+
 ### Scaling Marts
+<details>
+<summary>Show details</summary>
+
 - Town Poké Marts sell better stock as you earn badges (new stock at 2, 4, 6, and 8 badges), so going back to an early town doesn't mean worse shopping.
 - A few towns keep a specialty item: Charcoal in Azalea, Surf Mail in Olivine and Cerulean, LiteBlueMail in Vermilion.
 - Blackthorn's mart, the department stores, and specialty shops keep fixed stock; Blackthorn and the department stores sell TMs.
 
-### Scaling Side Areas
+</details>
+
+### Scaling Trainers/Wild Pokémon
+<details>
+<summary>Show details</summary>
+
 - Some routes have scaling trainers and/or scaling Pokémon to make sure they're the right level based on your badge count
 - Scaled trainer Pokémon evolve to fit their level (a Geodude early, a Golem late); wild ones keep their species.
 
-### Caught Ball
-- The ball that a Pokémon is caught in is displayed on the stats screen.
+</details>
 
-### Wild Held Items
-- Wild Pokémon are more likely to hold items:
+### Simplified Headbutt Trees
+<details>
+<summary>Show details</summary>
 
-  | Common Item | Rare Item |
-  |----------------|-------------------|
-  | **40%** *(+17%)* | **10%** *(+8%)* |
-
-### Fleeing
-- Only roaming legendaries flee wild battles.
-
-### Headbutt Trees
 - Headbutting a headbutt tree always results in a Pokémon appearing.
 - Each area type has one encounter table instead of a common and uncommon table.
 
+</details>
+
 ### Misc.
+<details>
+<summary>Show details</summary>
+
 - Kurt makes Apricorn balls instantly, and can make several at once.
 - When nothing bites, you're asked "Fish again?" so you can recast without reopening the bag.
 - When a Repel wears off and you have another of the same kind, you're asked whether to use another.
@@ -203,6 +278,15 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Simplified the clock reset
   - Hold **Down + B + Select** at the title screen, then confirm.
 - Text speed defaults to FAST, and there's a new INSTANT speed.
+- The ball that a Pokémon is caught in is displayed on the stats screen.
+- Only roaming legendaries flee wild battles.
+- Wild Pokémon are more likely to hold items:
+
+  | Common Item | Rare Item |
+  |----------------|-------------------|
+  | **40%** *(+17%)* | **10%** *(+8%)* |
+
+</details>
 
 ---
 
@@ -214,7 +298,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Additional trainers and locations in Kanto
 - Customization of trainer color
 - Enhanced tilesets and sprites
-- An large assortment of new systems and QOL improvements
+- A large assortment of new systems and QOL improvements
 
 ---
 
