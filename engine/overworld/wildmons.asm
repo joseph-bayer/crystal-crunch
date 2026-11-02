@@ -49,6 +49,11 @@ FindNest:
 	ld c, l
 	ld a, e
 	and a
+	jr z, .got_region
+	ld a, 1 ; Kanto
+.got_region
+	ld [wPokedexAreaRegion], a
+	and a
 	jr nz, .kanto
 	decoord 0, 0
 	ld hl, JohtoGrassWildMons
@@ -56,14 +61,16 @@ FindNest:
 	ld hl, JohtoWaterWildMons
 	call .FindWater
 	call .RoamMon1
-	jmp .RoamMon2
+	call .RoamMon2
+	farjp Pokedex_FindMoreNests
 
 .kanto
 	decoord 0, 0
 	ld hl, KantoGrassWildMons
 	call .FindGrass
 	ld hl, KantoWaterWildMons
-	jr .FindWater
+	call .FindWater
+	farjp Pokedex_FindMoreNests
 
 .FindGrass:
 	ld a, [hl]

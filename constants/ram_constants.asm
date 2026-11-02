@@ -13,6 +13,23 @@ DEF AUTO_INPUT EQU $ff
 	const DEXMODE_ABC
 	const DEXMODE_UNOWN
 
+; wCurPokedexColor::
+	const_def
+	const DEXCOLOR_RED
+	const DEXCOLOR_BLUE
+	const DEXCOLOR_PURPLE
+	const DEXCOLOR_BROWN
+	const DEXCOLOR_GREEN
+	const DEXCOLOR_PINK
+	const DEXCOLOR_YELLOW
+	const DEXCOLOR_CYAN
+	const DEXCOLOR_GRAY
+DEF NUM_DEXCOLORS EQU const_value
+
+; wPokedexShinyToggle:: bits
+DEF POKEDEX_SHINY_F     EQU 0 ; shiny colors
+DEF POKEDEX_ALT_SHINY_F EQU 1 ; with POKEDEX_SHINY_F: alternate shiny colors, once the species' alternate has been seen
+
 ; wMonType::
 	const_def
 	const PARTYMON   ; 0

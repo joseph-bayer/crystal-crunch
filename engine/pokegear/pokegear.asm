@@ -313,6 +313,7 @@ InitPokegearTilemap:
 .Clock:
 	ld de, ClockTilemapRLE
 	call Pokegear_LoadTilemapRLE
+	farcall PokegearClock_LoadIcons
 	hlcoord 12, 1
 	ld de, .switch
 	rst PlaceString
@@ -515,9 +516,8 @@ PokegearClock_Joypad:
 	ret
 
 Pokegear_UpdateClock:
-	hlcoord 3, 5
-	lb bc, 5, 14
-	call ClearBox
+	farcall PokegearClock_DrawFrame
+	farcall PokegearClock_PlaceExtras
 	ldh a, [hHours]
 	ld b, a
 	ldh a, [hMinutes]

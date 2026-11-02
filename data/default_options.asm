@@ -11,8 +11,9 @@ DefaultOptions:
 	db GBPRINTER_NORMAL
 ; wOptions2: menu account on
 	db 1 << MENU_ACCOUNT
-
-	db $00
-	db $00
+; wPokedexShinyToggle: off
+	db 0
+; wCurPokedexColor: red
+	db DEXCOLOR_RED
 .End
 	assert DefaultOptions.End - DefaultOptions == wOptionsEnd - wOptions

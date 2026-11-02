@@ -188,6 +188,12 @@ assert !(ELMS_STARTER_FORM & (FORM_MASK | ALT_SHINY_MASK | SHINY_MASK)), "ELMS_S
 assert !(SHINY_MASK & ALT_SHINY_MASK) && !(FORM_MASK & ALT_SHINY_MASK), "MON_FORM bits overlap"
 DEF PLAIN_FORM EQU 0
 
+; The Pokédex's record of the forms and alternate shinies met (engine/pokedex/dex_forms.asm). The
+; capacities are the save's: raising one moves every flag after it in old saves.
+DEF DEX_FORM_FLAG_CAPACITY EQU 160 ; one flag per non-plain form, numbered by DexFormFlagRows
+DEF DEX_ALT_SHINY_CAPACITY EQU 16  ; one flag per AltShinyPalettes row
+DEF DEX_FORMS_SAVE_MAGIC EQU $d3f1 ; marks a saved copy of the record; anything else loads as nothing met
+
 ; Hidden Power level byte (MON_HP_LEVEL): the level raises Hidden Power's power, in even steps
 ; rounded down, from HIDDEN_POWER_MIN_POWER at 0 to the max at MAX_HP_LEVEL. A wild mon's Hidden
 ; Power uses level 0 and a trainer's mon MAX_HP_LEVEL (see GetUserHiddenPowerPower).

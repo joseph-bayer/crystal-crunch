@@ -184,7 +184,6 @@ INCLUDE "data/battle/effect_command_pointers.asm"
 
 SECTION "bank10", ROMX
 
-INCLUDE "engine/pokedex/pokedex.asm"
 INCLUDE "data/moves/moves.asm"
 INCLUDE "engine/pokemon/evolve.asm"
 
@@ -193,7 +192,6 @@ SECTION "bank11", ROMX
 
 INCLUDE "engine/events/fruit_trees.asm"
 INCLUDE "engine/battle/ai/move.asm"
-INCLUDE "engine/pokedex/pokedex_2.asm"
 INCLUDE "engine/pokemon/mail.asm"
 
 
@@ -764,6 +762,40 @@ INCLUDE "engine/gfx/fade.asm"
 SECTION "Following", ROMX
 
 INCLUDE "engine/events/follower.asm"
+
+
+SECTION "Pokedex", ROMX
+
+INCLUDE "engine/pokedex/pokedex.asm"
+
+
+SECTION "Pokedex 2", ROMX
+
+INCLUDE "engine/pokedex/pokedex_2.asm"
+
+
+SECTION "Pokegear Clock Card", ROMX
+
+INCLUDE "engine/pokegear/clock_card.asm"
+
+
+SECTION "Pokedex Graphics", ROMX
+
+PokedexLZ:
+INCBIN "gfx/pokedex/pokedex.2bpp.lz"
+PokedexSlowpokeLZ:
+INCBIN "gfx/pokedex/slowpoke.2bpp.lz"
+Pokedex_ExtraTiles:
+INCBIN "gfx/pokedex/rangi_dex_tiles.2bpp"
+Pokedex_PageNumTiles:
+INCBIN "gfx/pokedex/dex_pagenums.2bpp"
+Pokedex_MathTiles:
+INCBIN "gfx/pokedex/math_symbols_inverted.1bpp"
+Pokedex_Imperial_Tiles:
+INCBIN "gfx/pokedex/inversed_feet_inches.1bpp"
+Pokedex_RightArrow_Tile:
+INCBIN "gfx/pokedex/inversed_rightarrow.1bpp"
+INCLUDE "gfx/pokedex_type_tiles.asm"
 
 
 SECTION "Trainer Extra Palettes", ROMX

@@ -3488,6 +3488,7 @@ ShowBattleTextEnemySentOut:
 
 ShowSetEnemyMonAndSendOutAnimation:
 	ld a, [wTempEnemyMonSpecies]
+	farcall DexRecordEnemyFormSeen
 	call SetSeenMon
 	ld [wCurPartySpecies], a
 	ld [wCurSpecies], a
@@ -6069,6 +6070,7 @@ LoadEnemyMon:
 	jr z, .not_seat_battle
 	call InitEnemyMon
 	ld a, [wEnemyMonSpecies]
+	farcall DexRecordEnemyFormSeen
 	jmp SetSeenMon
 
 .not_seat_battle
@@ -6766,6 +6768,7 @@ LoadEnemyMon:
 
 ; Saw this mon
 	ld a, [wTempEnemyMonSpecies]
+	farcall DexRecordEnemyFormSeen
 	call SetSeenMon
 
 	ld hl, wEnemyMonStats

@@ -203,6 +203,7 @@ HatchEggs:
 	rst AddNTimes
 	ld a, [hl]
 	ld [wCurPartySpecies], a
+	farcall DexRecordPartyMonFormCaught
 	call SetSeenAndCaughtMon
 
 	ld a, [wCurPartySpecies]

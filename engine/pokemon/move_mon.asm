@@ -209,6 +209,7 @@ endr
 	push de
 	call CheckCaughtMon
 	ld a, [wTempSpecies]
+	farcall DexRecordEnemyFormCaught
 	call SetSeenAndCaughtMon
 	pop de
 
@@ -472,6 +473,7 @@ AddTempmonToParty:
 	ld [wNamedObjectIndex], a
 	cp EGG
 	jr z, .egg
+	farcall DexRecordTempMonFormCaught
 	call SetSeenAndCaughtMon
 	ld hl, wPartyMon1Happiness
 	ld a, [wPartyCount]
@@ -796,6 +798,7 @@ SendMonIntoBox:
 	ld a, [wCurPartyLevel]
 	ld [de], a
 	ld a, [wCurPartySpecies]
+	farcall DexRecordEnemyFormCaught
 	call SetSeenAndCaughtMon
 	ld a, [wCurPartySpecies]
 	call GetPokemonIndexFromID
@@ -844,7 +847,9 @@ GiveEgg::
 	call CheckSeenMon
 	push bc
 
+	farcall DexFormsHoldOn ; an egg isn't a Pokémon met
 	call TryAddMonToParty
+	farcall DexFormsHoldOff
 
 ; If we haven't caught this Pokemon before receiving
 ; the Egg, reset the flag that was just set by

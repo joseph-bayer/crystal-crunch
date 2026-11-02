@@ -75,7 +75,7 @@ SetMenuMonIconColor:
 	ld [wCurPartySpecies], a
 	call GetMenuMonIconPalette
 	ld hl, wShadowOAMSprite00Attributes
-	jr _ApplyMenuMonIconColor
+	jmp _ApplyMenuMonIconColor
 
 SetMenuMonIconColor_NoShiny:
 	push hl
@@ -88,6 +88,44 @@ SetMenuMonIconColor_NoShiny:
 	and a
 	call GetMenuMonIconPalette_PredeterminedShininess
 	ld hl, wShadowOAMSprite00Attributes
+	jmp _ApplyMenuMonIconColor
+
+SetDexEvoIconColor:
+; The Pokédex evolution chart gives each icon an OBJ palette of its own, the one numbered for its slot.
+	push hl
+	push de
+	push bc
+	push af
+
+	farcall LoadDexEvoIconPal
+	jr _ApplyDexMonIconColor
+
+SetDexMonIconColor_SpritePage::
+; The Pokédex pics page gives its one icon a palette of its own, shiny when the shiny toggle is on.
+	push hl
+	push de
+	push bc
+	push af
+
+	farcall GetPokedexDisplayForm
+	ld bc, wPokedexDisplayForm
+	ld a, [wTempIconSpecies]
+	ld e, MENU_MON_ICON_PAL
+	farcall LoadMonIconOBPal
+	farcall ApplyOBPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ld a, MENU_MON_ICON_PAL
+	; fallthrough
+_ApplyDexMonIconColor:
+	ld hl, wShadowOAMSprite00Attributes
+	push af
+	ldh a, [hObjectStructIndex]
+	swap a
+	ld d, 0
+	ld e, a
+	add hl, de
+	pop af
 	jr _ApplyMenuMonIconColor
 
 LoadPartyMenuMonIconColors:
@@ -222,7 +260,7 @@ LoadMenuMonIcon:
 	dw Trade_LoadMonIconGFX             ; MONICON_TRADE
 	dw Mobile_InitAnimatedMonIcon       ; MONICON_MOBILE1
 	dw Mobile_InitPartyMenuBGPal71      ; MONICON_MOBILE2
-	dw Unused_GetPartyMenuMonIcon       ; MONICON_UNUSED
+	dw Pokedex_InitAnimatedMonIcon      ; MONICON_POKEDEX
 
 Unused_GetPartyMenuMonIcon:
 	call InitPartyMenuIcon
@@ -427,6 +465,58 @@ MoveList_InitAnimatedMonIcon:
 	ld hl, SPRITEANIMSTRUCT_ANIM_SEQ_ID
 	add hl, bc
 	ld [hl], SPRITE_ANIM_FUNC_NULL
+	ret
+
+Pokedex_InitAnimatedMonIcon:
+	ld a, [wCurPartySpecies]
+	push af
+	ld a, [wTempSpecies]
+	ld [wCurPartySpecies], a
+
+	ld a, [wTempIconSpecies]
+	ld [wCurIcon], a
+	ld a, [wPokedexPageFlags]
+	cp POKEDEX_PICS_PAGE_ICON
+	jr nz, .evo_page
+; pics page
+	farcall GetPokedexDisplayForm
+	ld [wForm], a
+	call GetMemIconGFX
+	ld a, -1
+	ld [wPokedexPageFlags], a
+	lb de, $88, $20
+	jr .got_coords
+
+.evo_page
+	call SetDexEvoIconColor
+	xor a
+	ld [wForm], a
+	call GetMemIconGFX
+	ld a, [wPokedexPageFlags]
+	inc a
+; y coord
+	ld c, 32
+	call SimpleMultiply
+	add $28
+	ld d, a
+; x coord
+	ld e, $19
+.got_coords
+	ld a, SPRITE_ANIM_OBJ_PARTY_MON
+	call _InitSpriteAnimStruct
+
+	ld a, [wCurIconTile]
+	sub 10
+	ld hl, SPRITEANIMSTRUCT_TILE_ID
+	add hl, bc
+	ld [hl], a
+
+	ld hl, SPRITEANIMSTRUCT_ANIM_SEQ_ID
+	add hl, bc
+	ld [hl], SPRITE_ANIM_FUNC_NULL
+
+	pop af
+	ld [wCurPartySpecies], a
 	ret
 
 Trade_LoadMonIconGFX:

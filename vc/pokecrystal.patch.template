@@ -327,7 +327,7 @@ Fixcode={db NO_INPUT}
 ConditionType = 0                                                                                 
 ConditionValueA = {dws_ wWindowStackPointer wWindowStackPointer+1 wMenuJoypad wMenuSelection wDexArrowCursorPosIndex hJoyPressed hJoyPressed hJoyPressed hJoyPressed}                      
 ConditionValueB = {dws_ ==                  ==                    ==          ==             ==                      !=          !=          !=          !=         }                      
-ConditionValueC = {dws_ 0xa1                0xdb                  PAD_A       0x00           0x03                    PAD_DOWN    PAD_UP      PAD_B       NO_INPUT   }                      
+ConditionValueC = {dws_ 0xa1                0xdb                  PAD_A       0x00           0x04                    PAD_DOWN    PAD_UP      PAD_B       NO_INPUT   }                      
 
 
 

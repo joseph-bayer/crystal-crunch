@@ -123,6 +123,21 @@ sChecksum:: dw
 sCheckValue2:: db ; loaded with SAVE_CHECK_VALUE_2, used to check save corruption
 
 
+SECTION "Pokedex Forms Save", SRAM
+
+; wDexForms, guarded by its own magic and checksum: older saves have neither, and load as nothing met
+sDexFormsMagic:: dw
+sDexForms:: ds wDexFormsEnd - wDexForms
+sDexFormsChecksum:: dw
+
+
+SECTION "Pokedex Forms Backup", SRAM
+
+sBackupDexFormsMagic:: dw
+sBackupDexForms:: ds wDexFormsEnd - wDexForms
+sBackupDexFormsChecksum:: dw
+
+
 SECTION "Box Metadata", SRAM
 
 for n, 1, NUM_BOXES + 1

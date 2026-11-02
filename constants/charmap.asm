@@ -132,6 +132,16 @@
 	charmap "′",         $ce
 	charmap "″",         $cf
 
+; Pokédex entry screen tiles (see engine/pokedex/pokedex.asm)
+	charmap "<DEX_LV>",       $5d
+	charmap "<DEX_LV_VRAM1>", $74
+	charmap "<DEX_⁂>",        $64
+	charmap ">",              $bb
+	charmap "<",              $bc
+	charmap "=",              $bd
+	charmap "+",              $be
+	charmap "<%>",            $bf
+
 	charmap "'d",        $d0
 	charmap "'l",        $d1
 	charmap "'m",        $d2

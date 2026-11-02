@@ -94,6 +94,13 @@ _ResetWRAM:
 	ld bc, wItemIndexTableEnd - wItemIndexTable
 	rst ByteFill
 
+	ld a, BANK(wDexForms)
+	ldh [rSVBK], a
+	ld hl, wDexForms
+	ld bc, wDexFormsHold + 1 - wDexForms
+	xor a
+	rst ByteFill
+
 	ld a, 1
 	ldh [rSVBK], a
 

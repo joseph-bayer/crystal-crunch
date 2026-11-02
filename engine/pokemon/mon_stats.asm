@@ -463,3 +463,16 @@ ListMoves:
 	cp NUM_MOVES
 	jr nz, .nonmove_loop
 	ret
+
+GetMonTypeIndex:
+; in: c = type; out: c = its row in the Pokédex type tiles and TypeIconPals
+	ld a, c
+	cp BIRD
+	jr c, .done
+	cp UNUSED_TYPES
+	dec a ; skip BIRD
+	jr c, .done
+	sub UNUSED_TYPES_END - UNUSED_TYPES
+.done
+	ld c, a
+	ret

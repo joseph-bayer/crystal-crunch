@@ -23,6 +23,8 @@ GameCornerPrizeMonCheckDex:
 	call FadeToMenu
 	ld a, [wScriptVar]
 	ld [wNamedObjectIndex], a
+	xor a
+	ld [wForm], a ; prizes are plain, and the new entry shows the form in wForm
 	farcall NewPokedexEntry
 	jmp ExitAllMenus
 

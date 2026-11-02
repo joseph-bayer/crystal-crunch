@@ -154,7 +154,7 @@ and bank room.
 `docs/` holds three kinds of document:
 
 - **Walkthroughs for adding content**, written against this tree rather than vanilla: `adding_maps.md`, `adding_tilesets.md`, `adding_cosmetic_forms.md`.
-- **Feature guides** for the fork's own systems: `overworld_pokemon.md` (wandering wild Pokémon, populations, their colors and save behavior), `following_pokemon.md`, `newbox_format.md`.
+- **Feature guides** for the fork's own systems: `overworld_pokemon.md` (wandering wild Pokémon, populations, their colors and save behavior), `following_pokemon.md`, `newbox_format.md`, `pokedex.md` (Nayru's Pokédex: where its code lives, its pages' data, the PICS page and the forms record).
 - **Scripting command sets**: `event_commands.md`, `map_event_scripts.md`, `map_setup_scripts.md`, `movement_commands.md`, `text_commands.md`, `battle_anim_commands.md`, `move_effect_commands.md`, `music_commands.md`, `menus.md`, `pic_animations.md`, `vc_patch.md`. Consult these before hand-writing script bytes.
 
 Working notes — specs and plans for in-flight work — go in `plans/`, which is gitignored. Nothing tracked should link to a file there.

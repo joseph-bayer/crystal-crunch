@@ -296,9 +296,23 @@ Pokémon NPCs all follow. The stats screen and both battle HUDs show `<ALT_SHINY
 1. `gfx/pokemon/<species>/alt_shiny.pal`: two `RGB` lines, in the same order as the species'
    `shiny.pal` (the pic's light color, then its dark one).
 2. A row in `data/pokemon/alt_shiny_palettes.asm`: `dw SPECIES`, then `INCLUDE` the file, before the
-   `dw 0` end marker.
+   `dw 0` end marker. Always at the end: the Pokédex numbers its alternate shiny flags in the save
+   by this order (`docs/pokedex.md`), so never reorder or remove a row.
 
 That's all; nothing else is per species.
+
+## The Pokédex
+
+The Pokédex records each form seen and caught, one flag per non-plain form, numbered by
+`DexFormFlagRows` in `engine/pokedex/dex_forms.asm` (`docs/pokedex.md`). That order is the save's:
+
+- A new form species gets a `dex_form_flags SPECIES, 1, <forms - 1>` row **at the end**.
+- A new form of a species that already has a row gets a second row at the end,
+  `dex_form_flags SPECIES, <its form number>, 1`. Never change an existing row's count.
+- A form drawn exactly as the plain form (a placeholder that keeps a line's form number) goes in
+  `DexFormsLookPlain` too, so the PICS page doesn't offer it.
+
+`tests/test_data_dex_forms.py` fails until every form has a flag.
 
 ## Gotchas
 
@@ -323,6 +337,7 @@ Always:
 [ ] constants/pokemon_constants.asm                     <SPECIES>_<FORM>_FORM appended, NUM_<SPECIES>_FORMS
 [ ] something sets the form: parties / ow_wildmon / pop_mon / givepoke / npctrade / WildFormTable / MultiFormEggTable
 [ ] README.md                                           forms table
+[ ] engine/pokedex/dex_forms.asm                        a DexFormFlagRows row at the end; DexFormsLookPlain if drawn plain
 [ ] make all                                            three targets; asserts catch a short table
 
 Recolor (species' sprite, new colors):

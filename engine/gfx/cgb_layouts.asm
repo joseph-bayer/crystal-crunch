@@ -32,6 +32,8 @@ CGBLayoutJumptable:
 	dw _CGB_PokegearPals
 	dw _CGB_StatsScreenHPPals
 	dw _CGB_Pokedex
+	dw _CGB_Pokedex_EvoPage
+	dw _CGB_Pokedex_PicsPage
 	dw _CGB_SlotMachine
 	dw _CGB_BetaTitleScreen
 	dw _CGB_GSIntro
@@ -382,7 +384,7 @@ INCLUDE "gfx/stats/stats.pal"
 
 _CGB_Pokedex:
 	ld de, wBGPals1
-	ld a, PREDEFPAL_POKEDEX
+	farcall CheckPokedexColor
 	call GetPredefPal
 	call LoadHLPaletteIntoDE ; dex interface palette
 	ld a, [wCurPartySpecies]
@@ -393,25 +395,81 @@ _CGB_Pokedex:
 	jr .got_palette
 
 .is_pokemon
-	call GetMonPalettePointer
+	call GetPokedexMonPalettePointer
 	call LoadPalette_White_Col1_Col2_Black ; mon palette
+	farcall Pokedex_LoadEntryTypePals
 .got_palette
 	call WipeAttrmap
 	hlcoord 1, 1, wAttrmap
 	lb bc, 7, 7
 	ld a, $1 ; green question mark palette
 	call FillBoxCGB
+
 	call InitPartyMenuOBPals
 	ld hl, PokedexCursorPalette
 	ld de, wOBPals1 palette 7 ; green cursor palette
 	ld bc, 1 palettes
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
+
+	farcall Pokedex_EntryAttrmap
+
 	call ApplyAttrmap
 	call ApplyPals
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
 	ret
+
+_CGB_Pokedex_EvoPage:
+	call WipeAttrmap
+
+	ld de, wBGPals1
+	farcall CheckPokedexColor
+	call GetPredefPal
+	call LoadHLPaletteIntoDE ; dex interface palette
+
+	ld de, wBGPals1 palette 6
+	ld a, PREDEFPAL_POKEDEX
+	call GetPredefPal
+	call LoadHLPaletteIntoDE ; dex interface palette	
+
+	farcall Pokedex_EvoPageAttrmap
+
+	call InitPartyMenuOBPals
+	call ApplyAttrmap
+	call ApplyPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ret
+
+_CGB_Pokedex_PicsPage:
+	call WipeAttrmap
+	ld de, wBGPals1
+	farcall CheckPokedexColor
+	call GetPredefPal
+	call LoadHLPaletteIntoDE ; dex interface palette
+; pokemon pals
+	call GetPokedexMonPalettePointer
+	call LoadPalette_White_Col1_Col2_Black ; mon palette
+; secondary pokedex pal
+	ld de, wBGPals1 palette 6
+	ld a, PREDEFPAL_POKEDEX
+	call GetPredefPal
+	call LoadHLPaletteIntoDE ; dex interface palette
+	farcall Pokedex_PicsPageAttrmap
+	call InitPartyMenuOBPals
+	call ApplyAttrmap
+	call ApplyPals
+	ld a, TRUE
+	ldh [hCGBPalUpdate], a
+	ret
+
+GetPokedexMonPalettePointer:
+; The Pokédex draws every species in its plain form, shiny when the shiny toggle is on.
+	farcall GetPokedexDisplayForm
+	ld bc, wPokedexDisplayForm
+	ld a, [wCurPartySpecies]
+	jmp GetMonNormalOrShinyPalettePointer
 
 PokedexQuestionMarkPalette:
 INCLUDE "gfx/pokedex/question_mark.pal"
@@ -499,7 +557,7 @@ BillsPC_PreviewTheme:
 
 _CGB_PokedexUnownMode:
 	ld de, wBGPals1
-	ld a, PREDEFPAL_POKEDEX
+	farcall CheckPokedexColor
 	call GetPredefPal
 	call LoadHLPaletteIntoDE
 	ld a, [wCurPartySpecies]
@@ -1011,7 +1069,7 @@ _CGB_BetaPikachuMinigame:
 
 _CGB_PokedexSearchOption:
 	ld de, wBGPals1
-	ld a, PREDEFPAL_POKEDEX
+	farcall CheckPokedexColor
 	call GetPredefPal
 	call LoadHLPaletteIntoDE
 	call WipeAttrmap

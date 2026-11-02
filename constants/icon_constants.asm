@@ -6,7 +6,20 @@
 	const MONICON_TRADE
 	const MONICON_MOBILE1
 	const MONICON_MOBILE2
-	const MONICON_UNUSED
+	const MONICON_POKEDEX
+
+; wPokedexPageFlags value that tells MONICON_POKEDEX to draw the pics page icon
+DEF POKEDEX_PICS_PAGE_ICON EQU 11
+
+; The Pokédex PICS page's own tiles in VRAM bank 1, above the front pic's animation frames, which
+; take $00-$7e and then carry on from $80 (GetAnimatedEnemyFrontpic)
+DEF DEXPICS_CRY_TILE     EQU $ca ; 2 tiles: the end of "START ▶ CRY"
+DEF DEXPICS_FRAME_TILE   EQU $cc ; 8 tiles: frame corner, side and line first
+DEF DEXPICS_SKINNY_TILE  EQU $d4 ; 1 tile
+DEF DEXPICS_BACKPIC_TILE EQU $dc ; the 6x6 back pic, to $ff
+; the most tiles a front pic and its animation frames may take
+DEF DEXPICS_MAX_FRONTPIC_TILES EQU $7f + DEXPICS_CRY_TILE - $80
+assert DEXPICS_BACKPIC_TILE + 6 * 6 == $100, "the PICS page's back pic doesn't fit"
 
 ; The party menu gives each party slot the OBJ palette matching its own number, holding that
 ; mon's own colors, so the red the held-item indicator wants no longer sits at palette 0.

@@ -550,6 +550,7 @@ PokeBallEffect:
 	ld a, c
 	push af
 	ld a, [wTempSpecies]
+	farcall DexRecordEnemyFormCaught
 	call SetSeenAndCaughtMon
 	pop af
 	and a

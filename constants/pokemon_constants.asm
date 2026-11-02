@@ -597,7 +597,7 @@ DEF NUM_SNORLAX_FORMS EQU const_value ; 2
 ; Shuckle forms
   const_def 0 ; Note that forms are now 0-indexed
   const SHUCKLE_PLAIN_FORM    	    ; 0
-  const SHUCKLE_SHUCKIE_NEUTRAL_FORM ; 1
+  const SHUCKLE_SHUCKIE_NEUTRAL_FORM ; 1 -- looks plain; Mania's Shuckie before he's happy
   const SHUCKLE_SHUCKIE_HAPPY_FORM   ; 2
 DEF NUM_SHUCKLE_FORMS EQU const_value ; 3
 

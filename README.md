@@ -149,6 +149,19 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 </details>
 
+### Pokédex Upgrade
+<details>
+<summary>Show details</summary>
+
+- The Pokédex is built on massive improvements made by Nayru.
+  - See where to find a species, its evolution line, front/back/overworld pics, and more!
+- Nayru's dex has been updated to...
+  - Tab navigation wrapping
+  - No waiting for animations/cries before moving
+  - Show forms and alternate shinies
+
+</details>
+
 ### Phone Upgrades
 <details>
 <summary>Show details</summary>
@@ -386,6 +399,9 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - Trainers offering their number right after battle follows the [Improve the trainer rematch system](https://github.com/pret/pokecrystal/wiki/Improve-the-trainer-rematch-system) tutorial by Grate Oracle Lewot from the pret/pokecrystal wiki.
 - Kurt making Apricorn balls instantly follows the [Kurt Makes Pokeballs Instantly](https://github.com/pret/pokecrystal/wiki/Kurt-Makes-Pokeballs-Instantly) tutorial by [Nayru62](https://github.com/Nayru62) from the pret/pokecrystal wiki (adapted from [Polished Crystal](https://github.com/Rangi42/polishedcrystal)), with the fade back in from [Sour Crystal](https://github.com/SoupPotato/sourcrystal).
 - The INSTANT text speed follows the [Add a new text scrolling speed](https://github.com/pret/pokecrystal/wiki/Add-a-new-text-scrolling-speed) tutorial from the pret/pokecrystal wiki, written and edited by mid-kid, pigeon-crystal, 7Soul, SonicRay100, WinUser-Generic and wfowler1.
+- **Nayru's Pokédex** by [Nayru62](https://github.com/Nayru62), from [Nayru62/pokecrystal](https://github.com/Nayru62/pokecrystal) (`8.0_Nayrus_Pokedex`) and [Nayru62/pokecrystal16](https://github.com/Nayru62/pokecrystal16) (`newbox_NayrusPokedex`), adapted to this hack: the entry screen's STAT, MOVES, AREA, EVO and PICS pages, the frame color picker and shiny toggle, and the Pokégear clock card's time of day, place and fishing group. Within it:
+  - The Customizable Pokédex Color and shiny toggle tutorials by [Idain](https://github.com/Idain)
+  - `Pokedex_SkipEvolutions` by [Vulcandth](https://github.com/vulcandth)
 - Being asked to use another Repel when one wears off follows the [Automatically reuse Repel](https://github.com/pret/pokecrystal/wiki/Automatically-reuse-Repel) tutorial by [Rangi42](https://github.com/Rangi42) from the pret/pokecrystal wiki, with later edits by TOMsk1992 and DamienDoury, adapted for 16-bit items.
 
 ### Polished Crystal
@@ -421,7 +437,10 @@ Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal
   - Help with the Shaman's overworld sprite
 - **MauveSea**
   - Giovanni's trainer sprite
+- **[Nayru62](https://github.com/Nayru62)**
+  - Pokédex tab, page number and symbol tiles, and the Pokégear's time of day icons, from Nayru's Pokédex
 - **[Polished Crystal](https://github.com/Rangi42/polishedcrystal)**
+  - Type tiles and Pokédex tiles modified from Nayru's Pokédex
   - Unown party menu icons. I could not find specific artist credits for these icons. If you made them, please let me know and I'll update this!
   - Campfire sprite and fire-pit tiles in the Shaman's house
 - **[Sour Crystal](https://github.com/SoupPotato/sourcrystal)**

@@ -698,7 +698,35 @@ wPrevDexEntryBackup:: dw
 wPrevDexEntryJumptableIndex:: db
 
 wPokedexNameBuffer:: ds MON_NAME_LENGTH
-	ds 231
+
+wPokedexEntryType:: db ; DEXENTRY_* constant
+wPokedexEntryPageNum:: db
+wPokedexEvoStage2:: db
+wPokedexEvoStage3:: db
+wPokedexDisplayForm:: db ; form byte the entry screen draws with
+wPokedexViewForm:: db ; the form the PICS page shows; 0 everywhere else
+wPokedexAltSeen:: db ; TRUE if the selected species has been seen as an alternate shiny
+wPokedexFormCount:: db ; the PICS page's form label: how many forms the species has,
+wPokedexFormsShown:: db ; how many of them the dex may show,
+wPokedexFormPlace:: db ; and where the one shown falls among those
+wPokedexPageFlags:: db
+wPokedexScratch:: ds 3
+wPokedexWeight:: dw
+wPokedexAreaSpecies:: dw
+wPokedexAreaMode:: db
+wPokedexAreaRegion:: db
+wPokedexAreaTries:: db
+wPokedexAreaGroup:: db
+wPokedexAreaPrev:: db
+wPokedexAreaSum:: db
+wPokedexAreaThreshold:: db
+wPokedexAreaFormat:: db
+wPokedexAreaMap:: dw ; map group and number
+wPokedexAreaNamePtr:: dw
+wPokedexAreaNestEnd:: dw
+wPokedexAreaValues:: ds 3
+wPokedexAreaBuffer:: ds POP_DATA_LENGTH
+	ds 220 - 26 - POP_DATA_LENGTH
 
 NEXTU
 ; pokegear
@@ -1614,7 +1642,10 @@ wGBPrinterBrightness::
 wOptions2::
 ; bit 1: menu account off/on
 	db
-	ds 2
+wPokedexShinyToggle::
+; bit 0: set if displaying shiny palettes
+	db
+wCurPokedexColor:: db ; DEXCOLOR_* constant
 wOptionsEnd::
 
 ; Time buffer, for counting the amount of time since
@@ -3424,6 +3455,20 @@ ENDU
 SECTION "Pokedex Listings", WRAMX
 
 wPokedexOrder:: ds 2 * (NUM_POKEMON + 1) ; enough room to expand to 1,407 entries
+
+
+SECTION "Pokedex Forms", WRAMX
+
+; The forms and alternate shinies the Pokédex has recorded (engine/pokedex/dex_forms.asm). Saved to
+; SRAM copies of their own rather than inside wGameData, so saves made before it load unchanged.
+wDexForms::
+wDexFormsSeen:: flag_array DEX_FORM_FLAG_CAPACITY
+wDexFormsCaught:: flag_array DEX_FORM_FLAG_CAPACITY
+wDexAltShiniesSeen:: flag_array DEX_ALT_SHINY_CAPACITY
+wDexAltShiniesCaught:: flag_array DEX_ALT_SHINY_CAPACITY
+wDexFormsEnd::
+
+wDexFormsHold:: db ; nonzero while a mon is added that mustn't count as met (GiveEgg)
 
 
 SECTION "Scratch RAM", WRAMX

@@ -283,6 +283,7 @@ EvolveAfterBattle_MasterLoop:
 	ld [wMonType], a
 	call LearnLevelMoves
 	ld a, [wTempSpecies]
+	farcall DexRecordTempMonFormCaught
 	call SetSeenAndCaughtMon
 
 	ld a, [wTempSpecies]

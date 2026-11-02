@@ -323,11 +323,16 @@ ROMX $78
 	"Tileset Data 8"
 ROMX $79
 	"Pics 22"
+ROMX $7a
+	"Pokedex"
+	"Pokedex Graphics"
 ROMX $7b
 	"Battle Tower Text"
 ROMX $7c
 	"Battle Tower Trainer Data"
 ROMX $7d
+	"Pokedex 2"
+	"Pokegear Clock Card"
 ROMX $7e
 	"Crystal Events"
 ROMX $7f
@@ -379,6 +384,7 @@ WRAMX 5
 	org $d500
 	"Pokedex Listings"
 	"Used Storage"
+	"Pokedex Forms"
 WRAMX 6
 	"Scratch RAM"
 WRAMX 7
@@ -394,6 +400,8 @@ SRAM $00
 	org $ad00
 	"Saved 16-bit conversion tables"
 	"Backup Save"
+	org $be80 ; the same in every build: the debug ROM's backup save is a byte longer
+	"Pokedex Forms Backup"
 SRAM $01
 	"Save"
 	"Box Metadata"
@@ -403,6 +411,7 @@ SRAM $01
 	"SRAM Battle Tower"
 	"PokeDB Bank 1 Ext"
 	"PokeDB Bank 2 Ext"
+	"Pokedex Forms Save"
 SRAM $02
 	"PokeDB Bank 1"
 SRAM $03

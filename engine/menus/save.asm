@@ -363,6 +363,7 @@ SavePlayerData:
 	jmp CloseSRAM
 
 SavePokemonData:
+	farcall SaveDexForms ; the Pokédex's forms record goes with the Pokémon data
 	ld a, BANK(sPokemonData)
 	call OpenSRAM
 	ld hl, wPokemonData
@@ -451,6 +452,7 @@ SaveBackupPlayerData:
 	jmp CloseSRAM
 
 SaveBackupPokemonData:
+	farcall SaveBackupDexForms ; the Pokédex's forms record goes with the Pokémon data
 	ld a, BANK(sBackupPokemonData)
 	call OpenSRAM
 	ld hl, wPokemonData
@@ -679,6 +681,7 @@ LoadPlayerData:
 	jmp CloseSRAM
 
 LoadPokemonData:
+	farcall LoadDexForms ; the Pokédex's forms record goes with the Pokémon data
 	ld a, BANK(sPokemonData)
 	call OpenSRAM
 	ld hl, sPokemonData
@@ -760,6 +763,7 @@ LoadBackupPlayerData:
 	jmp CloseSRAM
 
 LoadBackupPokemonData:
+	farcall LoadBackupDexForms ; the Pokédex's forms record goes with the Pokémon data
 	ld a, BANK(sBackupPokemonData)
 	call OpenSRAM
 	ld hl, sBackupPokemonData
