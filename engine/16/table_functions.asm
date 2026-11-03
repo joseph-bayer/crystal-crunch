@@ -135,9 +135,10 @@ ItemTableGarbageCollection:
 		wItemBallItemID, wContestMonItem, wBattleAnimParam, \
 		wScriptVar, wCurEnemyItem, wEnemyTrainerItem1, \
 		wEnemyTrainerItem2, wNamedObjectIndex, wBaseItem1, \
-		wBaseItem2
+		wBaseItem2, wRegisteredItem ; saved, so it has to outlive the GC that every save runs
 
-; battle tower stuff should be here but this ROM hack doesn't care
+; Nothing in SRAM holds an item ID: a pending Mystery Gift and the Battle Tower reward are saved
+; as their place in a fixed list, which no collection can free.
 
 	ld a, BANK(wItemIndexTable)
 	ldh [rSVBK], a
@@ -145,15 +146,6 @@ ItemTableGarbageCollection:
 
 	pop af
 	ldh [rSVBK], a
-
-	ldh a, [hSRAMBank]
-	push af
-	ld a, BANK(sBattleTowerReward)
-	call OpenSRAM
-	___conversion_bitmap_check_values .set_bit, \
-		sBattleTowerReward, sBackupMysteryGiftItem
-	pop af
-	call OpenSRAM
 
 	pop de
 	ret

@@ -17,6 +17,17 @@ SlowpokeWellB1F_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
+	callback MAPCALLBACK_OBJECTS, SlowpokeWellB1FRocketsCallback
+
+SlowpokeWellB1FRocketsCallback:
+; The Rockets only leave in the same script that clears the well. Battling a wandering mon here
+; used to set their flag on its own (the mon's object shares it), which left a save with no Rockets
+; and no way to clear the well; this brings them back.
+	checkevent EVENT_CLEARED_SLOWPOKE_WELL
+	iftrue .Done
+	clearevent EVENT_SLOWPOKE_WELL_ROCKETS
+.Done:
+	endcallback
 
 SlowpokeWellB1FKurtScript:
 	jumptextfaceplayer SlowpokeWellB1FKurtText

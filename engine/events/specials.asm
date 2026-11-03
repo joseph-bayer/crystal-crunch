@@ -122,6 +122,8 @@ GetMysteryGiftItem:
 	ld a, BANK(sMysteryGiftItem)
 	call OpenSRAM
 	ld a, [sMysteryGiftItem]
+	farcall MysteryGiftSavedItem
+	ld a, c
 	ld [wCurItem], a
 	ld a, 1
 	ld [wItemQuantityChange], a

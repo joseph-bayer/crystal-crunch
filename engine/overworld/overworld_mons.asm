@@ -2303,9 +2303,8 @@ UpdateOverworldMonObjectMasks::
 .check_event
 	push bc
 	ld b, CHECK_FLAG
-	call EventFlagAction
+	call EventFlagAction ; the result is in a as well as c, and only a survives the pop
 	pop bc
-	ld a, c
 	and a
 	jr z, .mask ; the event has not happened yet, so nothing is standing here
 
