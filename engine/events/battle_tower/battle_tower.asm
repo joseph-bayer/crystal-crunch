@@ -285,34 +285,47 @@ ResetBattleTowerTrainersSRAM:
 	jmp CloseSRAM
 
 BattleTower_GiveReward:
+; Returns the reward's 8-bit item ID in wScriptVar, for the script to name and give (it checks the
+; pack for room itself). A reward saved by an older build, as an 8-bit ID, is saved again the
+; current way first, so the one handed over is the one kept if the pack is full.
 	ld a, BANK(sBattleTowerReward)
 	call OpenSRAM
-
 	ld a, [sBattleTowerReward]
+	cp BATTLETOWER_REWARD_SAVED
+	jr c, .older_build
+	sub BATTLETOWER_REWARD_SAVED
+	cp NUM_BATTLETOWER_REWARDS
+	jr c, .got_reward
+	jr .lost ; not a value either way of saving makes
+
+.older_build
+; Honored while it still names one of the four. It may not: the ID went unprotected, so a save
+; could free it, emptying the slot or handing it to another item. Then the reward is an HP Up.
+	and a
+	jr z, .lost
+	call GetItemIndexFromID
+	ld a, h
+	cp HIGH(HP_UP)
+	jr nz, .lost
+	ld a, l
+	sub LOW(HP_UP)
+	cp NUM_BATTLETOWER_REWARDS
+	jr c, .resave
+
+.lost
+	xor a ; HP_UP
+.resave
+	push af
+	or BATTLETOWER_REWARD_SAVED
+	ld [sBattleTowerReward], a
+	pop af
+.got_reward
 	call CloseSRAM
-	ld [wScriptVar], a
-	ld hl, wNumItems
-	ld a, [hli]
-	cp MAX_ITEMS
-	ret c
-	ld b, MAX_ITEMS
-	ld a, [wScriptVar]
 	ld c, a
-.loop
-	ld a, [hli]
-	cp c
-	jr nz, .next
-	ld a, [hl]
-	cp 95
-	ret c
-.next
-	inc hl
-	dec b
-	jr nz, .loop
-	push hl
-	ld hl, POTION
+	ld b, 0
+	ld hl, HP_UP
+	add hl, bc
 	call GetItemIDFromIndex
-	pop hl
 	ld [wScriptVar], a
 	ret
 
@@ -334,16 +347,14 @@ BattleTower_SaveOptions:
 	farjp SaveOptions
 
 BattleTower_RandomlyChooseReward:
-; Generate a random stat boosting item.
-	ld a, 4
+; Choose one of the four stat boosters. It is saved as which one, not as an 8-bit item ID: it
+; waits through the whole challenge, saves included, and an ID could be freed meanwhile.
+	assert HP_UP + 1 == PROTEIN && HP_UP + 2 == IRON && HP_UP + 3 == CARBOS
+	assert BATTLETOWER_REWARD_SAVED > ITEM_TABLE_ENTRIES, "a saved reward could read as an item ID"
+	assert BATTLETOWER_REWARD_SAVED + NUM_BATTLETOWER_REWARDS <= ITEM_TABLE_MINIMUM_RESERVED_INDEX
+	ld a, NUM_BATTLETOWER_REWARDS
 	call RandomRange
-	push bc
-	ld hl, HP_UP
-	ld b, 0
-	ld c, a
-	add hl, bc
-	pop bc
-	call GetItemIDFromIndex
+	or BATTLETOWER_REWARD_SAVED
 	push af
 	ld a, BANK(sBattleTowerReward)
 	call OpenSRAM
@@ -581,12 +592,9 @@ LoadOpponentTrainerAndPokemonWithOTSprite:
 	add hl, de
 	ld a, [wBTTempOTSprite]
 	ld [hl], a
-	farcall ReloadSpriteIndex
-	ld a, [wBTTempOTSprite]
-	call GetSpritePalette
-	ld [wNeededPalIndex], a
-	ld de, wOBPals1 palette 1
-	farjp CopySpritePal
+; Its colors come from the dynamic object palettes when it appears, like any other object's: OBJ
+; palette 1 is not set aside for it, and is usually the follower's.
+	farjp ReloadSpriteIndex
 
 INCLUDE "data/trainers/sprites.asm"
 

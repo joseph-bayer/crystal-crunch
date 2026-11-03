@@ -128,12 +128,13 @@ endc
 	jr .PrintTextAndExit
 
 .SentItem:
-	call GetMysteryGiftBank
 	ld a, [wMysteryGiftPartnerWhichItem]
 	ld c, a
-	farcall MysteryGiftGetItem
-	ld a, c
+	farcall MysteryGiftItemToSave
+	call GetMysteryGiftBank
+	ld a, b
 	ld [sBackupMysteryGiftItem], a
+	ld a, c
 	ld [wNamedObjectIndex], a
 	call CloseSRAM
 	call GetItemName

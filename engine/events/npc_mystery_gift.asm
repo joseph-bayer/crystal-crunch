@@ -52,18 +52,14 @@ DoNPCMysteryGift::
 .input_loop
 	; Handle input
 	call .GetInput
-	jr c, .exit_screen
-	
-	; Check for other inputs as needed
-	jr .input_loop
+	jr nc, .input_loop ; nothing else to check for yet
 
 .exit_screen
 	; Play exit sound
 	call PlayClickSFX
 	
 	; Return to overworld
-	call .ReturnToOverworld
-	ret
+	jmp .ReturnToOverworld
 
 .GetInput
 	; Get joypad input
@@ -149,11 +145,12 @@ DoNPCMysteryGift::
 	call OpenSRAM
   call .RandomSample
   ld c, a
-  farcall MysteryGiftGetItem
-  ld a, c
+	farcall MysteryGiftItemToSave
+	ld a, b
   ld [sBackupMysteryGiftItem], a
 	ld [wMysteryGiftPlayerBackupItem], a
   ld [sMysteryGiftItem], a
+	ld a, c
 	ld [wNamedObjectIndex], a
 	call CloseSRAM
   call GetItemName
@@ -219,7 +216,7 @@ DoNPCMysteryGift::
   ; common index - 50% chance - index 0-15 
   call Random
   and 15 ; keep the lower 4 bits
-  jr .done
+  ret
 .fiftypercent
   call Random
   and 1
@@ -228,7 +225,7 @@ DoNPCMysteryGift::
   call Random
   and 7 ; keep only lower 3 bits (0-7)
   add $10 ; add 16 to A, so result with be 16-23
-  jr .done
+  ret
 .twentyfivepercent
   call Random
   cp 20 percent - 1
@@ -237,15 +234,14 @@ DoNPCMysteryGift::
   call Random
   and 7 ; keep only lower 3 bits (0-7)
   add $18 ; add 24 to A, so result with be 24-31
-  jr .done
+  ret
 .fivepercent
   ; super rare index - 5% chance - index 32-33
   call Random
   and 1
   ld a, $20 ; index 32
-  jr z, .done
+  ret z
   ld a, $21 ; index 33
-.done
   ret
 
 .NPCMysteryGiftText:

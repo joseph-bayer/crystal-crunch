@@ -46,6 +46,11 @@ CheckRegisteredItem:
 .CheckKeyItem:
 	ld a, [wRegisteredItem]
 	call GetItemIndexFromID
+; wKeyItems holds only the low byte of each index, so an item outside the key item range would
+; match a key item by its low byte alone and be used in its place.
+	ld a, h
+	cp HIGH(FIRST_KEY_ITEM)
+	jr nz, .NoRegisteredItem
 	ld a, l
 	ld hl, wKeyItems
 	ld de, 1
@@ -151,7 +156,7 @@ UseRegisteredItem:
 	xor a
 	ld [wUsingItemWithSelect], a
 	ld a, [wItemEffectSucceeded]
-	cp 1
+	dec a
 	jr nz, ._cantuse
 	scf
 	ld a, HMENURETURN_SCRIPT

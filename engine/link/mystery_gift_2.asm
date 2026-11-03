@@ -149,10 +149,41 @@ StageDataForMysteryGift:
 	pop de ; restore DE
 	ret
 
-MysteryGiftGetItem:
+MysteryGiftItemToSave:
+; in: c = a MysteryGiftItems position
+; out: b = the byte to save for the gift, c = the item's 8-bit ID, to name it now
+; A gift is saved as its position plus one, never as an 8-bit ID: an ID only means something in the
+; table it came from, and the link exchange runs at the main menu, before the save's own table is
+; loaded. A position past the list saves as one past it, which collects as the fallback item.
 	ld a, c
 	cp (MysteryGiftItems.End - MysteryGiftItems) / 2
-	jr nc, MysteryGiftFallbackItem
+	jr c, .in_list
+	ld a, (MysteryGiftItems.End - MysteryGiftItems) / 2
+.in_list
+	inc a
+	push af
+	call MysteryGiftGetItem
+	pop af
+	ld b, a
+	ret
+
+MysteryGiftSavedItem:
+; in: a = a saved gift (see MysteryGiftItemToSave)
+; out: c = the item's 8-bit ID
+	dec a
+	ld c, a
+	; fallthrough
+
+MysteryGiftGetItem:
+; in: c = a MysteryGiftItems position
+; out: c = the item's 8-bit ID, or a Great Ball's past the end of the list
+	ld a, c
+	cp (MysteryGiftItems.End - MysteryGiftItems) / 2
+	jr c, .in_list
+	ld hl, GREAT_BALL
+	jr .got_index
+
+.in_list
 	ld hl, MysteryGiftItems
 	ld b, 0
 	add hl, bc
@@ -160,6 +191,7 @@ MysteryGiftGetItem:
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
+.got_index
 	call GetItemIDFromIndex
 	ld c, a
 	ret
@@ -167,15 +199,15 @@ MysteryGiftGetItem:
 MysteryGiftGetDecoration:
 	ld a, c
 	cp MysteryGiftDecos.End - MysteryGiftDecos
-	jr nc, MysteryGiftFallbackItem
+	jr nc, .fallback
 	ld hl, MysteryGiftDecos
 	ld b, 0
 	add hl, bc
 	ld c, [hl]
 	ret
 
-MysteryGiftFallbackItem:
-	ld c, DECOFLAG_RED_CARPET ; GREAT_BALL
+.fallback
+	ld c, DECOFLAG_RED_CARPET
 	ret
 
 INCLUDE "data/items/mystery_gift_items.asm"
