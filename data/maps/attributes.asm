@@ -695,7 +695,7 @@ ENDM
 	map_attributes MrPokemonsHouse, MR_POKEMONS_HOUSE, $00, 0
 	map_attributes Route31VioletGate, ROUTE_31_VIOLET_GATE, $00, 0
 
-	map_attributes HiddenGrove, HIDDEN_GROVE, $35, 0
+	map_attributes HiddenGrove, HIDDEN_GROVE, $11, 0
 	map_attributes ApricornForestOutside, APRICORN_FOREST_OUTSIDE, $11, 0
 	map_attributes ApricornForest, APRICORN_FOREST, $41, 0
 	map_attributes ApricornForestClearing, APRICORN_FOREST_CLEARING, $41, 0

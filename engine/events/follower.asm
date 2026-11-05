@@ -519,6 +519,7 @@ CyndaquilRoute31Interaction:
 .blew_a_fireball:
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "blew out a"
 	cont "fireball…"
 	done
@@ -959,6 +960,7 @@ Route39TaurosInteraction: ; Test this
 .Text
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "suddenly roared!"
 	done
 
@@ -1091,6 +1093,7 @@ Route15DittoInteraction:
 .Text: ; Test this
 	text "…Oh? @'s"
 	text_ram wStringBuffer1
+	text_start
 	line "appearance… didn't"
 	cont "change!"
 	done
@@ -1266,18 +1269,21 @@ DragonsDenInteraction: ; Test this
 .SuddenlyBarkedText
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "suddenly barked!"
 	done
 
 .LooksExcitedText
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "looks excited!"
 	done
 
 .SuddenlyHowled
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "suddenly howled!"
 	done
 
@@ -1323,6 +1329,7 @@ VictoryRoadTyphlosionInteraction: ; Test this
 .Text:
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "emmited fire"
 	cont "and shouted!"
 	done
@@ -1361,12 +1368,14 @@ Route1Interaction: ; Test this
 .Text1:
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "wiggled its vine!"
 	done
 
 .Text2:
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "snapped its vine!"
 	done
 
@@ -1432,6 +1441,7 @@ MtMoonInteraction:
 .Text2
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "suddenly started"
 	cont "dancing!"
 	done
@@ -1526,6 +1536,7 @@ RockTunnelRockMonInteraction:
 .StartedGrindingText
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "started grinding"
 	cont "at the rocks!"
 	done
@@ -1541,6 +1552,7 @@ RockTunnelRockMonInteraction:
 .PoundingGroundText
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "started pounding"
 	cont "the ground flat!"
 	done
@@ -1562,6 +1574,7 @@ DiglettsCaveInteraction:
 .Text2
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "stretched out it's"
 
 	para "body and is"
@@ -1581,6 +1594,7 @@ MrPsychicsHouseInteraction: ; Test this
 
 	para "@"
 	text_ram wStringBuffer1
+	text_start
 	line "silently nodded!"
 	done
 
@@ -1594,6 +1608,7 @@ CeladonCityPorygonInteraction:
 .Text:
 	text "@"
 	text_ram wStringBuffer1
+	text_start
 	line "stammered"
 	cont "something…"
 	done
