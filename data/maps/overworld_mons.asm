@@ -179,6 +179,7 @@ OverworldMonObjects:
 	ow_mon SPEAROW,    PLAIN_FORM ; Speary
 	ow_mon RATTATA,    PLAIN_FORM ; Rattey
 
-	db -1 ; end of table
 	ow_mon_map WILLS_ROOM
 	ow_mon XATU,       PLAIN_FORM
+
+	db -1 ; end of table

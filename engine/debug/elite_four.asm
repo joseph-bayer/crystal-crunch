@@ -332,24 +332,27 @@ DebugE4KantoBadges:
 	end
 
 DebugE4LineupText:
+; One name a line: two seven-letter names and their numbers don't fit in 18 tiles
 	text "1 @"
 	text_ram wStringBuffer1
-	text " 2 @"
+	text_start
+	line "2 @"
 	text_ram wStringBuffer2
 	text_start
-	line "3 @"
+	para "3 @"
 	text_ram wStringBuffer3
-	text " 4 @"
+	text_start
+	line "4 @"
 	text_ram wStringBuffer4
 	text_start
-	cont "CHAMP @"
+	para "CHAMP @"
 	text_ram wStringBuffer5
-	done
+	text_end
 
 DebugE4PickText:
 	text "PICK: @"
 	text_ram wStringBuffer1
-	done
+	text_end
 
 DebugE4WinText:
 	text "DEBUG: that was"
@@ -393,7 +396,7 @@ DebugE4LastChampText:
 	text "DEBUG: last CHAMP"
 	line "@"
 	text_ram wStringBuffer1
-	done
+	text_end
 
 DebugE4EndRunText:
 	text "Run ended. Last"

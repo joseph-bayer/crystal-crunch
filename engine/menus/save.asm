@@ -384,15 +384,18 @@ SaveIndexTables:
 	ld de, sPokemonIndexTable
 	ld bc, wPokemonIndexTableEnd - wPokemonIndexTable
 	rst CopyBytes
-	ld hl, wItemIndexTable
-	ld de, sItemIndexTable
-	ld bc, wItemIndexTableEnd - wItemIndexTable
-	rst CopyBytes
 	ld a, BANK(sMoveIndexTable)
 	call OpenSRAM
 	ld hl, wMoveIndexTable
 	ld de, sMoveIndexTable
 	ld bc, wMoveIndexTableEnd - wMoveIndexTable
+	rst CopyBytes
+; The item table used to be copied while the Pokémon table's bank was open, which put it inside
+; the Hall of Fame. LoadIndexTables still reads saves made that way.
+	assert BANK(sItemIndexTable) == BANK(sMoveIndexTable)
+	ld hl, wItemIndexTable
+	ld de, sItemIndexTable
+	ld bc, wItemIndexTableEnd - wItemIndexTable
 	rst CopyBytes
 	pop af
 	ldh [rSVBK], a
@@ -698,15 +701,38 @@ LoadIndexTables:
 	ld de, wPokemonIndexTable
 	ld bc, wPokemonIndexTableEnd - wPokemonIndexTable
 	rst CopyBytes
-	ld hl, sItemIndexTable
-	ld de, wItemIndexTable
-	ld bc, wItemIndexTableEnd - wItemIndexTable
-	rst CopyBytes
 	ld a, BANK(sMoveIndexTable)
 	call OpenSRAM
 	ld hl, sMoveIndexTable
 	ld de, wMoveIndexTable
 	ld bc, wMoveIndexTableEnd - wMoveIndexTable
+	rst CopyBytes
+; Every save writes the item table and its backup together, so they match. Saves from older builds
+; never wrote sItemIndexTable at all (the Hall of Fame got it), and their backup is the only good
+; copy.
+	assert BANK(sItemIndexTable) == BANK(sMoveIndexTable)
+	assert BANK(sBackupItemIndexTable) == BANK(sItemIndexTable)
+	ld hl, sItemIndexTable
+	ld de, sBackupItemIndexTable
+	ld bc, wItemIndexTableEnd - wItemIndexTable
+.compare
+	ld a, [de]
+	cp [hl]
+	jr nz, .use_backup
+	inc de
+	inc hl
+	dec bc
+	ld a, b
+	or c
+	jr nz, .compare
+	ld hl, sItemIndexTable
+	jr .copy_items
+
+.use_backup
+	ld hl, sBackupItemIndexTable
+.copy_items
+	ld de, wItemIndexTable
+	ld bc, wItemIndexTableEnd - wItemIndexTable
 	rst CopyBytes
 	pop af
 	ldh [rSVBK], a

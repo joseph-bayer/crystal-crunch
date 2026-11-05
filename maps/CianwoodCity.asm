@@ -35,15 +35,30 @@ CianwoodCityNoop2Scene:
 ; the player's scripted steps for it, so it walks off one tile behind.
 CianwoodCityArriveFromIslandScene:
 	applymovement PLAYER, CianwoodCityPlayerDisembarkMovement
+; The island trip replaced the Suicune scene, so put it back if Suicune is still waiting
+	checkevent EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY
+	iffalse .SuicuneWaiting
 	setscene SCENE_CIANWOODCITY_NOOP
+	end
+
+.SuicuneWaiting:
+	setscene SCENE_CIANWOODCITY_SUICUNE_AND_EUSINE
 	end
 
 CianwoodCityFlypointAndSuicuneCallback:
 	setflag ENGINE_FLYPOINT_CIANWOOD
 	setevent EVENT_EUSINE_IN_BURNED_TOWER
 	checkevent EVENT_FOUGHT_EUSINE
-	iffalse .Done
+	iffalse .SuicuneScene
 	disappear CIANWOODCITY_EUSINE
+.SuicuneScene:
+; While Suicune stands here, the scene has to be the one that triggers it. An island trip used to
+; leave a save with Suicune standing and no scene to move it.
+	checkevent EVENT_SAW_SUICUNE_AT_CIANWOOD_CITY
+	iftrue .Done
+	checkscene
+	ifnotequal SCENE_CIANWOODCITY_NOOP, .Done
+	setscene SCENE_CIANWOODCITY_SUICUNE_AND_EUSINE
 .Done:
 	endcallback
 
