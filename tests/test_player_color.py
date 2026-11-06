@@ -397,7 +397,7 @@ def test_johto_trainer_card(game, female):
 	assert middle(game, "wBGPals1", 0) == player
 	for x, y in ((3, 10), (15, 13)): # Falkner's and Clair's faces
 		assert attr_at(game, x, y) == 1
-	assert middle(game, "wBGPals1", 1) == rom_colors(game, "KrisPalette")
+	assert middle(game, "wBGPals1", 1) == rom_colors(game, "FalknerPalette")
 
 
 @pytest.mark.parametrize("female", [False, True], ids=["boy", "girl"])
