@@ -1,12 +1,11 @@
 LoadFishingGFX:
 	ldh a, [rVBK]
 	push af
-	ld a, $0
+	xor a
 	ldh [rVBK], a
 
 	ld de, FishingGFX
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
+	call IsPlayerFemale
 	jr z, .got_gender
 	ld de, KrisFishingGFX
 .got_gender

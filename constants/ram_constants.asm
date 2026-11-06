@@ -187,6 +187,43 @@ DEF PLAYERSPRITESETUP_RESET_ACTION_F    EQU 7
 
 ; wPlayerGender::
 DEF PLAYERGENDER_FEMALE_F EQU 0
+; bits 1-4: PLAYER_COLOR_*, or 0 for the gender's default (red boy, blue girl)
+DEF PLAYER_COLOR_MASK EQU %00011110
+
+; player colors
+; each one wears the PAL_OW_* color of the same name
+	const_def 1
+	const PLAYER_COLOR_RED    ; 1
+	const PLAYER_COLOR_BLUE   ; 2
+	const PLAYER_COLOR_GREEN  ; 3
+DEF NUM_STARTING_PLAYER_COLORS EQU const_value - 1
+; sold by the Goldenrod stylist
+	const PLAYER_COLOR_BROWN  ; 4
+	const PLAYER_COLOR_PURPLE ; 5
+	const PLAYER_COLOR_GRAY   ; 6
+	const PLAYER_COLOR_PINK   ; 7
+	const PLAYER_COLOR_TEAL   ; 8
+	const PLAYER_COLOR_YELLOW ; 9
+	const PLAYER_COLOR_ORANGE ; a
+	const PLAYER_COLOR_AZURE  ; b
+	const PLAYER_COLOR_BLACK  ; c
+DEF NUM_PLAYER_COLORS EQU const_value - 1
+DEF NUM_STORE_PLAYER_COLORS EQU NUM_PLAYER_COLORS - NUM_STARTING_PLAYER_COLORS
+	assert NUM_PLAYER_COLORS < 1 << 4, "the player color must fit in wPlayerGender bits 1-4"
+
+DEF MAX_PLAYER_COLOR_NAME_LENGTH EQU 6
+
+; the Goldenrod stylist
+DEF STYLIST_PRICE EQU 50000
+DEF NUM_STYLIST_COLORS_A_DAY EQU 3
+; StylistColorMenu's wScriptVar besides a PLAYER_COLOR_* or 0 (CANCEL)
+DEF STYLIST_SOLD_OUT  EQU $fe ; today's colors are all sold
+DEF STYLIST_ALL_OWNED EQU $ff ; nothing left to buy
+
+; wPlayerColorPickerMode::
+	const_def
+	const PLAYERCOLORPICKER_NEW_GAME ; the starting colors only
+	const PLAYERCOLORPICKER_OWNED    ; every color the player owns (the Goldenrod stylist)
 
 ; wMapStatus::
 	const_def
@@ -367,6 +404,7 @@ DEF CELEBIEVENT_FOREST_IS_RESTLESS_F EQU 2
 	const_skip 2 ; 2-3 were the Dunsparce and Yanma swarms, now in wActiveSwarms
 	const DAILYFLAGS3_MOBILE_4_F                  ; 4
 	const DAILYFLAGS3_MYSTERY_ISLAND_F            ; 5 ; the boat has sailed today
+	const DAILYFLAGS3_STYLIST_STOCKED_F           ; 6 ; the Goldenrod stylist has put today's colors on sale
 
 ; wLuckyNumberShowFlag::
 DEF LUCKYNUMBERSHOW_GAME_OVER_F EQU 0

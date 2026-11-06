@@ -11,6 +11,7 @@ DEF GOLDENRODUNDERGROUND_YOUNGER_HAIRCUT_PRICE EQU 300
 	const GOLDENRODUNDERGROUND_OLDER_HAIRCUT_BROTHER
 	const GOLDENRODUNDERGROUND_YOUNGER_HAIRCUT_BROTHER
 	const GOLDENRODUNDERGROUND_GRANNY
+	const GOLDENRODUNDERGROUND_STYLIST
 
 GoldenrodUnderground_MapScripts:
 	def_scene_scripts
@@ -367,6 +368,126 @@ EitherHaircutBrotherScript_MuchHappier:
 	closetext
 	end
 
+MACRO stylist_intro
+; \1: the scene, \2: her starting row in column 4, one past the screen's edge, so she's loaded but
+; unseen, \3: the player's facing at the end, \4: her walk up to the player, \5: her walk back
+\1:
+	checkevent EVENT_MET_GOLDENROD_UNDERGROUND_STYLIST
+	iftrue GoldenrodUndergroundStylistIntroSeen
+	disappear GOLDENRODUNDERGROUND_STYLIST
+	moveobject GOLDENRODUNDERGROUND_STYLIST, 4, \2
+	appear GOLDENRODUNDERGROUND_STYLIST
+	showemote EMOTE_SHOCK, PLAYER, 15
+	applymovement GOLDENRODUNDERGROUND_STYLIST, \4
+	turnobject PLAYER, \3
+	opentext
+	writetext GoldenrodUndergroundStylistMeetText
+	waitbutton
+	closetext
+	applymovement GOLDENRODUNDERGROUND_STYLIST, \5
+	sjump GoldenrodUndergroundStylistIntroBackToBooth
+ENDM
+
+; the four tiles around the north ladder, then around the south one
+	stylist_intro GoldenrodUndergroundStylistIntroNorthBelow, 8, RIGHT, StylistIntroUp5FaceLeft, StylistIntroDown5
+	stylist_intro GoldenrodUndergroundStylistIntroNorthRight, 7, DOWN, StylistIntroUp4, StylistIntroDown4
+	stylist_intro GoldenrodUndergroundStylistIntroNorthLeft, 7, DOWN, StylistIntroUp4Left2, StylistIntroRight2Down4
+	stylist_intro GoldenrodUndergroundStylistIntroNorthAbove, 6, RIGHT, StylistIntroUp5FaceLeft, StylistIntroDown5
+	stylist_intro GoldenrodUndergroundStylistIntroSouthAbove, 28, RIGHT, StylistIntroDown5FaceLeft, StylistIntroUp5
+	stylist_intro GoldenrodUndergroundStylistIntroSouthRight, 29, UP, StylistIntroDown4, StylistIntroUp4
+	stylist_intro GoldenrodUndergroundStylistIntroSouthLeft, 29, UP, StylistIntroDown4Left2, StylistIntroRight2Up4
+	stylist_intro GoldenrodUndergroundStylistIntroSouthBelow, 30, RIGHT, StylistIntroDown5FaceLeft, StylistIntroUp5
+
+GoldenrodUndergroundStylistIntroBackToBooth:
+	disappear GOLDENRODUNDERGROUND_STYLIST
+	moveobject GOLDENRODUNDERGROUND_STYLIST, 7, 20
+	appear GOLDENRODUNDERGROUND_STYLIST
+	setevent EVENT_MET_GOLDENROD_UNDERGROUND_STYLIST
+GoldenrodUndergroundStylistIntroSeen:
+	end
+
+GoldenrodUndergroundStylistScript:
+	faceplayer
+	opentext
+	writetext GoldenrodUndergroundStylistIntroText
+	loadmenu .MenuHeader
+	verticalmenu
+	closewindow
+	ifequal 1, .Buy
+	ifequal 2, .ChangeStyle
+	sjump .Cancel
+
+.Buy:
+	special StylistCheckStock
+	ifequal STYLIST_ALL_OWNED, .AllOwned
+	ifequal STYLIST_SOLD_OUT, .SoldOut
+	writetext GoldenrodUndergroundStylistSellText
+	special StylistColorMenu
+	iffalse .Cancel
+	writetext GoldenrodUndergroundStylistAskText
+	yesorno
+	iffalse .Cancel
+	checkmoney YOUR_MONEY, STYLIST_PRICE
+	ifequal HAVE_LESS, .NotEnoughMoney
+	takemoney YOUR_MONEY, STYLIST_PRICE
+	special StylistSellColor
+	playsound SFX_TRANSACTION
+	waitsfx
+	writetext GoldenrodUndergroundStylistPutOnText
+	yesorno
+	iffalse .Later
+	special StylistWearColor
+	closetext
+	end
+
+.Later:
+	writetext GoldenrodUndergroundStylistLaterText
+	waitbutton
+	closetext
+	end
+
+.ChangeStyle:
+	special StylistChangeStyle
+	closetext
+	end
+
+.Cancel:
+	writetext GoldenrodUndergroundStylistCancelText
+	waitbutton
+	closetext
+	end
+
+.NotEnoughMoney:
+	writetext GoldenrodUndergroundStylistNoMoneyText
+	waitbutton
+	closetext
+	end
+
+.SoldOut:
+	writetext GoldenrodUndergroundStylistSoldOutText
+	waitbutton
+	closetext
+	end
+
+.AllOwned:
+	writetext GoldenrodUndergroundStylistAllOwnedText
+	waitbutton
+	closetext
+	end
+
+.MenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 15, 7
+	dw .MenuData
+	db 1 ; default option
+
+.MenuData:
+	db STATICMENU_CURSOR ; flags
+	db 3 ; items
+	db "BUY@"
+	db "CHANGE STYLE@"
+	db "CANCEL@"
+
 BasementDoorScript::
 	opentext
 	checkevent EVENT_USED_BASEMENT_KEY
@@ -640,6 +761,144 @@ GoldenrodUndergroundWeAreNotOpenTodayText:
 	line "today."
 	done
 
+StylistIntroUp5FaceLeft:
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	turn_head LEFT
+	step_end
+
+StylistIntroUp4Left2:
+	step UP
+	step UP
+	step UP
+	step UP
+	step LEFT
+	step LEFT
+	turn_head UP
+	step_end
+
+StylistIntroRight2Down4:
+	step RIGHT
+	step RIGHT
+StylistIntroDown4:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+StylistIntroDown5:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step_end
+
+StylistIntroDown5FaceLeft:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	turn_head LEFT
+	step_end
+
+StylistIntroDown4Left2:
+	step DOWN
+	step DOWN
+	step DOWN
+	step DOWN
+	step LEFT
+	step LEFT
+	turn_head DOWN
+	step_end
+
+StylistIntroRight2Up4:
+	step RIGHT
+	step RIGHT
+StylistIntroUp4:
+	step UP
+	step UP
+	step UP
+	step UP
+	step_end
+
+StylistIntroUp5:
+	step UP
+	step UP
+	step UP
+	step UP
+	step UP
+	step_end
+
+GoldenrodUndergroundStylistMeetText:
+	text "Hey, you look new"
+	line "here!"
+
+	para "I'm a stylist. I"
+	line "can change the"
+	cont "color of your"
+	cont "clothes whenever"
+	cont "you like."
+
+	para "Come stop by my"
+	line "booth any time!"
+	done
+
+GoldenrodUndergroundStylistIntroText:
+	text "Hi! I'm a stylist."
+	line "What can I do"
+	cont "for you?"
+	done
+
+GoldenrodUndergroundStylistSellText:
+	text "I dye clothes in"
+	line "today's colors for"
+	cont "¥50,000 each."
+	done
+
+GoldenrodUndergroundStylistAskText:
+	text "Dye them @"
+	text_ram wStringBuffer3
+	text "?"
+	done
+
+GoldenrodUndergroundStylistPutOnText:
+	text "There you go!"
+
+	para "Would you like to"
+	line "put this on?"
+	done
+
+GoldenrodUndergroundStylistLaterText:
+	text "Change into it"
+	line "anytime!"
+	done
+
+GoldenrodUndergroundStylistCancelText:
+	text "Come back anytime!"
+	done
+
+GoldenrodUndergroundStylistNoMoneyText:
+	text "Oh… You don't have"
+	line "enough money."
+	done
+
+GoldenrodUndergroundStylistSoldOutText:
+	text "That's all I have"
+	line "for today. Come"
+	cont "back tomorrow!"
+	done
+
+GoldenrodUndergroundStylistAllOwnedText:
+	text "You have every"
+	line "color I sell!"
+	done
+
 GoldenrodUndergroundNoEntryText:
 	text "NO ENTRY BEYOND"
 	line "THIS POINT"
@@ -657,6 +916,14 @@ GoldenrodUnderground_MapEvents:
 	warp_event 22, 27, GOLDENROD_UNDERGROUND_SWITCH_ROOM_ENTRANCES, 1
 
 	def_coord_events
+	coord_event  3,  3, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroNorthBelow
+	coord_event  4,  2, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroNorthRight
+	coord_event  2,  2, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroNorthLeft
+	coord_event  3,  1, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroNorthAbove
+	coord_event  3, 33, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroSouthAbove
+	coord_event  4, 34, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroSouthRight
+	coord_event  2, 34, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroSouthLeft
+	coord_event  3, 35, SCENE_ALWAYS, GoldenrodUndergroundStylistIntroSouthBelow
 
 	def_bg_events
 	bg_event 18,  6, BGEVENT_READ, BasementDoorScript
@@ -675,3 +942,4 @@ GoldenrodUnderground_MapEvents:
 	object_event  7, 14, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, OlderHaircutBrotherScript, EVENT_GOLDENROD_UNDERGROUND_OLDER_HAIRCUT_BROTHER
 	object_event  7, 15, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, YoungerHaircutBrotherScript, EVENT_GOLDENROD_UNDERGROUND_YOUNGER_HAIRCUT_BROTHER
 	object_event  7, 21, SPRITE_GRANNY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, BitterMerchantScript, EVENT_GOLDENROD_UNDERGROUND_GRANNY
+	object_event  7, 20, SPRITE_BEAUTY, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_PURPLE, OBJECTTYPE_SCRIPT, 0, GoldenrodUndergroundStylistScript, -1

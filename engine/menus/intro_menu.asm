@@ -74,7 +74,7 @@ NewGame:
 	jmp FinishContinueFunction
 
 PlayerProfileSetup:
-	farjp InitGender
+	farjp NewGamePlayerProfile
 
 ResetWRAM:
 	xor a
@@ -618,7 +618,7 @@ if !DEF(_DEBUG)
 	ld [wCurPartySpecies], a
 	farcall DrawIntroPlayerPic
 
-	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS
 	call GetSGBLayout
 	call Intro_RotatePalettesLeftFrontpic
 endc
@@ -669,7 +669,8 @@ NamePlayer:
 	dec a
 	jr z, .NewName
 	call StorePlayerName
-	farcall ApplyMonOrTrainerPals
+	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS ; wCurPartySpecies is 0: the player
+	call GetSGBLayout
 	farjp MovePlayerPicLeft
 
 .NewName:
@@ -688,14 +689,13 @@ NamePlayer:
 	ld [wCurPartySpecies], a
 	farcall DrawIntroPlayerPic
 
-	ld b, SCGB_TRAINER_OR_MON_FRONTPIC_PALS
+	ld b, SCGB_PLAYER_OR_MON_FRONTPIC_PALS
 	call GetSGBLayout
 	call Intro_RotatePalettesLeftFrontpic
 
 	ld hl, wPlayerName
 	ld de, .Chris
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
+	call IsPlayerFemale
 	jr z, .Male
 	ld de, .Kris
 .Male:
@@ -835,13 +835,7 @@ Intro_PlacePlayerSprite:
 	inc de
 	ld [hli], a ; tile id
 
-	ld b, PAL_OW_RED
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
-	jr z, .male
-	ld b, PAL_OW_BLUE
-.male
-	ld a, b
+	call GetPlayerOWPal
 	ld [wNeededPalIndex], a
 	xor a
 	ld [hli], a ; attributes

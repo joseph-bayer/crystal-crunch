@@ -36,8 +36,7 @@ GetPlayerSprite:
 	ld a, [wPlayerSpriteSetupFlags]
 	bit PLAYERSPRITESETUP_FEMALE_TO_MALE_F, a
 	jr nz, .go
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
+	call IsPlayerFemale
 	jr z, .go
 	ld hl, KrisStateSprites
 

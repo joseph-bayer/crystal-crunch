@@ -149,6 +149,7 @@ SaveGameData:
 	call ValidateSave
 	call SaveOptions
 	call SavePlayerData
+	call _SaveData ; the player color can change after the first save
 	call SavePokemonData
 	call SaveIndexTables
 	call SaveBackupIndexTables
@@ -828,10 +829,10 @@ VerifyBackupChecksum:
 	ret
 
 _SaveData:
-	; This is called within two scenarios:
+	; This is called within three scenarios:
 	;   a) ErasePreviousSave (the process of erasing the save from a previous game file)
-	;   b) unused mobile functionality
-	; It is not part of a regular save.
+	;   b) SaveGameData, since the player color can change later
+	;   c) unused mobile functionality
 
 	ld a, BANK(sCrystalData)
 	call OpenSRAM

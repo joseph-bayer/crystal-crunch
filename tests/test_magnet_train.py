@@ -69,3 +69,11 @@ def test_magnet_train_scene(game):
 
 	palette = [game.peek("wOBPals1", PAL_OW_RED * PALETTE_SIZE + i) for i in range(PALETTE_SIZE)]
 	assert palette != [0xff] * PALETTE_SIZE, "the player's OBJ palette was left blank"
+
+
+def test_magnet_train_player_color(game):
+	"""The ride's player sprite wears the player's chosen color, by day."""
+	from test_player_color import DAY, OTHER_COLOR, npc_colors, ow_pal, palette, set_color
+	set_color(game, OTHER_COLOR, True)
+	board_the_train(game)
+	assert palette(game, "wOBPals1", PAL_OW_RED) == npc_colors(ow_pal(OTHER_COLOR), DAY)

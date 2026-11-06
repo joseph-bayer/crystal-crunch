@@ -395,12 +395,7 @@ MagnetTrain_Jumptable_FirstRunThrough:
 ; Fill it with the player's colors the way Intro_PlacePlayerSprite does (USE_DAYTIME_PAL_F +
 ; CopySpritePal); .InitPlayerSpriteAnim has already set that flag.
 	assert PAL_OW_RED < 8, "the train's OAM data uses PAL_OW_RED as a hardware palette"
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
-	ld a, PAL_OW_RED
-	jr z, .got_player_pal
-	ld a, PAL_OW_BLUE
-.got_player_pal
+	call GetPlayerOWPal
 	ld [wNeededPalIndex], a
 	ld de, wOBPals1 palette PAL_OW_RED
 	farcall CopySpritePal

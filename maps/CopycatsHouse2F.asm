@@ -13,6 +13,10 @@ CopycatsHouse2F_MapScripts:
 	callback MAPCALLBACK_OBJECTS, CopycatsHouse2FWhichGenderCallback
 
 CopycatsHouse2FWhichGenderCallback:
+	; she dresses in the player's color too (before appear copies her object)
+	special GetPlayerNPCPal
+	writemem wMapObjects + COPYCATSHOUSE2F_COPYCAT1 * MAPOBJECT_LENGTH + MAPOBJECT_PALETTE
+	writemem wMapObjects + COPYCATSHOUSE2F_COPYCAT2 * MAPOBJECT_LENGTH + MAPOBJECT_PALETTE
 	checkflag ENGINE_PLAYER_IS_FEMALE
 	iftrue .Female
 	disappear COPYCATSHOUSE2F_COPYCAT2
