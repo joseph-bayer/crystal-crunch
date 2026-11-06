@@ -32,21 +32,13 @@ SpawnPlayer:
 	call GetMapObject
 	ld hl, MAPOBJECT_PALETTE
 	add hl, bc
-	lb de, PAL_NPC_RED, OBJECTTYPE_SCRIPT
-	ld a, [wPlayerSpriteSetupFlags]
-	bit PLAYERSPRITESETUP_FEMALE_TO_MALE_F, a
-	jr nz, .ok
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
-	jr z, .ok
-	assert PAL_NPC_RED + 1 == PAL_NPC_BLUE
-	inc d
-
-.ok
-	ld [hl], d
+	call GetPlayerOWPal
+	assert PAL_NPC_RED == PAL_OW_RED + 1
+	inc a
+	ld [hl], a
 	ld hl, MAPOBJECT_TYPE
 	add hl, bc
-	ld [hl], e
+	ld [hl], OBJECTTYPE_SCRIPT
 	ld a, PLAYER_OBJECT
 	ldh [hMapObjectIndex], a
 	ld bc, wMapObjects

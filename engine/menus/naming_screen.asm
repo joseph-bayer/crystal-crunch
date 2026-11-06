@@ -139,6 +139,8 @@ NamingScreenJumptable:
 	db "NICKNAME?@"
 
 .Player:
+	ld de, wOBPals1 palette 1
+	farcall LoadPlayerDaytimeOBPal
 	farcall GetPlayerIcon
 	call .LoadSprite
 	hlcoord 5, 2
@@ -224,14 +226,11 @@ NamingScreenJumptable:
 	ld [hl], a
 	pop de
 	ld b, SPRITE_ANIM_OBJ_RED_WALK
-	ld a, d
-	cp HIGH(KrisSpriteGFX)
-	jr nz, .not_kris
-	ld a, e
-	cp LOW(KrisSpriteGFX)
-	jr nz, .not_kris
-	ld b, SPRITE_ANIM_OBJ_BLUE_WALK
-.not_kris
+	ld a, [wNamingScreenType]
+	cp NAME_PLAYER
+	jr nz, .not_player
+	ld b, SPRITE_ANIM_OBJ_BLUE_WALK ; .Player put the player's colors in OB 1
+.not_player
 	ld a, b
 	depixel 4, 4, 4, 0
 	jmp InitSpriteAnimStruct
@@ -425,7 +424,7 @@ NamingScreenJoypadLoop:
 
 .a
 	call .GetCursorPosition
-	cp $1
+	cp $1 ; no-optimize a == 1 (a is compared again below)
 	jr z, .select
 	cp $2
 	jr z, .b
@@ -618,7 +617,7 @@ NamingScreen_AnimateCursor:
 	ret
 
 .target_left
-	cp $1
+	cp $1 ; no-optimize a == 1 (a is used below)
 	jr nz, .no_wrap_target_right
 	ld a, $4
 .no_wrap_target_right
@@ -1076,7 +1075,7 @@ INCBIN "gfx/naming_screen/mail.2bpp"
 
 .a
 	call NamingScreen_PressedA_GetCursorCommand
-	cp $1
+	cp $1 ; no-optimize a == 1 (a is compared again below)
 	jr z, .select
 	cp $2
 	jr z, .b
@@ -1242,7 +1241,7 @@ ComposeMail_AnimateCursor:
 	ret
 
 .caps_del_done_left
-	cp $1
+	cp $1 ; no-optimize a == 1 (a is used below)
 	jr nz, .wrap_around_command_left
 	ld a, $4
 .wrap_around_command_left

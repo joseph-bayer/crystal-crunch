@@ -1919,7 +1919,7 @@ LinkTrade_TradeStatsMenu:
 
 LinkTradeOTPartymonMenuCheckCancel:
 	ld a, [wMenuCursorY]
-	cp 1
+	dec a
 	jmp nz, LinkTradePartiesMenuMasterLoop
 	call HideCursor
 
@@ -2878,7 +2878,8 @@ TryQuickSave:
 	ret
 
 CheckOtherPlayerGender:
-	ld a, [wPlayerGender]
+; Only the gender goes over the link; the color stays here.
+	call IsPlayerFemale
 	call Link_EnsureSync
 	push af
 	call LinkDataReceived

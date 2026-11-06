@@ -154,6 +154,13 @@ SpecialsPointers::
 
 	add_special FadeInPalettes_EnableDynNoApply
 
+	add_special GetPlayerNPCPal
+	add_special StylistChangeStyle
+	add_special StylistWearColor
+	add_special StylistCheckStock
+	add_special StylistColorMenu
+	add_special StylistSellColor
+
 if DEF(_DEBUG)
 	add_special RestartClock ; the phone debug NPC's clock tool
 endc

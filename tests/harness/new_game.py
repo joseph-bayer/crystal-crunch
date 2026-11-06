@@ -12,7 +12,7 @@ from .game import Game, HarnessTimeout
 CACHE = constants.ROOT / "tests" / ".cache"
 
 # Bump when the script below changes, so old cached starts are not reused.
-SCRIPT_VERSION = 1
+SCRIPT_VERSION = 2
 
 MAPSTATUS_HANDLE = 2
 MAX_PRESSES = 400
@@ -27,7 +27,8 @@ def _idle_in(game, map_name):
 
 def play_intro(game):
 	"""Press A from power-on until the player stands in the bedroom with nothing running. Every
-	question takes its default: boy, 10:00, and the first name the naming screen builds."""
+	question takes its default: boy, his default color, 10:00, and the first name the naming screen
+	builds."""
 	game.wait(400)
 	for _ in range(MAX_PRESSES):
 		game.press("a")

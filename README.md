@@ -274,6 +274,15 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 </details>
 
+### Trainer Color
+<details>
+<summary>Show details</summary>
+
+- Pick the color of your clothes at the beginning of your journey: red, blue, or green.
+- Purchase more colors from the Stylist in the Goldenrod Underground. The colors she sells change daily, and she'll let you switch between colors you own for free.
+
+</details>
+
 ### Misc.
 <details>
 <summary>Show details</summary>
@@ -309,7 +318,6 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - A larger variety of trainers in the Open League
 - An improved Dex
 - Additional trainers and locations in Kanto
-- Customization of trainer color
 - Enhanced tilesets and sprites
 - A large assortment of new systems and QOL improvements
 

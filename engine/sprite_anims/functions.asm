@@ -94,7 +94,7 @@ SpriteAnimFunc_PartyMonSwitch:
 	ld a, e
 	and a
 	jr z, .load_minus_two
-	cp $1
+	dec a
 	jr z, .load_minus_one
 .load_zero
 	xor a
@@ -959,7 +959,7 @@ SpriteAnimFunc_PcMode:
 
 SpriteAnimFunc_PcPack:
 	; Display male or female pack
-	ld a, [wPlayerGender]
+	call IsPlayerFemale
 	add a
 	add a
 	ld hl, SPRITEANIMSTRUCT_TILE_ID

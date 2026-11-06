@@ -1697,6 +1697,14 @@ wMonOrItemNameBuffer:: ds NAME_LENGTH
 
 SECTION UNION "Miscellaneous WRAM 1", WRAMX
 
+; the Goldenrod stylist's menu
+wStylistMenuHeader:: ds wMenuHeaderEnd - wMenuHeader
+wStylistMenuData:: ds 2 + (NUM_STYLIST_COLORS_A_DAY + 1) * (MAX_PLAYER_COLOR_NAME_LENGTH + 1)
+wStylistMenuColors:: ds NUM_STYLIST_COLORS_A_DAY + 1 ; PLAYER_COLOR_* values, 0 after the last
+
+
+SECTION UNION "Miscellaneous WRAM 1", WRAMX
+
 ; poke seer
 wSeerAction:: db
 wSeerNickname:: ds MON_NAME_LENGTH
@@ -2672,6 +2680,11 @@ wBugContestSecsRemaining:: db
 
 wMapStatusEnd::
 
+; the player color screen
+wPlayerColorPickerMode:: db
+wPlayerColorPickerGender:: db ; wPlayerGender as it was, for B
+wStylistColor:: db ; the PLAYER_COLOR_* the Goldenrod stylist is selling
+
 wCrystalData::
 wPlayerGender::
 ; bit 0:
@@ -3356,7 +3369,10 @@ wMagnetTrainPlayerSpriteInitX:: db
 wPalFadeDelayFrames:: db
 wPalFadeDelay:: db
 
-	ds 104
+; the player's pic colors (skin, clothes), read where the palette loaders read wBGPals1
+wPlayerPicColors:: ds 2 * COLOR_SIZE
+
+	ds 104 - 2 * COLOR_SIZE
 
 	align 8
 wLYOverridesBackup:: ds SCREEN_HEIGHT_PX

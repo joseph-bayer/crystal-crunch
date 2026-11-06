@@ -85,6 +85,18 @@ if DEF(_DEBUG)
 	giveitem AMULET_COIN
 	giveitem SCOPE_LENS
 	giveitem RARE_CANDY
+	; money for the stylist
+	givemoney YOUR_MONEY, 200000
+	; every player color at the Goldenrod stylist
+	setevent EVENT_OWNS_PLAYER_COLOR_BROWN
+	setevent EVENT_OWNS_PLAYER_COLOR_PURPLE
+	setevent EVENT_OWNS_PLAYER_COLOR_GRAY
+	setevent EVENT_OWNS_PLAYER_COLOR_PINK
+	setevent EVENT_OWNS_PLAYER_COLOR_TEAL
+	setevent EVENT_OWNS_PLAYER_COLOR_YELLOW
+	setevent EVENT_OWNS_PLAYER_COLOR_ORANGE
+	setevent EVENT_OWNS_PLAYER_COLOR_AZURE
+	setevent EVENT_OWNS_PLAYER_COLOR_BLACK
 	; all badges
 	setflag ENGINE_ZEPHYRBADGE
 	setflag ENGINE_HIVEBADGE

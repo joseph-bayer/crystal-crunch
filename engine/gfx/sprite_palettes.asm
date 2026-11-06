@@ -247,6 +247,17 @@ CopySpritePal::
 	ret
 
 
+LoadPlayerDaytimeOBPal::
+; Fill OBJ palette de in wOBPals1 with the player's overworld colors as they look by day, for the
+; screens that show the player's icon outside the map.
+	push de
+	call GetPlayerOWPal
+	ld hl, MapObjectPals + DAY_F * NUM_OW_TIME_OF_DAY_PALS palettes
+	ld bc, 1 palettes
+	rst AddNTimes
+	pop de
+	jmp FarCopyColorWRAM
+
 LoadMapTrainerOBPals::
 ; The Pokegear map's and the Fly map's trainer icons: the daytime red, blue, green and brown NPC
 ; colors, then the party menu's held-item red for the GIFTS view's item markers.

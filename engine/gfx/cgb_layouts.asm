@@ -224,8 +224,7 @@ InitFollowerMarkBGPal:
 	jmp FarCopyWRAM
 
 _CGB_PokegearPals:
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
+	call IsPlayerFemale
 	jr z, .male
 	ld hl, FemalePokegearPals
 	jr .got_pals
@@ -241,6 +240,8 @@ _CGB_PokegearPals:
 	ld de, wOBPals1
 	ld bc, 2 palettes
 	call FarCopyColorWRAM
+	ld de, wOBPals1 palette 1 ; the player's icon
+	call LoadPlayerDaytimeOBPal
 	call ApplyPals
 	ld a, TRUE
 	ldh [hCGBPalUpdate], a
@@ -820,10 +821,10 @@ _CGB_UnownPuzzle:
 
 _CGB_TrainerCard:
 	ld de, wBGPals1
-	xor a ; CHRIS
-	call GetTrainerPalettePointer
+	xor a ; the player
+	call GetPlayerOrMonPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld a, FALKNER ; KRIS
+	ld a, FALKNER
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
 	ld a, BUGSY
@@ -849,29 +850,11 @@ _CGB_TrainerCard:
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
 
-	; fill screen with opposite-gender palette for the card border
+	; the border and the player's pic are in the player's colors
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_AREA
-	ld a, [wPlayerGender]
-	and a
-	ld a, $1 ; kris
-	jr z, .got_gender
-	xor a ; chris
-.got_gender
+	xor a
 	rst ByteFill
-	; fill trainer sprite area with same-gender palette
-	hlcoord 14, 1, wAttrmap
-	lb bc, 7, 5
-	ld a, [wPlayerGender]
-	and a
-	ld a, $0 ; no-optimize a = 0 chris
-	jr z, .got_gender2
-	ld a, $1 ; kris
-.got_gender2
-	call FillBoxCGB
-	; top-right corner still uses the border's palette
-	hlcoord 18, 1, wAttrmap
-	ld [hl], $1
 	hlcoord 3, 10, wAttrmap
 	lb bc, 3, 3
 	ld a, $1 ; falkner
@@ -900,24 +883,11 @@ _CGB_TrainerCard:
 	lb bc, 3, 3
 	ld a, $7 ; pryce
 	call FillBoxCGB
-	; clair uses kris's palette
-	ld a, [wPlayerGender]
-	and a
-	push af
-	jr z, .got_gender3
+	; clair uses falkner's palette
 	hlcoord 15, 13, wAttrmap
 	lb bc, 3, 3
 	ld a, $1
 	call FillBoxCGB
-.got_gender3
-	pop af
-	ld c, $0
-	jr nz, .got_gender4
-	inc c
-.got_gender4
-	ld a, c
-	hlcoord 18, 1, wAttrmap
-	ld [hl], a
 	call ApplyAttrmap
 	call ApplyPals
 	ld a, TRUE
@@ -929,11 +899,11 @@ INCLUDE "gfx/trainer_card/johto_badges.pal"
 
 _CGB_TrainerCardKanto:
 	ld de, wBGPals1
-	xor a ; CHRIS & MISTY
+	xor a ; CHRIS: Misty's face is in Cal's colors
 	call GetTrainerPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
-	ld a, FALKNER ; KRIS
-	call GetTrainerPalettePointer
+	xor a ; the player
+	call GetPlayerOrMonPalettePointer
 	call LoadPalette_White_Col1_Col2_Black
 	ld hl, .BrockFacePalette
 	call LoadPalette_White_Col1_Col2_Black
@@ -957,33 +927,18 @@ _CGB_TrainerCardKanto:
 	ld a, BANK(wOBPals1)
 	call FarCopyWRAM
 
-	; fill screen with opposite-gender palette for the card border
+	; the border and the player's pic are in the player's colors
 	hlcoord 0, 0, wAttrmap
 	ld bc, SCREEN_AREA
-	ld a, [wPlayerGender]
-	and a
-	ld a, $1 ; kris
-	jr z, .got_gender
-	xor a ; chris
-.got_gender
+	ld a, $1
 	rst ByteFill
-	; fill trainer sprite area with same-gender palette
-	hlcoord 14, 1, wAttrmap
-	lb bc, 7, 5
-	ld a, [wPlayerGender]
-	and a
-	ld a, $0 ; no-optimize a = 0 chris
-	jr z, .got_gender2
-	ld a, $1 ; kris
-.got_gender2
-	call FillBoxCGB
 	hlcoord 3, 10, wAttrmap
 	lb bc, 3, 3
 	ld a, $2 ; brock
 	call FillBoxCGB
 	hlcoord 7, 10, wAttrmap
 	lb bc, 3, 3
-	xor a ; misty / chris
+	xor a ; misty
 	call FillBoxCGB
 	hlcoord 11, 10, wAttrmap
 	lb bc, 3, 3
@@ -1009,15 +964,6 @@ _CGB_TrainerCardKanto:
 	lb bc, 3, 3
 	ld a, $7 ; blue
 	call FillBoxCGB
-	; top-right corner still uses the border's palette
-	ld a, [wPlayerGender]
-	and a
-	ld a, $1 ; kris
-	jr z, .got_gender3
-	xor a ; chris
-.got_gender3
-	hlcoord 18, 1, wAttrmap
-	ld [hl], a
 	call ApplyAttrmap
 	call ApplyPals
 	ld a, TRUE
@@ -1085,8 +1031,7 @@ _CGB_PackPals:
 	cp BATTLETYPE_TUTORIAL
 	jr z, .tutorial_male
 
-	ld a, [wPlayerGender]
-	bit PLAYERGENDER_FEMALE_F, a
+	call IsPlayerFemale
 	jr z, .tutorial_male
 
 	ld hl, .KrisPackPals

@@ -123,27 +123,6 @@ LoadNthMiddleBGPal:
 	pop hl
 	jmp LoadPalette_White_Col1_Col2_Black
 
-ApplyMonOrTrainerPals:
-	call CheckCGB
-	ret z
-	ld a, e
-	and a
-	jr z, .get_trainer
-	ld a, [wCurPartySpecies]
-	call GetMonPalettePointer
-	jr .load_palettes
-
-.get_trainer
-	ld a, [wTrainerClass]
-	call GetTrainerPalettePointer
-
-.load_palettes
-	ld de, wBGPals1
-	call LoadPalette_White_Col1_Col2_Black
-	call WipeAttrmap
-	call ApplyAttrmap
-	jmp ApplyPals
-
 ApplyHPBarPals:
 	ld a, [wWhichHPBar]
 	and a
@@ -775,18 +754,12 @@ GetEnemyFrontpicPalettePointer:
 GetPlayerOrMonPalettePointer:
 	and a
 	jr nz, GetMonNormalOrShinyPalettePointer
-	ld a, [wPlayerSpriteSetupFlags]
-	bit PLAYERSPRITESETUP_FEMALE_TO_MALE_F, a
-	jr nz, .male
-	ld a, [wPlayerGender]
-	and a
-	jr z, .male
-	ld hl, KrisPalette
-	ret
-
-.male
+	; the catching tutorial's Dude isn't the player
+	ld a, [wBattleType]
+	cp BATTLETYPE_TUTORIAL
 	ld hl, PlayerPalette
-	ret
+	ret z
+	farjp LoadPlayerPicColors
 
 GetFrontpicPalettePointer:
 	and a
