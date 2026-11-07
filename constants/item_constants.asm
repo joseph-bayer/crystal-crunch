@@ -196,6 +196,7 @@ DEF FIRST_KEY_ITEM EQU const_value
 	const DOME_FOSSIL  ; 0117
 	const HELIX_FOSSIL ; 0118
 	const BADGE_CASE   ; 0119 ; debug ROM only: sets the badge count
+	const MOPED        ; 011A
 DEF NUM_KEY_ITEM_POCKET EQU const_value - FIRST_KEY_ITEM
 assert NUM_KEY_ITEM_POCKET <= $ff
 

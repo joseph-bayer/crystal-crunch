@@ -480,6 +480,8 @@ UpdateFollowerSprite:
 	ld hl, wFollowerFlags
 	bit FOLLOWER_IN_POKEBALL_F, [hl]
 	ret z
+	call IsPlayerRiding
+	ret z ; put away for the ride
 	jmp SpawnPokeballOpening
 
 .water_tile
@@ -500,6 +502,12 @@ CheckFollowerInvisOneStep:
 	ret z
 	bit FOLLOWER_INVISIBLE_ONE_STEP_F, [hl]
 	ret z
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	jr z, .riding
+	cp PLAYER_MOPED
+	jr z, .riding
+	xor a ; PLAYER, which the caller still reads
 	res FOLLOWER_INVISIBLE_ONE_STEP_F, [hl]
 	bit FOLLOWER_IN_POKEBALL_F, [hl]
 	push bc
@@ -515,6 +523,11 @@ CheckFollowerInvisOneStep:
 .spawn_pokeball
 	call SpawnPokeballOpening
 	pop bc
+	ret
+
+.riding
+; put away for the ride: the first step after a warp doesn't bring it out
+	xor a ; PLAYER
 	ret
 
 AddStepVector:
@@ -544,7 +557,7 @@ GetStepVector:
 	ld hl, OBJECT_WALKING
 	add hl, bc
 	ld a, [hl]
-	and %00001111
+	and WALKING_SPEED_MASK | %11
 	add a
 	add a
 	ld l, a
@@ -576,6 +589,7 @@ GetStepVector:
 
 StepVectors:
 ; x,  y, duration, speed
+	table_width 4
 	; slow
 	db  0,  1, 32, 1
 	db  0, -1, 32, 1
@@ -596,6 +610,12 @@ StepVectors:
 	db  0, -4,  4, 8
 	db -4,  0,  4, 8
 	db  4,  0,  4, 8
+	; moped
+	db  0,  8,  2, 16
+	db  0, -8,  2, 16
+	db -8,  0,  2, 16
+	db  8,  0,  2, 16
+	assert_table_length NUM_STEP_SPEEDS * NUM_DIRECTIONS
 
 GetStepVectorSign:
 	add a
@@ -948,7 +968,7 @@ MovementFunction_FollowerObj:
 ; without it the follower would get action 0 (SetFacingStanding) and vanish while stepping.
 	pop af
 	push af
-	and %00001100 ; step speed
+	and WALKING_SPEED_MASK
 	cp STEP_RUN << 2
 	ld d, OBJECT_ACTION_FOLLOWER_STEP
 	jr nz, .got_action
@@ -1047,7 +1067,7 @@ MoveFollowNotExact:
 	ld hl, OBJECT_WALKING
 	add hl, bc
 	ld a, [hl]
-	and %00001100
+	and WALKING_SPEED_MASK
 	or d
 	pop bc
 	scf
@@ -1300,7 +1320,13 @@ MovementFunction_ShakingGrass:
 	ld hl, OBJECT_STEP_DURATION
 	add hl, de
 	ld a, [hl]
-	add -1
+	cp 2
+	jr nc, .long_enough
+; a step about to end (the moped's two-frame steps) still shakes for a frame, where a 0 here would
+; never count down and leave the grass shaking for good
+	ld a, 2
+.long_enough
+	dec a
 	add a
 	ld hl, OBJECT_STEP_DURATION
 	add hl, bc
@@ -3201,6 +3227,92 @@ _SilentStowFollower::
 	and a
 	ret z
 	jmp SpawnPokeballClosing
+
+FollowerJoinsRide::
+; Getting on the bike or moped: the follower is put away for the ride. wScriptVar = TRUE if there
+; is a follower out to go into its ball, so the script plays the animation only then.
+	ld hl, wFollowerFlags
+	set FOLLOWER_RIDING_F, [hl]
+	ld a, [hl]
+	and FOLLOWER_INVISIBLE | 1 << FOLLOWER_IN_POKEBALL_F
+	jr nz, .no_ball
+	ld bc, wObject1Struct
+	call DoesObjectHaveASprite
+	jr z, .no_ball
+	ld a, TRUE
+	ld [wScriptVar], a
+	ret
+
+.no_ball
+; nobody out: just keep whoever follows in its ball until getting off
+	call HideFollowerForRide
+	xor a ; FALSE
+	ld [wScriptVar], a
+	ret
+
+FollowerLeavesRide::
+; Getting off: wScriptVar = TRUE if the follower was put away for the ride and is there to come
+; back out of its ball.
+	ld hl, wFollowerFlags
+	bit FOLLOWER_RIDING_F, [hl]
+	jr z, .no_ball
+	res FOLLOWER_RIDING_F, [hl]
+	ld bc, wObject1Struct
+	call DoesObjectHaveASprite
+	jr z, .nobody
+	ld a, TRUE
+	ld [wScriptVar], a
+	ret
+
+.nobody
+	ld hl, wFollowerFlags
+	res FOLLOWER_IN_POKEBALL_F, [hl]
+	res FOLLOWER_INVISIBLE_F, [hl]
+.no_ball
+	xor a ; FALSE
+	ld [wScriptVar], a
+	ret
+
+SyncFollowerWithRide::
+; Every map load: on the bike or moped the follower stays in its ball. Once off it (a building or
+; the Cycling Road's gate made you get off), it comes back out on the first step, as after a door.
+	call IsPlayerRiding
+	jr z, HideFollowerForRide
+	ld hl, wFollowerFlags
+	bit FOLLOWER_RIDING_F, [hl]
+	ret z
+	res FOLLOWER_RIDING_F, [hl]
+	ld a, [wPlayerState]
+	cp PLAYER_SURF
+	ret z ; on water the surf rules already keep it in its ball
+	cp PLAYER_SURF_PIKA
+	ret z
+	res FOLLOWER_IN_POKEBALL_F, [hl]
+	set FOLLOWER_INVISIBLE_F, [hl]
+	set FOLLOWER_INVISIBLE_ONE_STEP_F, [hl]
+	ret
+
+HideFollowerForRide::
+; In its ball with no animation: a map load while riding, or a follower picked while riding.
+	ld hl, wFollowerFlags
+	set FOLLOWER_RIDING_F, [hl]
+	set FOLLOWER_INVISIBLE_F, [hl]
+	set FOLLOWER_IN_POKEBALL_F, [hl]
+	ld bc, wObject1Struct
+	call DoesObjectHaveASprite
+	ret z
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	set INVISIBLE_F, [hl]
+	ret
+
+IsPlayerRiding:
+; Return z if the player is on the bike or the moped.
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	ret z
+	cp PLAYER_MOPED
+	ret
 
 _AppearFollower::
 	ld b, FOLLOWER

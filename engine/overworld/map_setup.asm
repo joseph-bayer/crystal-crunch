@@ -134,6 +134,8 @@ CheckUpdatePlayerSprite:
 .no_biking
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
+	jr z, .surfing
+	cp PLAYER_MOPED
 	jr nz, .nope
 .surfing
 	ld a, PLAYER_NORMAL
@@ -180,7 +182,10 @@ FadeMapMusicAndPalettes:
 ForceMapMusic:
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
+	jr z, .biking
+	cp PLAYER_MOPED
 	jr nz, .notbiking
+.biking
 	call MinVolume
 	ld a, $88
 	ld [wMusicFade], a

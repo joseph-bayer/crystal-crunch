@@ -67,6 +67,7 @@ if DEF(_DEBUG)
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
 	giveitem BICYCLE
+	; giveitem MOPED
 	giveitem GOOD_ROD
 	giveitem PASS ; Magnet Train
 	giveitem BADGE_CASE ; sets the badge count

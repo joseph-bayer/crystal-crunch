@@ -924,4 +924,7 @@ CeruleanCave2F_Blocks:
 CeruleanCaveB1F_Blocks:
 	INCBIN "maps/CeruleanCaveB1F.ablk"
 
+CeruleanMopedShop_Blocks:
+	INCBIN "maps/CeruleanMopedShop.ablk"
+
 ENDSECTION

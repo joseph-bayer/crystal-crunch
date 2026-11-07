@@ -61,11 +61,33 @@ SetFacingStepAction:
 	rrca
 	and %11
 	ld d, a
+	call MopedWalkFrame
 	call GetSpriteDirection
 	or d
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld [hl], a
+	ret
+
+MopedWalkFrame:
+; in: d = step frame 0-3 (standing, walking, standing, walking mirrored)
+; On the moped the player never shows the mirrored frame: the sheet's down and up frames aren't
+; symmetrical. The bike keeps the mirror.
+	call IsMopedRider
+	ret nz
+	res 1, d
+	ret
+
+IsMopedRider:
+; Return z if bc is the player's object and the player is on the moped.
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	ret nz
+	ld a, c
+	cp LOW(wPlayerStruct)
+	ret nz
+	ld a, b
+	cp HIGH(wPlayerStruct)
 	ret
 
 SetFacingSkyfall:
@@ -110,6 +132,7 @@ SetFacingBumpAction:
 	rrca
 	maskbits NUM_DIRECTIONS
 	ld d, a
+	call MopedWalkFrame
 
 	call GetSpriteDirection
 	or FACING_STEP_DOWN_0 ; useless
@@ -318,6 +341,9 @@ SetFacingGrassShake:
 	ret
 
 SetFacingRunAction:
+; The moped builds up from the running shoes' speed, but animates at one pace throughout.
+	call IsMopedRider
+	jmp z, SetFacingStepAction
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit SLIDING_F, [hl]
@@ -331,6 +357,7 @@ SetFacingRunAction:
 	rrca
 	and %11
 	ld d, a
+	call MopedWalkFrame
 	call GetSpriteDirection
 	or d
 	ld hl, OBJECT_FACING

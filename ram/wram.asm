@@ -1184,6 +1184,13 @@ wTempWildMonMove:: dw
 wOverworldMonSwarmMove:: dw
 
 
+SECTION "Moped Ramp", WRAM0
+
+; Tiles ridden on the moped since the player last stood still, holding at full speed. Picks the
+; moped's speed: it starts slow and builds up. Not saved, so continuing starts slow.
+wMopedRampTiles:: db
+
+
 SECTION "Video", WRAM0
 
 UNION

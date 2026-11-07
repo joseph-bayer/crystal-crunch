@@ -9,8 +9,15 @@ _HandlePlayerStep::
 	ret
 
 .update_overworld_map
-	ld a, 4
+; HandlePlayerStep's work takes the step's first four frames. A moped step lasts two, so it does
+; the same work in its two: the next step must not start before GetMovementPermissions.
+	ld a, [wPlayerStepDuration] ; frames left after this one
+	cp 4 - 1
+	sbc a ; -1 for a short step, else 0
+	add a
+	add 4 ; 2 for a short step, else 4
 	ld [wHandlePlayerStep], a
+	call .CountMopedTile
 	call UpdateOverworldMap
 	jr .finish
 
@@ -28,6 +35,22 @@ _HandlePlayerStep::
 	ld a, [wPlayerBGMapOffsetY]
 	sub e
 	ld [wPlayerBGMapOffsetY], a
+	ret
+
+.CountMopedTile:
+; Each moped tile counts toward full speed (see DoPlayerMovement.MopedRampStep). A ledge hop, a
+; 16-frame step, doesn't: hopping keeps the speed you had.
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	ret nz
+	ld a, [wPlayerStepDuration] ; frames left after this one
+	cp 8 ; the moped's slowest step, 8 frames, has 7 left
+	ret nc
+	ld hl, wMopedRampTiles
+	ld a, [hl]
+	cp MOPED_TILES_PER_SPEED * 2
+	ret nc
+	inc [hl]
 	ret
 
 ScrollScreen::

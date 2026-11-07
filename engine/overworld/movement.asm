@@ -96,6 +96,10 @@ MovementPointers:
 	dw Movement_bike_step_left        ; 5c
 	dw Movement_bike_step_right       ; 5d
 	dw Movement_jump_in_place         ; 5e
+	dw Movement_moped_step_down       ; 5f
+	dw Movement_moped_step_up         ; 60
+	dw Movement_moped_step_left       ; 61
+	dw Movement_moped_step_right      ; 62
 	assert_table_length NUM_MOVEMENT_CMDS
 
 Movement_teleport_from:
@@ -474,6 +478,22 @@ Movement_bike_step_right:
 	ld a, STEP_BIKE << 2 | RIGHT
 	jr Movement_do_step
 
+Movement_moped_step_down:
+	ld a, MOPED_SPEED << 2 | DOWN
+	jr Movement_do_step
+
+Movement_moped_step_up:
+	ld a, MOPED_SPEED << 2 | UP
+	jr Movement_do_step
+
+Movement_moped_step_left:
+	ld a, MOPED_SPEED << 2 | LEFT
+	jr Movement_do_step
+
+Movement_moped_step_right:
+	ld a, MOPED_SPEED << 2 | RIGHT
+	jr Movement_do_step
+
 Movement_step_down:
 	ld a, STEP_WALK << 2 | DOWN
 	jr Movement_do_step
@@ -692,6 +712,12 @@ NormalStep:
 	add hl, bc
 	pop de
 	ld [hl], d
+
+; an invisible walker, such as the follower put away for a ride, leaves the grass still
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	bit INVISIBLE_F, [hl]
+	jr nz, .skip_grass
 
 	ld hl, OBJECT_TILE_COLLISION
 	add hl, bc

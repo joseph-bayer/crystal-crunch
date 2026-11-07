@@ -123,3 +123,5 @@ CampfireSpriteGFX::            INCBIN "gfx/sprites/campfire.2bpp" ; Polished Cry
 LoreleiSpriteGFX::             INCBIN "gfx/sprites/lorelei.2bpp"
 AgathaSpriteGFX::              INCBIN "gfx/sprites/agatha.2bpp"
 GiovanniSpriteGFX::            INCBIN "gfx/sprites/giovanni.2bpp"
+ChrisMopedSpriteGFX::          INCBIN "gfx/sprites/chris_moped.2bpp"
+KrisMopedSpriteGFX::           INCBIN "gfx/sprites/kris_moped.2bpp"

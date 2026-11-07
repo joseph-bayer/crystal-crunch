@@ -614,9 +614,11 @@ FadeMusic:
 	; make sure volume is off
 	xor a
 	ld [wVolume], a
-	; did we just get on a bike?
+	; did we just get on a bike or the moped?
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
+	jr z, .bicycle
+	cp PLAYER_MOPED
 	jr z, .bicycle
 	push bc
 	; restart sound

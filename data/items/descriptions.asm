@@ -198,6 +198,7 @@ ItemDescriptionsKeyItems:
 	dw DomeFossilDesc   ; 0117
 	dw HelixFossilDesc  ; 0118
 	dw BadgeCaseDesc    ; 0119
+	dw MopedDesc        ; 011A
 .IndirectEnd:
 
 ItemDescriptionsBalls:
@@ -753,6 +754,10 @@ HelixFossilDesc:
 BadgeCaseDesc:
 	db   "Debug: sets how"
 	next "many badges.@"
+
+MopedDesc:
+	db   "A motor scooter,"
+	next "faster than bikes.@"
 
 MysteryBerryDesc:
 	db   "A self-restore"

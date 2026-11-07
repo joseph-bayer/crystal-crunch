@@ -56,6 +56,8 @@ endc
 	jr z, .Surf
 	cp PLAYER_BIKE
 	jr z, .Normal
+	cp PLAYER_MOPED
+	jr z, .Normal
 	cp PLAYER_SKATE
 	jr z, .Ice
 
@@ -106,6 +108,9 @@ endc
 	ret
 
 .NotMoving:
+; standing still or bumping: the moped starts slow again
+	xor a
+	ld [wMopedRampTiles], a
 	ld a, [wWalkingDirection]
 	cp STANDING
 	jr z, .Standing
@@ -290,6 +295,10 @@ endc
 	call CheckIceTile
 	jr nc, .ice
 
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	jr z, .moped
+
 ; Downhill riding is slower when not moving down.
 	call .BikeCheck
 	jr nz, .walk
@@ -324,6 +333,12 @@ endc
 
 .ice
 	ld a, STEP_ICE
+	call .DoStep
+	scf
+	ret
+
+.moped
+	call .MopedRampStep
 	call .DoStep
 	scf
 	ret
@@ -469,6 +484,31 @@ endc
 	db COLL_WARP_CARPET_LEFT
 	db COLL_WARP_CARPET_RIGHT
 
+.MopedRampStep:
+; Returns the moped's step for this tile in a. From a stop it builds up: the running shoes' speed,
+; then the bike's, then its own. The tiles are counted where each step starts (_HandlePlayerStep):
+; this runs every frame of a turn too. Standing still passes through here (.DoStep stands in
+; place), and starts it over.
+	ld hl, wMopedRampTiles
+	ld a, [wWalkingDirection]
+	cp STANDING
+	jr nz, .moped_moving
+	xor a ; any step: .DoStep stands in place
+	ld [hl], a
+	ret
+
+.moped_moving
+	ld a, [hl]
+	cp MOPED_TILES_PER_SPEED
+	ld a, STEP_RUN
+	ret c
+	ld a, [hl]
+	cp MOPED_TILES_PER_SPEED * 2
+	ld a, STEP_BIKE
+	ret c
+	ld a, STEP_MOPED
+	ret
+
 .DoStep:
 	ld e, a
 	ld d, 0
@@ -508,6 +548,7 @@ endc
 	dw .TurningStep
 	dw .BackJumpStep
 	dw .FinishFacing
+	dw .MopedStep
 	assert_table_length NUM_STEPS
 
 .SlowStep:
@@ -555,6 +596,11 @@ endc
 	db $80 | UP
 	db $80 | LEFT
 	db $80 | RIGHT
+.MopedStep:
+	moped_step DOWN
+	moped_step UP
+	moped_step LEFT
+	moped_step RIGHT
 
 .StandInPlace:
 	xor a

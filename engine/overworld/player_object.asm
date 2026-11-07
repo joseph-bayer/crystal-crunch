@@ -106,7 +106,15 @@ SpawnFollowerObject::
 	ld a, FOLLOWER
 	ldh [hMapObjectIndex], a
 	ld bc, wMap1Object
-	jmp CopyObjectStruct
+	call CopyObjectStruct
+; picked while riding: it waits in its ball until getting off
+	ld a, [wPlayerState]
+	cp PLAYER_BIKE
+	jr z, .riding
+	cp PLAYER_MOPED
+	ret nz
+.riding
+	farjp HideFollowerForRide
 
 DespawnFollowerObject::
 ; Leaves exactly what SpawnPlayer's own .skip_follower path leaves behind: no object struct, and
@@ -214,6 +222,18 @@ MapPlayerCoordConnected:
 MatchFollowerDirection:
 	ld a, FOLLOWER
 	call GetObjectStruct
+; A hidden follower (in its ball) keeps the STANDING facing that hides it. Given the player's, the
+; sprite update after crossing a map edge draws it before its own action hides it again.
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	bit INVISIBLE_F, [hl]
+	jr z, .visible
+	ld hl, OBJECT_FACING
+	add hl, bc
+	ld [hl], STANDING
+	ret
+
+.visible
 	push bc
 	ld a, PLAYER
 	call GetObjectStruct

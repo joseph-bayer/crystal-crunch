@@ -218,6 +218,7 @@ ItemEffectsKeyItems:
 	dw NoEffect           ; HELIX_FOSSIL
 	dw NoEffect           ; DOME_FOSSIL
 	dw BadgeCaseEffect    ; BADGE_CASE
+	dw MopedEffect        ; MOPED
 .IndirectEnd:
 
 ItemEffectsBalls:
@@ -1158,6 +1159,9 @@ TownMapEffect:
 
 BicycleEffect:
 	jmp BikeFunction
+
+MopedEffect:
+	jmp MopedFunction
 
 EvoStoneEffect:
 	ld b, PARTYMENUACTION_EVO_STONE

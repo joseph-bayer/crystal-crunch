@@ -301,7 +301,17 @@ DEF NUM_FACINGS EQU const_value
 	const STEP_TURN          ; 6
 	const STEP_BACK_LEDGE    ; 7
 	const STEP_WALK_IN_PLACE ; 8
+	const STEP_MOPED         ; 9
 DEF NUM_STEPS EQU const_value
+
+; StepVectors speeds (see engine/overworld/map_objects.asm). OBJECT_WALKING holds speed << 2 | direction;
+; STEP_SLOW to STEP_BIKE double as the first four speeds.
+DEF MOPED_SPEED EQU STEP_BIKE + 1
+DEF NUM_STEP_SPEEDS EQU MOPED_SPEED + 1
+; The moped rides this many tiles at the running shoes' speed, as many at the bike's, then at its own.
+DEF MOPED_TILES_PER_SPEED EQU 2
+DEF WALKING_SPEED_MASK EQU %00011100
+assert (NUM_STEP_SPEEDS - 1) << 2 & ~WALKING_SPEED_MASK == 0, "WALKING_SPEED_MASK is too narrow"
 
 ; MovementFunction_FollowerObj arguments (engine/overworld/map_objects.asm)
 	const_def

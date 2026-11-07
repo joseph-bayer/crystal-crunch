@@ -350,6 +350,9 @@ RefreshMapSprites:
 	call GetMovementPermissions
 	farcall RefreshPlayerSprite
 	farcall CheckUpdatePlayerSprite
+	farcall SyncFollowerWithRide
+	xor a
+	ld [wMopedRampTiles], a ; after a warp the moped starts slow
 	ld hl, wPlayerSpriteSetupFlags
 	bit PLAYERSPRITESETUP_SKIP_RELOAD_GFX_F, [hl]
 	jr nz, .skip

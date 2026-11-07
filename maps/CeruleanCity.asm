@@ -114,17 +114,14 @@ CeruleanCitySign:
 CeruleanGymSign:
 	jumptext CeruleanGymSignText
 
-CeruleanBikeShopSign:
-	jumptext CeruleanBikeShopSignText
+CeruleanMopedShopSign:
+	jumptext CeruleanMopedShopSignText
 
 CeruleanPoliceSign:
 	jumptext CeruleanPoliceSignText
 
 CeruleanCapeSign:
 	jumptext CeruleanCapeSignText
-
-CeruleanLockedDoor:
-	jumptext CeruleanLockedDoorText
 
 CeruleanCityPokecenterSign:
 	jumpstd PokecenterSignScript
@@ -229,13 +226,9 @@ CeruleanGymSignText:
 	line "Mermaid"
 	done
 
-CeruleanBikeShopSignText:
-	text "There's a notice"
-	line "here…"
-
-	para "The BIKE SHOP has"
-	line "moved to GOLDENROD"
-	cont "CITY in JOHTO…"
+CeruleanMopedShopSignText:
+	text "CERULEAN MOPED"
+	line "SHOP"
 	done
 
 CeruleanPoliceSignText:
@@ -256,10 +249,6 @@ CeruleanCapeSignText:
 	line "AHEAD"
 	done
 
-CeruleanLockedDoorText:
-	text "It's locked…"
-	done
-
 CeruleanCity_MapEvents:
 	db 0, 0 ; filler
 
@@ -271,16 +260,16 @@ CeruleanCity_MapEvents:
 	warp_event 30, 23, CERULEAN_GYM, 1
 	warp_event 25, 29, CERULEAN_MART, 2
 	warp_event  2, 11, CERULEAN_CAVE_1F, 1
+	warp_event 14, 29, CERULEAN_MOPED_SHOP, 1
 
 	def_coord_events
 
 	def_bg_events
 	bg_event 23, 23, BGEVENT_READ, CeruleanCitySign
 	bg_event 27, 25, BGEVENT_READ, CeruleanGymSign
-	bg_event 11, 29, BGEVENT_READ, CeruleanBikeShopSign
+	bg_event 11, 29, BGEVENT_READ, CeruleanMopedShopSign
 	bg_event 25, 17, BGEVENT_READ, CeruleanPoliceSign
 	bg_event 23,  7, BGEVENT_READ, CeruleanCapeSign
-	bg_event 14, 29, BGEVENT_READ, CeruleanLockedDoor
 	bg_event 20, 21, BGEVENT_READ, CeruleanCityPokecenterSign
 	bg_event 26, 29, BGEVENT_READ, CeruleanCityMartSign
 

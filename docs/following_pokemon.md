@@ -201,6 +201,15 @@ covers four of the rules.
   and never guesses.
 - **Eggs can be chosen**, and walk around in the overworld. `LoadOverworldMonIcon` already has an
   egg icon, so this cost nothing and is funny.
+- **Riding the bike or moped puts it in its ball.** Getting on plays the ball animation
+  (`stowfollower`), getting off opens it (`appearfolloweronestep`). In between it keeps following,
+  invisible, exactly as it does on water while surfing; `FOLLOWER_RIDING_F` in `wFollowerFlags`
+  marks why it is away, and the step after a warp and the water-to-land opening leave it shut while
+  `wPlayerState` is the bike or moped. `SyncFollowerWithRide` runs on every map load, so warps, map
+  edges, the Cycling Road and continuing a save keep it away; being made to get off (a building, the
+  Cycling Road's gate) brings it back on the first step, as after any door. Code:
+  `FollowerJoinsRide`, `FollowerLeavesRide`, `SyncFollowerWithRide`, `HideFollowerForRide`
+  (`engine/overworld/map_objects.asm`), `FollowerJoinsRideScript` (`engine/events/overworld.asm`).
 
 ### The marker
 
