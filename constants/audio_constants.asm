@@ -63,16 +63,17 @@ DEF CHANNEL_PITCH_SLIDE_TARGET          rw
 DEF CHANNEL_PITCH_SLIDE_AMOUNT          rb
 DEF CHANNEL_PITCH_SLIDE_AMOUNT_FRACTION rb
 DEF CHANNEL_FIELD25                     rb
-                                        rb_skip
+DEF CHANNEL_VIBRATO_TABLE_BASE          rb
 DEF CHANNEL_PITCH_OFFSET                rw
-DEF CHANNEL_FIELD29                     rb
-DEF CHANNEL_FIELD2A                     rw
-DEF CHANNEL_FIELD2C                     rb
+DEF CHANNEL_NOTE_CUTOFF                 rb
+DEF CHANNEL_RELEASE_ENVELOPE            rb
+DEF CHANNEL_CUTOFF_COUNT                rb
+DEF CHANNEL_VIBRATO_TABLE_TYPE          rb
 DEF CHANNEL_NOTE_LENGTH                 rb
 DEF CHANNEL_FIELD2E                     rb
 DEF CHANNEL_FIELD2F                     rb
 DEF CHANNEL_FIELD30                     rb
-                                        rb_skip
+DEF CHANNEL_VIBRATO_TABLE_INDEX         rb
 DEF CHANNEL_STRUCT_LENGTH EQU _RS
 
 DEF NOISE_CHAN_F EQU 2 ; bit set in CHAN5-CHAN7
@@ -91,9 +92,9 @@ DEF NOISE_CHAN_F EQU 2 ; bit set in CHAN5-CHAN7
 	const SOUND_VIBRATO      ; 0
 	const SOUND_PITCH_SLIDE  ; 1
 	const SOUND_DUTY_LOOP    ; 2
-	const SOUND_UNKN_0B      ; 3
+	const SOUND_VIBRATO_TABLE ; 3
 	const SOUND_PITCH_OFFSET ; 4
-	const SOUND_UNKN_0D      ; 5
+	const SOUND_TIE          ; 5
 	const SOUND_UNKN_0E      ; 6
 	const SOUND_UNKN_0F      ; 7
 
@@ -106,11 +107,19 @@ DEF NOISE_CHAN_F EQU 2 ; bit set in CHAN5-CHAN7
 	const_def
 	const NOTE_DUTY_OVERRIDE    ; 0
 	const NOTE_FREQ_OVERRIDE    ; 1
-	const NOTE_UNUSED           ; 2
+	const NOTE_RELEASE          ; 2
 	const NOTE_PITCH_SWEEP      ; 3
 	const NOTE_NOISE_SAMPLING   ; 4
 	const NOTE_REST             ; 5
 	const NOTE_VIBRATO_OVERRIDE ; 6
+	const NOTE_CONTINUE         ; 7
+
+; vibrato_table tables (see audio/vibrato_tables.asm)
+DEF NUM_VIBRATO_TABLES EQU 11
+
+; drumkit sample step length byte
+DEF NOISE_STEP_EXACT_F    EQU 6 ; last low nybble + 1 frames, not + 2
+DEF NOISE_STEP_CONTINUE_F EQU 7 ; change the frequency without restarting the sound
 
 ; wVolume
 DEF MAX_VOLUME EQU AUDVOL_LEFT | AUDVOL_RIGHT

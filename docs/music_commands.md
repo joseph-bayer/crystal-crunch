@@ -55,6 +55,20 @@ Sound effect noise note. Used by channel 8.
 `fade`: Volume fade [`-7`, `7`]  
 `frequency`: Note frequency [`0`, `255`]
 
+In a drumkit sample, a `noise_note` step lasts its `length`'s low nybble + 2 frames.
+
+
+## <code>noise_step <i>frames</i>, <i>volume</i>, <i>fade</i>, <i>frequency</i></code>
+
+Drumkit sample step that restarts the noise and lasts exactly `frames` [`1`, `16`]. Otherwise as `noise_note`. A `volume` of 0 with a `fade` of 8 silences the noise without turning the channel off.
+
+
+## <code>noise_freq_step <i>frames</i>, <i>frequency</i></code>
+
+Drumkit sample step that changes the noise frequency without restarting the sound, and lasts exactly `frames` [`1`, `16`].
+
+After a drumkit sample ends, the noise keeps sounding with its last settings until the next drum note or rest.
+
 
 ## `$D0`−`$D7`: <code>octave <i>n</i></code>
 
@@ -162,7 +176,13 @@ Apply vibrato to current channel. Used by channels 1-3.
 `rate`: Frequency of vibrato [`0`, `15`]
 
 
-## `$E2`: <code>unknownmusic0xe2 <i>unknown</i></code>
+## `$E2`: <code>vibrato_table <i>table</i>, <i>delay</i></code>
+
+Vibrato that steps through a table of frequency offsets, one per frame, for a smooth wobble rather than `vibrato`'s up/down flip. Used by channels 1-3. Replaces `vibrato` (and `vibrato` replaces it). Ported from the Pokémon TCG sound engine, with its tables, in [audio/vibrato_tables.asm](../audio/vibrato_tables.asm).  
+`table`: Table to play [`0`, `10`]. When a table ends it plays again, or goes on with another table.  
+`delay`: Frames into each note before the vibrato starts, plus 1 [`1`, `255`]; `0` turns the vibrato off.
+
+A note continued by `tie` keeps its vibrato going where it was, delay included.
 
 
 ## `$E3`: <code>toggle_noise <i>id</i></code>
@@ -197,10 +217,19 @@ Adjust the pitch of all notes on the current channel. Used by channels 1-3.
 Note: Similar to the pokered command `toggle_perfect_pitch`. `toggle_perfect_pitch` can be replaced with a combination of `pitch_offset 1` and `pitch_offset 0`.
 
 
-## `$E7`: <code>unknownmusic0xe7 <i>unknown</i></code>
+## `$E7`: <code>note_cutoff <i>eighths</i></code>
+
+Play only part of each following note, then drop it to the release envelope (see `release_envelope`) for the rest of its length. Used by channels 1-3. Ported from the Pokémon TCG sound engine.  
+`eighths` (0–8): How many eighths of each note play before its release. 0 or 8 plays notes in full, and so does a note too short for its cut to last a whole frame.
+
+Rests are never released.
 
 
-## `$E8`: <code>unknownmusic0xe8 <i>unknown</i></code>
+## `$E8`: <code>release_envelope <i>volume</i>, <i>fade</i></code>
+
+Set what a note cut by `note_cutoff` drops to. Starts at 0 when a song loads.  
+Channels 1-2: the volume envelope, as `volume_envelope`; the note restarts with it. Volume 0 silences the note.  
+Channel 3: `volume` is the wave volume (0 = mute, 1 = 100%, 2 = 50%, 3 = 25%); the note keeps playing at that volume. `fade` is ignored.
 
 
 ## `$E9`: <code>tempo_relative <i>value</i></code>
@@ -260,7 +289,13 @@ Note: The drum kit ID is initially unset at the start of a song. When muting the
 ## `$F8`: <code>music0xf8</code>
 
 
-## `$F9`: <code>unknownmusic0xf9</code>
+## `$F9`: <code>tie</code>
+
+The next note continues the one that just ended: it changes pitch without restarting the sound, so the volume envelope carries on, and the vibrato keeps going without waiting out its delay again. Used by channels 1-3. A rest in between cancels it. Ported from the Pokémon TCG sound engine.
+
+Put it after the first note: `note F_, 8` / `tie` / `note F_, 8`. A note followed by `tie` should not be cut by `note_cutoff`.
+
+If a sound effect interrupts the channel during tied notes, the channel stays silent until its next untied note.
 
 
 ## `$FA`: <code>set_condition <i>condition</i></code>
