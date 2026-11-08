@@ -226,8 +226,9 @@ MACRO channel_struct
 \1Field25::                  db
                              ds 1
 \1PitchOffset::              dw
-\1Field29::                  ds 1
-\1Field2a::                  ds 2
+\1NoteCutoff::               db ; eighths of each note played before its release
+\1ReleaseEnvelope::          db ; volume envelope a note drops to at its release
+\1CutoffCount::              db ; frames until the current note's release
 \1Field2c::                  ds 1
 \1NoteLength::               db ; frames per 16th note
 \1Field2e::                  ds 1

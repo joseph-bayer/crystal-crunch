@@ -10,7 +10,6 @@ INCLUDE "audio/sfx_pointers.asm"
 
 SECTION "Songs 1", ROMX
 
-INCLUDE "audio/music/route36.asm"
 INCLUDE "audio/music/rivalbattle.asm"
 INCLUDE "audio/music/rocketbattle.asm"
 INCLUDE "audio/music/elmslab.asm"
@@ -23,7 +22,6 @@ INCLUDE "audio/music/goldenrodcity.asm"
 INCLUDE "audio/music/vermilioncity.asm"
 INCLUDE "audio/music/titlescreen.asm"
 INCLUDE "audio/music/ruinsofalphinterior.asm"
-INCLUDE "audio/music/lookpokemaniac.asm"
 INCLUDE "audio/music/trainervictory.asm"
 
 
@@ -148,6 +146,11 @@ INCLUDE "audio/music/mobileadapter.asm"
 SECTION "Extra Songs 2", ROMX
 
 INCLUDE "audio/music/postcredits.asm"
+INCLUDE "audio/music/lookpokemaniac.asm"
+INCLUDE "audio/music/route36.asm"
+INCLUDE "audio/music/tcgoverworld.asm"
+INCLUDE "audio/music/tcgclub1.asm"
+INCLUDE "audio/music/tcgclub2.asm"
 
 
 SECTION "Sound Effects", ROMX

@@ -105,6 +105,9 @@
 	const MUSIC_SUICUNE_BATTLE               ; 64
 	const MUSIC_BATTLE_TOWER_LOBBY           ; 65
 	const MUSIC_MOBILE_CENTER                ; 66
+	const MUSIC_TCG_OVERWORLD                ; 67
+	const MUSIC_TCG_CLUB_1                   ; 68
+	const MUSIC_TCG_CLUB_2                   ; 69
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for these values (see home/map.asm)

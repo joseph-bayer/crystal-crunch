@@ -100,9 +100,27 @@ _UpdateSound::
 	cp 2 ; 1 or 0?
 	jr c, .noteover
 	dec [hl]
+	; count down to the note's release, if it has one
+	ld hl, CHANNEL_CUTOFF_COUNT
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .continue_sound_update
+	dec [hl]
+	jr nz, .continue_sound_update
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_RELEASE, [hl]
 	jr .continue_sound_update
 
 .noteover
+	; turn vibrato off for now
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	res SOUND_PITCH_SLIDE, [hl]
+	; table vibrato is reset when the next note starts, unless it's tied
+	bit SOUND_VIBRATO_TABLE, [hl]
+	jr nz, .vibrato_reset_done
 	; reset vibrato delay
 	ld hl, CHANNEL_VIBRATO_DELAY
 	add hl, bc
@@ -110,10 +128,7 @@ _UpdateSound::
 	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
 	add hl, bc
 	ld [hl], a
-	; turn vibrato off for now
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	res SOUND_PITCH_SLIDE, [hl]
+.vibrato_reset_done
 	; get next note
 	call ParseMusic
 .continue_sound_update
@@ -252,8 +267,12 @@ UpdateChannels:
 .noPitchSweep
 	bit NOTE_REST, [hl] ; rest
 	jr nz, .ch1_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch1_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch1_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch1_frequency_override
 	bit NOTE_FREQ_OVERRIDE, [hl]
 	jr nz, .ch1_frequency_override
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
@@ -294,6 +313,16 @@ UpdateChannels:
 	ld hl, rAUD1SWEEP
 	jmp ClearChannel
 
+.ch1_release
+	call .get_pulse_release_envelope
+	ldh [rAUD1ENV], a
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD1LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	or $80 ; initial (restart)
+	ldh [rAUD1HIGH], a
+	ret
+
 .ch1_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -314,8 +343,12 @@ UpdateChannels:
 	add hl, bc
 	bit NOTE_REST, [hl] ; rest
 	jr nz, .ch2_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch2_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch2_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch2_continue
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	jr nz, .ch2_vibrato_override
 	bit NOTE_DUTY_OVERRIDE, [hl]
@@ -346,6 +379,33 @@ UpdateChannels:
 	ld hl, rAUD2LEN - 1 ; there is no rNR20
 	jmp ClearChannel
 
+.ch2_continue
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD2LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	ldh [rAUD2HIGH], a
+	ret
+
+.ch2_release
+	call .get_pulse_release_envelope
+	ldh [rAUD2ENV], a
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD2LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	or $80 ; initial (restart)
+	ldh [rAUD2HIGH], a
+	ret
+
+.get_pulse_release_envelope:
+	ld hl, CHANNEL_RELEASE_ENVELOPE
+	add hl, bc
+	ld a, [hl]
+	cp $10
+	ret nc
+	; volume 0: silence the note but keep the DAC on, as ClearChannel would not
+	ld a, AUD1ENV_UP
+	ret
+
 .ch2_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -366,8 +426,12 @@ UpdateChannels:
 	add hl, bc
 	bit NOTE_REST, [hl]
 	jr nz, .ch3_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch3_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch3_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch3_continue
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	ret z
 	ld a, [wCurTrackFrequency]
@@ -380,6 +444,23 @@ UpdateChannels:
 	ldh [rAUDENA], a
 	ld hl, rAUD3ENA
 	jmp ClearChannel
+
+.ch3_continue
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD3LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	ldh [rAUD3HIGH], a
+	ret
+
+.ch3_release
+	; same volume encoding as .load_wave_pattern
+	ld hl, CHANNEL_RELEASE_ENVELOPE
+	add hl, bc
+	ld a, [hl]
+	and $f0
+	add a
+	ldh [rAUD3LEVEL], a
+	ret
 
 .ch3_noise_sampling
 	ld a, $3f ; sound length
@@ -455,6 +536,10 @@ UpdateChannels:
 	jr nz, .ch4_rest
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch4_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	ret z
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD4POLY], a
 	ret
 
 .ch4_rest
@@ -840,6 +925,8 @@ HandleTrackVibrato:
 	; is vibrato on?
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
+	bit SOUND_VIBRATO_TABLE, [hl]
+	jr nz, .vibrato_table
 	bit SOUND_VIBRATO, [hl] ; vibrato
 	ret z
 	; is vibrato active for this note yet?
@@ -912,6 +999,76 @@ HandleTrackVibrato:
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
 	set NOTE_VIBRATO_OVERRIDE, [hl]
+	ret
+
+.vibrato_table
+	; wait out the delay
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .vibrato_table_step
+	dec [hl]
+	ret
+
+.vibrato_table_step
+	; de = the table being played
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld a, [hl]
+	add a
+	add LOW(VibratoTables)
+	ld l, a
+	adc HIGH(VibratoTables)
+	sub l
+	ld h, a
+	ld a, [hli]
+	ld d, [hl]
+	ld e, a
+	; a = its next offset
+	ld hl, CHANNEL_VIBRATO_TABLE_INDEX
+	add hl, bc
+	ld a, [hl]
+	inc [hl]
+	add e
+	ld e, a
+	adc d
+	sub e
+	ld d, a
+	ld a, [de]
+	cp $80
+	jr nz, .vibrato_table_offset
+	; end of the table: play it again, or go on with the table in the next byte
+	ld [hl], 0
+	inc de
+	ld a, [de]
+	cp $80
+	jr z, .vibrato_table_step
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld [hl], a
+	jr .vibrato_table_step
+
+.vibrato_table_offset
+	; add the signed offset to the frequency
+	ld e, a
+	rlca
+	sbc a
+	ld d, a
+	ld hl, wCurTrackFrequency
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	add hl, de
+	ld a, l
+	ld [wCurTrackFrequency], a
+	ld a, h
+	and $7
+	ld [wCurTrackFrequency + 1], a
+	; write it without restarting the note
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_CONTINUE, [hl]
 	ret
 
 ApplyPitchSlide:
@@ -1068,8 +1225,12 @@ ReadNoiseSample:
 	cp sound_ret_cmd
 	ret z
 
+	ld l, a
 	and $f
+	bit NOISE_STEP_EXACT_F, l
+	jr nz, .got_delay
 	inc a
+.got_delay
 	ld [wNoiseSampleDelay], a
 	ld a, [de]
 	inc de
@@ -1080,14 +1241,21 @@ ReadNoiseSample:
 	xor a
 	ld [wCurTrackFrequency + 1], a
 
+	; restart the sound, or only change its frequency
+	ld a, 1 << NOTE_NOISE_SAMPLING
+	bit NOISE_STEP_CONTINUE_F, l
+	jr z, .got_note_flag
+	ld a, 1 << NOTE_CONTINUE
+.got_note_flag
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	or [hl]
+	ld [hl], a
+
 	ld hl, wNoiseSampleAddress
 	ld a, e
 	ld [hli], a
 	ld [hl], d
-
-	ld hl, CHANNEL_NOTE_FLAGS
-	add hl, bc
-	set NOTE_NOISE_SAMPLING, [hl]
 	ret
 
 ParseMusic:
@@ -1139,14 +1307,29 @@ ParseMusic:
 	ld a, e
 	ld [hli], a
 	ld [hl], d
-	; set noise sampling
+	; a tied note only changes the frequency
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	bit SOUND_TIE, [hl]
+	res SOUND_TIE, [hl]
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
+	jr z, .restart
+	set NOTE_CONTINUE, [hl]
+	jr .started
+.restart
+	; set noise sampling
 	set NOTE_NOISE_SAMPLING, [hl]
+	call ResetVibratoTable
+.started
+	call SetCutoffCount
 	jmp LoadNote
 
 .rest
 ; note = rest
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	res SOUND_TIE, [hl]
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
 	set NOTE_REST, [hl] ; Rest
@@ -1340,13 +1523,13 @@ MusicCommands:
 	dw Music_ToggleSFX
 	dw Music_PitchSlide
 	dw Music_Vibrato
-	dw MusicE2 ; unused
+	dw Music_VibratoTable
 	dw Music_ToggleNoise
 	dw Music_ForceStereoPanning
 	dw Music_Volume
 	dw Music_PitchOffset
-	dw MusicE7 ; unused
-	dw MusicE8 ; unused
+	dw Music_NoteCutoff
+	dw Music_ReleaseEnvelope
 	dw Music_TempoRelative ; unused
 	dw Music_RestartChannel
 	dw Music_NewSong ; unused
@@ -1363,7 +1546,7 @@ MusicCommands:
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
-	dw MusicF9 ; unused
+	dw Music_Tie
 	dw Music_SetCondition
 	dw Music_JumpIf
 	dw Music_Jump
@@ -1613,24 +1796,41 @@ MusicEE:
 	ld [hl], d
 	ret
 
-MusicF9:
-; unused
-; sets some flag
+Music_Tie:
+; the next note continues the one that just ended without restarting it
 ; params: 0
-	ld a, TRUE
-	ld [wUnusedMusicF9Flag], a
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	set SOUND_TIE, [hl]
+	; table vibrato carries on by itself
+	bit SOUND_VIBRATO_TABLE, [hl]
+	ret nz
+	; keep the vibrato going instead of waiting out its delay again
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld [hl], 0
 	ret
 
-MusicE2:
-; unused
-; params: 1
+Music_VibratoTable:
+; vibrato that steps through a table of per-frame frequency offsets
+; params: 2
+;	table (see audio/vibrato_tables.asm)
+;	frames into each note before the vibrato starts, plus 1 (0: vibrato off)
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD2C
+	ld hl, CHANNEL_VIBRATO_TABLE_BASE
+	add hl, bc
+	ld [hl], a
+	call GetMusicByte
+	ld hl, CHANNEL_VIBRATO_DELAY
 	add hl, bc
 	ld [hl], a
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
-	set SOUND_UNKN_0B, [hl]
+	res SOUND_VIBRATO, [hl]
+	res SOUND_VIBRATO_TABLE, [hl]
+	and a
+	ret z
+	set SOUND_VIBRATO_TABLE, [hl]
 	ret
 
 Music_Vibrato:
@@ -1734,14 +1934,12 @@ Music_PitchOffset:
 	ld [hl], a
 	ret
 
-MusicE7:
-; unused
+Music_NoteCutoff:
+; play only part of each note, then drop it to the release envelope
 ; params: 1
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	set SOUND_UNKN_0E, [hl]
+;	eighths of each note played before its release (0 or 8: no release)
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD29
+	ld hl, CHANNEL_NOTE_CUTOFF
 	add hl, bc
 	ld [hl], a
 	ret
@@ -1766,14 +1964,12 @@ Music_DutyCyclePattern:
 	ld [hl], a
 	ret
 
-MusicE8:
-; unused
+Music_ReleaseEnvelope:
+; volume envelope a cut-off note drops to at its release
+; ch1/ch2: an envelope (volume 0 is silent); ch3: hi nybble is the wave volume
 ; params: 1
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	set SOUND_UNKN_0D, [hl]
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD2A
+	ld hl, CHANNEL_RELEASE_ENVELOPE
 	add hl, bc
 	ld [hl], a
 	ret
@@ -2115,6 +2311,67 @@ GetFrequency:
 	ld a, d
 	and $7 ; top 3 bits for frequency (11 total)
 	ld d, a
+	ret
+
+ResetVibratoTable:
+; start a new note's table vibrato from the top, after its delay
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	bit SOUND_VIBRATO_TABLE, [hl]
+	ret z
+	ld hl, CHANNEL_VIBRATO_DELAY
+	add hl, bc
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_VIBRATO_TABLE_BASE
+	add hl, bc
+	ld a, [hl]
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_VIBRATO_TABLE_INDEX
+	add hl, bc
+	ld [hl], 0
+	ret
+
+SetCutoffCount:
+; frames until the new note's release: duration * cutoff / 8
+; cutoff 0 or 8 leaves the count at 0, so the note plays in full
+	ld hl, CHANNEL_NOTE_CUTOFF
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .done
+	cp 8
+	jr nc, .no_release
+	ld hl, CHANNEL_NOTE_DURATION
+	add hl, bc
+	ld e, [hl]
+	ld d, 0
+	ld h, d
+	ld l, d
+.multiply
+	add hl, de
+	dec a
+	jr nz, .multiply
+	ld a, l
+	srl h
+	rra
+	srl h
+	rra
+	srl h
+	rra
+	jr .done
+
+.no_release
+	xor a
+.done
+	ld hl, CHANNEL_CUTOFF_COUNT
+	add hl, bc
+	ld [hl], a
 	ret
 
 SetNoteDuration:
@@ -2681,6 +2938,8 @@ LoadMusicByte::
 INCLUDE "audio/notes.asm"
 
 INCLUDE "audio/wave_samples.asm"
+
+INCLUDE "audio/vibrato_tables.asm"
 
 INCLUDE "audio/drumkits.asm"
 

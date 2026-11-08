@@ -44,6 +44,26 @@ MACRO noise_note
 	db \4 ; frequency
 ENDM
 
+; drumkit sample steps lasting exactly \1 frames (noise_note steps last 2 frames more than their low nybble)
+MACRO noise_step
+	assert 1 <= (\1) && (\1) <= 16, "noise step must last 1-16 frames"
+	db (1 << NOISE_STEP_EXACT_F) | ((\1) - 1) ; length
+	if \3 < 0
+		dn \2, %1000 | (\3 * -1) ; volume envelope
+	else
+		dn \2, \3 ; volume envelope
+	endc
+	db \4 ; frequency
+ENDM
+
+; changes the noise frequency without restarting the sound
+MACRO noise_freq_step
+	assert 1 <= (\1) && (\1) <= 16, "noise step must last 1-16 frames"
+	db (1 << NOISE_STEP_EXACT_F) | (1 << NOISE_STEP_CONTINUE_F) | ((\1) - 1) ; length
+	db 0 ; volume envelope (unused)
+	db \2 ; frequency
+ENDM
+
 ; MusicCommands indexes (see audio/engine.asm)
 	const_def $d0
 DEF FIRST_MUSIC_CMD EQU const_value
@@ -141,10 +161,12 @@ MACRO vibrato
 	endc
 ENDM
 
-	const unknownmusic0xe2_cmd ; $e2
-MACRO unknownmusic0xe2
-	db unknownmusic0xe2_cmd
-	db \1 ; unknown
+	const vibrato_table_cmd ; $e2
+MACRO vibrato_table
+	assert 0 <= (\1) && (\1) < NUM_VIBRATO_TABLES, "no such vibrato table"
+	db vibrato_table_cmd
+	db \1 ; table
+	db \2 ; frames into each note before the vibrato starts, plus 1 (0: off)
 ENDM
 
 	const toggle_noise_cmd ; $e3
@@ -177,16 +199,21 @@ MACRO pitch_offset
 	bigdw \1 ; pitch offset
 ENDM
 
-	const unknownmusic0xe7_cmd ; $e7
-MACRO unknownmusic0xe7
-	db unknownmusic0xe7_cmd
-	db \1 ; unknown
+	const note_cutoff_cmd ; $e7
+MACRO note_cutoff
+	assert 0 <= (\1) && (\1) <= 8, "note cutoff must be 0-8"
+	db note_cutoff_cmd
+	db \1 ; eighths of each note played before its release (0 or 8: no release)
 ENDM
 
-	const unknownmusic0xe8_cmd ; $e8
-MACRO unknownmusic0xe8
-	db unknownmusic0xe8_cmd
-	db \1 ; unknown
+	const release_envelope_cmd ; $e8
+MACRO release_envelope
+	db release_envelope_cmd
+	if \2 < 0
+		dn \1, %1000 | (\2 * -1) ; volume envelope
+	else
+		dn \1, \2 ; volume envelope
+	endc
 ENDM
 
 	const tempo_relative_cmd ; $e9
@@ -277,9 +304,9 @@ MACRO music0xf8
 	db music0xf8_cmd
 ENDM
 
-	const unknownmusic0xf9_cmd ; $f9
-MACRO unknownmusic0xf9
-	db unknownmusic0xf9_cmd
+	const tie_cmd ; $f9
+MACRO tie
+	db tie_cmd ; the next note continues this one without restarting
 ENDM
 
 	const set_condition_cmd ; $fa
