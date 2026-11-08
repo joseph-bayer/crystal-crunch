@@ -56,5 +56,9 @@ SwarmTable::
 	swarm_def MAGIKARP,   PLAIN_FORM,             LAKE_OF_RAGE, SWARM_WATER | SWARM_ALT_SHINY
 	swarm_def MARILL,     PLAIN_FORM,             ROUTE_42, SWARM_GRASS | SWARM_ALT_SHINY
 
+	; Kanto, post Elite Four, added after the rows above (ids are append-only)
+	; - Grass
+	swarm_def PIKACHU,    PIKACHU_RB_FORM,        VIRIDIAN_FOREST, SWARM_GRASS
+
 
 	assert_table_length NUM_SWARMS

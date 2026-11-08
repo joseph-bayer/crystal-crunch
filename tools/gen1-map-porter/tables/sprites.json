@@ -1,0 +1,9 @@
+{
+	"$comment": "Gen 1 sprite -> the project's sprite (cse) and NPC palette (palette). Filled from the page as maps need them.",
+	"SPRITE_YOUNGSTER": {
+		"palette": "PAL_NPC_BLUE"
+	},
+	"SPRITE_COOLTRAINER_F": {
+		"palette": "PAL_NPC_BLUE"
+	}
+}

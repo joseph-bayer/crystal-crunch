@@ -55,6 +55,7 @@ DEF FIRST_STUDIED_SWARM EQU const_value
 	const SWARM_DRATINI_ALT_SHINY ; 22
 	const SWARM_MAGIKARP_ALT_SHINY ; 23
 	const SWARM_MARILL_ALT_SHINY ; 24
+	const SWARM_PIKACHU_RB     ; 25
 DEF NUM_SWARMS EQU const_value - 1
 
 DEF MAX_ACTIVE_SWARMS EQU 3 ; Arnie's call, Anthony's call, and the radio's daily roll

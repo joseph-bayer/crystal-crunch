@@ -2963,6 +2963,10 @@ Pokedex_GetArea:
 	xor a ; JOHTO_REGION
 	call .GetAndPlaceNest
 .loop
+	; vblank leaves the screen's sprites alone until this frame's are all written, so it never
+	; shows a half-drawn player icon or nest list
+	ld a, 1
+	ldh [hOAMUpdate], a
 	call JoyTextDelay
 	ld hl, hJoyPressed
 	ld a, [hl]
@@ -2978,11 +2982,15 @@ Pokedex_GetArea:
 .select
 	call .HideNestsShowPlayer
 .next
+	xor a
+	ldh [hOAMUpdate], a
 	call DelayFrame
 	jr .loop
 
 .a_b
 	call ClearSprites
+	xor a
+	ldh [hOAMUpdate], a
 	pop af
 	ld [wTownMapCursorLandmark], a
 	pop af

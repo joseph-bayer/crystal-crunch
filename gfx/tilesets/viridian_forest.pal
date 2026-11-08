@@ -1,0 +1,8 @@
+; TODO: repaint all four lines.
+; PAL_BG_VIRIDIAN_FOREST: a placeholder brown/green. Each line is brown's color 0,
+; green's color 1, brown's color 2 and black, from bg_tiles.pal. Loaded into the water slot on
+; Viridian Forest only, which has no water. The map follows the time of day, so every line shows.
+	RGB 28,31,16, 12,25,01, 20,15,03, 07,07,07 ; morn
+	RGB 27,31,27, 12,25,01, 20,15,03, 07,07,07 ; day
+	RGB 15,14,24, 08,13,19, 08,04,05, 00,00,00 ; nite
+	RGB 31,21,14, 10,19,01, 16,09,01, 06,05,05 ; eve

@@ -857,6 +857,26 @@ OverworldWildMonsGrass:
 	ow_wildmon 5,  ARIADOS,     7, PLAIN_FORM, 0,                  PSYBEAM
 	end_ow_wildmons
 
+	def_ow_wildmons VIRIDIAN_FOREST
+	db 4 ; how many can be out at once
+	db 100 percent ; the chance each one shows up
+	; morn
+	ow_wildmon 30, CATERPIE,    4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, WEEDLE,      4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, METAPOD,     5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, KAKUNA,      5, PLAIN_FORM, 0,                  NO_MOVE
+	; day
+	ow_wildmon 30, CATERPIE,    4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, WEEDLE,      4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, METAPOD,     5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, KAKUNA,      5, PLAIN_FORM, 0,                  NO_MOVE
+	; nite
+	ow_wildmon 30, CATERPIE,    4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 30, WEEDLE,      4, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, METAPOD,     5, PLAIN_FORM, 0,                  NO_MOVE
+	ow_wildmon 20, KAKUNA,      5, PLAIN_FORM, 0,                  NO_MOVE
+	end_ow_wildmons
+
 	def_ow_wildmons ROUTE_3
 	db 4 ; how many can be out at once
 	db 100 percent ; the chance each one shows up

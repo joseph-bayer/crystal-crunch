@@ -210,6 +210,8 @@ INCLUDE "maps/ViridianPokecenter2FBeta.asm"
 INCLUDE "maps/Route2NuggetHouse.asm"
 INCLUDE "maps/Route2Gate.asm"
 INCLUDE "maps/VictoryRoadGate.asm"
+INCLUDE "maps/ViridianForestSouthGate.asm"
+INCLUDE "maps/ViridianForestNorthGate.asm"
 
 
 SECTION "Map Scripts 12", ROMX
@@ -496,5 +498,7 @@ INCLUDE "maps/CeruleanCave1F.asm"
 INCLUDE "maps/CeruleanCave2F.asm"
 
 INCLUDE "maps/CeruleanCaveB1F.asm"
+
+INCLUDE "maps/ViridianForest.asm"
 
 ENDSECTION

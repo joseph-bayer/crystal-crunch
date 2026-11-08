@@ -63,3 +63,4 @@ DEF ROOF_LENGTH EQU 9
 ; selects it as 6.
 DEF PAL_BG_TREE_CORNER EQU PAL_BG_ROOF
 DEF PAL_BG_SHIPWRECK   EQU PAL_BG_RED ; Shipwreck Beach only: brown with the overworld water's dark blue (LoadMapPals)
+DEF PAL_BG_VIRIDIAN_FOREST EQU PAL_BG_WATER ; Viridian Forest only: a brown/green of its own (LoadMapPals)
