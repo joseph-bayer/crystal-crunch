@@ -64,6 +64,34 @@ MACRO noise_freq_step
 	db \2 ; frequency
 ENDM
 
+; pitch_script steps (see audio/pitch_scripts.asm)
+MACRO pitch_step
+	assert -8 * NUM_NOTES <= (\1) && (\1) < 8 * NUM_NOTES, "pitch offset out of range"
+	assert 0 <= (\2) && (\2) < $100, "pitch step must last 0-255 frames"
+	db LOW(\1) ; offset in eighths of a semitone
+	db \2 ; frames (0: hold for good)
+ENDM
+
+MACRO pitch_loop
+	db PITCH_SCRIPT_LOOP
+	db (\2) - (\1) ; step to go on from: \1 is the script, \2 the step
+ENDM
+
+; volume_script steps (see audio/volume_scripts.asm)
+MACRO volume_step
+	assert 1 <= (\3) && (\3) < $100, "volume step must last 1-255 frames"
+	if \2 < 0
+		dn \1, %1000 | (\2 * -1) ; volume envelope
+	else
+		dn \1, \2 ; volume envelope
+	endc
+	db \3 ; frames
+ENDM
+
+MACRO volume_script_end
+	db 0
+ENDM
+
 ; MusicCommands indexes (see audio/engine.asm)
 	const_def $d0
 DEF FIRST_MUSIC_CMD EQU const_value
@@ -264,19 +292,25 @@ MACRO sfx_toggle_noise
 	endc
 ENDM
 
-	const music0xf1_cmd ; $f1
-MACRO music0xf1
-	db music0xf1_cmd
+	const pitch_script_cmd ; $f1
+MACRO pitch_script
+	assert (\1) == NO_PITCH_SCRIPT || (0 <= (\1) && (\1) < NUM_PITCH_SCRIPTS), "no such pitch script"
+	db pitch_script_cmd
+	db \1 ; script played from each new note (see audio/pitch_scripts.asm), or NO_PITCH_SCRIPT
 ENDM
 
-	const music0xf2_cmd ; $f2
-MACRO music0xf2
-	db music0xf2_cmd
+	const volume_script_cmd ; $f2
+MACRO volume_script
+	assert (\1) == NO_VOLUME_SCRIPT || (0 <= (\1) && (\1) < NUM_VOLUME_SCRIPTS), "no such volume script"
+	db volume_script_cmd
+	db \1 ; script played from each new note (see audio/volume_scripts.asm), or NO_VOLUME_SCRIPT
 ENDM
 
-	const music0xf3_cmd ; $f3
-MACRO music0xf3
-	db music0xf3_cmd
+	const wave_bank_cmd ; $f3
+MACRO wave_bank
+	assert (\1) == 0 || (\1) == 1, "wave bank must be 0 or 1"
+	db wave_bank_cmd
+	db \1 ; 0: WaveSamples, 1: WaveSamples2
 ENDM
 
 	const music0xf4_cmd ; $f4

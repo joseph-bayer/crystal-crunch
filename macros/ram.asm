@@ -200,7 +200,8 @@ MACRO channel_struct
 \1Flags3::                   db ; 0:vibrato up/down 1:pitch slide direction
 \1MusicAddress::             dw
 \1LastMusicAddress::         dw
-                             ds 2
+\1PitchScriptIndex::         db ; byte offset of the next pitch script step
+\1PitchScriptCount::         db ; frames left in the current step ($ff: holding)
 \1NoteFlags::                db ; 5:rest
 \1Condition::                db ; conditional jumps
 \1DutyCycle::                db ; bits 6-7 (0:12.5% 1:25% 2:50% 3:75%)
@@ -211,7 +212,7 @@ MACRO channel_struct
 \1Transposition::            db ; raises existing octaves (to repeat phrases)
 \1NoteDuration::             db ; frames remaining for the current note
 \1NoteDurationModifier::     db
-                             ds 1
+\1PitchScript::              db ; see audio/pitch_scripts.asm
 \1LoopCount::                db
 \1Tempo::                    dw
 \1Tracks::                   db ; hi:left lo:right
@@ -231,9 +232,9 @@ MACRO channel_struct
 \1CutoffCount::              db ; frames until the current note's release
 \1Field2c::                  ds 1
 \1NoteLength::               db ; frames per 16th note
-\1Field2e::                  ds 1
-\1Field2f::                  ds 1
-\1Field30::                  ds 1
+\1VolumeScript::             db ; see audio/volume_scripts.asm
+\1VolumeScriptIndex::        db ; byte offset of the next volume script step
+\1VolumeScriptCount::        db ; frames left in the current step ($ff: stopped)
                              ds 1
 ENDM
 

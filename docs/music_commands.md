@@ -188,7 +188,7 @@ A note continued by `tie` keeps its vibrato going where it was, delay included.
 ## `$E3`: <code>toggle_noise <i>id</i></code>
 
 Set the "drum kit" to be used if it is currently unset. Mute the channel otherwise. Used by channel 4.  
-`id`: Drum kit ID [`0`, `5`] (see [audio/drumkits.asm](https://github.com/pret/pokecrystal/blob/master/audio/drumkits.asm))
+`id`: Drum kit ID [`0`, `7`] (see [audio/drumkits.asm](https://github.com/pret/pokecrystal/blob/master/audio/drumkits.asm))
 
 Note: The drum kit ID is initially unset at the start of a song. When muting the channel, the `id` argument must not be present.
 
@@ -260,18 +260,31 @@ Set left/right stereo output for the current channel, if the user has stereo mod
 ## `$F0`: <code>sfx_toggle_noise <i>id</i></code>
 
 Set the "drum kit" to be used if it is currently unset. Mute the channel otherwise. Used by channel 8.  
-`id`: Drum kit ID [`0`, `5`] (see [audio/drumkits.asm](https://github.com/pret/pokecrystal/blob/master/audio/drumkits.asm))
+`id`: Drum kit ID [`0`, `7`] (see [audio/drumkits.asm](https://github.com/pret/pokecrystal/blob/master/audio/drumkits.asm))
 
 Note: The drum kit ID is initially unset at the start of a song. When muting the channel, the `id` argument must not be present.
 
 
-## `$F1`: <code>music0xf1</code>
+## `$F1`: <code>pitch_script <i>script</i></code>
+
+Each new note steps through a script of pitch offsets, in eighths of a semitone, each held for a number of frames. Used by channels 1-3. The scripts are in [audio/pitch_scripts.asm](../audio/pitch_scripts.asm), from the Pokémon Puzzle Challenge sound engine.  
+`script`: A `PITCH_SCRIPT_*` constant, or `NO_PITCH_SCRIPT` to turn it off.
+
+The script starts with the next note, not the one playing, and keeps running through a release from `volume_script`. A rest that cuts the note stops it. A note continued by `tie` keeps it going, but plays without the offset until the script's next step. Offsets are worked out from the note's pitch, so a step sounds the same size at every pitch. A step of 0 frames holds its offset for the rest of the note.
 
 
-## `$F2`: <code>music0xf2</code>
+## `$F2`: <code>volume_script <i>script</i></code>
+
+Each new note steps through a script of volume envelopes, each step restarting the note with its envelope, as `note_type` or `volume_envelope` would. A rest right after the note plays the script's release instead of cutting the note; a second rest cuts it. Used by channels 1-3. The scripts are in [audio/volume_scripts.asm](../audio/volume_scripts.asm), from the Pokémon Puzzle Challenge sound engine.  
+`script`: A `VOLUME_SCRIPT_*` constant, or `NO_VOLUME_SCRIPT` to turn it off.
+
+The script starts with the next note, and its first step replaces the note's own envelope. On channel 3 only each step's volume counts (as in `note_type`); the wave stays the note's.
 
 
-## `$F3`: <code>music0xf3</code>
+## `$F3`: <code>wave_bank <i>bank</i></code>
+
+Picks which table channel 3's `wave_instrument` numbers refer to. Used by channel 3.  
+`bank`: `0` for `WaveSamples` (the default), `1` for `WaveSamples2` [`0`, `5`], both in [audio/wave_samples.asm](../audio/wave_samples.asm).
 
 
 ## `$F4`: <code>music0xf4</code>

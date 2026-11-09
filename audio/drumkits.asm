@@ -6,6 +6,7 @@ Drumkits:
 	dw Drumkit4
 	dw Drumkit5
 	dw Drumkit6
+	dw Drumkit7
 
 Drumkit0:
 	dw Drum00
@@ -105,6 +106,13 @@ Drumkit6:
 	dw TcgUnused
 	dw TcgUnused
 	dw TcgSnare5
+
+Drumkit7:
+	dw TcgUnused
+	dw PuzzleSweep
+	dw PuzzleHat
+	dw PuzzleLongHat
+	dw PuzzleSnare
 
 Drum00:
 	noise_note 32, 1, 1, 0
@@ -314,4 +322,33 @@ TcgSnare5:
 	noise_freq_step 16, 2
 	noise_freq_step 16, 2
 	noise_freq_step 1, 1
+	sound_ret
+
+; Pokémon Puzzle Challenge noise instruments, one step per frame they write
+
+PuzzleSweep:
+	noise_step 1, 10, 8, $4f
+	noise_step 1,  9, 8, $5d
+	noise_step 1,  8, 8, $5f
+	noise_step 1,  4, 8, $6f
+	noise_step 1,  2, 8, $7d
+	noise_step 1,  1, 8, $7f
+	noise_step 1,  0, 8, $7f
+	sound_ret
+
+PuzzleHat:
+	noise_step 4, 4, 1, $03
+	noise_step 1, 0, 8, $03
+	sound_ret
+
+PuzzleLongHat:
+	noise_step 8, 8, 2, $03
+	noise_step 1, 0, 8, $03
+	sound_ret
+
+PuzzleSnare:
+	noise_step 1, 8, 8, $3d
+	noise_step 1, 3, 8, $3d
+	noise_step 3, 6, 2, $03
+	noise_step 1, 0, 8, $03
 	sound_ret
