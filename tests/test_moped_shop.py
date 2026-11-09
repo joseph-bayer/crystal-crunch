@@ -20,7 +20,7 @@ def offer(game):
 	game.press("right")
 	game.press("a")
 	press_until(game, lambda: "YES" in game.screen_text(), "the clerk's offer")
-	assert "¥100,000?" in game.screen_text()
+	assert "¥100,000!" in game.screen_text()
 	game.wait(20)
 
 

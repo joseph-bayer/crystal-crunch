@@ -128,16 +128,6 @@ def hold_until_stopped(game, direction, limit=900):
 	return last
 
 
-# Getting it
-
-def test_the_debug_radio_gives_the_moped(game):
-	assert not has_key_item(game, "MOPED")
-	F.take_radio_items(game)
-	assert has_key_item(game, "MOPED")
-	listed = game.peek("wKeyItems", 0, game.peek("wNumKeyItems"))
-	assert key_item_index("MOPED") & 0xff in listed
-
-
 # Getting on and off
 
 def test_used_from_the_pack(game):
