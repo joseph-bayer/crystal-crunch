@@ -3,6 +3,8 @@ west side, Red and Blue's wild Pokemon, a landmark of its own, and a brown/green
 water slot on this map alone that follows the time of day."""
 
 import re
+import subprocess
+import sys
 
 import pytest
 
@@ -264,3 +266,26 @@ def test_hidden_grove_has_no_rb_pikachu():
 	mons = re.findall(r"pop_mon\s+(\d+),\s*(\w+)", block)
 	assert "PIKACHU" not in [m for _, m in mons]
 	assert [int(w) for w, _ in mons] == [15, 15, 14, 14, 14, 14, 14]
+
+
+def map_music():
+	"""{map label: music constant} from the map headers."""
+	return dict(re.findall(r"^\tmap (\w+), \w+, \w+, \w+, (MUSIC_\w+),", read("data/maps/maps.asm"), re.M))
+
+
+@pytest.mark.parametrize("name", ["Route2", "Route2Gate", "ViridianForestSouthGate", "ViridianForestNorthGate"])
+def test_route_2_and_its_gates_play_route_3(name):
+	assert map_music()[name] == "MUSIC_ROUTE_3"
+
+
+def test_route_2s_own_track_is_unused():
+	assert "MUSIC_ROUTE_2" not in map_music().values()
+	assert re.search(r"const MUSIC_ROUTE_2 +; 0f \(unused\)", read("constants/music_constants.asm"))
+
+
+def test_route_2s_wanderer_constants_match_its_objects():
+	# Route 2's two item balls moved into the forest; their object constants have to go with them
+	# or every constant after them names the wrong object.
+	out = subprocess.run([sys.executable, "utils/ow_mon_check.py"], cwd=constants.ROOT,
+		capture_output=True, text=True).stdout
+	assert not [line for line in out.splitlines() if line.startswith("ROUTE_2 ")]
