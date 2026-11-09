@@ -815,7 +815,11 @@ JumpStep:
 	add hl, bc
 	ld [hl], OBJECT_ACTION_STEP
 
-	call SpawnShadow
+; A hidden object casts no shadow: the follower in its ball still hops the ledges behind a rider.
+	ld hl, OBJECT_FLAGS1
+	add hl, bc
+	bit INVISIBLE_F, [hl]
+	call z, SpawnShadow
 
 	ld hl, wCenteredObject
 	ldh a, [hMapObjectIndex]

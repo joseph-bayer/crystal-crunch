@@ -40,6 +40,9 @@ SetFacingCurrent:
 	ret
 
 SetFacingStandAction:
+; Standing on the moped keeps the walk cycle going at the step pace, like an idling engine.
+	call IsMopedRider
+	jr z, SetFacingStepPace
 	ld hl, OBJECT_FACING
 	add hl, bc
 	ld a, [hl]
@@ -47,6 +50,10 @@ SetFacingStandAction:
 	jr z, SetFacingCurrent
 ; fallthrough
 SetFacingStepAction:
+; The moped animates at the running shoes' pace at every speed it builds up through.
+	call IsMopedRider
+	jmp z, SetFacingRunAction
+SetFacingStepPace:
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit SLIDING_F, [hl]
@@ -341,9 +348,6 @@ SetFacingGrassShake:
 	ret
 
 SetFacingRunAction:
-; The moped builds up from the running shoes' speed, but animates at one pace throughout.
-	call IsMopedRider
-	jmp z, SetFacingStepAction
 	ld hl, OBJECT_FLAGS1
 	add hl, bc
 	bit SLIDING_F, [hl]

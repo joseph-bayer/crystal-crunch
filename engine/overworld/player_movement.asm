@@ -14,13 +14,17 @@ DoPlayerMovement::
 	ldh a, [hJoyDown]
 	ld [wCurInput], a
 
-; Standing downhill instead moves down.
+; Standing downhill instead moves down, except on the moped.
 
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_DOWNHILL_F, [hl]
 	ret z
 
 	ld c, a
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	ld a, c
+	ret z
 	and PAD_CTRL_PAD
 	ret nz
 
@@ -498,6 +502,16 @@ endc
 	ret
 
 .moped_moving
+; Uphill holds at the running shoes' speed. The tiles still count, so a turn off the slope goes on
+; at the speed they give.
+	ld a, [wBikeFlags]
+	bit BIKEFLAGS_DOWNHILL_F, a
+	jr z, .moped_ramp
+	ld a, [wWalkingDirection]
+	cp UP
+	ld a, STEP_RUN
+	ret z
+.moped_ramp
 	ld a, [hl]
 	cp MOPED_TILES_PER_SPEED
 	ld a, STEP_RUN

@@ -1,6 +1,6 @@
-"""The MOPED: a key item used like the BICYCLE, with the bike's rules and music, that builds up from a
-stop to 2 frames a tile (the bike's 4, walking's 16) and animates as the bike does: the walk cycle while
-moving, the standing frame when stopped. The debug radio gives it."""
+"""The MOPED: a key item used like the BICYCLE, with the bike's rules and its own music, that builds up from a
+stop to 2 frames a tile (the bike's 4, walking's 16). It plays its walk cycle while moving and, slower,
+while standing, like an idling engine. Owning it puts you on it on the Cycling Road."""
 
 import pytest
 
@@ -8,11 +8,13 @@ from harness import constants
 from harness import alt_shiny as A
 from harness import followers as F
 from test_registered_item import key_item_index, register
+from test_overworld_mons import pin_wanderer
 
 PLAYER_NORMAL = 0
 PLAYER_BIKE = 1
 PLAYER_MOPED = 3
 RIDING = {"BICYCLE": PLAYER_BIKE, "MOPED": PLAYER_MOPED}
+RIDE_MUSIC = {"BICYCLE": "MUSIC_BICYCLE", "MOPED": "MUSIC_PUZZLE_TOTODILE"}
 
 FEMALE = 1 << 0 # PLAYERGENDER_FEMALE_F
 
@@ -148,7 +150,7 @@ def test_used_from_the_pack(game):
 	assert "MOPED." in game.screen_text()
 	game.press("a", after=60)
 	assert game.peek("wPlayerState") == PLAYER_MOPED
-	assert game.peek("wMapMusic") == music("MUSIC_BICYCLE")
+	assert game.peek("wMapMusic") == music("MUSIC_PUZZLE_TOTODILE")
 	assert game.peek("wPlayerSprite") == sprite("SPRITE_CHRIS_MOPED")
 
 
@@ -158,7 +160,7 @@ def test_used_from_the_pack(game):
 ])
 @pytest.mark.parametrize("gender", ["boy", "girl"])
 def test_select_gets_on_and_off(game, item, state, boy, girl, gender):
-	"""Registered to SELECT: on, with the bike music and the riding sprite; off again, with the
+	"""Registered to SELECT: on, with the ride's music and the riding sprite; off again, with the
 	walking sprite and the map's music. The bike is checked the same way, so it hasn't changed."""
 	if gender == "girl":
 		game.poke("wPlayerGender", FEMALE)
@@ -169,13 +171,54 @@ def test_select_gets_on_and_off(game, item, state, boy, girl, gender):
 
 	ride(game, item)
 	assert game.peek("wPlayerState") == state
-	assert game.peek("wMapMusic") == music("MUSIC_BICYCLE")
+	assert game.peek("wMapMusic") == music(RIDE_MUSIC[item])
 	assert game.peek("wPlayerSprite") == sprite(boy if gender == "boy" else girl)
 
 	press_select(game)
 	assert game.peek("wPlayerState") == PLAYER_NORMAL
 	assert game.peek("wPlayerSprite") == walking
 	assert game.peek("wMapMusic") == map_music
+
+
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_ride_music_plays_after_a_warp(game, item):
+	"""Warping to another outdoor map while riding, it plays the ride's music, not its own. (Crossing a
+	map edge plays the new map's music on either ride, as it always has.)"""
+	ride(game, item)
+	game.warp(*ROUTE_29)
+	assert game.peek("wPlayerState") == RIDING[item]
+	assert game.peek("wMapMusic") == music(RIDE_MUSIC[item])
+
+
+POKEGEAR_FLAGS = 1 << 7 | 1 << 1 | 1 << 0 # the Pokégear, its radio card and its map card
+POKEGEARCARD_RADIO = 3
+ENTER_MAP_MUSIC = 0xff # wPokegearRadioMusicPlaying: tuned off every station, the map music is off
+
+
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_radio_off_brings_back_the_ride_music(game, item):
+	"""In the Pokégear, tune the radio between stations (the music stops), then leave: the ride's
+	music plays again."""
+	ride(game, item)
+	game.poke("wPokegearFlags", POKEGEAR_FLAGS)
+	game.press("start", after=40)
+	game.choose("GEAR")
+	game.wait(120)
+	for _ in range(8):
+		if game.peek("wPokegearCard") == POKEGEARCARD_RADIO:
+			break
+		game.press("right", after=60)
+	assert game.peek("wPokegearCard") == POKEGEARCARD_RADIO, "card %d" % game.peek("wPokegearCard")
+	game.wait(60)
+	for _ in range(40):
+		if game.peek("wPokegearRadioMusicPlaying") == ENTER_MAP_MUSIC:
+			break
+		game.press("up", after=20)
+	assert game.peek("wPokegearRadioMusicPlaying") == ENTER_MAP_MUSIC, "never tuned between stations"
+	assert game.peek("wMusicID") == music("MUSIC_NONE")
+	game.press("b", after=120)
+	assert game.peek("wMusicID") == music(RIDE_MUSIC[item]), game.screen_text()
+	assert game.peek("wMapMusic") == music(RIDE_MUSIC[item])
 
 
 # Where it can be used: the bike's rules
@@ -196,14 +239,149 @@ def test_going_indoors_gets_off(game, item):
 	assert game.peek("wPlayerState") == PLAYER_NORMAL
 
 
-def test_cycling_road_puts_the_moped_rider_on_the_bike(game):
-	"""The Cycling Road forces the bike as it always has, so the moped never rides it."""
-	ride(game, "MOPED")
-	F.start_warp(game, "ROUTE_17", 9, 6) # not game.warp: the road's slope carries the player off the spot
+# The Cycling Road: owning the moped puts you on it there; the road doesn't push it downhill, and
+# going up holds at the running shoes' speed.
+
+CYCLING_ROAD = ("ROUTE_17", 9, 6)
+
+
+def onto_cycling_road(game, items, riding):
+	"""Ride `riding` while owning `items`, then warp onto the road."""
+	ride(game, riding)
+	give_key_items(game, *items)
+	F.start_warp(game, *CYCLING_ROAD) # not game.warp: on the bike the slope carries the player off the spot
 	game.wait(200)
 	assert game.in_map("ROUTE_17")
-	assert game.peek("wPlayerState") == PLAYER_BIKE
-	assert game.peek("wPlayerSprite") == sprite("SPRITE_CHRIS_BIKE")
+
+
+@pytest.mark.parametrize("items, riding, state, boy", [
+	(["MOPED"], "MOPED", PLAYER_MOPED, "SPRITE_CHRIS_MOPED"),
+	(["BICYCLE", "MOPED"], "BICYCLE", PLAYER_MOPED, "SPRITE_CHRIS_MOPED"),
+	(["BICYCLE"], "BICYCLE", PLAYER_BIKE, "SPRITE_CHRIS_BIKE"),
+])
+def test_cycling_road_puts_the_moped_owner_on_the_moped(game, items, riding, state, boy):
+	"""Owning the moped puts you on it there, whatever you rode in on; without it, the bike."""
+	onto_cycling_road(game, items, riding)
+	assert game.peek("wPlayerState") == state
+	assert game.peek("wPlayerSprite") == sprite(boy)
+	assert game.peek("wMapMusic") == music("MUSIC_PUZZLE_TOTODILE" if state == PLAYER_MOPED else "MUSIC_BICYCLE")
+
+
+# Coming onto the road the way a player does: on foot out of a gate (the door's map setup), or
+# riding across Route 16's edge. Both pick the song through SpecialMapMusic, not PlayMapMusicBike.
+ROAD_GATES = {"ROUTE_16_GATE": "ROUTE_16", "ROUTE_17_ROUTE_18_GATE": "ROUTE_17"}
+
+
+def out_of_the_gate(game, gate, item):
+	game.poke("wRepelEffect", 250)
+	give_key_items(game, item)
+	game.warp(gate, 1, 4)
+	for _ in range(4):
+		game.press("left", after=60)
+		if game.in_map(ROAD_GATES[gate]):
+			break
+	game.wait(60)
+	assert game.in_map(ROAD_GATES[gate])
+	assert game.peek("wPlayerState") == RIDING[item]
+
+
+@pytest.mark.parametrize("gate", list(ROAD_GATES))
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_cycling_road_plays_the_ride_music_out_of_the_gate(game, gate, item):
+	out_of_the_gate(game, gate, item)
+	assert game.peek("wMapMusic") == music(RIDE_MUSIC[item])
+
+
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_cycling_road_keeps_the_ride_music_across_route_16s_edge(game, item):
+	out_of_the_gate(game, "ROUTE_16_GATE", item)
+	for _ in range(20):
+		game.press("down", after=16)
+		if game.in_map("ROUTE_17"):
+			break
+	game.wait(60)
+	assert game.in_map("ROUTE_17")
+	assert game.peek("wMapMusic") == music(RIDE_MUSIC[item])
+
+
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_other_map_edges_play_the_maps_music(game, item):
+	"""Off the road, crossing a map edge on a ride plays the new map's song, as it always has."""
+	ride(game, item, start=ROUTE_29)
+	hold_until_stopped(game, "right")
+	game.wait(60)
+	assert game.in_map("NEW_BARK_TOWN")
+	assert game.peek("wMapMusic") == music("MUSIC_NEW_BARK_TOWN")
+
+
+@pytest.mark.parametrize("gate", ["ROUTE_16_GATE", "ROUTE_17_ROUTE_18_GATE"])
+@pytest.mark.parametrize("items, passes", [
+	(["MOPED"], True),
+	(["BICYCLE"], True),
+	(["BICYCLE", "MOPED"], True),
+	([], False),
+])
+def test_cycling_road_gates_let_the_moped_through(game, gate, items, passes):
+	"""Walking west onto the guard's check at x 5: either ride lets you on; with neither, he names
+	both and sends you back a step."""
+	game.warp(gate, 6, 4)
+	if items:
+		give_key_items(game, *items)
+	pyboy = game.pyboy
+	pyboy.button_press("left") # held: a tap only turns the player to face west
+	for _ in range(60):
+		pyboy.tick(1, False)
+		if game.position() != (6, 4):
+			break
+	pyboy.button_release("left")
+	game.wait(60)
+	said = ""
+	for _ in range(20):
+		if idle(game):
+			break
+		said += game.screen_text()
+		game.press("a", after=30)
+	game.wait(30)
+	assert game.position() == ((5, 4) if passes else (6, 4)), said
+	if not passes:
+		assert "BICYCLE or MOPED" in said.replace("\n", " "), said
+
+
+def test_cycling_road_leaves_the_moped_standing(game):
+	"""No D-pad on the moped: no push downhill."""
+	onto_cycling_road(game, ["MOPED"], "MOPED")
+	where = game.position()
+	game.wait(120)
+	assert game.position() == where
+
+
+def test_cycling_road_still_rolls_the_bike_downhill(game):
+	onto_cycling_road(game, ["BICYCLE"], "BICYCLE")
+	x, y = game.position()
+	game.wait(60)
+	assert game.position()[1] > y
+
+
+def test_moped_goes_up_the_cycling_road_at_the_running_shoes_speed(game):
+	"""Up holds at 8 frames a tile, while the tiles still count: turning down goes straight on at full
+	speed."""
+	onto_cycling_road(game, ["MOPED"], "MOPED")
+	assert step_lengths(game, [("down", 6)]) == RAMP + [2, 2]
+	game.wait(30)
+	assert step_lengths(game, [("up", 5), ("down", 2)]) == [8] * 5 + [2, 2]
+
+
+def test_bike_still_goes_up_the_cycling_road_at_walking_speed(game):
+	onto_cycling_road(game, ["BICYCLE"], "BICYCLE")
+	game.wait(120) # rolled down a way: room to go up
+	assert step_lengths(game, [("up", 3)]) == [16] * 3
+
+
+def test_cant_get_off_the_moped_on_the_cycling_road(game):
+	onto_cycling_road(game, ["MOPED"], "MOPED")
+	register(game, "MOPED")
+	press_select(game)
+	assert game.peek("wPlayerState") == PLAYER_MOPED
 
 
 @pytest.mark.parametrize("first, second", [("BICYCLE", "MOPED"), ("MOPED", "BICYCLE")])
@@ -342,14 +520,15 @@ def test_follower_keeps_up(game):
 
 # The animation
 
-@pytest.mark.parametrize("item, start, direction, frames", [
-	("BICYCLE", ROUTE_30, "up", {0, 1, 2, 3}),
-	("MOPED", ROUTE_30, "up", {0, 1}),
-	("MOPED", ("ROUTE_26", 9, 50), "down", {0, 1}),
+@pytest.mark.parametrize("item, start, direction, frames, standing", [
+	("BICYCLE", ROUTE_30, "up", {0, 1, 2, 3}, {0}),
+	("MOPED", ROUTE_30, "up", {0, 1}, {0, 1}),
+	("MOPED", ("ROUTE_26", 9, 50), "down", {0, 1}, {0, 1}),
 ])
-def test_animates_only_while_moving(game, item, start, direction, frames):
-	"""The walk cycle while moving, frame 0 standing still. The bike's cycle has the walking frame
-	mirrored (frame 3); the moped never mirrors, its down and up frames aren't symmetrical."""
+def test_animates_while_moving(game, item, start, direction, frames, standing):
+	"""The walk cycle while moving. The bike's cycle has the walking frame mirrored (frame 3); the
+	moped never mirrors, its down and up frames aren't symmetrical. Standing still, the bike holds
+	frame 0 and the moped idles through its two."""
 	ride(game, item, start)
 	game.wait(30)
 	before = set()
@@ -368,16 +547,51 @@ def test_animates_only_while_moving(game, item, start, direction, frames):
 	for _ in range(30):
 		game.wait(1)
 		after.add(facing_frame(game))
-	assert before == {0}, before
+	assert before == standing, before
 	assert moving == frames, moving
-	assert after == {0}, after
+	assert after == standing, after
 
 
-@pytest.mark.parametrize("item", ["MOPED", "BICYCLE"])
-def test_animates_at_one_pace_while_building_up(game, item):
-	"""From a stop, through the moped's running-shoe and bike speeds to its own: the walk cycle
-	changes frame every 8 frames throughout, as the bike's does. The running shoes' own animation,
-	twice as fast, isn't used on the moped."""
+def held_frames(game, count):
+	"""The player's facing frame for `count` frames, as runs: how long each frame was held."""
+	runs = []
+	last = None
+	for _ in range(count):
+		game.wait(1)
+		frame = facing_frame(game)
+		if frame == last:
+			runs[-1] += 1
+		else:
+			runs.append(1)
+		last = frame
+	return runs[1:-1] # the first and last are cut off by the start and end of the count
+
+
+def test_moped_idles_every_8_frames(game):
+	"""Standing on the moped, the walk cycle keeps going at a frame change every 8 frames."""
+	ride(game, "MOPED")
+	game.wait(30)
+	held = held_frames(game, 80)
+	assert len(held) >= 8 and set(held) == {8}, held
+
+
+def test_moped_idle_holds_while_the_menu_is_up(game):
+	ride(game, "MOPED")
+	game.wait(30)
+	game.press("start", after=30)
+	assert not idle(game)
+	seen = set()
+	for _ in range(40):
+		game.wait(1)
+		seen.add(facing_frame(game))
+	assert seen == {0}, seen
+
+
+@pytest.mark.parametrize("item, pace", [("MOPED", 4), ("BICYCLE", 8)])
+def test_animates_at_one_pace_while_building_up(game, item, pace):
+	"""From a stop, through the moped's running-shoe and bike speeds to its own: the moped's walk
+	cycle changes frame every 4 frames throughout, the running shoes' pace. The bike keeps its
+	8."""
 	ride(game, item, ROUTE_29_EAST)
 	pyboy = game.pyboy
 	pyboy.button_press("right")
@@ -394,7 +608,7 @@ def test_animates_at_one_pace_while_building_up(game, item):
 		else:
 			runs.append(1)
 	held = runs[1:-1] # the first and last are cut off by the start and end of the count
-	assert len(held) >= 4 and min(held) >= 8, runs
+	assert len(held) >= 4 and set(held) == {pace}, runs
 
 
 # The follower while riding: in its ball
@@ -593,3 +807,60 @@ def test_follower_in_its_ball_stays_unseen_across_a_map_edge(game, item):
 				break
 	pyboy.button_release("up")
 	assert frames_in_goldenrod == 30, "never reached Goldenrod"
+
+
+# Ledges while riding
+
+OBJECT_ACTION = 0x0b
+OBJECT_ACTION_SHADOW = 7
+# Route 5, from Cerulean City down: a ledge every four rows, hopped from (13, 4), (13, 8), (13, 12).
+ROUTE_5_LEDGES = ("ROUTE_5", 13, 3)
+
+
+def pin_wanderers_aside(game):
+	"""Hold each wandering Pokemon still off column 13, so none walks into the run and starts a battle."""
+	for i, s in enumerate(s for s in range(F.NUM_OBJECT_STRUCTS)
+			if sprite("SPRITE_OW_MON_1") <= F.object_field(game, s, F.OBJECT_SPRITE) <= sprite("SPRITE_OW_MON_4")):
+		pin_wanderer(game, s, (3, 2 + 2 * i))
+
+
+def shadow_parents(game):
+	"""The address of the object under each shadow out."""
+	return {F.object_field(game, s, OBJECT_1D) | F.object_field(game, s, OBJECT_1D + 1) << 8
+		for s in range(F.NUM_OBJECT_STRUCTS)
+		if F.object_field(game, s, F.OBJECT_SPRITE)
+			and F.object_field(game, s, OBJECT_ACTION) == OBJECT_ACTION_SHADOW}
+
+
+def down_the_ledges(game, item):
+	"""Down Route 5's three ledges in a row; return the parents of every shadow seen."""
+	with_follower(game, ROUTE_5_LEDGES, "down")
+	pin_wanderers_aside(game)
+	if item:
+		get_on(game, item)
+	pyboy = game.pyboy
+	parents = set()
+	pyboy.button_press("down")
+	for _ in range(600):
+		pyboy.tick(1, False)
+		parents |= shadow_parents(game)
+		if game.position()[1] >= 16:
+			break
+	pyboy.button_release("down")
+	game.wait(30)
+	parents |= shadow_parents(game)
+	assert game.position()[1] >= 16, "never got down the ledges: %s" % (game.position(),)
+	return parents
+
+
+@pytest.mark.parametrize("item", ["BICYCLE", "MOPED"])
+def test_follower_in_its_ball_casts_no_shadow_down_ledges(game, item):
+	"""The follower in its ball still hops each ledge a tile behind the rider, and every hop spawned
+	a shadow, which dropped down the ledges behind the player with nothing above it."""
+	parents = down_the_ledges(game, item)
+	assert struct_address(game, 0) in parents, "the rider casts one"
+	assert struct_address(game, F.FOLLOWER_STRUCT) not in parents, "nothing hops behind"
+
+
+def test_follower_out_still_casts_a_shadow_down_ledges(game):
+	assert struct_address(game, F.FOLLOWER_STRUCT) in down_the_ledges(game, None)

@@ -93,6 +93,27 @@ SkipUpdateMapSprites:
 	set PLAYERSPRITESETUP_SKIP_RELOAD_GFX_F, [hl]
 	ret
 
+CyclingRoadRideMusic::
+; Where the Cycling Road holds you on your ride, return carry and its music in de, however you
+; came onto the road (a door or a map edge, which don't go through PlayMapMusicBike).
+	ld a, [wBikeFlags]
+	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, a
+	jr z, .no
+	ld a, [wPlayerState]
+	ld de, MUSIC_BICYCLE
+	cp PLAYER_BIKE
+	jr z, .riding
+	ld de, MUSIC_PUZZLE_TOTODILE
+	cp PLAYER_MOPED
+	jr z, .riding
+.no
+	and a
+	ret
+
+.riding
+	scf
+	ret
+
 CheckUpdatePlayerSprite:
 	call .CheckForcedBiking
 	jr c, .ok
@@ -108,7 +129,15 @@ CheckUpdatePlayerSprite:
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
 	ret z
-	ld a, PLAYER_BIKE
+; Owning the moped puts you on it; otherwise the bike.
+	ld hl, MOPED
+	call GetItemIDFromIndex
+	ld [wCurItem], a
+	ld hl, wNumItems
+	call CheckItem
+	sbc a
+	and PLAYER_MOPED ^ PLAYER_BIKE
+	xor PLAYER_BIKE ; carry (owned): PLAYER_MOPED, else PLAYER_BIKE
 	ld [wPlayerState], a
 	scf
 	ret

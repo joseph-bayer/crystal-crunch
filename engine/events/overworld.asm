@@ -1745,8 +1745,11 @@ BikeFunction:
 .GetOnBike:
 	ld hl, Script_GetOnBike
 	ld de, Script_GetOnBike_Register
+	ld bc, MUSIC_BICYCLE
 .GetOn:
-; Shared with the moped. hl = the script from the PACK, de = the one from SELECT.
+; Shared with the moped. hl = the script from the PACK, de = the one from SELECT, bc = the ride's
+; music.
+	push bc
 	xor a
 	ld [wMopedRampTiles], a ; the moped starts slow
 	call .CheckIfRegistered
@@ -1757,7 +1760,7 @@ BikeFunction:
 	call PlayMusic
 	call DelayFrame
 	call MaxVolume
-	ld de, MUSIC_BICYCLE
+	pop de
 	ld a, e
 	ld [wMapMusic], a
 	call PlayMusic
@@ -1765,13 +1768,12 @@ BikeFunction:
 	ret
 
 .GetOffBike:
+; Shared with the moped.
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
 	jr nz, .CantGetOffBike
 	ld hl, Script_GetOffBike
 	ld de, Script_GetOffBike_Register
-.GetOff:
-; Shared with the moped, as .GetOn.
 	call .CheckIfRegistered
 	ld a, BANK(Script_GetOffBike)
 	jr .done
@@ -1831,12 +1833,11 @@ MopedFunction:
 	ld a, [wPlayerState]
 	ld hl, Script_GetOnMoped
 	ld de, Script_GetOnMoped_Register
+	ld bc, MUSIC_PUZZLE_TOTODILE
 	cp PLAYER_NORMAL
 	jmp z, BikeFunction.GetOn
-	ld hl, Script_GetOffBike
-	ld de, Script_GetOffBike_Register
 	cp PLAYER_MOPED
-	jr z, BikeFunction.GetOff
+	jr z, BikeFunction.GetOffBike ; refused where the road keeps you riding
 .CannotUseMoped:
 	xor a
 	ret

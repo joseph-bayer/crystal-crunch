@@ -130,3 +130,4 @@
 	tilecoll WALL, WALL, DOOR, WALL ; 81
 	tilecoll WALL, WALL, WALL, WALL ; 82
 	tilecoll WALL, WALL, DOOR, WALL ; 83
+	tilecoll HOP_DOWN, HOP_DOWN, WALL, WALL ; 84

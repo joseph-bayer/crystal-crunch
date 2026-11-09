@@ -1,5 +1,6 @@
 	object_const_def
 	const ROUTE16GATE_OFFICER
+	const ROUTE16GATE_BIKER
 
 Route16Gate_MapScripts:
 	def_scene_scripts
@@ -15,7 +16,10 @@ Route16GateOfficerScript:
 
 Route16GateBicycleCheck:
 	checkitem BICYCLE
+	iftrue .HasRide
+	checkitem MOPED
 	iffalse .NoBicycle
+.HasRide:
 	end
 
 .NoBicycle:
@@ -55,7 +59,21 @@ Route16GateCannotPassText:
 	line "on the CYCLING"
 
 	para "ROAD without a"
-	line "BICYCLE."
+	line "BICYCLE or MOPED."
+	done
+
+Route16GateBikerScript:
+	jumptextfaceplayer Route16GateBikerText
+
+Route16GateBikerText:
+	text "I heard a MOPED"
+	line "makes the CYCLING"
+	cont "ROAD easier to"
+	cont "explore."
+
+	para "There's a new shop"
+	line "in CERULEAN CITY"
+	cont "that sells them."
 	done
 
 Route16Gate_MapEvents:
@@ -75,3 +93,4 @@ Route16Gate_MapEvents:
 
 	def_object_events
 	object_event  5,  2, SPRITE_OFFICER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, Route16GateOfficerScript, -1
+	object_event  8,  3, SPRITE_BIKER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, Route16GateBikerScript, -1
