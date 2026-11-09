@@ -39,7 +39,8 @@ DEF CHANNEL_FLAGS2                      rb
 DEF CHANNEL_FLAGS3                      rb
 DEF CHANNEL_MUSIC_ADDRESS               rw
 DEF CHANNEL_LAST_MUSIC_ADDRESS          rw
-                                        rb_skip 2
+DEF CHANNEL_PITCH_SCRIPT_INDEX          rb
+DEF CHANNEL_PITCH_SCRIPT_COUNT          rb
 DEF CHANNEL_NOTE_FLAGS                  rb
 DEF CHANNEL_CONDITION                   rb
 DEF CHANNEL_DUTY_CYCLE                  rb
@@ -50,7 +51,7 @@ DEF CHANNEL_OCTAVE                      rb
 DEF CHANNEL_TRANSPOSITION               rb
 DEF CHANNEL_NOTE_DURATION               rb
 DEF CHANNEL_NOTE_DURATION_MODIFIER      rb
-                                        rb_skip
+DEF CHANNEL_PITCH_SCRIPT                rb
 DEF CHANNEL_LOOP_COUNT                  rb
 DEF CHANNEL_TEMPO                       rw
 DEF CHANNEL_TRACKS                      rb
@@ -70,9 +71,9 @@ DEF CHANNEL_RELEASE_ENVELOPE            rb
 DEF CHANNEL_CUTOFF_COUNT                rb
 DEF CHANNEL_VIBRATO_TABLE_TYPE          rb
 DEF CHANNEL_NOTE_LENGTH                 rb
-DEF CHANNEL_FIELD2E                     rb
-DEF CHANNEL_FIELD2F                     rb
-DEF CHANNEL_FIELD30                     rb
+DEF CHANNEL_VOLUME_SCRIPT               rb
+DEF CHANNEL_VOLUME_SCRIPT_INDEX         rb
+DEF CHANNEL_VOLUME_SCRIPT_COUNT         rb
 DEF CHANNEL_VIBRATO_TABLE_INDEX         rb
 DEF CHANNEL_STRUCT_LENGTH EQU _RS
 
@@ -102,6 +103,11 @@ DEF NOISE_CHAN_F EQU 2 ; bit set in CHAN5-CHAN7
 	const_def
 	const SOUND_VIBRATO_DIR     ; 0
 	const SOUND_PITCH_SLIDE_DIR ; 1
+	const SOUND_PITCH_SCRIPT    ; 2
+	const SOUND_VOLUME_SCRIPT   ; 3
+	const SOUND_VOLUME_RELEASE  ; 4 the volume script is playing its release
+	const SOUND_NOTE_HELD       ; 5 a note has started since the last rest
+	const SOUND_WAVE_BANK_2     ; 6 ch3 picks its wave from WaveSamples2
 
 ; NoteFlags
 	const_def
@@ -116,6 +122,30 @@ DEF NOISE_CHAN_F EQU 2 ; bit set in CHAN5-CHAN7
 
 ; vibrato_table tables (see audio/vibrato_tables.asm)
 DEF NUM_VIBRATO_TABLES EQU 11
+
+; pitch_script scripts (see audio/pitch_scripts.asm)
+	const_def
+	const PITCH_SCRIPT_PUZZLE_TRILL       ; 0
+	const PITCH_SCRIPT_PUZZLE_VIBRATO     ; 1
+	const PITCH_SCRIPT_PUZZLE_VIBRATO_2   ; 2
+	const PITCH_SCRIPT_PUZZLE_SCOOP       ; 3
+	const PITCH_SCRIPT_PUZZLE_FALL        ; 4
+DEF NUM_PITCH_SCRIPTS EQU const_value
+DEF NO_PITCH_SCRIPT EQU $ff
+DEF PITCH_SCRIPT_LOOP EQU $80 ; offset byte: jump to the step index in the next byte
+
+; volume_script scripts (see audio/volume_scripts.asm)
+	const_def
+	const VOLUME_SCRIPT_PUZZLE_SWELL      ; 0
+	const VOLUME_SCRIPT_PUZZLE_WAVE_ACCENT ; 1
+	const VOLUME_SCRIPT_PUZZLE_HOLD_10    ; 2
+	const VOLUME_SCRIPT_PUZZLE_HOLD_7     ; 3
+	const VOLUME_SCRIPT_PUZZLE_HOLD_6     ; 4
+DEF NUM_VOLUME_SCRIPTS EQU const_value
+DEF NO_VOLUME_SCRIPT EQU $ff
+
+; wave_bank 1 waves (see WaveSamples2 in audio/wave_samples.asm)
+DEF NUM_WAVE_SAMPLES_2 EQU 6
 
 ; drumkit sample step length byte
 DEF NOISE_STEP_EXACT_F    EQU 6 ; last low nybble + 1 frames, not + 2

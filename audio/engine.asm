@@ -133,6 +133,7 @@ _UpdateSound::
 	call ParseMusic
 .continue_sound_update
 	call ApplyPitchSlide
+	call HandlePitchScript
 	; duty cycle
 	ld hl, CHANNEL_DUTY_CYCLE
 	add hl, bc
@@ -149,6 +150,7 @@ _UpdateSound::
 	; vibrato, noise
 	call HandleTrackVibrato ; handle vibrato and other things
 	call HandleNoise
+	call HandleVolumeScript
 	; turn off music when playing sfx?
 	ld a, [wSFXPriority]
 	and a
@@ -480,12 +482,19 @@ UpdateChannels:
 .load_wave_pattern
 	push hl
 	ld a, [wCurTrackVolumeEnvelope]
-	and $f ; only 0-9 are valid
-	; each wavepattern is $f bytes long, so seeking is done in $10s
+	and $f
+	; each wavepattern is $10 bytes long
 	swap a ; a << 4
-	add LOW(WaveSamples)
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_WAVE_BANK_2, [hl]
+	ld hl, WaveSamples
+	jr z, .got_wave_bank
+	ld hl, WaveSamples2
+.got_wave_bank
+	add l
 	ld l, a
-	adc HIGH(WaveSamples)
+	adc h
 	sub l
 	ld h, a
 	; load wavepattern into rAUD3WAVE_0-rAUD3WAVE_F
@@ -1323,6 +1332,7 @@ ParseMusic:
 	; set noise sampling
 	set NOTE_NOISE_SAMPLING, [hl]
 	call ResetVibratoTable
+	call ResetAudioScripts
 .started
 	call SetCutoffCount
 	jmp LoadNote
@@ -1332,6 +1342,9 @@ ParseMusic:
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
 	res SOUND_TIE, [hl]
+	; a volume script with a release fades the note out instead
+	call StartVolumeRelease
+	ret c
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
 	set NOTE_REST, [hl] ; Rest
@@ -1540,9 +1553,9 @@ MusicCommands:
 	dw MusicEE ; unused
 	dw Music_StereoPanning
 	dw Music_SFXToggleNoise
-	dw DoNothing ; nothing
-	dw DoNothing ; nothing
-	dw DoNothing ; nothing
+	dw Music_PitchScript
+	dw Music_VolumeScript
+	dw Music_WaveBank
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
@@ -1833,6 +1846,59 @@ Music_VibratoTable:
 	and a
 	ret z
 	set SOUND_VIBRATO_TABLE, [hl]
+	ret
+
+Music_PitchScript:
+; each new note steps through a script of pitch offsets
+; params: 1
+;	script (see audio/pitch_scripts.asm), or NO_PITCH_SCRIPT for none
+	call GetMusicByte
+	ld hl, CHANNEL_PITCH_SCRIPT
+	add hl, bc
+	ld [hl], a
+	; it starts with the next note
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_PITCH_SCRIPT, [hl]
+	inc a
+	ret z
+	set SOUND_PITCH_SCRIPT, [hl]
+	ret
+
+Music_VolumeScript:
+; each new note steps through a script of volume envelopes, and a rest after it plays the script's release
+; params: 1
+;	script (see audio/volume_scripts.asm), or NO_VOLUME_SCRIPT for none
+	call GetMusicByte
+	ld hl, CHANNEL_VOLUME_SCRIPT
+	add hl, bc
+	ld [hl], a
+	; it starts with the next note
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_VOLUME_SCRIPT, [hl]
+	inc a
+	ret z
+	set SOUND_VOLUME_SCRIPT, [hl]
+	ret
+
+Music_WaveBank:
+; picks which wave table ch3's wave numbers refer to
+; params: 1
+;	0: WaveSamples, 1: WaveSamples2
+	call GetMusicByte
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_WAVE_BANK_2, [hl]
+	and a
+	ret z
+	set SOUND_WAVE_BANK_2, [hl]
 	ret
 
 Music_Vibrato:
@@ -2339,6 +2405,266 @@ ResetVibratoTable:
 	ld [hl], 0
 	ret
 
+ResetAudioScripts:
+; start a new note's pitch and volume scripts from the top
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	set SOUND_NOTE_HELD, [hl]
+	res SOUND_VOLUME_RELEASE, [hl]
+	xor a
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_PITCH_SCRIPT_COUNT
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_VOLUME_SCRIPT_COUNT
+	ret
+
+StartVolumeRelease:
+; a rest right after a note plays the volume script's release, if it has one
+; returns carry if it does
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	ld a, [hl]
+	res SOUND_NOTE_HELD, [hl]
+	; both set?
+	cpl
+	and (1 << SOUND_VOLUME_SCRIPT) | (1 << SOUND_NOTE_HELD)
+	jr nz, .cut
+	set SOUND_VOLUME_RELEASE, [hl]
+	ld e, 0
+	call VolumeScriptAddress
+	ld a, [hl]
+	and a
+	jr z, .cut
+	xor a
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_VOLUME_SCRIPT_COUNT: its first step plays now
+	scf
+	ret
+
+.cut
+	; stop both scripts so they don't restart the silenced note
+	ld a, $ff
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	and a
+	ret
+
+VolumeScriptAddress:
+; hl = byte e of the channel's volume script, or of its release
+	ld hl, CHANNEL_VOLUME_SCRIPT
+	add hl, bc
+	ld a, [hl]
+	add a
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_VOLUME_RELEASE, [hl]
+	ld hl, VolumeScripts
+	jr z, AudioScriptAddress
+	inc a
+	; fallthrough
+
+AudioScriptAddress:
+; hl = byte e of the script that pointer a in the table at hl points to
+	add a
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ld a, [hli]
+	ld h, [hl]
+	add e
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ret
+
+HandlePitchScript:
+; steps the pitch script, which offsets the note in eighths of a semitone
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_PITCH_SCRIPT, [hl]
+	ret z
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld a, [hl]
+	inc a
+	ret z ; $ff: holding its last offset
+	dec a
+	jr z, .step
+	dec [hl]
+	ret
+
+.step
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld e, [hl]
+	ld hl, CHANNEL_PITCH_SCRIPT
+	add hl, bc
+	ld a, [hl]
+	ld hl, PitchScripts
+	call AudioScriptAddress
+	ld a, [hli]
+	cp PITCH_SCRIPT_LOOP
+	jr nz, .offset
+	ld a, [hl]
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld [hl], a
+	jr .step
+
+.offset
+	ld d, a
+	; frames for this step (0: hold it for good)
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	inc [hl]
+	inc [hl]
+	; a = fraction of a semitone, in eighths
+	ld a, d
+	and 7
+	push af
+	; e = pitch, d = octave, of the semitone at or below the offset
+	ld a, d
+	sra a
+	sra a
+	sra a
+	ld hl, CHANNEL_PITCH
+	add hl, bc
+	add [hl]
+	ld e, a
+	ld hl, CHANNEL_OCTAVE
+	add hl, bc
+	ld d, [hl]
+	dec a
+	bit 7, a
+	jr z, .got_pitch
+	; below the octave's C
+	ld a, e
+	add NUM_NOTES
+	ld e, a
+	inc d
+.got_pitch
+	; hl = its frequency, de = the next semitone's minus it
+	push de
+	call GetFrequency
+	pop hl
+	inc l
+	push de
+	ld d, h
+	ld e, l
+	call GetFrequency
+	pop hl
+	ld a, e
+	sub l
+	ld e, a
+	ld a, d
+	sbc h
+	ld d, a
+	; hl += de * fraction / 8
+	pop af
+	push hl
+	ld hl, 0
+	and a
+	jr z, .add_fraction
+.multiply
+	add hl, de
+	dec a
+	jr nz, .multiply
+	srl h
+	rr l
+	srl h
+	rr l
+	srl h
+	rr l
+.add_fraction
+	pop de
+	add hl, de
+	ld e, l
+	ld a, h
+	and $7
+	ld hl, CHANNEL_FREQUENCY + 1
+	add hl, bc
+	ld [hld], a
+	ld [hl], e
+	; write it without restarting the note
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_CONTINUE, [hl]
+	ret
+
+HandleVolumeScript:
+; steps the volume script, restarting the note with each step's envelope
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_VOLUME_SCRIPT, [hl]
+	ret z
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld a, [hl]
+	inc a
+	ret z ; $ff: stopped
+	dec a
+	jr z, .step
+	dec [hl]
+	ret
+
+.step
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld e, [hl]
+	inc [hl]
+	inc [hl]
+	call VolumeScriptAddress
+	ld a, [hli]
+	and a
+	jr z, .done
+	ld d, a
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	; ch3's step only sets its output level, keeping the note's wave
+	ld a, [wCurChannel]
+	maskbits NUM_MUSIC_CHANS
+	cp CHAN3
+	ld a, d
+	jr nz, .got_envelope
+	and $f0
+	ld d, a
+	ld a, [wCurTrackVolumeEnvelope]
+	and $f
+	or d
+.got_envelope
+	ld [wCurTrackVolumeEnvelope], a
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_NOISE_SAMPLING, [hl]
+	ret
+
+.done
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ret
+
 SetCutoffCount:
 ; frames until the new note's release: duration * cutoff / 8
 ; cutoff 0 or 8 leaves the count at 0, so the note plays in full
@@ -2816,25 +3142,11 @@ PlayStereoSFX::
 	add hl, bc
 	ld [hl], a
 
-	ld hl, CHANNEL_FIELD30
-	add hl, bc
-	ld [hl], a
-
 	ld a, [wCryTracks]
 	cp 2 ; ch 1-2
 	jr c, .skip
 
 ; ch3-4
-	ld a, [wSFXDuration]
-
-	ld hl, CHANNEL_FIELD2E
-	add hl, bc
-	ld [hl], a
-
-	ld hl, CHANNEL_FIELD2F
-	add hl, bc
-	ld [hl], a
-
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
 	set SOUND_UNKN_0F, [hl]
@@ -2942,6 +3254,10 @@ INCLUDE "audio/notes.asm"
 INCLUDE "audio/wave_samples.asm"
 
 INCLUDE "audio/vibrato_tables.asm"
+
+INCLUDE "audio/pitch_scripts.asm"
+
+INCLUDE "audio/volume_scripts.asm"
 
 INCLUDE "audio/drumkits.asm"
 
