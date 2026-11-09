@@ -1217,26 +1217,6 @@ OverworldWildMonsGrass:
 	ow_wildmon 10, POLIWAG,     4, PLAIN_FORM, 0,                  NO_MOVE
 	end_ow_wildmons
 
-	def_ow_wildmons ROUTE_24
-	db 1 ; how many can be out at once
-	db 100 percent ; the chance each one shows up
-	; morn
-	ow_wildmon 63, CATERPIE,    8, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 21, METAPOD,    12, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, ABRA,       12, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 5,  BELLSPROUT, 10, PLAIN_FORM, 0,                  SYNTHESIS
-	; day
-	ow_wildmon 52, CATERPIE,    8, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 32, SUNKERN,    12, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, ABRA,       12, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 5,  BELLSPROUT, 10, PLAIN_FORM, 0,                  SYNTHESIS
-	; nite
-	ow_wildmon 52, ODDISH,     10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 32, VENONAT,    10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 11, ABRA,       12, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 5,  BELLSPROUT, 10, PLAIN_FORM, 0,                  SYNTHESIS
-	end_ow_wildmons
-
 	def_ow_wildmons ROUTE_25
 	db 1 ; how many can be out at once
 	db 100 percent ; the chance each one shows up
@@ -2199,26 +2179,6 @@ OverworldWildMonsWater:
 	ow_wildmon 30, POLIWAG,     5, PLAIN_FORM, 0,                  NO_MOVE
 	ow_wildmon 10, POLIWHIRL,  10, PLAIN_FORM, 0,                  HAZE
 	ow_wildmon 1,  POLIWAG,     8, PLAIN_FORM, 0,                  HAZE
-	end_ow_wildmons
-
-	def_ow_wildmons ROUTE_24
-	db 1 ; how many can be out at once
-	db 100 percent ; the chance each one shows up
-	; morn
-	ow_wildmon 59, GOLDEEN,    10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, GOLDEEN,     5, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    10, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  GOLDEEN,     8, PLAIN_FORM, 0,                  PSYBEAM
-	; day
-	ow_wildmon 59, GOLDEEN,    10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, GOLDEEN,     5, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    10, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  GOLDEEN,     8, PLAIN_FORM, 0,                  PSYBEAM
-	; nite
-	ow_wildmon 59, GOLDEEN,    10, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 30, GOLDEEN,     5, PLAIN_FORM, 0,                  NO_MOVE
-	ow_wildmon 10, SEAKING,    10, PLAIN_FORM, 0,                  PSYBEAM
-	ow_wildmon 1,  GOLDEEN,     8, PLAIN_FORM, 0,                  PSYBEAM
 	end_ow_wildmons
 
 	def_ow_wildmons ROUTE_25
