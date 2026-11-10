@@ -396,15 +396,10 @@ PlacePartyMonEvoStoneCompatibility:
 PlacePartyMonFollowerMark:
 ; Mark the party member that follows you. Eggs can be chosen too, so unlike the gender symbol this
 ; does not skip them.
-	ld a, [wFollowerPartySlot]
+	farcall GetFollowerPartySlot
 	and a
 	ret z ; nobody follows you
 	ld b, a
-	ld a, [wPartyCount]
-	and a
-	ret z
-	cp b
-	ret c ; the slot points past the party; ValidateFollowerSlot will tidy it up
 
 	hlcoord FOLLOWER_MARK_X, FOLLOWER_MARK_Y
 	ld de, 2 * SCREEN_WIDTH
@@ -729,7 +724,7 @@ PartyMenuToggleFollower:
 	ret z ; the CANCEL row
 
 	ld b, a ; the 1-based slot under the cursor
-	ld a, [wFollowerPartySlot]
+	farcall GetFollowerPartySlot ; the one that follows now, which in the Bug-Catching Contest is the contest mon
 	cp b
 	ld a, b ; take the mon under the cursor...
 	jr nz, .store

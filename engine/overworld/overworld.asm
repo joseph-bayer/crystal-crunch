@@ -273,24 +273,43 @@ GetMonSprite:
 	and a
 	ret
 
+GetFollowerPartySlot::
+; Returns the 1-based party slot that follows you in a, or 0 for nobody. Preserves bc, de and hl.
+; A slot past the end of the party means nobody: the mon it named isn't in the party to show.
+; The Bug-Catching Contest cuts the party down to the one mon you entered with, and that mon
+; follows you whoever you chose. wFollowerPartySlot is left alone, so your choice is back once
+; the party is.
+	push bc
+	ld a, [wFollowerPartySlot]
+	ld c, a
+	ld a, [wPartyCount]
+	ld b, a
+	ld a, [wStatusFlags2]
+	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, a
+	jr z, .check_party
+	ld a, c
+	and a
+	jr z, .check_party ; choosing nobody still means nobody
+	ld c, 1
+.check_party
+	ld a, b
+	cp c
+	ld a, c
+	jr nc, .done
+	xor a ; past the end of the party
+.done
+	pop bc
+	ret
+
 GetFollowerMon::
 ; Returns the follower's species ID in a and its 1-based party slot in d.
 ; Returns a = 0 when nobody should be out: an empty party, nobody selected, or a selected mon
 ; that has fainted -- a fainted follower keeps its slot, it just stays in its ball. There is no
 ; falling through to another mon: once the choice is the player's, quietly substituting a
 ; different one is worse than showing nobody.
-	ld a, [wPartyCount]
+	call GetFollowerPartySlot
 	and a
 	ret z
-	ld e, a ; how many mons are in the party
-
-	ld a, [wFollowerPartySlot]
-	and a
-	ret z ; nobody selected
-	cp e
-	jr z, .in_party
-	ret nc ; the slot points past the end of the party; a = the slot, so nonzero -- fix below
-.in_party
 	ld d, a ; d = the follower's slot, 1-based
 
 	dec a

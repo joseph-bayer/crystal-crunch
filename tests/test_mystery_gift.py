@@ -250,3 +250,86 @@ def test_carries_gift_survives_a_save(saved_game):
 	assert crash is None, "collecting the gift crashed:\n" + crash
 	assert sram(game, "sMysteryGiftItem") == 0
 	assert bag_items(game).get(item_index("PSNCUREBERRY"), 0) == before + 1
+
+
+# Reported with Kim in Blackthorn City: after her gift, some of the map's blocks were wrong until
+# the map was loaded again. The gift code keeps the partner's ID and name and the sent gift in the
+# link version's buffers, which share their RAM with wOverworldMapBlocks; the link version only
+# runs from the main menu, but the NPCs run it with a map loaded. The first fix rebuilt the blocks
+# but left the ROM bank on a connected map's blocks, so talking to Kim crashed: Blackthorn City
+# has connections, Goldenrod Dept. Store 5F doesn't. Both are tested.
+
+KIM = 7 # Kim's map object in Blackthorn City
+KIM_ROW = 25 # she walks left and right along it
+OBJECT_MOVEMENT_TYPE = 0x03
+SPRITEMOVEDATA_STANDING_DOWN = 0x06
+MAP_BORDER = 4
+
+
+def map_blocks(game):
+	_, start = game._address("wOverworldMapBlocks")
+	_, end = game._address("wOverworldMapBlocksEnd")
+	return game.peek("wOverworldMapBlocks", 0, end - start)
+
+
+def changed_blocks(before, after):
+	return [i for i, (b, a) in enumerate(zip(before, after)) if b != a]
+
+
+def talk_to_kim(game):
+	"""Stop Kim where she is, walk under her and talk."""
+	from harness import followers as F
+	struct = next(s for s in range(F.NUM_OBJECT_STRUCTS) if F.object_field(game, s, 0)
+		and F.object_field(game, s, 1) == KIM)
+	game.poke("wObjectStructs", SPRITEMOVEDATA_STANDING_DOWN, struct * F.OBJECT_LENGTH + OBJECT_MOVEMENT_TYPE)
+	game.wait(40) # let a step she is in finish
+	kim_x = F.object_field(game, struct, F.OBJECT_MAP_X) - MAP_BORDER
+	assert F.object_field(game, struct, F.OBJECT_MAP_Y) - MAP_BORDER == KIM_ROW
+	x, _ = game.position()
+	if kim_x != x:
+		game.step("right" if kim_x > x else "left", abs(kim_x - x))
+		game.wait(20)
+	game.press("up", after=30) # turn to face her
+	assert game.position()[0] == kim_x, "couldn't get under Kim"
+	game.press("a", after=20)
+	game.wait_for_text("│") # her text box
+
+
+def open_kims_gift_screen(game):
+	game.warp("BLACKTHORN_CITY", 9, KIM_ROW + 1)
+	talk_to_kim(game)
+	for _ in range(40):
+		if "MYSTERY GIFT" in game.screen_text() and "Press A to" in game.screen_text():
+			game.wait(30)
+			return
+		game.press("a", after=20)
+	raise AssertionError("Kim's gift screen never opened:\n" + game.screen_text())
+
+
+def talk_again(game, npc):
+	if npc == "kim":
+		talk_to_kim(game)
+	else:
+		game.press("a", after=20)
+
+
+@pytest.mark.parametrize("npc", ["carrie", "kim"])
+def test_npc_gift_leaves_the_map_blocks_alone(saved_game, npc):
+	game = saved_game
+	continue_game(game)
+	spot = CARRIE_SPOT if npc == "carrie" else ("BLACKTHORN_CITY", 9, KIM_ROW + 1)
+	game.warp(*spot)
+	before = map_blocks(game)
+
+	(open_carries_gift_screen if npc == "carrie" else open_kims_gift_screen)(game)
+	carrie_gives(game, "PSNCUREBERRY") # any NPC's screen: it only takes the gift
+	assert game.current_map() == constants.maps()[spot[0]], "the gift didn't come back to the map"
+	changed = changed_blocks(before, map_blocks(game))
+	assert not changed, "the gift changed the map's blocks at offsets %s" % changed
+
+	# Talking again the same day only checks today's list, which writes the NPC's ID.
+	talk_again(game, npc)
+	game.wait_for_text("already")
+	press_until_idle(game)
+	changed = changed_blocks(before, map_blocks(game))
+	assert not changed, "checking for today's gift changed the map's blocks at offsets %s" % changed

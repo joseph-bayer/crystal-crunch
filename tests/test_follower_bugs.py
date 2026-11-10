@@ -3,6 +3,7 @@ showed in and checks the follower's state in memory.
 
 The debug radio's party is Mewtwo, Mew, Lanturn, a beta Kingdra (level 50), Ditto and Ampharos."""
 
+from harness import alt_shiny
 from harness import followers as F
 
 # wFollowerFlags bits (constants/ram_constants.asm)
@@ -252,3 +253,104 @@ def test_follower_star_leaves_a_long_nickname_whole(game):
 	column = lines[name_row].index(name)
 	assert lines[name_row + 1][column] == STAR, "the star should sit under the name's first letter"
 	assert sum(line.count(STAR) for line in lines) == 1, "only the follower should have a star"
+
+
+BUG_CONTEST_TIMER = 1 << 2 # wStatusFlags2
+LANTURN_SLOT = 3
+
+
+def set_bug_contest_timer(game, on):
+	"""Start the contest's timer (StartBugContestTimer, run and copied over: see drop_off_mons), or
+	stop it."""
+	if on:
+		start = game.save_state()
+		alt_shiny.call(game, "StartBugContestTimer")
+		timer = game.peek("wBugContestMinsRemaining", 0, 2), game.peek("wBugContestStartTime", 0, 4)
+		game.load_state(start)
+		for i, value in enumerate(timer[0]):
+			game.poke("wBugContestMinsRemaining", value, i)
+		for i, value in enumerate(timer[1]):
+			game.poke("wBugContestStartTime", value, i)
+	flags = game.peek("wStatusFlags2")
+	game.poke("wStatusFlags2", flags | BUG_CONTEST_TIMER if on else flags & ~BUG_CONTEST_TIMER)
+
+
+def drop_off_mons(game):
+	"""What ContestDropOffMons does to the party (engine/events/bug_contest/contest_2.asm), run for
+	real and then copied over: calling a routine abandons the game's main loop, so the state from
+	before the call is restored. Returns what restoring the party needs."""
+	start = game.save_state()
+	alt_shiny.call(game, "ContestDropOffMons")
+	dropped = game.peek("wPartyCount"), game.peek("wPartySpecies", 1), game.peek("wBugContestSecondPartySpecies")
+	game.load_state(start)
+	count, second, saved = dropped
+	assert count == 1
+	game.poke("wPartyCount", count)
+	game.poke("wPartySpecies", second, 1)
+	game.poke("wBugContestSecondPartySpecies", saved)
+
+
+def return_mons(game, count):
+	"""What ContestReturnMons does to the party."""
+	game.poke("wPartySpecies", game.peek("wBugContestSecondPartySpecies"), 1)
+	game.poke("wPartyCount", count)
+
+
+def follower_mon_id(game):
+	"""GetFollowerMon's species ID, with the game put back afterwards."""
+	start = game.save_state()
+	mon_id = alt_shiny.call(game, "GetFollowerMon")["a"]
+	game.load_state(start)
+	return mon_id
+
+
+def follower_shown(game):
+	"""The follower's party slot and species ID, as its sprite was last loaded."""
+	assert F.object_field(game, F.FOLLOWER_STRUCT, F.OBJECT_SPRITE), "nobody is out"
+	return game.peek("wFollowerPartyNum"), game.peek("wFollowerSpriteID")
+
+
+def test_contest_mon_follows_in_the_bug_contest(game):
+	"""Entering the Bug-Catching Contest cuts the party to its first mon, which left a follower in
+	slot 2-6 pointing past the end of the party. Its slot number was then read as a species ID, so
+	whatever mon held that ID showed up (often Bulbasaur, in the wrong colors). The contest mon
+	follows during the contest, and the chosen follower is back afterwards."""
+	F.take_radio_items(game)
+	game.poke("wFollowerPartySlot", LANTURN_SLOT)
+	species = game.peek("wPartySpecies", 0, 6)
+
+	drop_off_mons(game)
+	assert follower_mon_id(game) == 0, "outside the contest, a slot past the end of the party means nobody"
+
+	set_bug_contest_timer(game, True)
+	game.warp("NATIONAL_PARK_BUG_CONTEST", 10, 47)
+	game.wait(30)
+	assert follower_shown(game) == (1, species[0]), "the contest mon should follow"
+	assert game.peek("wFollowerPartySlot") == LANTURN_SLOT, "the contest shouldn't change the choice"
+
+	game.press("start")
+	game.wait(30)
+	game.choose("POKéMON")
+	game.wait(60)
+	lines = game.screen_lines()
+	assert sum(line.count(STAR) for line in lines) == 1, "the contest mon should have the star:\n" + game.screen_text()
+	for _ in range(3): # out of the party menu and the start menu
+		game.press("b")
+		game.wait(30)
+
+	set_bug_contest_timer(game, False)
+	return_mons(game, len(species))
+	game.warp("ROUTE_36_NATIONAL_PARK_GATE", 0, 4)
+	game.wait(30)
+	assert follower_shown(game) == (LANTURN_SLOT, species[LANTURN_SLOT - 1]), "the chosen follower should be back"
+
+
+def test_nobody_still_follows_in_the_bug_contest(game):
+	F.take_radio_items(game)
+	game.poke("wFollowerPartySlot", 0)
+	drop_off_mons(game)
+	set_bug_contest_timer(game, True)
+	game.warp("NATIONAL_PARK_BUG_CONTEST", 10, 47)
+	game.wait(30)
+	assert follower_mon_id(game) == 0
+	assert F.object_field(game, F.FOLLOWER_STRUCT, F.OBJECT_SPRITE) == 0, "nobody should be out"

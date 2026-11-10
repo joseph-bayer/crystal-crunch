@@ -1,5 +1,11 @@
 ; NPC Mystery Gift Screen
 ; This file implements an NPC-triggered mystery gift screen that can be called from the overworld
+;
+; The gift code keeps the partner's ID and name and the player's sent gift in the link version's
+; buffers, which share their RAM with wOverworldMapBlocks: the link version only runs from the
+; main menu, before a map is loaded. Here a map is loaded, so whatever writes those buffers
+; rebuilds the map's blocks afterwards, the way a map load does. Otherwise the blocks underneath
+; stay wrong until the map is loaded again.
 
 SetNPCMysteryGiftPartnerID:
 ; An NPC partner's ID, for the link version's daily partner list: 0 then the NPC's number, which
@@ -18,6 +24,9 @@ CheckNPCMysteryGiftToday:
 	call DoMysteryGift.CheckAlreadyGotAGiftFromThatPerson
 	sbc a ; -1 if already, else 0
 	and TRUE
+	push af
+	call ReloadMapBlocks ; the partner ID was written over the map's blocks
+	pop af
 	ld [wScriptVar], a
 	ret
 
@@ -190,6 +199,7 @@ DoNPCMysteryGift::
 	call ClearBGPalettes
 	
 	; Restore overworld graphics and state
+	call ReloadMapBlocks ; the gift's buffers were written over the map's blocks; the screen is drawn from them next
 	call ReloadTilesetAndPalettes ; reload the map's tileset graphics and color palettes for current map data
 	call UpdateSprites ; Redraw all sprites on the screen
 	call EnableSpriteUpdates ; Reenable sprite updates
