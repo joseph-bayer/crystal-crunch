@@ -60,9 +60,9 @@ CeruleanMopedShopClerkSellText:
 	text "Hey kid! Want"
 	line "to go fast?"
 
-	para "A MOPED rides"
-	line "faster than any"
-	cont "BICYCLE."
+	para "Hold B and a"
+	line "MOPED rides faster"
+	cont "than any BICYCLE."
 
 	para "All for the low"
 	line "cost of ¥100,000!"
@@ -95,17 +95,21 @@ CeruleanMopedShopClerkRefusedText:
 	done
 
 CeruleanMopedShopClerkBicycleText:
-	text "Why's there a"
-	line "BICYCLE here?"
+	text "Don't forget -"
+	line "Press B on that"
+
+	para "thing to leave"
+	line "everybody in your"
+	cont "dust!"
+	done
+
+CeruleanMopedShopBicycleText:
+	text "CLERK: Why's there"
+	line "a BICYCLE here?"
 
 	para "That's mine. You"
 	line "think I can afford"
 	cont "a MOPED?"
-	done
-
-CeruleanMopedShopBicycleText:
-	text "It's a beat-up,"
-	line "old BICYCLE."
 	done
 
 CeruleanMopedShop_MapEvents:
