@@ -349,6 +349,13 @@ Two touches around the encounter: the player and the follower are hidden for the
 so only the mon is on screen, and a route that rolled a shiny plays `SFX_SHINE` once, the first
 frame the player has control.
 
+The chime is pending in `wOverworldMonShinyPending`, one bit per slot. A roll notes its slot
+(`NoteOverworldMonShiny`), and anything that empties or overwrites a slot afterwards drops it
+(`EmptyOverworldMonSlot`, `ForgetOverworldMonShiny`): the spent slot after a swarm battle,
+`KeepSwarmClearOfPlayer`, and a roaming beast taking a grass slot. So the chime only plays for a
+shiny that is still on the map. The same chime follows a population or swarm reroll after a battle,
+which rolls through the same path.
+
 
 ## Saving and loading
 
@@ -468,6 +475,8 @@ How it works:
   grass slot that rolled a mon. The encounter comes from the roam struct (species, level, DVs and
   form), with nothing kept from the row it displaces. Each placement rolls 1/512 for shininess,
   and a shiny stays shiny. With both beasts here and one slot, a coin toss picks which appears.
+  A shiny beast plays the shiny chime each time it is placed, though not when a swarm reroll puts
+  it back.
 - **Moving.** `UpdateRoamMons` runs *before* `HandleNewMap` in the connection and door setup
   scripts, so the roll sees where the beasts are for this visit, and the Pokégear agrees with the
   sprite. Warps and Fly don't run it; Fly runs `JumpRoamMons`. After a battle, a roamer on the

@@ -3263,8 +3263,10 @@ wPopulationBounds:: ds SPAWN_AREA_LENGTH
 wPopulationSeed:: dw ; placement's own generator; see PlacePopulation.PlacementRandom
 wPopulationRestore:: db ; TRUE while the continue path rolls: keep wPopulationSpecies
 
-; Set when a roll turns up a shiny, cleared once the chime has played. The sound cannot be played
-; at roll time -- that happens inside HandleNewMap, with InitSound and the map music still to come.
+; A bit per slot (1 << slot) whose roll turned up a shiny, cleared once the chime has played. The
+; sound cannot be played at roll time -- that happens inside HandleNewMap, with InitSound and the
+; map music still to come. Emptying or overwriting a slot clears its bit, so the chime never
+; announces a shiny that is no longer there.
 wOverworldMonShinyPending:: db
 
 

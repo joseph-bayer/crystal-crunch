@@ -806,9 +806,8 @@ endc
 	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
 
 .note_shiny
-	ld a, TRUE
-	ld [wOverworldMonShinyPending], a
-	ret
+	ld a, [wOverworldMonRollSlot]
+	jmp NoteOverworldMonShiny
 
 .RollDVs:
 	call Random
@@ -1397,7 +1396,14 @@ PlaceRoamingBeasts:
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
 	ld a, [wOverworldMonRollSlot]
-	jr PublishBeastEncounter
+	call PublishBeastEncounter
+; A shiny beast is announced like any wandering shiny, each time it is placed. RestoreRoamingBeasts
+; does not come through here: a beast put back after a swarm battle was announced when it arrived.
+	ld a, [wOverworldMonRollBuffer + OW_MON_FORM]
+	and SHINY_MASK
+	ret z
+	ld a, [wOverworldMonRollSlot]
+	jr NoteOverworldMonShiny
 
 .no_slot
 	pop de
@@ -1449,7 +1455,8 @@ RestoreRoamingBeasts:
 	; fallthrough
 
 PublishBeastEncounter:
-; Copy the roll buffer into slot a. A beast is on land, so clear its surface bit.
+; Copy the roll buffer into slot a. A beast is on land, so clear its surface bit. It displaces
+; whatever the grass roll put there, and with it any shiny that roll was going to announce.
 	push af
 	ld e, a
 	call GetOverworldMonEncounter
@@ -1459,11 +1466,47 @@ PublishBeastEncounter:
 	ld bc, OW_MON_ENCOUNTER_LENGTH
 	rst CopyBytes
 	pop af
+	push af
 	call OverworldMonSlotBit
 	cpl
 	ld hl, wOverworldMonOnSurface
 	and [hl]
 	ld [hl], a
+	pop af
+	jr ForgetOverworldMonShiny
+
+EmptyOverworldMonSlot::
+; Empty slot e: species 0, which keeps its object masked. Whatever stood there is gone, so its
+; shiny, if it rolled one, is not announced either.
+; in: e = a 0-based slot. Preserves bc and de.
+	call GetOverworldMonEncounter
+	xor a
+	ld [hli], a
+	ld [hl], a
+	ld a, e
+	; fallthrough
+
+ForgetOverworldMonShiny:
+; in: a = a 0-based slot. Preserves bc and de.
+	call OverworldMonSlotBit
+	cpl
+	push hl
+	ld hl, wOverworldMonShinyPending
+	and [hl]
+	ld [hl], a
+	pop hl
+	ret
+
+NoteOverworldMonShiny:
+; Slot a holds a shiny the player has not been told about: CheckWildMonEvent plays SFX_SHINE for it
+; once they have control.
+; in: a = a 0-based slot. Preserves bc, de and hl.
+	call OverworldMonSlotBit
+	push hl
+	ld hl, wOverworldMonShinyPending
+	or [hl]
+	ld [hl], a
+	pop hl
 	ret
 
 OverworldMonSlotBit:
@@ -1528,10 +1571,7 @@ RerollSwarmOverworldMons::
 	ld a, [hl]
 	sub SPRITE_OW_MON
 	ld e, a
-	call GetOverworldMonEncounter
-	xor a
-	ld [hli], a
-	ld [hl], a ; species 0: the slot is empty, which keeps the object masked
+	call EmptyOverworldMonSlot
 
 	ld a, TRUE
 	ld [wSwarmRespawnPending], a
@@ -1590,10 +1630,7 @@ KeepSwarmClearOfPlayer:
 
 	push de
 	ld e, c
-	call GetOverworldMonEncounter
-	xor a
-	ld [hli], a
-	ld [hl], a ; species 0: the slot is empty, which keeps the object masked
+	call EmptyOverworldMonSlot
 	pop de
 
 .next
