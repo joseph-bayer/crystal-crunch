@@ -38,7 +38,7 @@ _HandlePlayerStep::
 	ret
 
 .CountMopedTile:
-; Each moped tile counts toward full speed (see DoPlayerMovement.MopedRampStep). A ledge hop, a
+; Each moped tile counts toward full speed (see DoPlayerMovement.MopedRampSpeed). A ledge hop, a
 ; 16-frame step, doesn't: hopping keeps the speed you had.
 	ld a, [wPlayerState]
 	cp PLAYER_MOPED
@@ -46,11 +46,25 @@ _HandlePlayerStep::
 	ld a, [wPlayerStepDuration] ; frames left after this one
 	cp 8 ; the moped's slowest step, 8 frames, has 7 left
 	ret nc
+	cp 2 ; a full-speed step, 2 frames, has 1 left
+	call c, .CountMopedCoastTile
 	ld hl, wMopedRampTiles
 	ld a, [hl]
 	cp MOPED_TILES_PER_SPEED * 2
 	ret nc
 	inc [hl]
+	ret
+
+.CountMopedCoastTile:
+; A full-speed tile without B held uses up a tile of the coast.
+	ld a, [wCurInput]
+	and B_BUTTON
+	ret nz
+	ld hl, wMopedCoastTiles
+	ld a, [hl]
+	and a
+	ret z
+	dec [hl]
 	ret
 
 ScrollScreen::

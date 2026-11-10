@@ -1189,6 +1189,9 @@ SECTION "Moped Ramp", WRAM0
 ; Tiles ridden on the moped since the player last stood still, holding at full speed. Picks the
 ; moped's speed: it starts slow and builds up. Not saved, so continuing starts slow.
 wMopedRampTiles:: db
+; Full-speed tiles left after letting go of B: built up, the moped needs B held for full speed,
+; and coasts on for these before dropping to the bike's speed.
+wMopedCoastTiles:: db
 
 
 SECTION "Video", WRAM0

@@ -342,7 +342,7 @@ endc
 	ret
 
 .moped
-	call .MopedRampStep
+	call .MopedRampSpeed
 	call .DoStep
 	scf
 	ret
@@ -488,11 +488,11 @@ endc
 	db COLL_WARP_CARPET_LEFT
 	db COLL_WARP_CARPET_RIGHT
 
-.MopedRampStep:
-; Returns the moped's step for this tile in a. From a stop it builds up: the running shoes' speed,
-; then the bike's, then its own. The tiles are counted where each step starts (_HandlePlayerStep):
-; this runs every frame of a turn too. Standing still passes through here (.DoStep stands in
-; place), and starts it over.
+.MopedRampSpeed:
+; From a stop it builds up: the running shoes' speed, then the bike's. It goes on at the bike's
+; speed, or its own while B is held and for a short coast after letting go. The tiles are counted
+; where each step starts (_HandlePlayerStep): this runs every frame of a turn too. Standing still
+; passes through here (.DoStep stands in place), and starts it over.
 	ld hl, wMopedRampTiles
 	ld a, [wWalkingDirection]
 	cp STANDING
@@ -515,12 +515,32 @@ endc
 	ld a, [hl]
 	cp MOPED_TILES_PER_SPEED
 	ld a, STEP_RUN
-	ret c
+	jr c, .moped_building_up
 	ld a, [hl]
 	cp MOPED_TILES_PER_SPEED * 2
 	ld a, STEP_BIKE
-	ret c
+	jr c, .moped_building_up
+; Built up: full speed with B held, which fills the coast; without B, until the coast runs out.
+	ld hl, wMopedCoastTiles
+	ld a, [wCurInput]
+	and B_BUTTON
+	jr z, .moped_coast
+	ld [hl], MOPED_COAST_TILES
 	ld a, STEP_MOPED
+	ret
+
+.moped_coast
+	ld a, [hl]
+	and a
+	ld a, STEP_MOPED
+	ret nz
+	ld a, STEP_BIKE
+	ret
+
+.moped_building_up
+; No coast is left over from before a stop, a warp or getting on.
+	ld hl, wMopedCoastTiles
+	ld [hl], 0
 	ret
 
 .DoStep:

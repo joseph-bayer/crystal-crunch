@@ -1,5 +1,5 @@
 """The MOPED: a key item used like the BICYCLE, with the bike's rules and its own music, that builds up from a
-stop to 2 frames a tile (the bike's 4, walking's 16). It plays its walk cycle while moving and, slower,
+stop to the bike's 4 frames a tile, and to 2 while B is held (walking's 16). It plays its walk cycle while moving and, slower,
 while standing, like an idling engine. Owning it puts you on it on the Cycling Road."""
 
 import pytest
@@ -366,9 +366,9 @@ def test_moped_goes_up_the_cycling_road_at_the_running_shoes_speed(game):
 	"""Up holds at 8 frames a tile, while the tiles still count: turning down goes straight on at full
 	speed."""
 	onto_cycling_road(game, ["MOPED"], "MOPED")
-	assert step_lengths(game, [("down", 6)]) == RAMP + [2, 2]
+	assert step_lengths(game, [("down", 6)], b=True) == RAMP + [2, 2]
 	game.wait(30)
-	assert step_lengths(game, [("up", 5), ("down", 2)]) == [8] * 5 + [2, 2]
+	assert step_lengths(game, [("up", 5), ("down", 2)], b=True) == [8] * 5 + [2, 2]
 
 
 def test_bike_still_goes_up_the_cycling_road_at_walking_speed(game):
@@ -397,13 +397,20 @@ def test_cant_switch_straight_between_them(game, first, second):
 
 # Speed
 
-def step_lengths(game, plan):
-	"""Ride by `plan`, a list of (direction, steps): hold each direction until that many more steps
-	have started. Returns each step's length in frames, read as it starts."""
+def step_lengths(game, plan, b=False):
+	"""Ride by `plan`, a list of (direction, steps) or (direction, steps, b): hold each direction (and
+	B, if b) until that many more steps have started. Returns each step's length in frames, read as
+	it starts."""
 	pyboy = game.pyboy
 	lengths = []
 	was_stepping = False
-	for direction, steps in plan:
+	for segment in plan:
+		direction, steps = segment[:2]
+		hold_b = segment[2] if len(segment) > 2 else b
+		if hold_b:
+			pyboy.button_press("b")
+		else:
+			pyboy.button_release("b")
 		pyboy.button_press(direction)
 		goal = len(lengths) + steps
 		for _ in range(steps * 40):
@@ -416,10 +423,12 @@ def step_lengths(game, plan):
 				break
 		pyboy.button_release(direction)
 		assert len(lengths) == goal, "stuck at %s: %s" % (game.position(), lengths)
+	pyboy.button_release("b")
 	return lengths
 
 
-# From a stop the moped builds up: 2 tiles at the running shoes' 8 frames, 2 at the bike's 4, then 2.
+# From a stop the moped builds up: 2 tiles at the running shoes' 8 frames, 2 at the bike's 4, then 2
+# with B held (4 without).
 RAMP = [8, 8, 4, 4]
 # Route 29's east end: open ground east into New Bark Town, and the row below it.
 ROUTE_29_EAST = ("ROUTE_29", 46, 8)
@@ -429,23 +438,58 @@ ROUTE_26_ABOVE_LEDGE = ("ROUTE_26", 9, 50)
 
 def test_moped_rides_two_frames_a_tile(game):
 	ride(game, "MOPED", ROUTE_29_EAST)
-	assert step_lengths(game, [("right", 10)]) == RAMP + [2] * 6
+	assert step_lengths(game, [("right", 10)], b=True) == RAMP + [2] * 6
+
+
+def test_moped_tops_out_at_the_bike_speed_without_b(game):
+	ride(game, "MOPED", ROUTE_29_EAST)
+	assert step_lengths(game, [("right", 10)]) == RAMP + [4] * 6
+
+
+def test_pressing_b_at_bike_speed_goes_full_speed_on_the_next_tile(game):
+	ride(game, "MOPED", ROUTE_29_EAST)
+	assert step_lengths(game, [("right", 6), ("right", 3, True)]) == RAMP + [4, 4] + [2, 2, 2]
+
+
+def test_b_in_the_build_up_changes_nothing_until_it_is_done(game):
+	ride(game, "MOPED", ROUTE_29_EAST)
+	assert step_lengths(game, [("right", 6, True)]) == RAMP + [2, 2]
+
+
+def test_letting_go_of_b_coasts_four_tiles(game):
+	ride(game, "MOPED", ROUTE_29_EAST)
+	lengths = step_lengths(game, [("right", 6, True), ("right", 6)])
+	assert lengths == RAMP + [2, 2] + [2, 2, 2, 2, 4, 4], lengths
+
+
+def test_b_again_during_the_coast_keeps_full_speed(game):
+	"""One tile of the coast, then B again: full speed, and a whole coast after letting go."""
+	ride(game, "MOPED", ROUTE_29_EAST)
+	lengths = step_lengths(game, [("right", 5, True), ("right", 1), ("right", 2, True), ("right", 5)])
+	assert lengths == RAMP + [2] + [2] + [2, 2] + [2, 2, 2, 2, 4], lengths
+
+
+def test_stopping_ends_the_coast(game):
+	ride(game, "MOPED", ROUTE_29_EAST)
+	step_lengths(game, [("right", 6)], b=True)
+	game.wait(30)
+	assert step_lengths(game, [("left", 6)]) == RAMP + [4, 4]
 
 
 def test_letting_go_starts_it_over(game):
 	ride(game, "MOPED", ROUTE_29_EAST)
-	assert step_lengths(game, [("right", 6)]) == RAMP + [2, 2]
+	assert step_lengths(game, [("right", 6)], b=True) == RAMP + [2, 2]
 	game.wait(30)
-	assert step_lengths(game, [("left", 5)]) == RAMP + [2]
+	assert step_lengths(game, [("left", 5)], b=True) == RAMP + [2]
 
 
 def test_getting_on_again_starts_slow(game):
 	ride(game, "MOPED", ROUTE_29_EAST)
-	step_lengths(game, [("right", 6)])
+	step_lengths(game, [("right", 6)], b=True)
 	press_select(game) # off
 	press_select(game) # on
 	assert game.peek("wPlayerState") == PLAYER_MOPED
-	assert step_lengths(game, [("left", 5)]) == RAMP + [2]
+	assert step_lengths(game, [("left", 5)], b=True) == RAMP + [2]
 
 
 def test_bumping_starts_it_over(game):
@@ -461,17 +505,17 @@ def test_bumping_starts_it_over(game):
 
 def test_turning_keeps_the_speed(game):
 	ride(game, "MOPED", ROUTE_29_EAST)
-	assert step_lengths(game, [("right", 6), ("down", 1), ("right", 2)]) == RAMP + [2] * 5
+	assert step_lengths(game, [("right", 6), ("down", 1), ("right", 2)], b=True) == RAMP + [2] * 5
 
 
 def test_hopping_a_ledge_keeps_the_speed(game):
 	ride(game, "MOPED", ROUTE_26_ABOVE_LEDGE)
-	assert step_lengths(game, [("down", 11)]) == RAMP + [2] * 4 + [16, 2, 2]
+	assert step_lengths(game, [("down", 11)], b=True) == RAMP + [2] * 4 + [16, 2, 2]
 
 
 def test_a_map_edge_keeps_the_speed(game):
 	ride(game, "MOPED", ROUTE_29_EAST)
-	lengths = step_lengths(game, [("right", 15)]) # to New Bark Town's (1, 8)
+	lengths = step_lengths(game, [("right", 15)], b=True) # to New Bark Town's (1, 8)
 	assert game.in_map("NEW_BARK_TOWN")
 	assert lengths == RAMP + [2] * 11, lengths
 
@@ -481,6 +525,11 @@ def test_bike_still_rides_four_frames_a_tile(game):
 	times = frames_per_tile(game, "up")
 	assert min(times) == 4, times
 	assert sorted(times)[len(times) // 2] == 4, times
+
+
+def test_bike_ignores_b(game):
+	ride(game, "BICYCLE", ROUTE_29_EAST)
+	assert step_lengths(game, [("right", 6)], b=True) == [4] * 6
 
 
 @pytest.mark.parametrize("start, direction, expected", [
@@ -587,13 +636,19 @@ def test_moped_idle_holds_while_the_menu_is_up(game):
 	assert seen == {0}, seen
 
 
-@pytest.mark.parametrize("item, pace", [("MOPED", 4), ("BICYCLE", 8)])
-def test_animates_at_one_pace_while_building_up(game, item, pace):
-	"""From a stop, through the moped's running-shoe and bike speeds to its own: the moped's walk
-	cycle changes frame every 4 frames throughout, the running shoes' pace. The bike keeps its
-	8."""
+@pytest.mark.parametrize("item, b, paces", [
+	("MOPED", True, [4]),
+	("MOPED", False, [4]),
+	("BICYCLE", True, [4]),
+	("BICYCLE", False, [4]),
+])
+def test_rides_animate_at_the_running_shoes_pace(game, item, b, paces):
+	"""The bike's and the moped's walk cycles change frame every 4 frames, the running shoes' pace,
+	at every speed, B or not."""
 	ride(game, item, ROUTE_29_EAST)
 	pyboy = game.pyboy
+	if b:
+		pyboy.button_press("b")
 	pyboy.button_press("right")
 	frames = []
 	while len(frames) < 40: # the build-up and a few full-speed tiles, short of New Bark Town
@@ -601,14 +656,16 @@ def test_animates_at_one_pace_while_building_up(game, item, pace):
 		if F.object_field(game, 0, OBJECT_WALKING) != STANDING or frames:
 			frames.append(facing_frame(game))
 	pyboy.button_release("right")
+	pyboy.button_release("b")
 	runs = [1]
-	for a, b in zip(frames, frames[1:]):
-		if a == b:
+	for x, y in zip(frames, frames[1:]):
+		if x == y:
 			runs[-1] += 1
 		else:
 			runs.append(1)
 	held = runs[1:-1] # the first and last are cut off by the start and end of the count
-	assert len(held) >= 4 and set(held) == {pace}, runs
+	assert len(held) >= 4, runs
+	assert [pace for i, pace in enumerate(held) if i == 0 or held[i - 1] != pace] == paces, runs
 
 
 # The follower while riding: in its ball

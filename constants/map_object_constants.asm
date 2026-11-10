@@ -310,6 +310,8 @@ DEF MOPED_SPEED EQU STEP_BIKE + 1
 DEF NUM_STEP_SPEEDS EQU MOPED_SPEED + 1
 ; The moped rides this many tiles at the running shoes' speed, as many at the bike's, then at its own.
 DEF MOPED_TILES_PER_SPEED EQU 2
+; Letting go of B at full speed, the moped rides this many more tiles at it before the bike's speed.
+DEF MOPED_COAST_TILES EQU 4
 DEF WALKING_SPEED_MASK EQU %00011100
 assert (NUM_STEP_SPEEDS - 1) << 2 & ~WALKING_SPEED_MASK == 0, "WALKING_SPEED_MASK is too narrow"
 
