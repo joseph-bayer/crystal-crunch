@@ -371,10 +371,13 @@ DebugForceSwarmMonShiny::
 	ld a, [wOverworldMonRollFromSwarm]
 	and a
 	ret z
+	cp OW_ROLL_FROM_POPULATION
+	ret z ; a population's member, not the swarm's
 	; fallthrough
 
 DebugForceShinyOn::
-; Whether the Scientist's BEASTS -> FORCE SHINY is on, which swarm shinies honor in a debug build.
+; Whether the Scientist's BEASTS -> FORCE SHINY is on, which swarm shinies and the route's own
+; wandering mon honor in a debug build.
 ; out: nz if it is. Preserves bc, de and hl.
 	push bc
 	push de

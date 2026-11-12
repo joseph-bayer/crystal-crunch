@@ -361,6 +361,8 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - Standard odds **1/8192**
 - Gift Pokémon **1/512**
 - Swarm Pokémon **1/512**
+- Pokémon wandering in the overworld **1/2048**
+  - The last 5 shinies that appear are remembered. Leave the route and come back, or save and quit, and the shiny is still there until you battle it.
 - Starters
   - In Elm's lab the three starters stand on the table. All three are rolled at once when you walk in, at **1/512** each, and are visibly shiny. Save before entering to hunt for a shiny starter!
 - Bug Catching Contest **1/512**

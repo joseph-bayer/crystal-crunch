@@ -298,6 +298,9 @@ EndOverworldMonBattle::
 	jr nz, .forget_beast
 	ld a, b
 	dec a
+	push af
+	call ForgetRememberedShiny ; and a remembered shiny is spent like any other
+	pop af
 	ld e, a
 	call GetOverworldMonEncounter
 	xor a
@@ -351,11 +354,180 @@ ClearOverworldMonEncounters::
 	ld [wPopulationPlaced], a
 	ret
 
+GetOverworldMonRoster:
+; out: a = which of an area table's rosters this time of day uses: MORN_F, DAY_F or NITE_F.
+; Evening shares the night's, as the grass tables do.
+	ld a, [wTimeOfDay]
+	cp EVE_F
+	ret nz
+	ld a, NITE_F
+	ret
+
+IsRememberedShinyOnThisMap:
+; in:  hl = a wRememberedShinies entry
+; out: z if it was remembered on the current map. Preserves bc, de and hl.
+	ld a, [wMapGroup]
+	cp [hl]
+	ret nz
+	inc hl
+	ld a, [wMapNumber]
+	cp [hl]
+	dec hl
+	ret
+
+FindRememberedShiny:
+; in:  a = a 0-based slot on the current map
+; out: carry and hl = the shiny remembered in that slot, if there is one. Preserves bc.
+	ld e, a
+	ld hl, wRememberedShinies
+	ld d, NUM_REMEMBERED_SHINIES
+.loop
+	call IsRememberedShinyOnThisMap
+	jr nz, .next
+	inc hl
+	inc hl
+	assert REMEMBERED_SHINY_RECIPE == 2
+	ld a, [hld]
+	dec hl
+	and REMEMBERED_SLOT_MASK
+	cp e
+	scf
+	ret z
+.next
+	ld a, l
+	add REMEMBERED_SHINY_LENGTH
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	dec d
+	jr nz, .loop
+	and a
+	ret
+
+ForgetRememberedShiny:
+; in: a = a 0-based slot on the current map. A battle has spent whatever stood there, so a shiny
+; remembered in that slot is dropped, and the ones behind it move up.
+	call FindRememberedShiny
+	ret nc
+	ld d, h
+	ld e, l
+	ld bc, REMEMBERED_SHINY_LENGTH
+	add hl, bc
+	ld a, LOW(wRememberedShiniesEnd)
+	sub l
+	ld c, a ; how many bytes follow it; b is 0
+	jr z, .clear_last ; it was the last entry
+	rst CopyBytes
+.clear_last
+	ld hl, wRememberedShiniesEnd - REMEMBERED_SHINY_LENGTH
+	ld bc, REMEMBERED_SHINY_LENGTH
+	xor a
+	rst ByteFill
+	ret
+
+; Saving and loading, beside the Pokédex forms record (engine/menus/save.asm). The caller is
+; responsible for WRAM bank 1 being current.
+
+SaveRememberedShinies::
+	ld a, BANK(sRememberedShiniesMagic)
+	ld hl, sRememberedShiniesMagic
+	jr _SaveRememberedShinies
+
+SaveBackupRememberedShinies::
+	ld a, BANK(sBackupRememberedShiniesMagic)
+	ld hl, sBackupRememberedShiniesMagic
+_SaveRememberedShinies:
+; a = the copy's SRAM bank, hl = its magic
+	assert sRememberedShinies - sRememberedShiniesMagic == 2 && \
+		sRememberedShiniesChecksum - sRememberedShinies == wRememberedShiniesEnd - wRememberedShinies
+	assert sBackupRememberedShinies - sBackupRememberedShiniesMagic == 2 && \
+		sBackupRememberedShiniesChecksum - sBackupRememberedShinies == wRememberedShiniesEnd - wRememberedShinies
+	call OpenSRAM
+	ld a, LOW(REMEMBERED_SHINIES_SAVE_MAGIC)
+	ld [hli], a
+	ld a, HIGH(REMEMBERED_SHINIES_SAVE_MAGIC)
+	ld [hli], a
+	ld d, h
+	ld e, l
+	ld hl, wRememberedShinies
+	ld bc, wRememberedShiniesEnd - wRememberedShinies
+	rst CopyBytes
+	push de
+	ld hl, wRememberedShinies
+	call RememberedShinies_Checksum
+	pop hl
+	ld a, e
+	ld [hli], a
+	ld [hl], d
+	jmp CloseSRAM
+
+LoadRememberedShinies::
+	ld a, BANK(sRememberedShiniesMagic)
+	ld hl, sRememberedShiniesMagic
+	jr _LoadRememberedShinies
+
+LoadBackupRememberedShinies::
+	ld a, BANK(sBackupRememberedShiniesMagic)
+	ld hl, sBackupRememberedShiniesMagic
+_LoadRememberedShinies:
+; a = the copy's SRAM bank, hl = its magic. A copy without the magic or with a bad checksum (any
+; save from before the list existed) loads as nothing remembered.
+	call OpenSRAM
+	ld a, [hli]
+	cp LOW(REMEMBERED_SHINIES_SAVE_MAGIC)
+	jr nz, .clear
+	ld a, [hli]
+	cp HIGH(REMEMBERED_SHINIES_SAVE_MAGIC)
+	jr nz, .clear
+	push hl
+	call RememberedShinies_Checksum ; hl ends on the checksum
+	ld a, [hli]
+	cp e
+	jr nz, .bad
+	ld a, [hl]
+	cp d
+	jr nz, .bad
+	pop hl
+	ld de, wRememberedShinies
+	ld bc, wRememberedShiniesEnd - wRememberedShinies
+	rst CopyBytes
+	jmp CloseSRAM
+
+.bad
+	pop hl
+.clear
+	call CloseSRAM
+	; fallthrough
+
+ClearRememberedShinies::
+	ld hl, wRememberedShinies
+	ld bc, wRememberedShiniesEnd - wRememberedShinies
+	xor a
+	rst ByteFill
+	ret
+
+RememberedShinies_Checksum:
+; in:  hl = a copy of the list
+; out: de = the sum of its bytes, hl = just past it
+	ld de, 0
+	ld b, wRememberedShiniesEnd - wRememberedShinies
+.loop
+	ld a, [hli]
+	add e
+	ld e, a
+	adc d
+	sub e
+	ld d, a
+	dec b
+	jr nz, .loop
+	ret
+
 INCLUDE "data/maps/overworld_mons.asm"
 
 
 if DEF(_DEBUG)
-; Force this slot shiny every time, or 0 for none. Testing a 1/512 rate by walking in and out of a
+; Force this slot shiny every time, or 0 for none. Testing a 1/2048 rate by walking in and out of a
 ; route a few hundred times is not a test; what needs checking is whether the sprite and the battle
 ; agree about it, and a guaranteed shiny answers that on the first try.
 DEF OW_MON_DEBUG_FORCE_SHINY_SLOT EQU 2
@@ -447,7 +619,106 @@ RollOverworldMons::
 	ld a, SWARM_WATER
 	ld [wOverworldMonSwarmTerrain], a
 	ld hl, OverworldWildMonsWater
-; fallthrough
+	call .RollTable
+	; fallthrough
+
+.RestoreRememberedShinies:
+; Put every shiny remembered on this map back in its slot, over whatever the slot just rolled. This
+; runs after the beasts are placed, so a remembered shiny takes its slot back from one. It also
+; runs after a swarm's reroll, which comes back through here.
+	ld hl, wRememberedShinies
+	ld b, NUM_REMEMBERED_SHINIES
+.restore_loop
+	call IsRememberedShinyOnThisMap
+	jr nz, .restore_next
+	push bc
+	push hl
+	call .RestoreShiny
+	pop hl
+	pop bc
+.restore_next
+	ld de, REMEMBERED_SHINY_LENGTH
+	add hl, de
+	dec b
+	jr nz, .restore_loop
+	ret
+
+.RestoreShiny:
+; in: hl = a remembered shiny on this map
+; Rebuilds its encounter from the roster row it came from, as .RollOneSlot would have: the row
+; gives the species, form, perks and extra move, the level scales to today's badges, and the held
+; item is rolled again. Only the DVs and the alternate-shiny bit are its own.
+	inc hl
+	inc hl
+	assert REMEMBERED_SHINY_RECIPE == 2 && REMEMBERED_SHINY_DVS == 3
+	ld a, [hli]
+	ld c, a ; the recipe
+	ld a, [hli]
+	ld [wOverworldMonRollBuffer + OW_MON_DVS], a
+	ld a, [hl]
+	ld [wOverworldMonRollBuffer + OW_MON_DVS + 1], a
+	ld a, c
+	and REMEMBERED_SLOT_MASK
+	ld [wOverworldMonRollSlot], a
+
+	ld hl, OverworldWildMonsGrass
+	ld a, SWARM_GRASS
+	bit REMEMBERED_WATER_F, c
+	jr z, .got_restore_table
+	ld hl, OverworldWildMonsWater
+	ld a, SWARM_WATER
+.got_restore_table
+	ld [wOverworldMonSwarmTerrain], a ; for .publish's surface check
+	call .FindMap ; preserves bc
+	ret nc ; this map has no such table any more: nothing to rebuild it from
+	inc hl ; past how many can be out
+	inc hl ; past the chance
+; The row and its roster sit side by side in the recipe, in the same order as the area table: the
+; two together, masked out, count rows from the first roster's first row.
+	assert REMEMBERED_ROW_SHIFT == 3 && OW_WILDMON_LENGTH == 1 << REMEMBERED_ROW_SHIFT, \
+		"the recipe's row bits no longer double as a byte offset"
+	ld a, c
+	and REMEMBERED_ROW_MASK | REMEMBERED_ROSTER_MASK ; = (roster * NUM_OW_WILDMON + row) * OW_WILDMON_LENGTH
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	call .CopyRosterRow ; preserves bc
+
+	ld a, [wOverworldMonRollBuffer + OW_MON_FORM]
+	or SHINY_MASK
+	bit REMEMBERED_ALT_SHINY_F, c
+	jr z, .got_restore_form
+	or ALT_SHINY_MASK
+.got_restore_form
+	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
+	call .RollItem
+
+; A beast placed in this slot steps aside for this visit.
+	ld a, [wOverworldMonRollSlot]
+	inc a
+	ld hl, wOverworldMonBeastSlots
+	cp [hl]
+	jr nz, .not_raikou
+	ld [hl], 0
+.not_raikou
+	inc hl
+	cp [hl]
+	jr nz, .not_entei
+	ld [hl], 0
+.not_entei
+; .publish only ever sets a surface bit, so clear whatever the slot's last mon left.
+	dec a
+	call OverworldMonSlotBit
+	cpl
+	ld hl, wOverworldMonOnSurface
+	and [hl]
+	ld [hl], a
+
+	ld a, [wOverworldMonRollSlot]
+	call NoteOverworldMonShiny ; it chimes each time it comes back
+	jmp .publish
 
 .RollTable:
 ; in:  hl = one terrain's table, c = the first slot to fill
@@ -461,11 +732,7 @@ RollOverworldMons::
 	ld [wOverworldMonRollChance], a
 
 ; Step to this time of day's roster.
-	ld a, [wTimeOfDay]
-	cp EVE_F
-	jr nz, .got_daytime
-	ld a, NITE_F ; evening shares the night roster, as the grass tables do
-.got_daytime
+	call GetOverworldMonRoster
 	and a
 	jr z, .at_roster
 	ld b, a
@@ -545,33 +812,14 @@ RollOverworldMons::
 ; Is this a row the swarm has taken? Worked out now, because the copy below reuses d.
 	ld a, NUM_OW_WILDMON - 1
 	sub d ; the row's index in the roster
+	ld [wOverworldMonRollRow], a ; in case it comes up shiny and is remembered
 	call .RowBit
 	ld b, a
 	ld a, [wOverworldMonSwarmRows]
 	and b
 	ld b, a ; nonzero if the swarm has it; the copy leaves b alone
 	ld [wOverworldMonRollFromSwarm], a ; and .RollForm rolls its shininess at the swarm's rate
-
-; Copy the roster entry into the buffer. The whole encounter is assembled there and published in
-; one copy, so nothing can ever read a half-rolled mon.
-	inc hl ; past the weight
-	ld de, wOverworldMonRollBuffer + OW_MON_SPECIES
-	ld a, [hli]
-	ld [de], a
-	inc de
-	ld a, [hli]
-	ld [de], a
-	ld a, [hli]
-	farcall LevelFromBadges
-	ld [wOverworldMonRollBuffer + OW_MON_LEVEL], a
-	ld a, [hli]
-	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
-	ld a, [hli]
-	ld [wOverworldMonRollBuffer + OW_MON_PERKS], a
-	ld a, [hli]
-	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
-	ld a, [hl]
-	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
+	call .CopyRosterRow
 
 ; A swarm takes the row over with its own species, form and move, keeping the row's level so it fits
 ; the route. The row's perks and extra move belong to the species it displaces, so neither carries
@@ -608,9 +856,10 @@ RollOverworldMons::
 .not_locked_unown
 	call .RollForm
 	xor a
-	ld [wOverworldMonRollFromSwarm], a ; used up, and never set for a population member
+	ld [wOverworldMonRollFromSwarm], a ; used up
 	call .RollDVs
 	call .RollItem
+	call .RememberShiny
 
 .publish
 	ld a, [wOverworldMonRollSlot]
@@ -773,11 +1022,21 @@ RollOverworldMons::
 if DEF(_DEBUG) && SWARM_DEBUG_FORCE_SHINY
 	ld a, [wOverworldMonRollFromSwarm]
 	and a
+	jr z, .not_swarm_forced
+	cp OW_ROLL_FROM_POPULATION
 	jr nz, .make_shiny
+.not_swarm_forced
 endc
 if DEF(_DEBUG)
+; The Scientist's FORCE SHINY reaches a swarm's mon and the route's own, but not a population's.
 	call DebugForceSwarmMonShiny
 	jr nz, .make_shiny
+	ld a, [wOverworldMonRollFromSwarm]
+	and a
+	jr nz, .not_forced
+	call DebugForceShinyOn
+	jr nz, .make_shiny
+.not_forced
 endc
 	call Random
 	and a
@@ -785,6 +1044,9 @@ endc
 	ld b, OVERWORLD_MON_SHINY_NUMERATOR
 	ld a, [wOverworldMonRollFromSwarm]
 	and a
+	jr z, .roll_shiny
+	ld b, POPULATION_MON_SHINY_NUMERATOR
+	cp OW_ROLL_FROM_POPULATION
 	jr z, .roll_shiny
 	ld b, SWARM_SHINY_NUMERATOR
 	jr .roll_shiny
@@ -804,6 +1066,13 @@ endc
 	or SHINY_MASK
 	call RollOverworldMonAltShiny
 	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
+; One the route's roster rolled is remembered, once .RememberShiny has its DVs to keep. Not a
+; swarm's or a population's: both reshuffle after every battle anyway.
+	ld a, [wOverworldMonRollFromSwarm]
+	and a
+	jr nz, .note_shiny
+	ld a, TRUE
+	ld [wOverworldMonRecordShiny], a
 
 .note_shiny
 	ld a, [wOverworldMonRollSlot]
@@ -869,6 +1138,97 @@ endc
 	ld a, NO_ITEM
 .store_item
 	ld [wOverworldMonRollBuffer + OW_MON_ITEM], a
+	ret
+
+.CopyRosterRow:
+; Copy a roster row into the buffer: species, level (scaled to the badges), form, perks and move.
+; The whole encounter is assembled there and published in one copy, so nothing can ever read a
+; half-rolled mon.
+; in: hl = the row. Preserves bc.
+	inc hl ; past the weight
+	ld de, wOverworldMonRollBuffer + OW_MON_SPECIES
+	ld a, [hli]
+	ld [de], a
+	inc de
+	ld a, [hli]
+	ld [de], a
+	ld a, [hli]
+	farcall LevelFromBadges
+	ld [wOverworldMonRollBuffer + OW_MON_LEVEL], a
+	ld a, [hli]
+	ld [wOverworldMonRollBuffer + OW_MON_FORM], a
+	ld a, [hli]
+	ld [wOverworldMonRollBuffer + OW_MON_PERKS], a
+	ld a, [hli]
+	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
+	ld a, [hl]
+	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
+	ret
+
+.RememberShiny:
+; A shiny .RollForm has just made from the route's roster goes on the front of wRememberedShinies,
+; and the oldest falls off the end.
+	ld hl, wOverworldMonRecordShiny
+	ld a, [hl]
+	and a
+	ret z
+	xor a
+	ld [hl], a
+; A slot that already holds a remembered shiny keeps it: .RestoreRememberedShinies is about to put
+; that one back over this, so this one is never seen.
+	ld a, [wOverworldMonRollSlot]
+	call FindRememberedShiny
+	ret c
+
+	ld hl, wRememberedShiniesEnd - REMEMBERED_SHINY_LENGTH - 1
+	ld de, wRememberedShiniesEnd - 1
+	ld c, (NUM_REMEMBERED_SHINIES - 1) * REMEMBERED_SHINY_LENGTH
+.remember_shift
+	ld a, [hld]
+	ld [de], a
+	dec de
+	dec c
+	jr nz, .remember_shift
+
+	ld hl, wRememberedShinies
+	assert REMEMBERED_SHINY_MAP_GROUP == 0 && REMEMBERED_SHINY_MAP_NUMBER == 1
+	ld a, [wMapGroup]
+	ld [hli], a
+	ld a, [wMapNumber]
+	ld [hli], a
+
+	ld a, [wOverworldMonRollSlot]
+	ld b, a
+	ld a, [wOverworldMonSwarmTerrain]
+	cp SWARM_WATER
+	jr nz, .remember_grass
+	set REMEMBERED_WATER_F, b
+.remember_grass
+	ld a, [wOverworldMonRollRow]
+	add a
+	add a
+	add a
+	assert REMEMBERED_ROW_SHIFT == 3
+	or b
+	ld b, a
+	call GetOverworldMonRoster
+	swap a
+	add a
+	assert REMEMBERED_ROSTER_SHIFT == 5
+	or b
+	ld b, a
+	ld a, [wOverworldMonRollBuffer + OW_MON_FORM]
+	and ALT_SHINY_MASK
+	jr z, .remember_recipe
+	set REMEMBERED_ALT_SHINY_F, b
+.remember_recipe
+	ld a, b
+	ld [hli], a
+	assert REMEMBERED_SHINY_RECIPE == 2 && REMEMBERED_SHINY_DVS == 3
+	ld a, [wOverworldMonRollBuffer + OW_MON_DVS]
+	ld [hli], a
+	ld a, [wOverworldMonRollBuffer + OW_MON_DVS + 1]
+	ld [hl], a
 	ret
 
 .RollUnownLetter:
@@ -1248,6 +1608,8 @@ endc
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
 	ld a, HIGH(NO_MOVE)
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
+	ld a, OW_ROLL_FROM_POPULATION ; so .RollForm rolls at a population's odds
+	ld [wOverworldMonRollFromSwarm], a
 	jmp .FinishRoll
 
 PlaceRoamingBeasts:

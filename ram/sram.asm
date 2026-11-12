@@ -138,6 +138,22 @@ sBackupDexForms:: ds wDexFormsEnd - wDexForms
 sBackupDexFormsChecksum:: dw
 
 
+SECTION "Remembered Shinies Save", SRAM
+
+; wRememberedShinies, guarded by its own magic and checksum like the forms record: older saves have
+; neither, and load as nothing remembered
+sRememberedShiniesMagic:: dw
+sRememberedShinies:: ds wRememberedShiniesEnd - wRememberedShinies
+sRememberedShiniesChecksum:: dw
+
+
+SECTION "Remembered Shinies Backup", SRAM
+
+sBackupRememberedShiniesMagic:: dw
+sBackupRememberedShinies:: ds wRememberedShiniesEnd - wRememberedShinies
+sBackupRememberedShiniesChecksum:: dw
+
+
 SECTION "Box Metadata", SRAM
 
 for n, 1, NUM_BOXES + 1

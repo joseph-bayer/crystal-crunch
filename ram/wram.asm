@@ -3232,7 +3232,9 @@ wOverworldMonSwarmRows:: db
 wOverworldMonSwarmSpecies:: dw
 wOverworldMonSwarmForm:: db
 wOverworldMonSwarmAltShiny:: db ; SWARM_ALT_SHINY if the swarm's shinies are alternates at its odds, else 0
-wOverworldMonRollFromSwarm:: db ; nonzero while .RollForm rolls a mon the swarm supplied
+; What supplied the mon .RollForm is rolling: 0 the route's roster, OW_ROLL_FROM_POPULATION a
+; population, any other value the swarm (that row's bit).
+wOverworldMonRollFromSwarm:: db
 wSwarmRespawnPending:: db ; set by RerollSwarmOverworldMons, spent by PlacePopulationAndSpawn
 
 ; The wandering slot each roaming beast took this visit, 1-based, 0 for none: Raikou, then Entei.
@@ -3268,6 +3270,15 @@ wPopulationRestore:: db ; TRUE while the continue path rolls: keep wPopulationSp
 ; map music still to come. Emptying or overwriting a slot clears its bit, so the chime never
 ; announces a shiny that is no longer there.
 wOverworldMonShinyPending:: db
+
+; The last NUM_REMEMBERED_SHINIES shinies the route rosters rolled, newest first; see
+; constants/overworld_mon_constants.asm. Saved in SRAM blocks of its own (sRememberedShinies), so
+; it lives out here past wGameDataEnd and moves nothing in the save.
+wRememberedShinies:: ds NUM_REMEMBERED_SHINIES * REMEMBERED_SHINY_LENGTH
+wRememberedShiniesEnd::
+; Scratch for recording one: the roster row .RollOneSlot picked, and whether .RollForm made it shiny.
+wOverworldMonRollRow:: db
+wOverworldMonRecordShiny:: db
 
 
 SECTION "Pic Animations", WRAMX

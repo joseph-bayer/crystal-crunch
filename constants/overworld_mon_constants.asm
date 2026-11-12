@@ -51,6 +51,38 @@ DEF OW_WILDMON_LENGTH EQU _RS
 ; map id, how many can be out at once, the chance each one shows up, then morn/day/nite rosters
 DEF OW_WILDDATA_LENGTH EQU 2 + 1 + 1 + NUM_OW_WILDMON * OW_WILDMON_LENGTH * 3
 
+; wOverworldMonRollFromSwarm for a population's member. Any other nonzero value is a swarm's row
+; bit, so this has to sit above every one of those.
+DEF OW_ROLL_FROM_POPULATION EQU $80
+assert OW_ROLL_FROM_POPULATION >= 1 << NUM_OW_WILDMON, "OW_ROLL_FROM_POPULATION overlaps a swarm row bit"
+
+; Remembered shinies (wRememberedShinies): the last few shinies the route rosters rolled, newest
+; first. Each one comes back to its slot whenever its map is entered, until it is battled, so
+; leaving a route doesn't lose it. The list is saved, so an entry keeps only what a later visit
+; can't rebuild from the roster: where the mon came from, and its DVs. See
+; docs/overworld_pokemon.md.
+DEF NUM_REMEMBERED_SHINIES EQU 5
+rsreset
+DEF REMEMBERED_SHINY_MAP_GROUP  rb ; 0 ; 0 for an unused entry
+DEF REMEMBERED_SHINY_MAP_NUMBER rb ; 1
+DEF REMEMBERED_SHINY_RECIPE     rb ; 2 ; see below
+DEF REMEMBERED_SHINY_DVS        rw ; 3
+DEF REMEMBERED_SHINY_LENGTH EQU _RS
+
+; The recipe byte: the slot, and the roster row it was rolled from. The row and the time of day's
+; roster sit side by side, so that the two together are the row's place in the area table.
+DEF REMEMBERED_SLOT_MASK    EQU %00000011 ; the 0-based slot
+DEF REMEMBERED_WATER_F      EQU 2         ; set for the water table, clear for the grass one
+DEF REMEMBERED_ROW_SHIFT    EQU 3
+DEF REMEMBERED_ROW_MASK     EQU %00011000 ; the row within its roster, 0 to NUM_OW_WILDMON - 1
+DEF REMEMBERED_ROSTER_SHIFT EQU 5
+DEF REMEMBERED_ROSTER_MASK  EQU %01100000 ; MORN_F, DAY_F or NITE_F (evening shares the night's)
+DEF REMEMBERED_ALT_SHINY_F  EQU 7         ; an alternate shiny
+assert NUM_OW_WILDMON == 1 << (REMEMBERED_ROSTER_SHIFT - REMEMBERED_ROW_SHIFT), \
+	"the recipe's row field has to be exactly one roster wide"
+
+DEF REMEMBERED_SHINIES_SAVE_MAGIC EQU $5e7a ; marks a saved copy of the list; anything else loads as none
+
 
 ; Populations (see data/wild/mon_populations.asm and docs/overworld_pokemon.md). A standing
 ; group of wandering mon on a few special maps, which reshuffles when you battle one rather than

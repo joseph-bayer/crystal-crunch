@@ -403,6 +403,7 @@ SRAM $00
 	"Backup Save"
 	org $be80 ; the same in every build: the debug ROM's backup save is a byte longer
 	"Pokedex Forms Backup"
+	"Remembered Shinies Backup"
 SRAM $01
 	"Save"
 	"Box Metadata"
@@ -413,6 +414,7 @@ SRAM $01
 	"PokeDB Bank 1 Ext"
 	"PokeDB Bank 2 Ext"
 	"Pokedex Forms Save"
+	"Remembered Shinies Save"
 SRAM $02
 	"PokeDB Bank 1"
 SRAM $03

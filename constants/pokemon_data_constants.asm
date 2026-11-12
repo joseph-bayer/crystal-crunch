@@ -210,7 +210,10 @@ DEF GIFT_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF LEGENDARY_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF BUG_CATCHING_CONTEST_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF SHINY_EGG_NUMERATOR EQU 16 ; 16/65536 = 1/4096  
-DEF OVERWORLD_MON_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512, after the 1/256 check above
+DEF OVERWORLD_MON_SHINY_NUMERATOR EQU 32 ; 32/65536 = 1/2048, after the 1/256 check above
+; A population's member (the Bug Catching Contest, the Ruins of Alph Inner Chamber) without
+; OW_PERK_EXTRA_SHINY.
+DEF POPULATION_MON_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512, after the 1/256 check above
 ; A mon that came from a swarm.
 ; Quirk: In the grass a plain-form swarm that misses this still gets the ordinary roll afterwards, so it
 ; lands at about 1/482 rather than exactly 1/512; a swarm with a cosmetic form gets this alone.

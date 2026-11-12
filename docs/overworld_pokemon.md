@@ -304,9 +304,13 @@ other shiny rates:
 
 | Constant | Value | Against |
 | --- | --- | --- |
-| `OVERWORLD_MON_SHINY_NUMERATOR` | 128/65536 = 1/512 | a grass encounter's 1/8192 |
+| `OVERWORLD_MON_SHINY_NUMERATOR` | 32/65536 = 1/2048 | a grass encounter's 1/8192 |
 | `OVERWORLD_MON_MIN_DV` | 6 of 15, as a floor on each DV | a free roll |
 | `OVERWORLD_MON_NO_ITEM_CHANCE` | 20% | a grass encounter's 50% |
+
+A population's member rolls at `POPULATION_MON_SHINY_NUMERATOR` (1/512) instead, and a swarm's at
+`SWARM_SHINY_NUMERATOR` (1/512). `.RollForm` tells them apart by `wOverworldMonRollFromSwarm`: 0 for
+the route's roster, `OW_ROLL_FROM_POPULATION` for a population, a swarm row's bit for the swarm.
 
 Per entry, an `OW_PERK_*` bit field:
 
@@ -357,6 +361,40 @@ shiny that is still on the map. The same chime follows a population or swarm rer
 which rolls through the same path.
 
 
+## Remembered shinies
+
+The last `NUM_REMEMBERED_SHINIES` (5) shinies the route rosters roll are remembered in
+`wRememberedShinies`, newest first. Each comes back to its slot whenever its map is entered, until
+it is battled, so leaving a route doesn't lose a shiny you haven't reached yet.
+
+- **What counts.** Only a shiny `.RollForm` makes from a route's grass or water roster. Not a
+  swarm's or a population's (both reshuffle after every battle anyway), not a static mon, not a
+  roster row that is always shiny, not a roaming beast (it stays shiny by itself).
+- **An entry is 5 bytes**: map group and number, a recipe byte, and the DVs. The recipe holds the
+  slot, grass or water, the time of day's roster, the row, and the alternate-shiny bit (layout in
+  `constants/overworld_mon_constants.asm`). Everything else is rebuilt from the row by
+  `.RestoreShiny`: species, form, perks and extra move from the row, the level scaled to today's
+  badges, and the held item rolled again (an 8-bit item ID can't be saved anyway). Editing a route's
+  roster therefore changes what an existing save's remembered shiny comes back as.
+- **Recording.** `.got_entry` stashes the row in `wOverworldMonRollRow`; `.RollForm` sets
+  `wOverworldMonRecordShiny`; `.RememberShiny` pushes the entry once the DVs are rolled. A slot that
+  already holds a remembered shiny keeps it, and the new roll there is not recorded: the restore is
+  about to put the old one back over it.
+- **Restoring.** `.RestoreRememberedShinies` runs at the end of `RollOverworldMons`, after the water
+  roll and so after the beasts: a remembered shiny takes its slot back, and a beast placed there
+  sits out the visit. It sets `wOverworldMonShinyPending`, so the chime plays each time one comes
+  back, including after a swarm's reroll (which goes back through `RollOverworldMons`). A remembered
+  shiny comes back whatever the time of day, so a night species can stand in its slot by day. It
+  keeps its place in the list; coming back doesn't make it newer.
+- **Forgetting.** `EndOverworldMonBattle` calls `ForgetRememberedShiny` for the slot just fought.
+- **Saving.** Two SRAM blocks of its own, main and backup, each a magic word, the list and a
+  checksum, saved and loaded beside the Pokédex forms record. A save without the magic (every save
+  from before the list existed) loads as nothing remembered, so old saves keep loading. The WRAM
+  list sits past `wGameDataEnd` and moves nothing in the save; `ResetWRAM` clears it for a new game.
+- **Debug.** The Scientist's BEASTS → FORCE SHINY makes the route's own wanderers shiny too, which
+  is how `tests/test_remembered_shinies.py` gets a real roll.
+
+
 ## Saving and loading
 
 `MapSetupScript_Continue` is a different path: it uses `LoadMapAttributes_SkipObjects` and never
@@ -372,7 +410,9 @@ previous Pikachu's colors.
 
 **Consequence: reloading a save rerolls the route**, the same as walking out and back. Reload
 scumming for a shiny therefore works. Moving the encounter struct inside `wGameData` would close
-that, at the cost of a save-layout shift.
+that, at the cost of a save-layout shift. A remembered shiny (see
+[Remembered shinies](#remembered-shinies)) is the exception: the list is saved, so it comes back on
+a continue too.
 
 Populations keep one thing across a save: each member's **species**, in `wPopulationSpecies`
 inside `wPlayerData`. The continue roll restores those and rolls everything else afresh. See the
