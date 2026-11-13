@@ -1,13 +1,18 @@
-"""Overworld shiny odds, and the shinies a route remembers.
+"""Overworld shiny odds, and the shinies the wandering mon remember.
 
 A wandering mon from a route's roster is shiny at 1/2048: the 1/256 gate every shiny roll uses,
 then 32 out of 256. A population's member and a swarm's stay at 1/512 (128 out of 256).
 
-The last five shinies the route rosters roll are remembered (wRememberedShinies): each comes back
-to its slot whenever its map is entered, until it is battled, and the list is saved in SRAM blocks
-of its own. An entry keeps the map, a recipe byte (slot, grass or water, the time of day's roster,
-the row, alternate shiny) and the DVs; the rest is rebuilt from the roster row on the way back."""
+The last five shinies the wandering mon roll are remembered (wRememberedShinies), whether a route's
+own roster, a swarm or a population rolled them: each comes back to its slot whenever its map is
+entered (and after a swarm's or a population's reshuffle), until it is battled, and the list is
+saved in SRAM blocks of its own. An entry is four bytes: the map, a source byte (slot, kind,
+alternate shiny, the kind's high bits) and an index byte. It points at the row the mon came from:
+a route's roster row; a swarm's SwarmTable row and the time of day's roster; a population's
+pop_mon row and the form it rolled. The rest is rebuilt from that row on the way back, and the DVs
+are rolled again."""
 
+import re
 import tempfile
 from pathlib import Path
 
@@ -19,9 +24,10 @@ from harness.dex_forms import save_game, sram
 
 # constants/pokemon_data_constants.asm and constants/overworld_mon_constants.asm
 SHINY_MASK = 0x80
+ALT_SHINY_MASK = 0x40
+FORM_MASK = 0x1f
 OW_ROLL_FROM_POPULATION = 0x80
 SWARM_ROW = 0x01 # any swarm row bit
-ALT_SHINY_MASK = 0x40
 ENCOUNTER_LENGTH = 10
 OW_MON_FORM = 2
 OW_MON_LEVEL = 3
@@ -30,16 +36,19 @@ OW_MON_ITEM = 6
 OW_MON_PERKS = 7
 OW_MON_MOVE = 8
 NUM_REMEMBERED = 5
-ENTRY_LENGTH = 5
+ENTRY_LENGTH = 4
+SOURCE, INDEX = 2, 3 # an entry's bytes past the map
 SLOT_MASK = 0b11
-WATER_BIT = 1 << 2
-ROW_SHIFT = 3
-ROSTER_SHIFT = 5
-ALT_BIT = 1 << 7
+KIND_SHIFT = 2
+ROUTE_GRASS, ROUTE_WATER, SWARM, POPULATION = range(4)
+ALT_BIT = 1 << 4
+HIGH_SHIFT = 5
 NUM_OW_WILDMON = 4
 OW_WILDMON_LENGTH = 8
 OW_WILDDATA_LENGTH = 2 + 1 + 1 + NUM_OW_WILDMON * OW_WILDMON_LENGTH * 3
+POP_MON_LENGTH = 7
 MORN_F, DAY_F, NITE_F, EVE_F = range(4)
+OLD_SAVE_MAGIC = 0x5e7a # the five-byte list's
 
 FORCE_SHINY = "EVENT_DEBUG_FORCE_SHINY_BEASTS" # the Scientist's BEASTS -> FORCE SHINY
 
@@ -55,6 +64,12 @@ ROUTE_32 = ("ROUTE_32", 11, 74)
 ROUTE_32_WATER_SLOT = 2
 ROUTE_32_QUAGSIRE_ROW = 1
 ROUTE_32_TENTACOOL_ROW = 0
+# The populations: Hidden Grove (one of seven species per visit), the Bug Catching Contest and the
+# Ruins of Alph Inner Chamber (Unown). Each has four members in slots 0 to 3.
+HIDDEN_GROVE = ("HIDDEN_GROVE", 4, 10)
+CONTEST = ("NATIONAL_PARK_BUG_CONTEST", 33, 18)
+INNER_CHAMBER = ("RUINS_OF_ALPH_INNER_CHAMBER", 10, 13)
+NUM_MEMBERS = 4
 NOT_SHINY_SEED = 0x0001
 
 
@@ -76,11 +91,12 @@ def gate_seeds(low, high, count=20):
 SOURCES = {"route": 0, "population": OW_ROLL_FROM_POPULATION, "swarm": SWARM_ROW}
 
 
-def roll_form(game, source, seed):
-	"""Run .RollForm on a plain mon from this source; the form byte it leaves."""
-	game.poke("wOverworldMonRollBuffer", 0, OW_MON_FORM)
+def roll_form(game, source, seed, form=0):
+	"""Run .RollForm on a mon from this source; the form byte it leaves."""
+	game.poke("wOverworldMonRollBuffer", form, OW_MON_FORM)
 	game.poke("wOverworldMonRollBuffer", 0, OW_MON_PERKS)
 	game.poke("wOverworldMonRollFromSwarm", SOURCES[source])
+	game.poke("wOverworldMonSwarmTerrain", 0) # grass
 	game.poke("wOverworldMonRecordShiny", 0)
 	game.seed_random(seed)
 	call(game, "RollOverworldMons.RollForm")
@@ -100,22 +116,30 @@ def test_rolls_under_both_numerators(game, source):
 		assert roll_form(game, source, seed) & SHINY_MASK, "seed %d" % seed
 
 
-@pytest.mark.parametrize("source", list(SOURCES))
-def test_only_the_routes_own_shinies_are_recorded(game, source):
+@pytest.mark.parametrize("source, kind", [("route", ROUTE_GRASS), ("swarm", SWARM),
+	("population", POPULATION)])
+def test_every_source_is_recorded_as_its_kind(game, source, kind):
 	seed = gate_seeds(0, 32, count=1)[0]
 	roll_form(game, source, seed)
-	assert bool(game.peek("wOverworldMonRecordShiny")) == (source == "route")
+	assert game.peek("wOverworldMonRecordShiny") == kind + 1
 
 
-@pytest.mark.parametrize("source, forced", [("route", True), ("swarm", True), ("population", False)])
-def test_force_shiny_reaches_the_routes_own_mon(game, source, forced):
-	"""The debug ROM's FORCE SHINY forces a swarm's and the route's wanderers, not a population's."""
+@pytest.mark.parametrize("source", list(SOURCES))
+def test_a_row_that_is_always_shiny_is_not_recorded(game, source):
+	"""It comes back shiny by itself."""
+	assert roll_form(game, source, NOT_SHINY_SEED, form=SHINY_MASK) & SHINY_MASK
+	assert game.peek("wOverworldMonRecordShiny") == 0
+
+
+@pytest.mark.parametrize("source", list(SOURCES))
+def test_force_shiny_reaches_every_wanderer(game, source):
+	"""The debug ROM's FORCE SHINY forces the route's, a swarm's and a population's wanderers."""
 	game.set_event_flag(FORCE_SHINY)
 	seed = gate_seeds(128, 256, count=1)[0] # not shiny at any of the odds
-	assert bool(roll_form(game, source, seed) & SHINY_MASK) == forced
+	assert roll_form(game, source, seed) & SHINY_MASK
 
 
-# Remembering
+# Entries
 
 def encounter(game, slot):
 	return game.peek("wOverworldMonEncounters", slot * ENCOUNTER_LENGTH, ENCOUNTER_LENGTH)
@@ -126,13 +150,14 @@ def species(enc):
 
 
 def visible(enc):
-	"""What a remembered shiny keeps: species, form, DVs."""
-	return species(enc), enc[OW_MON_FORM], enc[OW_MON_DVS], enc[OW_MON_DVS + 1]
+	"""What a remembered shiny keeps: species and form (the DVs are rolled again)."""
+	return species(enc), enc[OW_MON_FORM]
 
 
-def all_but_the_item(enc):
-	"""Everything an encounter rebuilt on a map with fixed levels should match: the item is rerolled."""
-	return enc[:OW_MON_ITEM] + enc[OW_MON_ITEM + 1:]
+def all_but_the_rerolls(enc):
+	"""Everything an encounter rebuilt on a map with fixed levels should match: the DVs and the item
+	are rolled again."""
+	return enc[:OW_MON_DVS] + enc[OW_MON_PERKS:]
 
 
 def roster(time):
@@ -155,25 +180,41 @@ def roster_row(game, terrain, map_name, which, row):
 		address += OW_WILDDATA_LENGTH
 
 
-def recipe(slot, row=0, which=0, water=False, alt=False):
-	return slot | (WATER_BIT if water else 0) | row << ROW_SHIFT | which << ROSTER_SHIFT \
-		| (ALT_BIT if alt else 0)
+def heaviest_row(game, terrain, map_name, which):
+	"""The row a swarm takes first: the heaviest, the earlier one on a tie."""
+	rows = [roster_row(game, terrain, map_name, which, row) for row in range(NUM_OW_WILDMON)]
+	return max(rows, key=lambda r: (r[0], -rows.index(r)))
 
 
-def remember(game, map_name, byte, dvs=(0xab, 0xcd), at=0):
+def route_entry(slot, row=0, which=0, water=False, alt=False):
+	"""(source, index) for a route's own roster row."""
+	kind = ROUTE_WATER if water else ROUTE_GRASS
+	return slot | kind << KIND_SHIFT | (ALT_BIT if alt else 0), which * NUM_OW_WILDMON + row
+
+
+def swarm_entry(slot, swarm_id, which=0, alt=False):
+	return (slot | SWARM << KIND_SHIFT | (ALT_BIT if alt else 0) | (swarm_id >> 8) << HIGH_SHIFT
+		| which << (HIGH_SHIFT + 1)), swarm_id & 0xff
+
+
+def population_entry(slot, row, form=0, alt=False):
+	return (slot | POPULATION << KIND_SHIFT | (ALT_BIT if alt else 0) | (row >> 3) << HIGH_SHIFT,
+		(row & 7) << 5 | form)
+
+
+def kind(entry):
+	return (entry[SOURCE] >> KIND_SHIFT) & 0b11
+
+
+def slot_of(entry):
+	return entry[SOURCE] & SLOT_MASK
+
+
+def remember(game, map_name, entry, at=0):
 	"""Write a remembered shiny by hand into entry `at`."""
 	group, number = constants.maps()[map_name]
-	for i, value in enumerate((group, number, byte) + tuple(dvs)):
+	for i, value in enumerate((group, number) + tuple(entry)):
 		game.poke("wRememberedShinies", value, at * ENTRY_LENGTH + i)
-
-
-def reroll(game, time=None, seed=NOT_SHINY_SEED):
-	"""Roll the map the player stands on again, as entering it does, with FORCE SHINY off."""
-	game.set_event_flag(FORCE_SHINY, False)
-	if time is not None:
-		game.poke("wTimeOfDay", time)
-	game.seed_random(seed)
-	call(game, "RollOverworldMons")
 
 
 def remembered(game):
@@ -192,6 +233,21 @@ def visit(game, place, force=False):
 	game.warp(*place)
 
 
+def reroll(game, time=None, seed=NOT_SHINY_SEED):
+	"""Roll the map the player stands on again, as entering it does, with FORCE SHINY off."""
+	game.set_event_flag(FORCE_SHINY, False)
+	if time is not None:
+		game.poke("wTimeOfDay", time)
+	game.seed_random(seed)
+	call(game, "RollOverworldMons")
+
+
+def pending(game):
+	return game.peek("wOverworldMonShinyPending")
+
+
+# A route's own
+
 def shinies_on_route_30(game):
 	"""Visit Route 30 with FORCE SHINY on: every rolled slot comes up shiny. {slot: encounter}"""
 	visit(game, ROUTE_30, force=True)
@@ -204,34 +260,43 @@ def shinies_on_route_30(game):
 
 
 def test_shinies_are_remembered(game):
-	rolled = shinies_on_route_30(game)
+	shinies_on_route_30(game)
 	entries = on_map(game, "ROUTE_30")
-	assert sorted(entry[2] & SLOT_MASK for entry in entries) == list(ROUTE_30_ROLLED)
+	assert sorted(slot_of(entry) for entry in entries) == list(ROUTE_30_ROLLED)
 	for entry in entries:
-		slot = entry[2] & SLOT_MASK
-		assert bool(entry[2] & WATER_BIT) == (slot == 3), "slot 3 is the water slot"
-		assert (entry[3], entry[4]) == tuple(rolled[slot][OW_MON_DVS:OW_MON_DVS + 2])
+		assert kind(entry) == (ROUTE_WATER if slot_of(entry) == 3 else ROUTE_GRASS), \
+			"slot 3 is the water slot"
 
 
 def test_shinies_come_back(game):
 	rolled = shinies_on_route_30(game)
 	visit(game, ELSEWHERE)
-	game.set_event_flag(FORCE_SHINY, False)
 	visit(game, ROUTE_30)
 	for slot, enc in rolled.items():
-		# Route 30's levels are fixed, so all but the rerolled item comes back as it was.
-		assert all_but_the_item(encounter(game, slot)) == all_but_the_item(enc), "slot %d" % slot
+		# Route 30's levels are fixed, so all but the rerolled DVs and item comes back as it was.
+		assert all_but_the_rerolls(encounter(game, slot)) == all_but_the_rerolls(enc), "slot %d" % slot
 
 
-@pytest.mark.parametrize("remember", [True, False])
-def test_a_remembered_shiny_chimes(game, remember):
+def test_the_dvs_are_rolled_again(game):
+	"""Only where the mon came from is kept, so each return draws new DVs."""
+	visit(game, ROUTE_30)
+	remember(game, "ROUTE_30", route_entry(1))
+	saved = game.save_state()
+	seen = set()
+	for seed in range(1, 6):
+		game.load_state(saved)
+		reroll(game, seed=seed)
+		seen.add(tuple(encounter(game, 1)[OW_MON_DVS:OW_MON_DVS + 2]))
+	assert len(seen) > 1, "every return drew the same DVs"
+
+
+@pytest.mark.parametrize("remember_them", [True, False])
+def test_a_remembered_shiny_chimes(game, remember_them):
 	shinies_on_route_30(game)
-	if not remember:
+	if not remember_them:
 		call(game, "ClearRememberedShinies")
-	game.set_event_flag(FORCE_SHINY, False)
-	game.seed_random(NOT_SHINY_SEED)
-	call(game, "RollOverworldMons")
-	assert bool(game.peek("wOverworldMonShinyPending")) == remember
+	reroll(game)
+	assert bool(pending(game)) == remember_them
 
 
 def battle_water_slot(game):
@@ -266,7 +331,7 @@ def test_a_battle_spends_a_remembered_shiny(game, ending):
 	game.wait(120)
 	assert (game.peek("wPartyCount") == party + 1) == (ending == "catch"), "the catch didn't happen"
 	assert game.in_map("ROUTE_30") == (ending != "black_out"), "the black-out didn't happen"
-	assert sorted(entry[2] & SLOT_MASK for entry in on_map(game, "ROUTE_30")) == [1, 2], \
+	assert sorted(slot_of(entry) for entry in on_map(game, "ROUTE_30")) == [1, 2], \
 		"the water slot's shiny should be forgotten, and only it"
 	if ending != "run_away":
 		return # the list is what matters; coming back is checked once, below
@@ -323,32 +388,32 @@ def test_a_remembered_shiny_scales_to_the_badges(game):
 
 @pytest.mark.parametrize("time, expected", [(MORN_F, MORN_F), (DAY_F, DAY_F), (NITE_F, NITE_F),
 	(EVE_F, NITE_F)])
-def test_the_recipe_names_the_row_it_rolled(game, time, expected):
-	"""Each entry's recipe points at the very roster row its slot rolled: the slot, grass or water,
-	the time of day's roster (evening's is the night's) and the row."""
+def test_the_index_names_the_row_it_rolled(game, time, expected):
+	"""Each route entry's index points at the very roster row its slot rolled: the time of day's
+	roster (evening's is the night's) and the row."""
 	visit(game, ROUTE_30)
 	game.set_event_flag(FORCE_SHINY)
 	game.poke("wTimeOfDay", time)
 	game.seed_random(NOT_SHINY_SEED)
 	call(game, "RollOverworldMons")
 	entries = on_map(game, "ROUTE_30")
-	assert sorted(entry[2] & SLOT_MASK for entry in entries) == list(ROUTE_30_ROLLED)
+	assert sorted(slot_of(entry) for entry in entries) == list(ROUTE_30_ROLLED)
 	for entry in entries:
-		slot, byte = entry[2] & SLOT_MASK, entry[2]
-		water = bool(byte & WATER_BIT)
+		slot = slot_of(entry)
+		water = kind(entry) == ROUTE_WATER
 		assert water == (slot == 3)
-		assert (byte >> ROSTER_SHIFT) & 0b11 == expected, "slot %d" % slot
+		assert entry[INDEX] // NUM_OW_WILDMON == expected, "slot %d" % slot
 		row = roster_row(game, "water" if water else "grass", "ROUTE_30", expected,
-			(byte >> ROW_SHIFT) & 0b11)
+			entry[INDEX] % NUM_OW_WILDMON)
 		assert species(encounter(game, slot)) == row[1] | row[2] << 8, \
-			"slot %d's recipe names a row with another species" % slot
+			"slot %d's index names a row with another species" % slot
 
 
 @pytest.mark.parametrize("place, slot, terrain", [(ROUTE_30, 2, "grass"),
 	(ROUTE_32, ROUTE_32_WATER_SLOT, "water")])
-def test_every_recipe_rebuilds_its_row(game, place, slot, terrain):
+def test_every_row_rebuilds(game, place, slot, terrain):
 	"""A hand-written entry for each roster and row comes back as exactly that row, whatever the
-	time of day now: species, level, form, perks and extra move from the row, shiny, its own DVs."""
+	time of day now: species, level, form, perks and extra move from the row, and shiny."""
 	visit(game, place)
 	saved = game.save_state()
 	other_roster = 0
@@ -356,7 +421,7 @@ def test_every_recipe_rebuilds_its_row(game, place, slot, terrain):
 		for row in range(NUM_OW_WILDMON):
 			game.load_state(saved)
 			now = (which + 1) % 3 # another time of day's roster
-			remember(game, place[0], recipe(slot, row, which, water=terrain == "water"))
+			remember(game, place[0], route_entry(slot, row, which, water=terrain == "water"))
 			reroll(game, time=now)
 			enc = encounter(game, slot)
 			expected = roster_row(game, terrain, place[0], which, row)
@@ -366,15 +431,14 @@ def test_every_recipe_rebuilds_its_row(game, place, slot, terrain):
 			assert enc[OW_MON_FORM] == expected[4] | SHINY_MASK, where
 			assert enc[OW_MON_PERKS] == expected[5], where
 			assert enc[OW_MON_MOVE:OW_MON_MOVE + 2] == expected[6:8], where
-			assert enc[OW_MON_DVS:OW_MON_DVS + 2] == [0xab, 0xcd], where
-			assert game.peek("wOverworldMonShinyPending") & 1 << slot, where + " should chime"
+			assert pending(game) & 1 << slot, where + " should chime"
 			other_roster += expected[1:3] != roster_row(game, terrain, place[0], now, row)[1:3]
 	if place == ROUTE_30:
 		assert other_roster, "Route 30's rosters differ by time of day, so this tells them apart"
 
 
 def test_an_alternate_shiny_is_remembered_as_one(game):
-	"""The recipe's alternate-shiny bit follows the form it rolled."""
+	"""The entry's alternate-shiny bit follows the form it rolled."""
 	visit(game, ROUTE_30)
 	saved = game.save_state()
 	seen = set()
@@ -384,8 +448,8 @@ def test_an_alternate_shiny_is_remembered_as_one(game):
 		game.seed_random(seed)
 		call(game, "RollOverworldMons")
 		for entry in on_map(game, "ROUTE_30"):
-			alt = bool(encounter(game, entry[2] & SLOT_MASK)[OW_MON_FORM] & ALT_SHINY_MASK)
-			assert bool(entry[2] & ALT_BIT) == alt, "seed %d" % seed
+			alt = bool(encounter(game, slot_of(entry))[OW_MON_FORM] & ALT_SHINY_MASK)
+			assert bool(entry[SOURCE] & ALT_BIT) == alt, "seed %d" % seed
 			seen.add(alt)
 		if seen == {True, False}:
 			return
@@ -395,7 +459,7 @@ def test_an_alternate_shiny_is_remembered_as_one(game):
 @pytest.mark.parametrize("alt", [True, False])
 def test_an_alternate_shiny_comes_back_as_one(game, alt):
 	visit(game, ROUTE_30)
-	remember(game, "ROUTE_30", recipe(1, alt=alt))
+	remember(game, "ROUTE_30", route_entry(1, alt=alt))
 	reroll(game)
 	form = encounter(game, 1)[OW_MON_FORM]
 	assert form & SHINY_MASK
@@ -424,7 +488,7 @@ def test_a_remembered_shiny_rides_the_surface_as_its_species_does(game):
 			(ROUTE_32_TENTACOOL_ROW, True, False)):
 		game.load_state(saved)
 		which = roster(game.peek("wTimeOfDay"))
-		remember(game, "ROUTE_32", recipe(slot, remembered_row, which, water=True))
+		remember(game, "ROUTE_32", route_entry(slot, remembered_row, which, water=True))
 		reroll(game, seed=rolled[over])
 		assert surface_bit(game, slot) == rides, "row %d over a roll that rode=%s" % (remembered_row, over)
 
@@ -445,17 +509,41 @@ def test_a_remembered_shiny_takes_its_slot_back_from_a_beast(game):
 	assert game.peek("wOverworldMonBeastSlots", 0, 2) == [0, 0], "Raikou should have stepped aside"
 	for slot in (1, 2):
 		assert visible(encounter(game, slot)) == visible(rolled[slot]), "slot %d" % slot
-		assert game.peek("wOverworldMonShinyPending") & 1 << slot, "slot %d should chime" % slot
+		assert pending(game) & 1 << slot, "slot %d should chime" % slot
+
+
+def test_a_route_entry_on_a_map_without_its_table_is_skipped(game):
+	"""New Bark Town has no wandering mon: an entry there puts nothing anywhere."""
+	visit(game, ELSEWHERE)
+	before = [encounter(game, slot) for slot in range(NUM_MEMBERS)]
+	remember(game, ELSEWHERE[0], route_entry(1))
+	reroll(game)
+	assert [encounter(game, slot) for slot in range(NUM_MEMBERS)] == before
+
+
+# Swarms
+
+def swarm_id(name):
+	from test_alt_shiny import swarm_ids
+	return swarm_ids()[name]
+
+
+def swarm_mon(game, number):
+	"""GetSwarmMonById: (species, form byte, move, terrain byte) for a SWARM_* id, or None."""
+	out = call(game, "GetSwarmMonById", de=number)
+	if not out["f"] & 0x10:
+		return None
+	return out["de"], out["a"], out["bc"], out["hl"] & 0xff
 
 
 def rock_tunnel_with_a_swarm(game):
-	"""Rock Tunnel 1F with its Geodude swarm on, and a shiny remembered in slot 1. {slot: object}"""
+	"""Rock Tunnel 1F with its Geodude swarm on, and a route shiny remembered in slot 1."""
 	from test_shiny_chime import ROUTE, ROUTE_STAND, ROUTE_SWARM, wanderer_objects
 
 	game.poke("wActiveSwarms", ROUTE_SWARM)
 	visit(game, (ROUTE,) + ROUTE_STAND)
 	which = roster(game.peek("wTimeOfDay"))
-	remember(game, ROUTE, recipe(1, 0, which))
+	remember(game, ROUTE, route_entry(1, 0, which))
 	reroll(game)
 	row = roster_row(game, "grass", ROUTE, which, 0)
 	enc = encounter(game, 1)
@@ -476,7 +564,7 @@ def test_a_remembered_shiny_survives_a_swarm_reroll(game):
 	game.seed_random(NOT_SHINY_SEED)
 	call(game, "RerollSwarmOverworldMons")
 	assert visible(encounter(game, 1)) == before
-	assert game.peek("wOverworldMonShinyPending") & 1 << 1, "it should chime again"
+	assert pending(game) & 1 << 1, "it should chime again"
 	assert len(on_map(game, ROUTE)) == 1
 
 
@@ -493,13 +581,242 @@ def test_a_swarm_battle_against_it_spends_it(game):
 	assert not species(encounter(game, 1)), "the slot just fought sits the reshuffle out"
 
 
+def test_get_swarm_mon_by_id(game):
+	"""Any swarm's row, running or not; nothing for 0 or past the table."""
+	from harness.alt_shiny import pokemon_index
+	from harness.data import global_constants
+
+	consts = global_constants().values
+	mon = swarm_mon(game, swarm_id("SWARM_GEODUDE_RB"))
+	assert mon[0] == pokemon_index("GEODUDE")
+	assert mon[1] == consts["GEODUDE_RB_FORM"]
+	assert mon[3] & 1 == consts["SWARM_GRASS"]
+	assert swarm_mon(game, 0) is None
+	assert swarm_mon(game, consts["NUM_SWARMS"] + 1) is None
+	assert swarm_mon(game, 0x1ff) is None
+
+
+def swarm_shinies_in_rock_tunnel(game):
+	"""Rock Tunnel 1F, swarming, with FORCE SHINY on: [(slot, encounter, entry)] for the swarm's mon."""
+	from test_shiny_chime import ROUTE, ROUTE_STAND, ROUTE_SWARM
+
+	game.poke("wActiveSwarms", ROUTE_SWARM)
+	visit(game, (ROUTE,) + ROUTE_STAND, force=True)
+	geodude = swarm_mon(game, ROUTE_SWARM)
+	found = []
+	for entry in on_map(game, ROUTE):
+		enc = encounter(game, slot_of(entry))
+		if species(enc) == geodude[0]:
+			found.append((slot_of(entry), enc, entry))
+	assert found, "the swarm put no Geodude out"
+	return found
+
+
+def test_a_swarm_shiny_is_remembered_as_its_swarm(game):
+	from test_shiny_chime import ROUTE, ROUTE_SWARM
+
+	shinies = swarm_shinies_in_rock_tunnel(game)
+	which = roster(game.peek("wTimeOfDay"))
+	for slot, enc, entry in shinies:
+		assert kind(entry) == SWARM, "slot %d" % slot
+		assert entry[INDEX] | ((entry[SOURCE] >> HIGH_SHIFT) & 1) << 8 == ROUTE_SWARM
+		assert entry[SOURCE] >> (HIGH_SHIFT + 1) == which
+	for entry in on_map(game, ROUTE):
+		if kind(entry) != SWARM:
+			assert kind(entry) == ROUTE_GRASS, "the route's own rows stay route entries"
+
+
+@pytest.mark.parametrize("swarming", [True, False])
+def test_a_swarm_shiny_comes_back_as_its_swarm(game, swarming):
+	"""Its swarm's species, form and move, at the level of the roster's heaviest row, whether or not
+	the swarm is still running."""
+	from test_shiny_chime import ROUTE, ROUTE_STAND, ROUTE_SWARM
+
+	shinies = swarm_shinies_in_rock_tunnel(game)
+	if not swarming:
+		game.poke("wActiveSwarms", 0)
+	visit(game, ELSEWHERE)
+	visit(game, (ROUTE,) + ROUTE_STAND)
+	geodude = swarm_mon(game, ROUTE_SWARM)
+	which = roster(game.peek("wTimeOfDay"))
+	level = heaviest_row(game, "grass", ROUTE, which)[3]
+	for slot, enc, entry in shinies:
+		back = encounter(game, slot)
+		assert visible(back) == visible(enc), "slot %d" % slot
+		assert back[OW_MON_FORM] & FORM_MASK == geodude[1] & FORM_MASK
+		assert back[OW_MON_MOVE] | back[OW_MON_MOVE + 1] << 8 == geodude[2]
+		assert back[OW_MON_PERKS] == 0
+		assert back[OW_MON_LEVEL] == level, "slot %d comes back at the heaviest row's level" % slot
+
+
+def test_a_swarm_entry_for_no_swarm_is_skipped(game):
+	from test_shiny_chime import ROUTE, ROUTE_STAND
+
+	visit(game, (ROUTE,) + ROUTE_STAND)
+	saved = game.save_state()
+	reroll(game)
+	control = encounter(game, 1)
+	for bad in (0, 0x1ff):
+		game.load_state(saved)
+		remember(game, ROUTE, swarm_entry(1, bad))
+		reroll(game)
+		assert encounter(game, 1) == control, "swarm id %d" % bad
+
+
+# Populations
+
+def population_rows(map_name):
+	"""The map's pop_mon rows, from its data: [(species, min level, max level, form, perks)]."""
+	text = (constants.ROOT / "data" / "wild" / "mon_populations.asm").read_text(encoding="utf-8")
+	block = re.search(r"def_population %s,(.*?)end_population" % map_name, text, re.S).group(1)
+	rows = []
+	for m in re.finditer(r"pop_mon\s+\d+,\s*(\w+),\s*(\d+),\s*(\d+),\s*(\w+),\s*(\w+)", block):
+		rows.append(m.groups())
+	return rows
+
+
+def species_of_row(map_name, row):
+	from harness.alt_shiny import pokemon_index
+	return pokemon_index(population_rows(map_name)[row][0])
+
+
+def test_population_shinies_are_remembered(game):
+	"""Hidden Grove with FORCE SHINY on: all four members, as population entries naming their row."""
+	visit(game, HIDDEN_GROVE, force=True)
+	entries = on_map(game, "HIDDEN_GROVE")
+	assert sorted(slot_of(entry) for entry in entries) == list(range(NUM_MEMBERS))
+	for entry in entries:
+		enc = encounter(game, slot_of(entry))
+		assert kind(entry) == POPULATION
+		row = (entry[SOURCE] >> HIGH_SHIFT) << 3 | entry[INDEX] >> 5
+		assert species(enc) == species_of_row("HIDDEN_GROVE", row)
+		assert entry[INDEX] & FORM_MASK == enc[OW_MON_FORM] & FORM_MASK
+
+
+@pytest.mark.parametrize("row", range(7))
+def test_a_population_shiny_comes_back_among_another_species(game, row):
+	"""Hidden Grove shows one species a visit, but a remembered shiny of another stays."""
+	visit(game, HIDDEN_GROVE)
+	remember(game, "HIDDEN_GROVE", population_entry(0, row))
+	reroll(game)
+	back = encounter(game, 0)
+	name, low, high, _, _ = population_rows("HIDDEN_GROVE")[row]
+	assert species(back) == species_of_row("HIDDEN_GROVE", row)
+	assert back[OW_MON_FORM] & SHINY_MASK
+	assert int(low) <= back[OW_MON_LEVEL] <= int(high), "a level in its row's range"
+	assert pending(game) & 1
+	others = {species(encounter(game, slot)) for slot in range(1, NUM_MEMBERS)}
+	assert len(others) == 1, "the others are still one species for the visit"
+
+
+@pytest.mark.parametrize("row", [8, 9])
+def test_a_contest_row_past_seven_comes_back(game, row):
+	"""Rows 8 and up keep their high bits in the source byte: the contest's Scyther and Pinsir,
+	with the wild colour they rolled."""
+	visit(game, CONTEST)
+	remember(game, "NATIONAL_PARK_BUG_CONTEST", population_entry(1, row, form=2))
+	reroll(game)
+	back = encounter(game, 1)
+	assert species(back) == species_of_row("NATIONAL_PARK_BUG_CONTEST", row)
+	assert back[OW_MON_FORM] == 2 | SHINY_MASK
+
+
+@pytest.mark.parametrize("place", [HIDDEN_GROVE, CONTEST], ids=lambda place: place[0])
+def test_a_population_shiny_survives_a_reshuffle(game, place):
+	"""A battle on a population map reshuffles every member: the remembered one goes back, at a level
+	in its range, and chimes again."""
+	map_name = place[0]
+	visit(game, place)
+	remember(game, map_name, population_entry(2, 1))
+	reroll(game)
+	game.poke("wOverworldMonShinyPending", 0)
+	levels = set()
+	for seed in range(1, 8):
+		game.seed_random(seed)
+		call(game, "RerollPopulation")
+		back = encounter(game, 2)
+		assert species(back) == species_of_row(map_name, 1)
+		assert back[OW_MON_FORM] & SHINY_MASK
+		assert pending(game) & 1 << 2, "it should chime again"
+		levels.add(back[OW_MON_LEVEL])
+	_, low, high, _, _ = population_rows(map_name)[1]
+	assert levels <= set(range(int(low), int(high) + 1))
+
+
+def test_an_unown_keeps_its_letter(game):
+	"""The Inner Chamber's Unown: a real roll records each letter, and an entry brings it back."""
+	game.poke("wUnlockedUnowns", 1)
+	visit(game, INNER_CHAMBER, force=True)
+	entries = on_map(game, "RUINS_OF_ALPH_INNER_CHAMBER")
+	assert len(entries) == NUM_MEMBERS
+	for entry in entries:
+		assert entry[INDEX] & FORM_MASK == encounter(game, slot_of(entry))[OW_MON_FORM] & FORM_MASK
+	call(game, "ClearRememberedShinies")
+	remember(game, "RUINS_OF_ALPH_INNER_CHAMBER", population_entry(3, 0, form=7))
+	reroll(game)
+	assert encounter(game, 3)[OW_MON_FORM] & FORM_MASK == 7
+
+
+def test_a_population_entry_off_its_map_is_skipped(game):
+	"""Route 30 has no population: a population entry there leaves the slot as it rolled."""
+	visit(game, ROUTE_30)
+	saved = game.save_state()
+	reroll(game)
+	control = encounter(game, 1)
+	game.load_state(saved)
+	remember(game, "ROUTE_30", population_entry(1, 0))
+	reroll(game)
+	assert encounter(game, 1) == control
+
+
+def test_a_population_entry_past_its_roster_is_skipped(game):
+	visit(game, INNER_CHAMBER) # a single row
+	game.poke("wUnlockedUnowns", 1)
+	saved = game.save_state()
+	reroll(game)
+	control = encounter(game, 0)
+	game.load_state(saved)
+	remember(game, "RUINS_OF_ALPH_INNER_CHAMBER", population_entry(0, 5))
+	reroll(game)
+	assert encounter(game, 0) == control
+
+
+def test_the_contest_forgets_its_shinies_when_it_ends(game):
+	"""ForgetContestShinies (the contest's results script) drops every contest entry, wherever it is
+	in the list, and keeps the rest in order."""
+	visit(game, ROUTE_30)
+	places = ["NATIONAL_PARK_BUG_CONTEST", "NATIONAL_PARK_BUG_CONTEST", "ROUTE_30",
+		"NATIONAL_PARK_BUG_CONTEST", "ROUTE_31"]
+	for at, map_name in enumerate(places):
+		remember(game, map_name, (at & SLOT_MASK, at), at=at)
+	raw = remembered(game)
+	call(game, "ForgetContestShinies")
+	assert remembered(game) == [raw[2], raw[4], [0] * 4, [0] * 4, [0] * 4]
+
+
+def test_the_contest_results_forget_them(game):
+	"""BugContestResultsScript is where every way out of a contest ends up."""
+	text = (constants.ROOT / "engine" / "events" / "std_scripts.asm").read_text(encoding="utf-8")
+	script = text.split("BugContestResultsScript:")[1].split("\n\n")[0]
+	assert "callasm ForgetContestShinies" in script
+
+
+def test_a_contest_shiny_is_remembered_during_the_contest(game):
+	visit(game, CONTEST, force=True)
+	entries = on_map(game, "NATIONAL_PARK_BUG_CONTEST")
+	assert len(entries) == NUM_MEMBERS
+	assert all(kind(entry) == POPULATION for entry in entries)
+
+
+# Forgetting
+
 def test_forgetting_one_closes_the_gap(game):
 	"""ForgetRememberedShiny drops the entry for one slot on this map, from anywhere in the list, and
 	the ones behind it move up. The same slot on another map is left alone."""
 	visit(game, ROUTE_30)
 	entries = [("ROUTE_30", 1), ("ROUTE_31", 1), ("ROUTE_30", 2), ("ROUTE_31", 2), ("ROUTE_30", 3)]
 	for at, (map_name, slot) in enumerate(entries):
-		remember(game, map_name, recipe(slot), dvs=(at, at), at=at)
+		remember(game, map_name, (slot, at), at=at)
 	raw = remembered(game)
 	empty = [0] * ENTRY_LENGTH
 
@@ -544,7 +861,7 @@ def test_bad_checksum_loads_nothing(game):
 	shinies_on_route_30(game)
 	call(game, "SaveRememberedShinies")
 	bank, address = game.pyboy.symbol_lookup("sRememberedShinies")
-	game.pyboy.memory[bank, address + 3] = game.pyboy.memory[bank, address + 3] ^ 0x01 # one DV bit
+	game.pyboy.memory[bank, address + 3] = game.pyboy.memory[bank, address + 3] ^ 0x01
 	call(game, "LoadRememberedShinies")
 	assert not any(entry[0] for entry in remembered(game))
 
@@ -554,6 +871,17 @@ def test_bad_magic_loads_nothing(game):
 	call(game, "SaveRememberedShinies")
 	bank, address = game.pyboy.symbol_lookup("sRememberedShiniesMagic")
 	game.pyboy.memory[bank, address] = game.pyboy.memory[bank, address] ^ 0xff
+	call(game, "LoadRememberedShinies")
+	assert not any(entry[0] for entry in remembered(game))
+
+
+def test_a_five_byte_list_loads_nothing(game):
+	"""A save from before entries were four bytes has the old magic: it loads as nothing."""
+	shinies_on_route_30(game)
+	call(game, "SaveRememberedShinies")
+	bank, address = game.pyboy.symbol_lookup("sRememberedShiniesMagic")
+	game.pyboy.memory[bank, address] = OLD_SAVE_MAGIC & 0xff
+	game.pyboy.memory[bank, address + 1] = OLD_SAVE_MAGIC >> 8
 	call(game, "LoadRememberedShinies")
 	assert not any(entry[0] for entry in remembered(game))
 

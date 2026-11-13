@@ -56,32 +56,49 @@ DEF OW_WILDDATA_LENGTH EQU 2 + 1 + 1 + NUM_OW_WILDMON * OW_WILDMON_LENGTH * 3
 DEF OW_ROLL_FROM_POPULATION EQU $80
 assert OW_ROLL_FROM_POPULATION >= 1 << NUM_OW_WILDMON, "OW_ROLL_FROM_POPULATION overlaps a swarm row bit"
 
-; Remembered shinies (wRememberedShinies): the last few shinies the route rosters rolled, newest
-; first. Each one comes back to its slot whenever its map is entered, until it is battled, so
-; leaving a route doesn't lose it. The list is saved, so an entry keeps only what a later visit
-; can't rebuild from the roster: where the mon came from, and its DVs. See
-; docs/overworld_pokemon.md.
+; Remembered shinies (wRememberedShinies): the last few shinies the wandering mon rolled -- a
+; route's own, a swarm's or a population's -- newest first. Each one comes back to its slot
+; whenever its map is entered or reshuffled, until it is battled. The list is saved, so an entry
+; keeps only where the mon came from: which table, and which row of it. Everything else is rebuilt
+; from that row, and the DVs are rolled again. See docs/overworld_pokemon.md.
 DEF NUM_REMEMBERED_SHINIES EQU 5
 rsreset
 DEF REMEMBERED_SHINY_MAP_GROUP  rb ; 0 ; 0 for an unused entry
 DEF REMEMBERED_SHINY_MAP_NUMBER rb ; 1
-DEF REMEMBERED_SHINY_RECIPE     rb ; 2 ; see below
-DEF REMEMBERED_SHINY_DVS        rw ; 3
+DEF REMEMBERED_SHINY_SOURCE     rb ; 2 ; the slot, the kind, alt shiny, and the kind's high bits
+DEF REMEMBERED_SHINY_INDEX      rb ; 3 ; the kind's low bits
 DEF REMEMBERED_SHINY_LENGTH EQU _RS
 
-; The recipe byte: the slot, and the roster row it was rolled from. The row and the time of day's
-; roster sit side by side, so that the two together are the row's place in the area table.
-DEF REMEMBERED_SLOT_MASK    EQU %00000011 ; the 0-based slot
-DEF REMEMBERED_WATER_F      EQU 2         ; set for the water table, clear for the grass one
-DEF REMEMBERED_ROW_SHIFT    EQU 3
-DEF REMEMBERED_ROW_MASK     EQU %00011000 ; the row within its roster, 0 to NUM_OW_WILDMON - 1
-DEF REMEMBERED_ROSTER_SHIFT EQU 5
-DEF REMEMBERED_ROSTER_MASK  EQU %01100000 ; MORN_F, DAY_F or NITE_F (evening shares the night's)
-DEF REMEMBERED_ALT_SHINY_F  EQU 7         ; an alternate shiny
-assert NUM_OW_WILDMON == 1 << (REMEMBERED_ROSTER_SHIFT - REMEMBERED_ROW_SHIFT), \
-	"the recipe's row field has to be exactly one roster wide"
+; The source byte.
+DEF REMEMBERED_SLOT_MASK   EQU %00000011 ; the 0-based slot
+DEF REMEMBERED_KIND_SHIFT  EQU 2
+DEF REMEMBERED_KIND_MASK   EQU %00001100 ; one of the REMEMBERED_* kinds below
+DEF REMEMBERED_ALT_SHINY_F EQU 4         ; an alternate shiny
+DEF REMEMBERED_HIGH_SHIFT  EQU 5
+DEF REMEMBERED_HIGH_MASK   EQU %11100000 ; the kind's own high bits
 
-DEF REMEMBERED_SHINIES_SAVE_MAGIC EQU $5e7a ; marks a saved copy of the list; anything else loads as none
+; What each kind keeps, in the index byte and the source byte's high bits:
+; - A route's grass or water roster: index = time-of-day roster * NUM_OW_WILDMON + row, the row's
+;   place in the area table. The high bits are unused.
+; - A swarm: index = the low 8 bits of its SWARM_* id; high bit 0 = the id's bit 8; high bits 1-2 =
+;   the time-of-day roster it rolled from, whose heaviest row gives the level.
+; - A population: index bits 0-4 = the form number it rolled (a wild colour, an Unown letter);
+;   index bits 5-7 = its pop_mon row's low 3 bits; the high bits = that row's high 3 bits.
+	const_def
+	const REMEMBERED_ROUTE_GRASS ; 0
+	const REMEMBERED_ROUTE_WATER ; 1
+	const REMEMBERED_SWARM       ; 2
+	const REMEMBERED_POPULATION  ; 3
+assert const_value <= 1 << (REMEMBERED_ALT_SHINY_F - REMEMBERED_KIND_SHIFT), "too many remembered kinds"
+DEF REMEMBERED_SWARM_ID_HIGH_F   EQU REMEMBERED_HIGH_SHIFT     ; the swarm id's bit 8
+DEF REMEMBERED_SWARM_ROSTER_SHIFT EQU REMEMBERED_HIGH_SHIFT + 1
+DEF REMEMBERED_SWARM_ROSTER_MASK EQU %11000000
+DEF REMEMBERED_POP_ROW_LOW_SHIFT EQU 5
+DEF REMEMBERED_POP_FORM_MASK     EQU %00011111
+DEF MAX_REMEMBERED_SWARM_ID      EQU (1 << 9) - 1
+DEF MAX_REMEMBERED_POP_ROWS      EQU 1 << 6
+
+DEF REMEMBERED_SHINIES_SAVE_MAGIC EQU $5e7b ; marks a saved copy of the list; anything else loads as none
 
 
 ; Populations (see data/wild/mon_populations.asm and docs/overworld_pokemon.md). A standing

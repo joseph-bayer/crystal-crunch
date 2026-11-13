@@ -109,11 +109,7 @@ def test_force_shiny_makes_every_swarm_mon_shiny(game):
 		assert result & A.SHINY_MASK, "seed %d should be forced shiny" % seed
 		alternates += bool(result & A.ALT_SHINY_MASK)
 	assert 60 <= alternates <= 95, "about 4 in 5 should still be alternates"
-
-	game.poke("wOverworldMonRollFromSwarm", 1)
-	assert A.call(game, "DebugForceSwarmMonShiny")["a"], "a swarm's wanderer is forced too"
-	game.poke("wOverworldMonRollFromSwarm", 0)
-	assert not A.call(game, "DebugForceSwarmMonShiny")["a"], "the route's own mon are left alone"
+	# Every wandering mon, a swarm's included: test_remembered_shinies.test_force_shiny_reaches_every_wanderer
 
 
 CARRY = 0x10

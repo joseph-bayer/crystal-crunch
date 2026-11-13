@@ -363,36 +363,50 @@ which rolls through the same path.
 
 ## Remembered shinies
 
-The last `NUM_REMEMBERED_SHINIES` (5) shinies the route rosters roll are remembered in
-`wRememberedShinies`, newest first. Each comes back to its slot whenever its map is entered, until
-it is battled, so leaving a route doesn't lose a shiny you haven't reached yet.
+The last `NUM_REMEMBERED_SHINIES` (5) shinies the wandering mon roll are remembered in
+`wRememberedShinies`, newest first: a route's own, a swarm's, or a population's. Each comes back to
+its slot whenever its map is entered, and after every swarm reroll or population reshuffle there,
+until it is battled. Leaving a map doesn't lose a shiny you haven't reached yet.
 
-- **What counts.** Only a shiny `.RollForm` makes from a route's grass or water roster. Not a
-  swarm's or a population's (both reshuffle after every battle anyway), not a static mon, not a
-  roster row that is always shiny, not a roaming beast (it stays shiny by itself).
-- **An entry is 5 bytes**: map group and number, a recipe byte, and the DVs. The recipe holds the
-  slot, grass or water, the time of day's roster, the row, and the alternate-shiny bit (layout in
-  `constants/overworld_mon_constants.asm`). Everything else is rebuilt from the row by
-  `.RestoreShiny`: species, form, perks and extra move from the row, the level scaled to today's
-  badges, and the held item rolled again (an 8-bit item ID can't be saved anyway). Editing a route's
-  roster therefore changes what an existing save's remembered shiny comes back as.
-- **Recording.** `.got_entry` stashes the row in `wOverworldMonRollRow`; `.RollForm` sets
-  `wOverworldMonRecordShiny`; `.RememberShiny` pushes the entry once the DVs are rolled. A slot that
-  already holds a remembered shiny keeps it, and the new roll there is not recorded: the restore is
-  about to put the old one back over it.
-- **Restoring.** `.RestoreRememberedShinies` runs at the end of `RollOverworldMons`, after the water
-  roll and so after the beasts: a remembered shiny takes its slot back, and a beast placed there
-  sits out the visit. It sets `wOverworldMonShinyPending`, so the chime plays each time one comes
-  back, including after a swarm's reroll (which goes back through `RollOverworldMons`). A remembered
-  shiny comes back whatever the time of day, so a night species can stand in its slot by day. It
-  keeps its place in the list; coming back doesn't make it newer.
+- **What counts.** Any shiny `.RollForm` makes. Not a static mon, not a roster row that is always
+  shiny (it comes back by itself), not a roaming beast (it stays shiny by itself).
+- **An entry is 4 bytes**: map group and number, a source byte, an index byte (layout in
+  `constants/overworld_mon_constants.asm`). The source byte holds the slot, the kind, the
+  alternate-shiny bit, and three bits the kind uses. The entry points at the row the mon came from:
+
+  | Kind | Kept | Rebuilt from it |
+  | --- | --- | --- |
+  | A route's grass or water roster | time-of-day roster × 4 + row | species, form, perks, extra move and level from the row |
+  | A swarm | its `SWARM_*` id (9 bits) and the time-of-day roster | species, form and move from its `SwarmTable` row, whether or not the swarm is still running; the level from the roster's heaviest row, the first row a swarm takes |
+  | A population | its `pop_mon` row (6 bits) and the form it rolled | species and perks from the row, a level rolled in its range; the form is its own, so a contest Scyther keeps its colour and an Unown its letter |
+
+  Levels scale to today's badges where the row scales. The DVs and the held item are rolled again
+  every time. Because entries point at rows by position, rows in the area tables, `SwarmTable` and
+  `MonPopulations` can only be added at the end once players have saves; reordering or editing one
+  changes what a saved entry comes back as.
+- **Recording.** `.got_entry` stashes the row in `wOverworldMonRollRow`, `GetSwarmSpeciesForMap` the
+  swarm's id in `wOverworldMonSwarmId`; `.RollForm` sets `wOverworldMonRecordShiny` to the kind + 1;
+  `.RememberShiny` pushes the entry once the roll is done (a population's row comes from
+  `wPopulationEntry`). A slot that already holds a remembered shiny keeps it, and the new roll there
+  is not recorded: the restore is about to put the old one back over it.
+- **Restoring.** `.RestoreRememberedShinies` runs at the end of `RollOverworldMons` (after the water
+  roll and so after the beasts, or straight after a population's roll), and at the end of
+  `RerollPopulation`. A remembered shiny takes its slot back, and a beast placed there sits out the
+  visit. It sets the slot's bit in `wOverworldMonShinyPending`, so the chime plays each time one comes
+  back. It comes back whatever the time of day, so a night species can stand in its slot by day; in
+  Hidden Grove it stays even when the visit's species is another one. It keeps its place in the
+  list; coming back doesn't make it newer. A population member's species isn't written to
+  `wPopulationSpecies`, so a continue still restores the visit's own species.
 - **Forgetting.** `EndOverworldMonBattle` calls `ForgetRememberedShiny` for the slot just fought.
+  `BugContestResultsScript`, where every way out of the contest ends, calls `ForgetContestShinies`:
+  a contest shiny lasts only for that contest.
 - **Saving.** Two SRAM blocks of its own, main and backup, each a magic word, the list and a
-  checksum, saved and loaded beside the Pokédex forms record. A save without the magic (every save
-  from before the list existed) loads as nothing remembered, so old saves keep loading. The WRAM
-  list sits past `wGameDataEnd` and moves nothing in the save; `ResetWRAM` clears it for a new game.
-- **Debug.** The Scientist's BEASTS → FORCE SHINY makes the route's own wanderers shiny too, which
-  is how `tests/test_remembered_shinies.py` gets a real roll.
+  checksum, saved and loaded beside the Pokédex forms record. A save without the current magic
+  (every save from before the list existed, or from before entries were 4 bytes) loads as nothing
+  remembered. The WRAM list sits past `wGameDataEnd` and moves nothing in the save; `ResetWRAM`
+  clears it for a new game.
+- **Debug.** The Scientist's BEASTS → FORCE SHINY makes every wandering mon shiny, Hidden Grove's
+  included, which is how `tests/test_remembered_shinies.py` gets real rolls.
 
 
 ## Saving and loading

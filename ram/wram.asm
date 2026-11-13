@@ -3271,13 +3271,16 @@ wPopulationRestore:: db ; TRUE while the continue path rolls: keep wPopulationSp
 ; announces a shiny that is no longer there.
 wOverworldMonShinyPending:: db
 
-; The last NUM_REMEMBERED_SHINIES shinies the route rosters rolled, newest first; see
+; The last NUM_REMEMBERED_SHINIES shinies the wandering mon rolled, newest first; see
 ; constants/overworld_mon_constants.asm. Saved in SRAM blocks of its own (sRememberedShinies), so
 ; it lives out here past wGameDataEnd and moves nothing in the save.
 wRememberedShinies:: ds NUM_REMEMBERED_SHINIES * REMEMBERED_SHINY_LENGTH
 wRememberedShiniesEnd::
-; Scratch for recording one: the roster row .RollOneSlot picked, and whether .RollForm made it shiny.
+; Scratch for recording one: the roster row .RollOneSlot picked; the swarm's SWARM_* id, from
+; GetSwarmSpeciesForMap; and, once .RollForm has made it shiny, its REMEMBERED_* kind + 1 (0 for a
+; shiny not to remember).
 wOverworldMonRollRow:: db
+wOverworldMonSwarmId:: db
 wOverworldMonRecordShiny:: db
 
 
