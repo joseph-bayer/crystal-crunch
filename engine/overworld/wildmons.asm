@@ -1516,17 +1516,17 @@ GetSwarmSpeciesForMap::
 	ld a, [hli]
 	ld d, a
 	push hl
-	ld bc, 1 + 2 + 1 + 2
-	add hl, bc ; past the form, map, terrain and gate, to the move
-	ld a, [hli]
-	ld b, [hl]
-	ld c, a
 	inc hl
 	inc hl
 	inc hl ; past the form and map, to the terrain
-	ld a, [hl]
+	ld a, [hli]
 	and SWARM_ALT_SHINY
 	ld [wOverworldMonSwarmAltShiny], a ; for the overworld roll's alternate-shiny odds
+	inc hl
+	inc hl ; past the gate, to the move
+	ld a, [hli]
+	ld b, [hl]
+	ld c, a
 	pop hl
 	ld a, [hl]
 	scf
