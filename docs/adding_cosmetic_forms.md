@@ -288,7 +288,7 @@ Shuckie's form change keep both shiny bits.
 
 **How it shows.** `GetMonNormalOrShinyPalettePointer` (`engine/gfx/color.asm`) returns the species'
 row in `AltShinyPalettes` when both bits are set, so battle, party, PC, stats, the follower and
-Pokémon NPCs all follow. The stats screen and both battle HUDs show `<ALT_SHINY>` instead of `⁂`
+Pokémon NPCs all follow. The stats screen, both battle HUDs and Bill's PC show `<ALT_SHINY>` instead of `⁂`
 (`GetShinyIcon`), only when the species actually has an alternate.
 
 **Adding one:**

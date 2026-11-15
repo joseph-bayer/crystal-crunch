@@ -6,8 +6,11 @@ in use. Paging through a full PC freed those IDs and handed them to other specie
 was dropped as another species' icon (its palette, copied as bytes, stayed right), and a box's
 icons could point at freed IDs while it was being drawn."""
 
+import pytest
+
+from harness import alt_shiny as A
 from harness import constants
-from harness.forms import take_radio_items, wait_until
+from harness.forms import set_party_field, take_radio_items, wait_until
 
 # Bill's PC in the Cherrygrove Pokemon Center, used from (9, 2) facing up.
 PC_SPOT = (9, 2)
@@ -21,6 +24,12 @@ LAST_BOX = 16 # 0-based: box 17
 SWAP_MODE = 1
 # wBillsPC_CursorPos is $yx: row 0 is the box name, rows 1-5 the box.
 FIRST_BOX_ROW = 0x10
+
+# Party slot 1: the party is columns 0-1 of rows 3-5
+PARTY_MON_1_POS = 0x30
+# Where the hovered mon's shiny icon goes, beside its gender
+SHINY_ICON_COORD = (5, 8)
+SCREEN_WIDTH = 20
 
 # IDs from here up are reserved values (EGG and the like) that never go through the table.
 MON_TABLE_MINIMUM_RESERVED_INDEX = 0xfd
@@ -111,3 +120,32 @@ def test_held_mon_keeps_its_icon_across_boxes(game):
 	assert index_of_id(game, dropped) == held, \
 		"the mon dropped in box %d slot %d shows as species %d, not %s" % (
 			LAST_BOX + 1, slot + 1, index_of_id(game, dropped), HELD_SPECIES)
+
+
+def move_cursor(game, button, pos):
+	# A press can land while the box is still being drawn and go unread.
+	for _ in range(5):
+		game.press(button, hold=6, after=30)
+		if game.peek("wBillsPC_CursorPos") == pos:
+			return
+	raise AssertionError("pressing %s never took the cursor to $%02x" % (button, pos))
+
+
+@pytest.mark.parametrize("form, icon", [
+	(A.SHINY_MASK | A.ALT_SHINY_MASK, A.ALT_SHINY_ICON),
+	(A.SHINY_MASK, A.SHINY_ICON),
+])
+def test_hovered_mon_shows_its_shiny_icon(game, form, icon):
+	take_radio_items(game)
+	scyther = A.species_id(game, "SCYTHER")
+	game.poke("wPartySpecies", scyther)
+	set_party_field(game, 0, "Species", scyther)
+	set_party_field(game, 0, "Form", form)
+	open_bills_pc(game)
+
+	for button, pos in (("down", 0x22), ("down", 0x32), ("left", 0x31), ("left", 0x30)):
+		move_cursor(game, button, pos)
+	assert game.peek("wBillsPC_CursorPos") == PARTY_MON_1_POS, "the cursor should be on party mon 1"
+	game.wait(30)
+	x, y = SHINY_ICON_COORD
+	assert game.peek("wTilemap", y * SCREEN_WIDTH + x) == icon
