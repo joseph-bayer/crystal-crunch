@@ -316,6 +316,9 @@ Per entry, an `OW_PERK_*` bit field:
 
 - `OW_PERK_ALWAYS_ITEM` — skip the item roll
 - `OW_PERK_EXTRA_SHINY` — `OVERWORLD_MON_EXTRA_SHINY_NUMERATOR`, currently 1/256
+- `OW_PERK_ROCKET` — one of Team Rocket's: `ApplyWildMonMove` gives it Thief and Frustration and
+  happiness `ROCKET_MON_HAPPINESS` (0). The engine sets it for a Rocket swarm's mon (below); a table
+  row can set it too.
 
 **The perks use `shift_const`**, giving each both a value for the tables and an `_F` bit number for
 the code. That is not decoration: a plain `1, 2, 3` enumeration reads fine in the data and is a
@@ -491,7 +494,15 @@ side; the encounter side is `ApplySwarmToWildSlot` in `engine/overworld/wildmons
 - **A taken row** gets the swarm's species, form and move (the row's optional last argument in
   `swarm_def`, `NO_MOVE` for none) and keeps the row's level. It does not keep the row's perks or
   extra move, which belong to the species it displaced. A swarm's grass and surf mon get the same
-  move: `ApplySwarmToWildSlot` puts it in `wTempWildMonMove`, which `ApplyWildMonMove` uses up. On
+  move: `ApplySwarmToWildSlot` puts it in `wTempWildMonMove`, which `ApplyWildMonMove` uses up.
+- **Team Rocket's swarms** (`SWARM_ROCKET` in the terrain) give a taken row `OW_PERK_ROCKET`, and
+  their grass mon `ROCKET_MON_SWARM` in `wTempWildMonRocket`. Either way `ApplyWildMonMove` sets
+  the wild mon's happiness to `ROCKET_MON_HAPPINESS` (0) and teaches it Thief and Frustration:
+  each skips a known move, else takes the first empty slot, and with four moves Thief replaces
+  move 1 and Frustration move 2. A caught one keeps the happiness (`TryAddMonToParty`,
+  `SendMonIntoBox`), and a Friend Ball raises it only to `FRIEND_BALL_ROCKET_HAPPINESS` (100).
+  The Rocket Base Electrodes' scripts set `ROCKET_MON_UNHAPPY` alone with `loadmem`, for the
+  happiness without the moves. On
   water, whether it floats
   comes from its species, as for any water mon. Its shininess is rolled at `SWARM_SHINY_NUMERATOR`.
 - **After a battle with one of its wandering mon**, a swarming route rerolls every slot, so standing

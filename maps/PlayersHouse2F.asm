@@ -66,6 +66,7 @@ if DEF(_DEBUG)
 	giveitem RARE_CANDY, 99
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
+	giveitem FRIEND_BALL, 99
 	giveitem BICYCLE
 	; giveitem MOPED
 	giveitem GOOD_ROD

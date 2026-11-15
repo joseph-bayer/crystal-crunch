@@ -372,6 +372,12 @@ DEF NUM_HAPPINESS_CHANGES EQU const_value - 1
 ; significant happiness values
 DEF BASE_HAPPINESS        EQU 70
 DEF FRIEND_BALL_HAPPINESS EQU 200
+; Team Rocket's wild mon (wTempWildMonRocket): happiness 0, so Frustration hits at 102 for the
+; wild mon and for the player once caught. A Friend Ball raises one only to 100.
+DEF ROCKET_MON_HAPPINESS             EQU 0
+DEF FRIEND_BALL_ROCKET_HAPPINESS     EQU 100
+; The catch recognizes a Rocket mon by its happiness alone.
+assert ROCKET_MON_HAPPINESS != BASE_HAPPINESS, "a Rocket mon's happiness must differ from a wild mon's"
 DEF HAPPINESS_TO_EVOLVE   EQU 220
 DEF HAPPINESS_THRESHOLD_1 EQU 100
 DEF HAPPINESS_THRESHOLD_2 EQU 200

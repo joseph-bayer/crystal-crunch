@@ -41,13 +41,14 @@ SwarmTable::
 	swarm_def HORSEA,     HORSEA_RB_FORM,      ROUTE_12,                      SWARM_WATER
 
 	; Team Rocket's, left behind as each operation falls. Offered once that part of the story is
-	; over; each Rocket line swarms on one route only. Every one knows Thief.
+	; over; each Rocket line swarms on one route only. SWARM_ROCKET makes every one know Thief and
+	; Frustration, with happiness ROCKET_MON_HAPPINESS.
 	; - After the Mahogany hideout
-	swarm_def GOLBAT,     GOLBAT_ROCKET_FORM,     ROUTE_42, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_ROCKET_HIDEOUT, THIEF
-	swarm_def WEEZING,    WEEZING_ROCKET_FORM,    ROUTE_43, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_ROCKET_HIDEOUT, THIEF
+	swarm_def GOLBAT,     GOLBAT_ROCKET_FORM,     ROUTE_42, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_ROCKET_HIDEOUT
+	swarm_def WEEZING,    WEEZING_ROCKET_FORM,    ROUTE_43, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_ROCKET_HIDEOUT
 	; - After the Radio Tower
-	swarm_def CHARMELEON, CHARMELEON_ROCKET_FORM, ROUTE_37, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER,    THIEF
-	swarm_def ARBOK,      ARBOK_ROCKET_FORM,      ROUTE_39, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER,    THIEF
+	swarm_def CHARMELEON, CHARMELEON_ROCKET_FORM, ROUTE_37, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER
+	swarm_def ARBOK,      ARBOK_ROCKET_FORM,      ROUTE_39, SWARM_GRASS | SWARM_ROCKET, EVENT_CLEARED_RADIO_TOWER
 
 	; Alternate-shiny swarms: a shiny here is an alternate shiny 4 times in 5 instead of 1 in 5.
 	swarm_def SCYTHER,    PLAIN_FORM,             NATIONAL_PARK, SWARM_GRASS | SWARM_ALT_SHINY

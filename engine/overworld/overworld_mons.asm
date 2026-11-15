@@ -752,6 +752,12 @@ RollOverworldMons::
 	ld [wOverworldMonSwarmMove + 1], a
 	pop bc
 	ld a, l
+	assert SWARM_ROCKET_F == 7
+	add a ; carry = SWARM_ROCKET
+	sbc a
+	and OW_PERK_ROCKET
+	ld [wOverworldMonSwarmPerks], a
+	ld a, l
 	and SWARM_TERRAIN_MASK
 	ld [wOverworldMonSwarmTerrain], a
 	ld hl, OverworldWildMonsGrass
@@ -777,7 +783,8 @@ RollOverworldMons::
 	ld h, a
 	call .HeaviestRow ; preserves bc
 	call .CopyRosterRow ; preserves bc
-; As .RollOneSlot does for a row the swarm takes: its species, form and move, none of the row's perks.
+; As .RollOneSlot does for a row the swarm takes: its species, form, move and perks, none of the
+; row's own.
 	ld a, [wOverworldMonSwarmSpecies]
 	ld [wOverworldMonRollBuffer + OW_MON_SPECIES], a
 	ld a, [wOverworldMonSwarmSpecies + 1]
@@ -788,7 +795,7 @@ RollOverworldMons::
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
 	ld a, [wOverworldMonSwarmMove + 1]
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
-	xor a
+	ld a, [wOverworldMonSwarmPerks]
 	ld [wOverworldMonRollBuffer + OW_MON_PERKS], a
 	jr .restored
 
@@ -967,9 +974,9 @@ RollOverworldMons::
 	ld [wOverworldMonRollFromSwarm], a ; and .RollForm rolls its shininess at the swarm's rate
 	call .CopyRosterRow
 
-; A swarm takes the row over with its own species, form and move, keeping the row's level so it fits
-; the route. The row's perks and extra move belong to the species it displaces, so neither carries
-; over. .RollForm still rolls shininess.
+; A swarm takes the row over with its own species, form, move and perks (OW_PERK_ROCKET for Team
+; Rocket's), keeping the row's level so it fits the route. The row's perks and extra move belong to
+; the species it displaces, so neither carries over. .RollForm still rolls shininess.
 	ld a, b
 	and a
 	jr z, .FinishRoll
@@ -983,7 +990,7 @@ RollOverworldMons::
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE], a
 	ld a, [wOverworldMonSwarmMove + 1]
 	ld [wOverworldMonRollBuffer + OW_MON_MOVE + 1], a
-	xor a
+	ld a, [wOverworldMonSwarmPerks]
 	ld [wOverworldMonRollBuffer + OW_MON_PERKS], a
 
 .FinishRoll:
@@ -2849,7 +2856,13 @@ ApplyWildMonMove::
 ; wandering mon's from its roster entry or its swarm, a swarm's grass or surf mon's from
 ; wTempWildMonMove. A plain wild encounter has nowhere to carry a move, which is what makes egg
 ; moves on a wandering mon worth having at all.
-; Called from LoadEnemyMon after FillMoves and before the PP fill, so the move gets its PP free.
+; Team Rocket's mon (ROCKET_MON_*, from wTempWildMonRocket or a wandering mon's OW_PERK_ROCKET) are
+; also unhappy, and a Rocket swarm's know Thief and Frustration.
+; Called from LoadEnemyMon after FillMoves and before the PP fill, so the moves get their PP free.
+	ld hl, wTempWildMonRocket
+	ld c, [hl]
+	xor a
+	ld [hl], a ; used up
 	ld hl, wTempWildMonMove
 	ld a, [hli]
 	ld h, [hl]
@@ -2862,12 +2875,39 @@ ApplyWildMonMove::
 	and a
 	jr z, .got_move
 	call GetOverworldMonBattleEncounter
-	ld de, OW_MON_MOVE
+	ld de, OW_MON_PERKS
 	add hl, de
+	ld a, [hli]
+	bit OW_PERK_ROCKET_F, a
+	jr z, .got_rocket
+	ld c, ROCKET_MON_SWARM
+.got_rocket
+	assert OW_MON_MOVE == OW_MON_PERKS + 1
 	ld a, [hli]
 	ld h, [hl]
 	ld l, a
 .got_move
+	push bc
+	ld c, 0 ; with four moves, replace the first
+	call .Place
+	pop bc
+
+	bit ROCKET_MON_UNHAPPY_F, c
+	jr z, .rocket_moves
+	ld a, ROCKET_MON_HAPPINESS
+	ld [wEnemyMonHappiness], a
+.rocket_moves
+	bit ROCKET_MON_MOVES_F, c
+	ret z
+	ld hl, THIEF
+	ld c, 0 ; with four moves, replace the first
+	call .Place
+	ld hl, FRUSTRATION
+	ld c, 1 ; and the second
+	; fallthrough
+
+.Place:
+; in: hl = a move index, or NO_MOVE for none; c = which move to replace when it knows four
 	ld a, h
 	or l
 	ret z ; the entry asked for nothing
@@ -2876,27 +2916,32 @@ ApplyWildMonMove::
 
 ; Already knows it? Nothing to do -- and quietly doubling a move would be worse than doing nothing.
 	ld hl, wEnemyMonMoves
-	ld c, NUM_MOVES
+	ld d, NUM_MOVES
 .known_loop
 	ld a, [hli]
 	cp b
 	ret z
-	dec c
+	dec d
 	jr nz, .known_loop
 
-; Otherwise the first empty slot, and failing that the first move -- the one it would soonest have
-; replaced by levelling anyway.
+; Otherwise the first empty slot, and failing that move c. For the one extra move that is the first
+; move, the one it would soonest have replaced by levelling anyway; Rocket's two take the first two.
 	ld hl, wEnemyMonMoves
-	ld c, NUM_MOVES
+	ld d, NUM_MOVES
 .free_loop
 	ld a, [hl]
 	and a
 	jr z, .place
 	inc hl
-	dec c
+	dec d
 	jr nz, .free_loop
 	ld hl, wEnemyMonMoves
-
+	ld a, c
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
 .place
 	ld [hl], b
 	ret

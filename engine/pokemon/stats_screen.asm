@@ -789,9 +789,23 @@ LoadBluePage:
 	add hl, de
 	dec b
 	jr nz, .vertical_divider
+if DEF(_DEBUG)
+	ld de, .HappinessString
+	hlcoord 0, 15
+	rst PlaceString
+	hlcoord 2, 16
+	lb bc, 1, 3
+	ld de, wTempMonHappiness
+	call PrintNum
+endc
 	hlcoord 11, 8
 	ld bc, 6
 	predef_jump PrintTempMonStats
+
+if DEF(_DEBUG)
+.HappinessString:
+	db "HAPPINESS@"
+endc
 
 .PlaceOTInfo:
 	ld de, IDNoString

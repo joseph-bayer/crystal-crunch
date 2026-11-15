@@ -3549,6 +3549,15 @@ wNumKeyItems:: db
 wKeyItems:: ds NUM_KEY_ITEM_POCKET + 1
 
 
+SECTION "Rocket Mon", WRAM0
+
+; ROCKET_MON_* bits for a grass or surf battle or a scripted one, 0 for none. Set by
+; ApplySwarmToWildSlot or a map script's loadmem, and used up by LoadEnemyMon.
+wTempWildMonRocket:: db
+; The wandering-mon roll's: OW_PERK_ROCKET if the swarm is Team Rocket's, else 0.
+wOverworldMonSwarmPerks:: db
+
+
 SECTION "Map Icon Turns", WRAM0
 
 ; On the Pokegear map and the Fly map, icons sharing a landmark take turns (MapIcons_Rotate). Its

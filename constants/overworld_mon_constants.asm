@@ -35,6 +35,7 @@ DEF OW_MON_TRIGGER_DISTANCE EQU 0
 	const_def
 	shift_const OW_PERK_ALWAYS_ITEM ; skip the held item roll and always hold one
 	shift_const OW_PERK_EXTRA_SHINY ; a better shiny rate again, on top of the one they all get
+	shift_const OW_PERK_ROCKET      ; one of Team Rocket's: ROCKET_MON_SWARM in the battle. Set by a Rocket swarm
 
 ; Area tables (see data/wild/overworld_mons.asm). Fixed width, like the grass tables, so a time of
 ; day can be indexed rather than walked.

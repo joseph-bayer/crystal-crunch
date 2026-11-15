@@ -223,6 +223,7 @@ TryWildEncounter::
 	assert NO_MOVE == 0
 	ld [wTempWildMonMove], a
 	ld [wTempWildMonMove + 1], a
+	ld [wTempWildMonRocket], a
 	ld [wBattleType], a
 	ld a, 1
 	and a
@@ -289,14 +290,15 @@ ApplyCleanseTagEffectOnEncounterRate::
 	ret
 
 ChooseWildEncounter:
-; A swarm hands its form and move to the battle through wTempWildMonForm and wTempWildMonMove, and
-; a roll that never becomes a battle (Repel, say) must not leave them behind for whatever wild mon
-; comes next.
+; A swarm hands its form, move and Rocket marker to the battle through wTempWildMonForm,
+; wTempWildMonMove and wTempWildMonRocket, and a roll that never becomes a battle (Repel, say) must
+; not leave them behind for whatever wild mon comes next.
 	xor a
 	ld [wTempWildMonForm], a
 	assert NO_MOVE == 0
 	ld [wTempWildMonMove], a
 	ld [wTempWildMonMove + 1], a
+	ld [wTempWildMonRocket], a
 	call LoadWildMonDataPointer
 	jr nc, .nowildbattle
 ; Roaming beasts aren't met in the grass, only as wandering mon, so one can't be caught twice.
@@ -1201,6 +1203,12 @@ ApplySwarmToWildSlot:
 	ld a, [hl]
 	pop hl
 	ld c, a ; RollSwarmShiny reads its SWARM_ALT_SHINY bit
+; A Rocket swarm's mon is unhappy and knows Thief and Frustration.
+	assert SWARM_ROCKET_F == 7
+	add a ; carry = SWARM_ROCKET
+	sbc a
+	and ROCKET_MON_SWARM
+	ld [wTempWildMonRocket], a
 	ld a, [hl]
 	call RollSwarmShiny
 	ld [wTempWildMonForm], a
@@ -1515,7 +1523,8 @@ GetSwarmSpeciesForMap::
 ; For the overworld roll, which lives in another bank and so cannot read a SwarmTable row itself.
 ; in: d = map group, e = map number, b = SWARM_GRASS or SWARM_WATER
 ; out: carry, de = the swarm's species, a = its form byte and bc = its move, if that map is
-; swarming there. Also leaves its SWARM_* id in wOverworldMonSwarmId, for a shiny to be remembered.
+; swarming there. Also leaves its SWARM_* id in wOverworldMonSwarmId, for a shiny to be remembered,
+; and its terrain's perks in wOverworldMonSwarmAltShiny and wOverworldMonSwarmPerks.
 	call GetActiveSwarmForMap
 	ret nc
 	ld [wOverworldMonSwarmId], a
@@ -1527,17 +1536,33 @@ GetSwarmSpeciesForMap::
 	inc hl
 	inc hl
 	inc hl ; past the form and map, to the terrain
-	ld a, [hli]
-	and SWARM_ALT_SHINY
-	ld [wOverworldMonSwarmAltShiny], a ; for the overworld roll's alternate-shiny odds
-	inc hl
-	inc hl ; past the gate, to the move
+	ld a, [hl]
+	call GetSwarmTerrainPerks
+	ld bc, 1 + 2
+	add hl, bc ; past the terrain and gate, to the move
 	ld a, [hli]
 	ld b, [hl]
 	ld c, a
 	pop hl
 	ld a, [hl]
 	scf
+	ret
+
+GetSwarmTerrainPerks:
+; For the wandering-mon roll: what a swarm's terrain byte says about its mon.
+; in: a = a SwarmTable row's terrain byte
+; out: wOverworldMonSwarmAltShiny = its SWARM_ALT_SHINY bit, for the alternate-shiny odds;
+;      wOverworldMonSwarmPerks = OW_PERK_ROCKET for a Rocket swarm, else 0
+; Preserves bc, de and hl.
+	push af
+	and SWARM_ALT_SHINY
+	ld [wOverworldMonSwarmAltShiny], a
+	pop af
+	assert SWARM_ROCKET_F == 7
+	add a ; carry = SWARM_ROCKET
+	sbc a
+	and OW_PERK_ROCKET
+	ld [wOverworldMonSwarmPerks], a
 	ret
 
 GetSwarmMonById::

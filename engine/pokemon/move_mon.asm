@@ -306,8 +306,8 @@ endr
 	jr nz, .wildmonpploop
 	pop hl
 
-	; Initialize happiness.
-	ld a, BASE_HAPPINESS
+	; The wild mon's happiness: BASE_HAPPINESS, or ROCKET_MON_HAPPINESS for one of Team Rocket's.
+	ld a, [wEnemyMonHappiness]
 	ld [de], a
 	inc de
 
@@ -785,7 +785,8 @@ SendMonIntoBox:
 	dec b
 	jr nz, .loop3
 
-	ld a, BASE_HAPPINESS
+	assert wEnemyMonHappiness == wEnemyMonDVs + 2 + NUM_MOVES
+	ld a, [hl] ; wEnemyMonHappiness: BASE_HAPPINESS, or ROCKET_MON_HAPPINESS for one of Team Rocket's
 	ld [de], a
 	inc de
 	xor a

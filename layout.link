@@ -346,6 +346,7 @@ WRAM0
 	align 8
 	"wSpriteAnims"
 	"Key Items List"
+	"Rocket Mon"
 	align 8
 	"Sprites"
 	"Tilemap"
