@@ -376,6 +376,12 @@ DEF HAPPINESS_TO_EVOLVE   EQU 220
 DEF HAPPINESS_THRESHOLD_1 EQU 100
 DEF HAPPINESS_THRESHOLD_2 EQU 200
 
+; Return and Frustration's power is happiness * 10 / 25 (Frustration: 255 - happiness), so 102 at
+; most. A trainer's mon (not wild, not a link opponent) always uses this power (see
+; IsTrainerMonsTurn), the way its Hidden Power uses MAX_HP_LEVEL.
+DEF HAPPINESS_MOVE_MAX_POWER EQU 255 * 10 / 25
+assert HAPPINESS_MOVE_MAX_POWER == 102, "HAPPINESS_MOVE_MAX_POWER should be 102"
+
 ; PP
 DEF PP_UP_MASK EQU %11000000
 DEF PP_UP_ONE  EQU %01000000

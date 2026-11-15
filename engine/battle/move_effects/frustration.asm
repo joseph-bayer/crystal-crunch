@@ -1,5 +1,9 @@
 BattleCommand_FrustrationPower:
+; A trainer's mon hits at max power. Others use (255 - happiness) * 10 / 25, at least 1.
 	push bc
+	call IsTrainerMonsTurn
+	ld a, HAPPINESS_MOVE_MAX_POWER
+	jr z, .done
 	ld hl, wBattleMonHappiness
 	ldh a, [hBattleTurn]
 	and a
