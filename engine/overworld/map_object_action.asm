@@ -50,8 +50,8 @@ SetFacingStandAction:
 	jr z, SetFacingCurrent
 ; fallthrough
 SetFacingStepAction:
-; The bike and the moped animate at the running shoes' pace.
-	call IsRider
+; The moped animates at the running shoes' pace at every speed. The bike keeps walking's pace.
+	call IsMopedRider
 	jmp z, SetFacingRunAction
 SetFacingStepPace:
 	ld hl, OBJECT_FLAGS1
@@ -85,17 +85,11 @@ MopedWalkFrame:
 	res 1, d
 	ret
 
-IsRider:
-; Return z if bc is the player's object and the player is on the bike or the moped.
-	ld a, [wPlayerState]
-	cp PLAYER_BIKE
-	jr z, IsPlayerObject
 IsMopedRider:
 ; Return z if bc is the player's object and the player is on the moped.
 	ld a, [wPlayerState]
 	cp PLAYER_MOPED
 	ret nz
-IsPlayerObject:
 	ld a, c
 	cp LOW(wPlayerStruct)
 	ret nz
