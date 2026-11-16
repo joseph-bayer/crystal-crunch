@@ -152,12 +152,6 @@ BillsPC_LoadUI:
 	pop hl
 	dec [hl]
 
-	; Shiny star
-	ld de, StatsScreenPageTilesGFX + 14 tiles
-	ld hl, vTiles2 tile $43
-	lb bc, BANK(StatsScreenPageTilesGFX), 1
-	call Get2bpp
-
 	; Box frame tiles and Pokérus symbol
 	ld hl, BillsPC_TileGFX
 	ld de, vTiles2 tile $31
@@ -1211,12 +1205,20 @@ _GetCursorMon:
 	push bc
 	ld bc, wBufferMonForm
 	farcall CheckShininess
+	jr nc, .not_shiny
+	ld a, [wBufferMonSpecies]
+	farcall GetShinyIcon
 	pop bc
 	pop hl
 	inc hl
-	jr nc, .not_shiny
-	ld [hl], $43
+	ld [hl], a
+	jr .did_shiny
+
 .not_shiny
+	pop bc
+	pop hl
+	inc hl
+.did_shiny
 	ld a, [wBufferMonPokerusStatus]
 	and a
 	inc hl

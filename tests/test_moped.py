@@ -639,12 +639,12 @@ def test_moped_idle_holds_while_the_menu_is_up(game):
 @pytest.mark.parametrize("item, b, paces", [
 	("MOPED", True, [4]),
 	("MOPED", False, [4]),
-	("BICYCLE", True, [4]),
-	("BICYCLE", False, [4]),
+	("BICYCLE", True, [8]),
+	("BICYCLE", False, [8]),
 ])
-def test_rides_animate_at_the_running_shoes_pace(game, item, b, paces):
-	"""The bike's and the moped's walk cycles change frame every 4 frames, the running shoes' pace,
-	at every speed, B or not."""
+def test_ride_animation_pace(game, item, b, paces):
+	"""The moped's walk cycle changes frame every 4 frames, the running shoes' pace, at every speed,
+	B or not. The bike's changes every 8, walking's pace, as in vanilla."""
 	ride(game, item, ROUTE_29_EAST)
 	pyboy = game.pyboy
 	if b:
