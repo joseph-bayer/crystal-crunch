@@ -1438,16 +1438,31 @@ LoadMapPals:
 ; Shipwreck Beach has no red tiles, so it gives the red slot to PAL_BG_SHIPWRECK
 	ld a, [wMapGroup]
 	cp GROUP_SHIPWRECK_BEACH
-	ret nz
+	jr nz, .not_shipwreck
 	ld a, [wMapNumber]
 	cp MAP_SHIPWRECK_BEACH
+	jr nz, .not_shipwreck
+	ld hl, ShipwreckBeachPals
+	ld de, wBGPals1 palette PAL_BG_SHIPWRECK
+	jr .map_slot
+
+.not_shipwreck
+; Viridian Forest has no water, so it gives the water slot to PAL_BG_VIRIDIAN_FOREST. Only this
+; map: Ilex Forest, on the same tileset, keeps its blue pond.
+	ld a, [wMapGroup]
+	cp GROUP_VIRIDIAN_FOREST
 	ret nz
+	ld a, [wMapNumber]
+	cp MAP_VIRIDIAN_FOREST
+	ret nz
+	ld hl, ViridianForestPals
+	ld de, wBGPals1 palette PAL_BG_VIRIDIAN_FOREST
+.map_slot
+; hl = the map's four palettes, one per time of day; de = the slot it takes
 	ld a, [wTimeOfDayPal]
 	maskbits NUM_DAYTIMES
-	ld hl, ShipwreckBeachPals
 	ld bc, 1 palettes
 	rst AddNTimes
-	ld de, wBGPals1 palette PAL_BG_SHIPWRECK
 	ld bc, 1 palettes
 	ld a, BANK(wBGPals1)
 	jmp FarCopyWRAM
@@ -1493,6 +1508,12 @@ ShipwreckBeachPals:
 ; PAL_BG_SHIPWRECK, one palette per time of day (see LoadMapPals)
 	table_width 1 palettes
 INCLUDE "gfx/tilesets/shipwreck_beach.pal"
+	assert_table_length NUM_DAYTIMES
+
+ViridianForestPals:
+; PAL_BG_VIRIDIAN_FOREST, one palette per time of day (see LoadMapPals)
+	table_width 1 palettes
+INCLUDE "gfx/tilesets/viridian_forest.pal"
 	assert_table_length NUM_DAYTIMES
 
 DiplomaPalettes:

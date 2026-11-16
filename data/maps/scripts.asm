@@ -210,6 +210,8 @@ INCLUDE "maps/ViridianPokecenter2FBeta.asm"
 INCLUDE "maps/Route2NuggetHouse.asm"
 INCLUDE "maps/Route2Gate.asm"
 INCLUDE "maps/VictoryRoadGate.asm"
+INCLUDE "maps/ViridianForestSouthGate.asm"
+INCLUDE "maps/ViridianForestNorthGate.asm"
 
 
 SECTION "Map Scripts 12", ROMX
@@ -279,6 +281,7 @@ INCLUDE "maps/CeruleanPokecenter1F.asm"
 INCLUDE "maps/CeruleanPokecenter2FBeta.asm"
 INCLUDE "maps/CeruleanGym.asm"
 INCLUDE "maps/CeruleanMart.asm"
+INCLUDE "maps/CeruleanMopedShop.asm"
 INCLUDE "maps/Route10Pokecenter1F.asm"
 INCLUDE "maps/Route10Pokecenter2FBeta.asm"
 INCLUDE "maps/PowerPlant.asm"
@@ -495,5 +498,7 @@ INCLUDE "maps/CeruleanCave1F.asm"
 INCLUDE "maps/CeruleanCave2F.asm"
 
 INCLUDE "maps/CeruleanCaveB1F.asm"
+
+INCLUDE "maps/ViridianForest.asm"
 
 ENDSECTION

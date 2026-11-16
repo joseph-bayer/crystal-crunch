@@ -160,6 +160,7 @@ ENDM
 	map_const CERULEAN_CAVE_1F,                            15,  9 ; 95
 	map_const CERULEAN_CAVE_2F,                            15,  9 ; 96
 	map_const CERULEAN_CAVE_B1F,                           15,  9 ; 97
+	map_const VIRIDIAN_FOREST,                             19, 26 ; 98
 	endgroup
 
 	newgroup ECRUTEAK                                             ;  4
@@ -216,6 +217,7 @@ ENDM
 	map_const ROUTE_24,                                    10,  9 ; 15
 	map_const ROUTE_25,                                    30,  9 ; 16
 	map_const CERULEAN_CITY,                               20, 18 ; 17
+	map_const CERULEAN_MOPED_SHOP,                          4,  4 ; 18
 	endgroup
 
 	newgroup AZALEA                                               ;  8
@@ -455,6 +457,8 @@ ENDM
 	map_const ROUTE_2_NUGGET_HOUSE,                         4,  4 ; 11
 	map_const ROUTE_2_GATE,                                 5,  4 ; 12
 	map_const VICTORY_ROAD_GATE,                           10,  9 ; 13
+	map_const VIRIDIAN_FOREST_SOUTH_GATE,                   5,  4 ; 14
+	map_const VIRIDIAN_FOREST_NORTH_GATE,                   5,  4 ; 15
 	endgroup
 
 	newgroup NEW_BARK                                             ; 24

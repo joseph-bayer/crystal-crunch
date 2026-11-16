@@ -14,13 +14,17 @@ DoPlayerMovement::
 	ldh a, [hJoyDown]
 	ld [wCurInput], a
 
-; Standing downhill instead moves down.
+; Standing downhill instead moves down, except on the moped.
 
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_DOWNHILL_F, [hl]
 	ret z
 
 	ld c, a
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	ld a, c
+	ret z
 	and PAD_CTRL_PAD
 	ret nz
 
@@ -55,6 +59,8 @@ endc
 	cp PLAYER_SURF_PIKA
 	jr z, .Surf
 	cp PLAYER_BIKE
+	jr z, .Normal
+	cp PLAYER_MOPED
 	jr z, .Normal
 	cp PLAYER_SKATE
 	jr z, .Ice
@@ -106,6 +112,9 @@ endc
 	ret
 
 .NotMoving:
+; standing still or bumping: the moped starts slow again
+	xor a
+	ld [wMopedRampTiles], a
 	ld a, [wWalkingDirection]
 	cp STANDING
 	jr z, .Standing
@@ -290,6 +299,10 @@ endc
 	call CheckIceTile
 	jr nc, .ice
 
+	ld a, [wPlayerState]
+	cp PLAYER_MOPED
+	jr z, .moped
+
 ; Downhill riding is slower when not moving down.
 	call .BikeCheck
 	jr nz, .walk
@@ -324,6 +337,12 @@ endc
 
 .ice
 	ld a, STEP_ICE
+	call .DoStep
+	scf
+	ret
+
+.moped
+	call .MopedRampSpeed
 	call .DoStep
 	scf
 	ret
@@ -469,6 +488,61 @@ endc
 	db COLL_WARP_CARPET_LEFT
 	db COLL_WARP_CARPET_RIGHT
 
+.MopedRampSpeed:
+; From a stop it builds up: the running shoes' speed, then the bike's. It goes on at the bike's
+; speed, or its own while B is held and for a short coast after letting go. The tiles are counted
+; where each step starts (_HandlePlayerStep): this runs every frame of a turn too. Standing still
+; passes through here (.DoStep stands in place), and starts it over.
+	ld hl, wMopedRampTiles
+	ld a, [wWalkingDirection]
+	cp STANDING
+	jr nz, .moped_moving
+	xor a ; any step: .DoStep stands in place
+	ld [hl], a
+	ret
+
+.moped_moving
+; Uphill holds at the running shoes' speed. The tiles still count, so a turn off the slope goes on
+; at the speed they give.
+	ld a, [wBikeFlags]
+	bit BIKEFLAGS_DOWNHILL_F, a
+	jr z, .moped_ramp
+	ld a, [wWalkingDirection]
+	cp UP
+	ld a, STEP_RUN
+	ret z
+.moped_ramp
+	ld a, [hl]
+	cp MOPED_TILES_PER_SPEED
+	ld a, STEP_RUN
+	jr c, .moped_building_up
+	ld a, [hl]
+	cp MOPED_TILES_PER_SPEED * 2
+	ld a, STEP_BIKE
+	jr c, .moped_building_up
+; Built up: full speed with B held, which fills the coast; without B, until the coast runs out.
+	ld hl, wMopedCoastTiles
+	ld a, [wCurInput]
+	and B_BUTTON
+	jr z, .moped_coast
+	ld [hl], MOPED_COAST_TILES
+	ld a, STEP_MOPED
+	ret
+
+.moped_coast
+	ld a, [hl]
+	and a
+	ld a, STEP_MOPED
+	ret nz
+	ld a, STEP_BIKE
+	ret
+
+.moped_building_up
+; No coast is left over from before a stop, a warp or getting on.
+	ld hl, wMopedCoastTiles
+	ld [hl], 0
+	ret
+
 .DoStep:
 	ld e, a
 	ld d, 0
@@ -508,6 +582,7 @@ endc
 	dw .TurningStep
 	dw .BackJumpStep
 	dw .FinishFacing
+	dw .MopedStep
 	assert_table_length NUM_STEPS
 
 .SlowStep:
@@ -555,6 +630,11 @@ endc
 	db $80 | UP
 	db $80 | LEFT
 	db $80 | RIGHT
+.MopedStep:
+	moped_step DOWN
+	moped_step UP
+	moped_step LEFT
+	moped_step RIGHT
 
 .StandInPlace:
 	xor a

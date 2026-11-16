@@ -323,7 +323,7 @@ PlayMapMusic::
 	jmp PopAFBCDEHL
 
 PlayMapMusicBike::
-; If the player's on a bike, play the bike music instead of the map music
+; If the player's on the bike or the moped, play that ride's music instead of the map music
 	push hl
 	push de
 	push bc
@@ -334,7 +334,11 @@ PlayMapMusicBike::
 	ld de, MUSIC_BICYCLE
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
+	jr z, .riding
+	ld de, MUSIC_PUZZLE_TOTODILE
+	cp PLAYER_MOPED
 	call nz, GetMapMusic_MaybeSpecial
+.riding
 	push de
 	ld de, MUSIC_NONE
 	call PlayMusic
@@ -380,6 +384,9 @@ SpecialMapMusic::
 	jr z, .surf
 	cp PLAYER_SURF_PIKA
 	jr z, .surf
+
+	farcall CyclingRoadRideMusic
+	ret c
 
 	ld a, [wStatusFlags2]
 	bit STATUSFLAGS2_BUG_CONTEST_TIMER_F, a

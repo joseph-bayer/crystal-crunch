@@ -100,9 +100,27 @@ _UpdateSound::
 	cp 2 ; 1 or 0?
 	jr c, .noteover
 	dec [hl]
+	; count down to the note's release, if it has one
+	ld hl, CHANNEL_CUTOFF_COUNT
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .continue_sound_update
+	dec [hl]
+	jr nz, .continue_sound_update
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_RELEASE, [hl]
 	jr .continue_sound_update
 
 .noteover
+	; turn vibrato off for now
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	res SOUND_PITCH_SLIDE, [hl]
+	; table vibrato is reset when the next note starts, unless it's tied
+	bit SOUND_VIBRATO_TABLE, [hl]
+	jr nz, .vibrato_reset_done
 	; reset vibrato delay
 	ld hl, CHANNEL_VIBRATO_DELAY
 	add hl, bc
@@ -110,14 +128,12 @@ _UpdateSound::
 	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
 	add hl, bc
 	ld [hl], a
-	; turn vibrato off for now
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	res SOUND_PITCH_SLIDE, [hl]
+.vibrato_reset_done
 	; get next note
 	call ParseMusic
 .continue_sound_update
 	call ApplyPitchSlide
+	call HandlePitchScript
 	; duty cycle
 	ld hl, CHANNEL_DUTY_CYCLE
 	add hl, bc
@@ -134,6 +150,7 @@ _UpdateSound::
 	; vibrato, noise
 	call HandleTrackVibrato ; handle vibrato and other things
 	call HandleNoise
+	call HandleVolumeScript
 	; turn off music when playing sfx?
 	ld a, [wSFXPriority]
 	and a
@@ -252,8 +269,12 @@ UpdateChannels:
 .noPitchSweep
 	bit NOTE_REST, [hl] ; rest
 	jr nz, .ch1_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch1_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch1_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch1_frequency_override
 	bit NOTE_FREQ_OVERRIDE, [hl]
 	jr nz, .ch1_frequency_override
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
@@ -294,6 +315,16 @@ UpdateChannels:
 	ld hl, rAUD1SWEEP
 	jmp ClearChannel
 
+.ch1_release
+	call .get_pulse_release_envelope
+	ldh [rAUD1ENV], a
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD1LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	or $80 ; initial (restart)
+	ldh [rAUD1HIGH], a
+	ret
+
 .ch1_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -314,8 +345,12 @@ UpdateChannels:
 	add hl, bc
 	bit NOTE_REST, [hl] ; rest
 	jr nz, .ch2_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch2_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch2_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch2_continue
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	jr nz, .ch2_vibrato_override
 	bit NOTE_DUTY_OVERRIDE, [hl]
@@ -346,6 +381,33 @@ UpdateChannels:
 	ld hl, rAUD2LEN - 1 ; there is no rNR20
 	jmp ClearChannel
 
+.ch2_continue
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD2LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	ldh [rAUD2HIGH], a
+	ret
+
+.ch2_release
+	call .get_pulse_release_envelope
+	ldh [rAUD2ENV], a
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD2LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	or $80 ; initial (restart)
+	ldh [rAUD2HIGH], a
+	ret
+
+.get_pulse_release_envelope:
+	ld hl, CHANNEL_RELEASE_ENVELOPE
+	add hl, bc
+	ld a, [hl]
+	cp $10
+	ret nc
+	; volume 0: silence the note but keep the DAC on, as ClearChannel would not
+	ld a, AUD1ENV_UP
+	ret
+
 .ch2_noise_sampling
 	ld hl, wCurTrackDuty
 	ld a, $3f ; sound length
@@ -366,8 +428,12 @@ UpdateChannels:
 	add hl, bc
 	bit NOTE_REST, [hl]
 	jr nz, .ch3_rest
+	bit NOTE_RELEASE, [hl]
+	jr nz, .ch3_release
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch3_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	jr nz, .ch3_continue
 	bit NOTE_VIBRATO_OVERRIDE, [hl]
 	ret z
 	ld a, [wCurTrackFrequency]
@@ -380,6 +446,23 @@ UpdateChannels:
 	ldh [rAUDENA], a
 	ld hl, rAUD3ENA
 	jmp ClearChannel
+
+.ch3_continue
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD3LOW], a
+	ld a, [wCurTrackFrequency + 1]
+	ldh [rAUD3HIGH], a
+	ret
+
+.ch3_release
+	; same volume encoding as .load_wave_pattern
+	ld hl, CHANNEL_RELEASE_ENVELOPE
+	add hl, bc
+	ld a, [hl]
+	and $f0
+	add a
+	ldh [rAUD3LEVEL], a
+	ret
 
 .ch3_noise_sampling
 	ld a, $3f ; sound length
@@ -399,12 +482,19 @@ UpdateChannels:
 .load_wave_pattern
 	push hl
 	ld a, [wCurTrackVolumeEnvelope]
-	and $f ; only 0-9 are valid
-	; each wavepattern is $f bytes long, so seeking is done in $10s
+	and $f
+	; each wavepattern is $10 bytes long
 	swap a ; a << 4
-	add LOW(WaveSamples)
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_WAVE_BANK_2, [hl]
+	ld hl, WaveSamples
+	jr z, .got_wave_bank
+	ld hl, WaveSamples2
+.got_wave_bank
+	add l
 	ld l, a
-	adc HIGH(WaveSamples)
+	adc h
 	sub l
 	ld h, a
 	; load wavepattern into rAUD3WAVE_0-rAUD3WAVE_F
@@ -455,6 +545,10 @@ UpdateChannels:
 	jr nz, .ch4_rest
 	bit NOTE_NOISE_SAMPLING, [hl]
 	jr nz, .ch4_noise_sampling
+	bit NOTE_CONTINUE, [hl]
+	ret z
+	ld a, [wCurTrackFrequency]
+	ldh [rAUD4POLY], a
 	ret
 
 .ch4_rest
@@ -614,9 +708,11 @@ FadeMusic:
 	; make sure volume is off
 	xor a
 	ld [wVolume], a
-	; did we just get on a bike?
+	; did we just get on a bike or the moped?
 	ld a, [wPlayerState]
 	cp PLAYER_BIKE
+	jr z, .bicycle
+	cp PLAYER_MOPED
 	jr z, .bicycle
 	push bc
 	; restart sound
@@ -840,6 +936,8 @@ HandleTrackVibrato:
 	; is vibrato on?
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
+	bit SOUND_VIBRATO_TABLE, [hl]
+	jr nz, .vibrato_table
 	bit SOUND_VIBRATO, [hl] ; vibrato
 	ret z
 	; is vibrato active for this note yet?
@@ -912,6 +1010,76 @@ HandleTrackVibrato:
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
 	set NOTE_VIBRATO_OVERRIDE, [hl]
+	ret
+
+.vibrato_table
+	; wait out the delay
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .vibrato_table_step
+	dec [hl]
+	ret
+
+.vibrato_table_step
+	; de = the table being played
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld a, [hl]
+	add a
+	add LOW(VibratoTables)
+	ld l, a
+	adc HIGH(VibratoTables)
+	sub l
+	ld h, a
+	ld a, [hli]
+	ld d, [hl]
+	ld e, a
+	; a = its next offset
+	ld hl, CHANNEL_VIBRATO_TABLE_INDEX
+	add hl, bc
+	ld a, [hl]
+	inc [hl]
+	add e
+	ld e, a
+	adc d
+	sub e
+	ld d, a
+	ld a, [de]
+	cp $80
+	jr nz, .vibrato_table_offset
+	; end of the table: play it again, or go on with the table in the next byte
+	ld [hl], 0
+	inc de
+	ld a, [de]
+	cp $80
+	jr z, .vibrato_table_step
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld [hl], a
+	jr .vibrato_table_step
+
+.vibrato_table_offset
+	; add the signed offset to the frequency
+	ld e, a
+	rlca
+	sbc a
+	ld d, a
+	ld hl, wCurTrackFrequency
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	add hl, de
+	ld a, l
+	ld [wCurTrackFrequency], a
+	ld a, h
+	and $7
+	ld [wCurTrackFrequency + 1], a
+	; write it without restarting the note
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_CONTINUE, [hl]
 	ret
 
 ApplyPitchSlide:
@@ -1068,8 +1236,12 @@ ReadNoiseSample:
 	cp sound_ret_cmd
 	ret z
 
+	ld l, a
 	and $f
+	bit NOISE_STEP_EXACT_F, l
+	jr nz, .got_delay
 	inc a
+.got_delay
 	ld [wNoiseSampleDelay], a
 	ld a, [de]
 	inc de
@@ -1080,14 +1252,21 @@ ReadNoiseSample:
 	xor a
 	ld [wCurTrackFrequency + 1], a
 
+	; restart the sound, or only change its frequency
+	ld a, 1 << NOTE_NOISE_SAMPLING
+	bit NOISE_STEP_CONTINUE_F, l
+	jr z, .got_note_flag
+	ld a, 1 << NOTE_CONTINUE
+.got_note_flag
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	or [hl]
+	ld [hl], a
+
 	ld hl, wNoiseSampleAddress
 	ld a, e
 	ld [hli], a
 	ld [hl], d
-
-	ld hl, CHANNEL_NOTE_FLAGS
-	add hl, bc
-	set NOTE_NOISE_SAMPLING, [hl]
 	ret
 
 ParseMusic:
@@ -1139,14 +1318,33 @@ ParseMusic:
 	ld a, e
 	ld [hli], a
 	ld [hl], d
-	; set noise sampling
+	; a tied note only changes the frequency
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	bit SOUND_TIE, [hl]
+	res SOUND_TIE, [hl]
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
+	jr z, .restart
+	set NOTE_CONTINUE, [hl]
+	jr .started
+.restart
+	; set noise sampling
 	set NOTE_NOISE_SAMPLING, [hl]
+	call ResetVibratoTable
+	call ResetAudioScripts
+.started
+	call SetCutoffCount
 	jmp LoadNote
 
 .rest
 ; note = rest
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	res SOUND_TIE, [hl]
+	; a volume script with a release fades the note out instead
+	call StartVolumeRelease
+	ret c
 	ld hl, CHANNEL_NOTE_FLAGS
 	add hl, bc
 	set NOTE_REST, [hl] ; Rest
@@ -1340,13 +1538,13 @@ MusicCommands:
 	dw Music_ToggleSFX
 	dw Music_PitchSlide
 	dw Music_Vibrato
-	dw MusicE2 ; unused
+	dw Music_VibratoTable
 	dw Music_ToggleNoise
 	dw Music_ForceStereoPanning
 	dw Music_Volume
 	dw Music_PitchOffset
-	dw MusicE7 ; unused
-	dw MusicE8 ; unused
+	dw Music_NoteCutoff
+	dw Music_ReleaseEnvelope
 	dw Music_TempoRelative ; unused
 	dw Music_RestartChannel
 	dw Music_NewSong ; unused
@@ -1355,15 +1553,15 @@ MusicCommands:
 	dw MusicEE ; unused
 	dw Music_StereoPanning
 	dw Music_SFXToggleNoise
+	dw Music_PitchScript
+	dw Music_VolumeScript
+	dw Music_WaveBank
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
 	dw DoNothing ; nothing
-	dw DoNothing ; nothing
-	dw DoNothing ; nothing
-	dw DoNothing ; nothing
-	dw MusicF9 ; unused
+	dw Music_Tie
 	dw Music_SetCondition
 	dw Music_JumpIf
 	dw Music_Jump
@@ -1613,24 +1811,94 @@ MusicEE:
 	ld [hl], d
 	ret
 
-MusicF9:
-; unused
-; sets some flag
+Music_Tie:
+; the next note continues the one that just ended without restarting it
 ; params: 0
-	ld a, TRUE
-	ld [wUnusedMusicF9Flag], a
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	set SOUND_TIE, [hl]
+	; table vibrato carries on by itself
+	bit SOUND_VIBRATO_TABLE, [hl]
+	ret nz
+	; keep the vibrato going instead of waiting out its delay again
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld [hl], 0
 	ret
 
-MusicE2:
-; unused
-; params: 1
+Music_VibratoTable:
+; vibrato that steps through a table of per-frame frequency offsets
+; params: 2
+;	table (see audio/vibrato_tables.asm)
+;	frames into each note before the vibrato starts, plus 1 (0: vibrato off)
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD2C
+	ld hl, CHANNEL_VIBRATO_TABLE_BASE
+	add hl, bc
+	ld [hl], a
+	call GetMusicByte
+	ld hl, CHANNEL_VIBRATO_DELAY
 	add hl, bc
 	ld [hl], a
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
-	set SOUND_UNKN_0B, [hl]
+	res SOUND_VIBRATO, [hl]
+	res SOUND_VIBRATO_TABLE, [hl]
+	and a
+	ret z
+	set SOUND_VIBRATO_TABLE, [hl]
+	ret
+
+Music_PitchScript:
+; each new note steps through a script of pitch offsets
+; params: 1
+;	script (see audio/pitch_scripts.asm), or NO_PITCH_SCRIPT for none
+	call GetMusicByte
+	ld hl, CHANNEL_PITCH_SCRIPT
+	add hl, bc
+	ld [hl], a
+	; it starts with the next note
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_PITCH_SCRIPT, [hl]
+	inc a
+	ret z
+	set SOUND_PITCH_SCRIPT, [hl]
+	ret
+
+Music_VolumeScript:
+; each new note steps through a script of volume envelopes, and a rest after it plays the script's release
+; params: 1
+;	script (see audio/volume_scripts.asm), or NO_VOLUME_SCRIPT for none
+	call GetMusicByte
+	ld hl, CHANNEL_VOLUME_SCRIPT
+	add hl, bc
+	ld [hl], a
+	; it starts with the next note
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_VOLUME_SCRIPT, [hl]
+	inc a
+	ret z
+	set SOUND_VOLUME_SCRIPT, [hl]
+	ret
+
+Music_WaveBank:
+; picks which wave table ch3's wave numbers refer to
+; params: 1
+;	0: WaveSamples, 1: WaveSamples2
+	call GetMusicByte
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	res SOUND_WAVE_BANK_2, [hl]
+	and a
+	ret z
+	set SOUND_WAVE_BANK_2, [hl]
 	ret
 
 Music_Vibrato:
@@ -1734,14 +2002,12 @@ Music_PitchOffset:
 	ld [hl], a
 	ret
 
-MusicE7:
-; unused
+Music_NoteCutoff:
+; play only part of each note, then drop it to the release envelope
 ; params: 1
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	set SOUND_UNKN_0E, [hl]
+;	eighths of each note played before its release (0 or 8: no release)
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD29
+	ld hl, CHANNEL_NOTE_CUTOFF
 	add hl, bc
 	ld [hl], a
 	ret
@@ -1766,14 +2032,12 @@ Music_DutyCyclePattern:
 	ld [hl], a
 	ret
 
-MusicE8:
-; unused
+Music_ReleaseEnvelope:
+; volume envelope a cut-off note drops to at its release
+; ch1/ch2: an envelope (volume 0 is silent); ch3: hi nybble is the wave volume
 ; params: 1
-	ld hl, CHANNEL_FLAGS2
-	add hl, bc
-	set SOUND_UNKN_0D, [hl]
 	call GetMusicByte
-	ld hl, CHANNEL_FIELD2A
+	ld hl, CHANNEL_RELEASE_ENVELOPE
 	add hl, bc
 	ld [hl], a
 	ret
@@ -2115,6 +2379,327 @@ GetFrequency:
 	ld a, d
 	and $7 ; top 3 bits for frequency (11 total)
 	ld d, a
+	ret
+
+ResetVibratoTable:
+; start a new note's table vibrato from the top, after its delay
+	ld hl, CHANNEL_FLAGS2
+	add hl, bc
+	bit SOUND_VIBRATO_TABLE, [hl]
+	ret z
+	ld hl, CHANNEL_VIBRATO_DELAY
+	add hl, bc
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_VIBRATO_DELAY_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_VIBRATO_TABLE_BASE
+	add hl, bc
+	ld a, [hl]
+	ld hl, CHANNEL_VIBRATO_TABLE_TYPE
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_VIBRATO_TABLE_INDEX
+	add hl, bc
+	ld [hl], 0
+	ret
+
+ResetAudioScripts:
+; start a new note's pitch and volume scripts from the top
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	set SOUND_NOTE_HELD, [hl]
+	res SOUND_VOLUME_RELEASE, [hl]
+	xor a
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_PITCH_SCRIPT_COUNT
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_VOLUME_SCRIPT_COUNT
+	ret
+
+StartVolumeRelease:
+; a rest right after a note plays the volume script's release, if it has one
+; returns carry if it does
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	ld a, [hl]
+	res SOUND_NOTE_HELD, [hl]
+	; both set?
+	cpl
+	and (1 << SOUND_VOLUME_SCRIPT) | (1 << SOUND_NOTE_HELD)
+	jr nz, .cut
+	set SOUND_VOLUME_RELEASE, [hl]
+	ld e, 0
+	call VolumeScriptAddress
+	ld a, [hl]
+	and a
+	jr z, .cut
+	xor a
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld [hli], a
+	ld [hl], a ; CHANNEL_VOLUME_SCRIPT_COUNT: its first step plays now
+	scf
+	ret
+
+.cut
+	; stop both scripts so they don't restart the silenced note
+	ld a, $ff
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	and a
+	ret
+
+VolumeScriptAddress:
+; hl = byte e of the channel's volume script, or of its release
+	ld hl, CHANNEL_VOLUME_SCRIPT
+	add hl, bc
+	ld a, [hl]
+	add a
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_VOLUME_RELEASE, [hl]
+	ld hl, VolumeScripts
+	jr z, AudioScriptAddress
+	inc a
+	; fallthrough
+
+AudioScriptAddress:
+; hl = byte e of the script that pointer a in the table at hl points to
+	add a
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ld a, [hli]
+	ld h, [hl]
+	add e
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ret
+
+HandlePitchScript:
+; steps the pitch script, which offsets the note in eighths of a semitone
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_PITCH_SCRIPT, [hl]
+	ret z
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld a, [hl]
+	inc a
+	ret z ; $ff: holding its last offset
+	dec a
+	jr z, .step
+	dec [hl]
+	ret
+
+.step
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld e, [hl]
+	ld hl, CHANNEL_PITCH_SCRIPT
+	add hl, bc
+	ld a, [hl]
+	ld hl, PitchScripts
+	call AudioScriptAddress
+	ld a, [hli]
+	cp PITCH_SCRIPT_LOOP
+	jr nz, .offset
+	ld a, [hl]
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	ld [hl], a
+	jr .step
+
+.offset
+	ld d, a
+	; frames for this step (0: hold it for good)
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_PITCH_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	ld hl, CHANNEL_PITCH_SCRIPT_INDEX
+	add hl, bc
+	inc [hl]
+	inc [hl]
+	; a = fraction of a semitone, in eighths
+	ld a, d
+	and 7
+	push af
+	; e = pitch, d = octave, of the semitone at or below the offset
+	ld a, d
+	sra a
+	sra a
+	sra a
+	ld hl, CHANNEL_PITCH
+	add hl, bc
+	add [hl]
+	ld e, a
+	ld hl, CHANNEL_OCTAVE
+	add hl, bc
+	ld d, [hl]
+	dec a
+	bit 7, a
+	jr z, .got_pitch
+	; below the octave's C
+	ld a, e
+	add NUM_NOTES
+	ld e, a
+	inc d
+.got_pitch
+	; hl = its frequency, de = the next semitone's minus it
+	push de
+	call GetFrequency
+	pop hl
+	inc l
+	push de
+	ld d, h
+	ld e, l
+	call GetFrequency
+	pop hl
+	ld a, e
+	sub l
+	ld e, a
+	ld a, d
+	sbc h
+	ld d, a
+	; hl += de * fraction / 8
+	pop af
+	push hl
+	ld hl, 0
+	and a
+	jr z, .add_fraction
+.multiply
+	add hl, de
+	dec a
+	jr nz, .multiply
+	srl h
+	rr l
+	srl h
+	rr l
+	srl h
+	rr l
+.add_fraction
+	pop de
+	add hl, de
+	ld e, l
+	ld a, h
+	and $7
+	ld hl, CHANNEL_FREQUENCY + 1
+	add hl, bc
+	ld [hld], a
+	ld [hl], e
+	; write it without restarting the note
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_CONTINUE, [hl]
+	ret
+
+HandleVolumeScript:
+; steps the volume script, restarting the note with each step's envelope
+	ld hl, CHANNEL_FLAGS3
+	add hl, bc
+	bit SOUND_VOLUME_SCRIPT, [hl]
+	ret z
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld a, [hl]
+	inc a
+	ret z ; $ff: stopped
+	dec a
+	jr z, .step
+	dec [hl]
+	ret
+
+.step
+	ld hl, CHANNEL_VOLUME_SCRIPT_INDEX
+	add hl, bc
+	ld e, [hl]
+	inc [hl]
+	inc [hl]
+	call VolumeScriptAddress
+	ld a, [hli]
+	and a
+	jr z, .done
+	ld d, a
+	ld a, [hl]
+	dec a
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], a
+	; ch3's step only sets its output level, keeping the note's wave
+	ld a, [wCurChannel]
+	maskbits NUM_MUSIC_CHANS
+	cp CHAN3
+	ld a, d
+	jr nz, .got_envelope
+	and $f0
+	ld d, a
+	ld a, [wCurTrackVolumeEnvelope]
+	and $f
+	or d
+.got_envelope
+	ld [wCurTrackVolumeEnvelope], a
+	ld hl, CHANNEL_NOTE_FLAGS
+	add hl, bc
+	set NOTE_NOISE_SAMPLING, [hl]
+	ret
+
+.done
+	ld hl, CHANNEL_VOLUME_SCRIPT_COUNT
+	add hl, bc
+	ld [hl], $ff
+	ret
+
+SetCutoffCount:
+; frames until the new note's release: duration * cutoff / 8
+; cutoff 0 or 8 leaves the count at 0, so the note plays in full
+	ld hl, CHANNEL_NOTE_CUTOFF
+	add hl, bc
+	ld a, [hl]
+	and a
+	jr z, .done
+	cp 8
+	jr nc, .no_release
+	ld hl, CHANNEL_NOTE_DURATION
+	add hl, bc
+	ld e, [hl]
+	ld d, 0
+	ld h, d
+	ld l, d
+.multiply
+	add hl, de
+	dec a
+	jr nz, .multiply
+	ld a, l
+	srl h
+	rra
+	srl h
+	rra
+	srl h
+	rra
+	jr .done
+
+.no_release
+	xor a
+.done
+	ld hl, CHANNEL_CUTOFF_COUNT
+	add hl, bc
+	ld [hl], a
 	ret
 
 SetNoteDuration:
@@ -2557,25 +3142,11 @@ PlayStereoSFX::
 	add hl, bc
 	ld [hl], a
 
-	ld hl, CHANNEL_FIELD30
-	add hl, bc
-	ld [hl], a
-
 	ld a, [wCryTracks]
 	cp 2 ; ch 1-2
 	jr c, .skip
 
 ; ch3-4
-	ld a, [wSFXDuration]
-
-	ld hl, CHANNEL_FIELD2E
-	add hl, bc
-	ld [hl], a
-
-	ld hl, CHANNEL_FIELD2F
-	add hl, bc
-	ld [hl], a
-
 	ld hl, CHANNEL_FLAGS2
 	add hl, bc
 	set SOUND_UNKN_0F, [hl]
@@ -2681,6 +3252,12 @@ LoadMusicByte::
 INCLUDE "audio/notes.asm"
 
 INCLUDE "audio/wave_samples.asm"
+
+INCLUDE "audio/vibrato_tables.asm"
+
+INCLUDE "audio/pitch_scripts.asm"
+
+INCLUDE "audio/volume_scripts.asm"
 
 INCLUDE "audio/drumkits.asm"
 

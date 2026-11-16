@@ -218,6 +218,7 @@ ItemEffectsKeyItems:
 	dw NoEffect           ; HELIX_FOSSIL
 	dw NoEffect           ; DOME_FOSSIL
 	dw BadgeCaseEffect    ; BADGE_CASE
+	dw MopedEffect        ; MOPED
 .IndirectEnd:
 
 ItemEffectsBalls:
@@ -499,7 +500,13 @@ PokeBallEffect:
 	ld a, [wEnemyMonForm]
 	ld [wForm], a
 
+; Reloading resets happiness to BASE_HAPPINESS, and a Rocket mon's marker was used up by the battle's
+; own load, so keep the happiness it battled with.
+	ld a, [wEnemyMonHappiness]
+	push af
 	farcall LoadEnemyMon
+	pop af
+	ld [wEnemyMonHappiness], a
 
 	pop af
 	ld [wEnemySubStatus5], a
@@ -598,7 +605,8 @@ PokeBallEffect:
 	ld bc, PARTYMON_STRUCT_LENGTH
 	rst AddNTimes
 
-	ld [hl], FRIEND_BALL_HAPPINESS
+	call GetFriendBallHappiness
+	ld [hl], a
 
 .SkipPartyMonFriendBall:
 	ld hl, AskGiveNicknameText
@@ -654,7 +662,7 @@ PokeBallEffect:
 	cphl16 FRIEND_BALL
 	jr nz, .SkipBoxMonFriendBall
 	; The captured mon is now first in the box
-	ld a, FRIEND_BALL_HAPPINESS
+	call GetFriendBallHappiness
 	ld [wBufferMonHappiness], a
 .SkipBoxMonFriendBall:
 	ld hl, AskGiveNicknameText
@@ -764,6 +772,16 @@ PokeBallEffect:
 .used_park_ball
 	ld hl, wParkBallsRemaining
 	dec [hl]
+	ret
+
+GetFriendBallHappiness:
+; out: a = the happiness a Friend Ball gives the mon just caught: FRIEND_BALL_HAPPINESS, or only
+; FRIEND_BALL_ROCKET_HAPPINESS for one of Team Rocket's, told apart by the happiness it battled with.
+	ld a, [wEnemyMonHappiness]
+	cp ROCKET_MON_HAPPINESS
+	ld a, FRIEND_BALL_HAPPINESS
+	ret nz
+	ld a, FRIEND_BALL_ROCKET_HAPPINESS
 	ret
 
 BallMultiplierFunctionTable:
@@ -1158,6 +1176,9 @@ TownMapEffect:
 
 BicycleEffect:
 	jmp BikeFunction
+
+MopedEffect:
+	jmp MopedFunction
 
 EvoStoneEffect:
 	ld b, PARTYMENUACTION_EVO_STONE

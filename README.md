@@ -73,7 +73,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Daily swarms are announced via the radio on station 12.5, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
 - Strange looking Pokémon potentially from the past?
 - Swarms with higher chances to have alternate shiny colors.
-- Team Rocket's Pokémon, left behind as you complete the story, swarm the routes. They all know Thief: one holding nothing can steal your Pokémon's item, which you only get back by catching it.
+- Team Rocket's Pokémon, left behind as you complete the story, swarm the routes. They all know Thief and Frustration, and they don't like you: one holding nothing can steal your Pokémon's item, which you only get back by catching it. Caught, they start with no happiness, so their Frustration hits hard; a Friend Ball only brings them up to 100. The Electrodes in the Rocket hideout start with no happiness too.
 - Up to three swarms can be going at once: Arnie's and Anthony's phone calls still start theirs (Yanma on Route 35, Dunsparce in Dark Cave), and a new radio station picks one more every day.
 - Swarms end at midnight.
 - The radio won't announce the same swarm as either of the last two days you played.
@@ -362,6 +362,8 @@ If you hit a bug, please mention which emulator you're using when you report it.
 - Standard odds **1/8192**
 - Gift Pokémon **1/512**
 - Swarm Pokémon **1/512**
+- Pokémon wandering in the overworld **1/2048**
+  - The last 5 shinies that appear among wandering Pokémon are remembered, including swarm and population shinies (Hidden Grove, the Ruins of Alph Inner Chamber). Leave and come back, battle something else nearby, or save and quit, and the shiny is still there until you battle it. A shiny in the Bug Catching Contest lasts until the contest ends.
 - Starters
   - In Elm's lab the three starters stand on the table. All three are rolled at once when you walk in, at **1/512** each, and are visibly shiny. Save before entering to hunt for a shiny starter!
 - Bug Catching Contest **1/512**

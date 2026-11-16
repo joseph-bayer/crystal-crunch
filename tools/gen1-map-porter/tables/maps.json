@@ -1,0 +1,44 @@
+{
+	"$comment": "Gen 1 map -> how it lands in the project. Grows as maps are ported; a port stops on a missing entry. warps: Gen 1 warp number (1-based) -> the project's destination, for warps to maps the tool didn't port; lastMap: where LAST_MAP warps lead, or null if nowhere yet.",
+	"VIRIDIAN_FOREST": {
+		"game": "yellow",
+		"name": "ViridianForest",
+		"const": "VIRIDIAN_FOREST",
+		"group": "DUNGEONS",
+		"environment": "CAVE",
+		"landmark": "LANDMARK_VIRIDIAN_FOREST",
+		"music": "MUSIC_UNION_CAVE",
+		"noPhone": "FALSE",
+		"palette": "PALETTE_NITE",
+		"fishGroup": "FISHGROUP_POND",
+		"lastMap": null,
+		"warps": {
+			"1": {
+				"map": "VIRIDIAN_FOREST_NORTH_GATE",
+				"warp": 3
+			},
+			"2": {
+				"map": "VIRIDIAN_FOREST_NORTH_GATE",
+				"warp": 4
+			},
+			"3": {
+				"map": "VIRIDIAN_FOREST_SOUTH_GATE",
+				"warp": 1
+			},
+			"4": {
+				"map": "VIRIDIAN_FOREST_SOUTH_GATE",
+				"warp": 1
+			},
+			"5": {
+				"map": "VIRIDIAN_FOREST_SOUTH_GATE",
+				"warp": 2
+			},
+			"6": {
+				"map": "VIRIDIAN_FOREST_SOUTH_GATE",
+				"warp": 2
+			}
+		},
+		"tileset": "TILESET_FOREST",
+		"target": "new"
+	}
+}

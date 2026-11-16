@@ -1184,6 +1184,16 @@ wTempWildMonMove:: dw
 wOverworldMonSwarmMove:: dw
 
 
+SECTION "Moped Ramp", WRAM0
+
+; Tiles ridden on the moped since the player last stood still, holding at full speed. Picks the
+; moped's speed: it starts slow and builds up. Not saved, so continuing starts slow.
+wMopedRampTiles:: db
+; Full-speed tiles left after letting go of B: built up, the moped needs B held for full speed,
+; and coasts on for these before dropping to the bike's speed.
+wMopedCoastTiles:: db
+
+
 SECTION "Video", WRAM0
 
 UNION
@@ -3222,7 +3232,9 @@ wOverworldMonSwarmRows:: db
 wOverworldMonSwarmSpecies:: dw
 wOverworldMonSwarmForm:: db
 wOverworldMonSwarmAltShiny:: db ; SWARM_ALT_SHINY if the swarm's shinies are alternates at its odds, else 0
-wOverworldMonRollFromSwarm:: db ; nonzero while .RollForm rolls a mon the swarm supplied
+; What supplied the mon .RollForm is rolling: 0 the route's roster, OW_ROLL_FROM_POPULATION a
+; population, any other value the swarm (that row's bit).
+wOverworldMonRollFromSwarm:: db
 wSwarmRespawnPending:: db ; set by RerollSwarmOverworldMons, spent by PlacePopulationAndSpawn
 
 ; The wandering slot each roaming beast took this visit, 1-based, 0 for none: Raikou, then Entei.
@@ -3253,9 +3265,23 @@ wPopulationBounds:: ds SPAWN_AREA_LENGTH
 wPopulationSeed:: dw ; placement's own generator; see PlacePopulation.PlacementRandom
 wPopulationRestore:: db ; TRUE while the continue path rolls: keep wPopulationSpecies
 
-; Set when a roll turns up a shiny, cleared once the chime has played. The sound cannot be played
-; at roll time -- that happens inside HandleNewMap, with InitSound and the map music still to come.
+; A bit per slot (1 << slot) whose roll turned up a shiny, cleared once the chime has played. The
+; sound cannot be played at roll time -- that happens inside HandleNewMap, with InitSound and the
+; map music still to come. Emptying or overwriting a slot clears its bit, so the chime never
+; announces a shiny that is no longer there.
 wOverworldMonShinyPending:: db
+
+; The last NUM_REMEMBERED_SHINIES shinies the wandering mon rolled, newest first; see
+; constants/overworld_mon_constants.asm. Saved in SRAM blocks of its own (sRememberedShinies), so
+; it lives out here past wGameDataEnd and moves nothing in the save.
+wRememberedShinies:: ds NUM_REMEMBERED_SHINIES * REMEMBERED_SHINY_LENGTH
+wRememberedShiniesEnd::
+; Scratch for recording one: the roster row .RollOneSlot picked; the swarm's SWARM_* id, from
+; GetSwarmSpeciesForMap; and, once .RollForm has made it shiny, its REMEMBERED_* kind + 1 (0 for a
+; shiny not to remember).
+wOverworldMonRollRow:: db
+wOverworldMonSwarmId:: db
+wOverworldMonRecordShiny:: db
 
 
 SECTION "Pic Animations", WRAMX
@@ -3521,6 +3547,15 @@ SECTION "Key Items List", WRAM0
 ; saved: RefreshKeyItemsList rebuilds it from wKeyItemFlags whenever one is gained or lost, and on load.
 wNumKeyItems:: db
 wKeyItems:: ds NUM_KEY_ITEM_POCKET + 1
+
+
+SECTION "Rocket Mon", WRAM0
+
+; ROCKET_MON_* bits for a grass or surf battle or a scripted one, 0 for none. Set by
+; ApplySwarmToWildSlot or a map script's loadmem, and used up by LoadEnemyMon.
+wTempWildMonRocket:: db
+; The wandering-mon roll's: OW_PERK_ROCKET if the swarm is Team Rocket's, else 0.
+wOverworldMonSwarmPerks:: db
 
 
 SECTION "Map Icon Turns", WRAM0

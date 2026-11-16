@@ -56,63 +56,64 @@ DEF KANTO_LANDMARK EQU const_value
 	const LANDMARK_ROUTE_1           ; 30
 	const LANDMARK_VIRIDIAN_CITY     ; 31
 	const LANDMARK_ROUTE_2           ; 32
-	const LANDMARK_PEWTER_CITY       ; 33
-	const LANDMARK_ROUTE_3           ; 34
-	const LANDMARK_MT_MOON           ; 35
-	const LANDMARK_ROUTE_4           ; 36
-	const LANDMARK_CERULEAN_CITY     ; 37
-	const LANDMARK_CERULEAN_CAVE     ; 38
-	const LANDMARK_ROUTE_24          ; 39
-	const LANDMARK_ROUTE_25          ; 3a
-	const LANDMARK_ROUTE_5           ; 3b
-	const LANDMARK_UNDERGROUND_PATH  ; 3c
-	const LANDMARK_ROUTE_6           ; 3d
-	const LANDMARK_VERMILION_CITY    ; 3e
-	const LANDMARK_DIGLETTS_CAVE     ; 3f
-	const LANDMARK_ROUTE_7           ; 40
-	const LANDMARK_ROUTE_8           ; 41
-	const LANDMARK_ROUTE_9           ; 42
-	const LANDMARK_ROCK_TUNNEL       ; 43
-	const LANDMARK_ROUTE_10          ; 44
-	const LANDMARK_POWER_PLANT       ; 45
-	const LANDMARK_LAVENDER_TOWN     ; 46
-	const LANDMARK_LAV_RADIO_TOWER   ; 47
-	const LANDMARK_CELADON_CITY      ; 48
-	const LANDMARK_SAFFRON_CITY      ; 49
-	const LANDMARK_ROUTE_11          ; 4a
-	const LANDMARK_ROUTE_12          ; 4b
-	const LANDMARK_ROUTE_13          ; 4c
-	const LANDMARK_ROUTE_14          ; 4d
-	const LANDMARK_ROUTE_15          ; 4e
-	const LANDMARK_ROUTE_16          ; 4f
-	const LANDMARK_ROUTE_17          ; 50
-	const LANDMARK_ROUTE_18          ; 51
-	const LANDMARK_FUCHSIA_CITY      ; 52
-	const LANDMARK_ROUTE_19          ; 53
-	const LANDMARK_ROUTE_20          ; 54
-	const LANDMARK_SEAFOAM_ISLANDS   ; 55
-	const LANDMARK_CINNABAR_ISLAND   ; 56
-	const LANDMARK_ROUTE_21          ; 57
-	const LANDMARK_ROUTE_22          ; 58
-	const LANDMARK_VICTORY_ROAD      ; 59
-	const LANDMARK_ROUTE_23          ; 5a
-	const LANDMARK_INDIGO_PLATEAU    ; 5b
-	const LANDMARK_ROUTE_26          ; 5c
-	const LANDMARK_ROUTE_27          ; 5d
-	const LANDMARK_TOHJO_FALLS       ; 5e
-	const LANDMARK_ROUTE_28          ; 5f
+	const LANDMARK_VIRIDIAN_FOREST   ; 33
+	const LANDMARK_PEWTER_CITY       ; 34
+	const LANDMARK_ROUTE_3           ; 35
+	const LANDMARK_MT_MOON           ; 36
+	const LANDMARK_ROUTE_4           ; 37
+	const LANDMARK_CERULEAN_CITY     ; 38
+	const LANDMARK_CERULEAN_CAVE     ; 39
+	const LANDMARK_ROUTE_24          ; 3a
+	const LANDMARK_ROUTE_25          ; 3b
+	const LANDMARK_ROUTE_5           ; 3c
+	const LANDMARK_UNDERGROUND_PATH  ; 3d
+	const LANDMARK_ROUTE_6           ; 3e
+	const LANDMARK_VERMILION_CITY    ; 3f
+	const LANDMARK_DIGLETTS_CAVE     ; 40
+	const LANDMARK_ROUTE_7           ; 41
+	const LANDMARK_ROUTE_8           ; 42
+	const LANDMARK_ROUTE_9           ; 43
+	const LANDMARK_ROCK_TUNNEL       ; 44
+	const LANDMARK_ROUTE_10          ; 45
+	const LANDMARK_POWER_PLANT       ; 46
+	const LANDMARK_LAVENDER_TOWN     ; 47
+	const LANDMARK_LAV_RADIO_TOWER   ; 48
+	const LANDMARK_CELADON_CITY      ; 49
+	const LANDMARK_SAFFRON_CITY      ; 4a
+	const LANDMARK_ROUTE_11          ; 4b
+	const LANDMARK_ROUTE_12          ; 4c
+	const LANDMARK_ROUTE_13          ; 4d
+	const LANDMARK_ROUTE_14          ; 4e
+	const LANDMARK_ROUTE_15          ; 4f
+	const LANDMARK_ROUTE_16          ; 50
+	const LANDMARK_ROUTE_17          ; 51
+	const LANDMARK_ROUTE_18          ; 52
+	const LANDMARK_FUCHSIA_CITY      ; 53
+	const LANDMARK_ROUTE_19          ; 54
+	const LANDMARK_ROUTE_20          ; 55
+	const LANDMARK_SEAFOAM_ISLANDS   ; 56
+	const LANDMARK_CINNABAR_ISLAND   ; 57
+	const LANDMARK_ROUTE_21          ; 58
+	const LANDMARK_ROUTE_22          ; 59
+	const LANDMARK_VICTORY_ROAD      ; 5a
+	const LANDMARK_ROUTE_23          ; 5b
+	const LANDMARK_INDIGO_PLATEAU    ; 5c
+	const LANDMARK_ROUTE_26          ; 5d
+	const LANDMARK_ROUTE_27          ; 5e
+	const LANDMARK_TOHJO_FALLS       ; 5f
+	const LANDMARK_ROUTE_28          ; 60
 DEF KANTO_LANDMARK_LAST EQU const_value - 1
 
 DEF OTHER_LANDMARK EQU const_value
-	const LANDMARK_FAST_SHIP         ; 60
+	const LANDMARK_FAST_SHIP         ; 61
 
 ; Hidden landmarks. A map on one of these gets its name on the sign when you walk in, and that is
 ; all: the Town Map, Fly and the region checks treat it exactly like LANDMARK_SPECIAL, resolving to
 ; the backup map through GetWorldMapLocationOrBackup. Past both regions' cursor ranges, so the
 ; Pokegear never lands on one. Their table rows carry no real coordinates.
 DEF HIDDEN_LANDMARK EQU const_value
-	const LANDMARK_APRICORN_FOREST   ; 61
-	const LANDMARK_APRICORN_CLEARING ; 62
+	const LANDMARK_APRICORN_FOREST   ; 62
+	const LANDMARK_APRICORN_CLEARING ; 63
 
 DEF NUM_LANDMARKS EQU const_value
 

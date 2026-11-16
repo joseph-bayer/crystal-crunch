@@ -1354,6 +1354,7 @@ CheckWildMonEvent::
 ; It also carries the shiny chime. PlayerEvents is the first thing that runs once the player
 ; actually has control -- past the fade, past the music starting, and it bows out entirely while a
 ; script is running -- so a sound played here is heard, which one played at roll time would not be.
+; The pending byte holds a bit per slot, so one chime covers any number of shinies.
 	ld a, [wOverworldMonShinyPending]
 	and a
 	jr z, .no_chime

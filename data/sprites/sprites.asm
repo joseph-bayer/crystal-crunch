@@ -116,4 +116,9 @@ OverworldSprites:
 	overworld_sprite LoreleiSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	overworld_sprite AgathaSpriteGFX, 12, WALKING_SPRITE, PAL_OW_PURPLE
 	overworld_sprite GiovanniSpriteGFX, 12, WALKING_SPRITE, PAL_OW_GRAY
-	assert_table_length NUM_OVERWORLD_SPRITES - 1
+	; SPRITE_FOLLOWER is drawn from its Pokemon's icon and never reads this row; it only holds
+	; the place so the sprites after it line up.
+	overworld_sprite ChrisSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
+	overworld_sprite ChrisMopedSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
+	overworld_sprite KrisMopedSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BLUE
+	assert_table_length NUM_OVERWORLD_SPRITES

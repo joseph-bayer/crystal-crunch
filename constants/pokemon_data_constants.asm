@@ -210,7 +210,10 @@ DEF GIFT_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF LEGENDARY_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF BUG_CATCHING_CONTEST_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512
 DEF SHINY_EGG_NUMERATOR EQU 16 ; 16/65536 = 1/4096  
-DEF OVERWORLD_MON_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512, after the 1/256 check above
+DEF OVERWORLD_MON_SHINY_NUMERATOR EQU 32 ; 32/65536 = 1/2048, after the 1/256 check above
+; A population's member (the Bug Catching Contest, the Ruins of Alph Inner Chamber) without
+; OW_PERK_EXTRA_SHINY.
+DEF POPULATION_MON_SHINY_NUMERATOR EQU 128 ; 128/65536 = 1/512, after the 1/256 check above
 ; A mon that came from a swarm.
 ; Quirk: In the grass a plain-form swarm that misses this still gets the ordinary roll afterwards, so it
 ; lands at about 1/482 rather than exactly 1/512; a swarm with a cosmetic form gets this alone.
@@ -369,9 +372,21 @@ DEF NUM_HAPPINESS_CHANGES EQU const_value - 1
 ; significant happiness values
 DEF BASE_HAPPINESS        EQU 70
 DEF FRIEND_BALL_HAPPINESS EQU 200
+; Team Rocket's wild mon (wTempWildMonRocket): happiness 0, so Frustration hits at 102 for the
+; wild mon and for the player once caught. A Friend Ball raises one only to 100.
+DEF ROCKET_MON_HAPPINESS             EQU 0
+DEF FRIEND_BALL_ROCKET_HAPPINESS     EQU 100
+; The catch recognizes a Rocket mon by its happiness alone.
+assert ROCKET_MON_HAPPINESS != BASE_HAPPINESS, "a Rocket mon's happiness must differ from a wild mon's"
 DEF HAPPINESS_TO_EVOLVE   EQU 220
 DEF HAPPINESS_THRESHOLD_1 EQU 100
 DEF HAPPINESS_THRESHOLD_2 EQU 200
+
+; Return and Frustration's power is happiness * 10 / 25 (Frustration: 255 - happiness), so 102 at
+; most. A trainer's mon (not wild, not a link opponent) always uses this power (see
+; IsTrainerMonsTurn), the way its Hidden Power uses MAX_HP_LEVEL.
+DEF HAPPINESS_MOVE_MAX_POWER EQU 255 * 10 / 25
+assert HAPPINESS_MOVE_MAX_POWER == 102, "HAPPINESS_MOVE_MAX_POWER should be 102"
 
 ; PP
 DEF PP_UP_MASK EQU %11000000

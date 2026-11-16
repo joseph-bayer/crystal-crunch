@@ -15,7 +15,10 @@ Route17Route18GateOfficerScript:
 
 Route17Route18GateBicycleCheck:
 	checkitem BICYCLE
+	iftrue .HasRide
+	checkitem MOPED
 	iffalse .NoBicycle
+.HasRide:
 	end
 
 .NoBicycle:
@@ -36,6 +39,12 @@ Route17Route18GateCannotPassMovement:
 Route17Route18GateOfficerText:
 	text "CYCLING ROAD"
 	line "Uphill Starts Here"
+
+	para "If you have a"
+	line "MOPED, the"
+	cont "traction will stop"
+	cont "stop you from"
+	cont "coasting."
 	done
 
 Route17Route18GateCannotPassText:
@@ -46,7 +55,8 @@ Route17Route18GateCannotPassText:
 	line "is beyond here."
 
 	para "You have to have a"
-	line "BICYCLE to go on."
+	line "BICYCLE or MOPED"
+	cont "to go on."
 	done
 
 Route17Route18Gate_MapEvents:

@@ -1,0 +1,7 @@
+{
+	"$comment": "Gen 1 tileset -> the project's tileset route B maps it onto, and the collision a Gen 1 warp tile gets in a built block.",
+	"FOREST": {
+		"cse": "TILESET_FOREST",
+		"warpColl": "DOOR"
+	}
+}

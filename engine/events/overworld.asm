@@ -1745,6 +1745,13 @@ BikeFunction:
 .GetOnBike:
 	ld hl, Script_GetOnBike
 	ld de, Script_GetOnBike_Register
+	ld bc, MUSIC_BICYCLE
+.GetOn:
+; Shared with the moped. hl = the script from the PACK, de = the one from SELECT, bc = the ride's
+; music.
+	push bc
+	xor a
+	ld [wMopedRampTiles], a ; the moped starts slow
 	call .CheckIfRegistered
 	call QueueScript
 	xor a
@@ -1753,7 +1760,7 @@ BikeFunction:
 	call PlayMusic
 	call DelayFrame
 	call MaxVolume
-	ld de, MUSIC_BICYCLE
+	pop de
 	ld a, e
 	ld [wMapMusic], a
 	call PlayMusic
@@ -1761,6 +1768,7 @@ BikeFunction:
 	ret
 
 .GetOffBike:
+; Shared with the moped.
 	ld hl, wBikeFlags
 	bit BIKEFLAGS_ALWAYS_ON_BIKE_F, [hl]
 	jr nz, .CantGetOffBike
@@ -1811,6 +1819,29 @@ BikeFunction:
 	scf
 	ret
 
+MopedFunction:
+; The bike's rules and music: where the bike can be used, so can the moped. It gets on only from
+; walking, so on the bike or surfing it can't be used.
+	call .TryMoped
+	and JUMPTABLE_INDEX_MASK
+	ld [wFieldMoveSucceeded], a
+	ret
+
+.TryMoped:
+	call BikeFunction.CheckEnvironment
+	jr c, .CannotUseMoped
+	ld a, [wPlayerState]
+	ld hl, Script_GetOnMoped
+	ld de, Script_GetOnMoped_Register
+	ld bc, MUSIC_PUZZLE_TOTODILE
+	cp PLAYER_NORMAL
+	jmp z, BikeFunction.GetOn
+	cp PLAYER_MOPED
+	jr z, BikeFunction.GetOffBike ; refused where the road keeps you riding
+.CannotUseMoped:
+	xor a
+	ret
+
 Script_GetOnBike:
 	refreshmap
 	special UpdateTimePals
@@ -1819,13 +1850,29 @@ Script_GetOnBike:
 	waitbutton
 	closetext
 	special UpdatePlayerSprite
-	end
+	sjump FollowerJoinsRideScript
 
 Script_GetOnBike_Register:
 	loadvar VAR_MOVEMENT, PLAYER_BIKE
 	closetext
 	special UpdatePlayerSprite
-	end
+	sjump FollowerJoinsRideScript
+
+Script_GetOnMoped:
+	refreshmap
+	special UpdateTimePals
+	loadvar VAR_MOVEMENT, PLAYER_MOPED
+	writetext GotOnBikeText
+	waitbutton
+	closetext
+	special UpdatePlayerSprite
+	sjump FollowerJoinsRideScript
+
+Script_GetOnMoped_Register:
+	loadvar VAR_MOVEMENT, PLAYER_MOPED
+	closetext
+	special UpdatePlayerSprite
+	sjump FollowerJoinsRideScript
 
 Script_GetOffBike:
 	refreshmap
@@ -1838,6 +1885,17 @@ FinishGettingOffBike:
 	closetext
 	special UpdatePlayerSprite
 	special PlayMapMusic
+	special FollowerLeavesRide
+	iffalse .done
+	appearfolloweronestep
+.done
+	end
+
+FollowerJoinsRideScript:
+	special FollowerJoinsRide
+	iffalse .done
+	stowfollower
+.done
 	end
 
 Script_GetOffBike_Register:

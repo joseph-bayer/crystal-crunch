@@ -16,7 +16,7 @@
 	const MUSIC_OFFICER_ENCOUNTER            ; 0c
 	const MUSIC_HEAL                         ; 0d
 	const MUSIC_LAVENDER_TOWN                ; 0e
-	const MUSIC_ROUTE_2                      ; 0f
+	const MUSIC_ROUTE_2                      ; 0f (unused)
 	const MUSIC_MT_MOON                      ; 10
 	const MUSIC_SHOW_ME_AROUND               ; 11
 	const MUSIC_GAME_CORNER                  ; 12
@@ -105,6 +105,10 @@
 	const MUSIC_SUICUNE_BATTLE               ; 64
 	const MUSIC_BATTLE_TOWER_LOBBY           ; 65
 	const MUSIC_MOBILE_CENTER                ; 66
+	const MUSIC_TCG_OVERWORLD                ; 67
+	const MUSIC_TCG_CLUB_1                   ; 68
+	const MUSIC_TCG_CLUB_2                   ; 69
+	const MUSIC_PUZZLE_TOTODILE              ; 6a
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for these values (see home/map.asm)

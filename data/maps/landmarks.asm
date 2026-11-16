@@ -59,6 +59,7 @@ Landmarks:
 	landmark  52,  92, Route1Name
 	landmark  52,  76, ViridianCityName
 	landmark  52,  64, Route2Name
+	landmark  48,  60, ViridianForestName
 	landmark  52,  52, PewterCityName
 	landmark  64,  52, Route3Name
 	landmark  76,  52, MtMoonName
@@ -154,6 +155,7 @@ LavRadioTowerName:   db "LAV<BSP>RADIO TOWER@"
 SeafoamIslandsName:  db "SEAFOAM<BSP>ISLANDS@"
 Route1Name:          db "ROUTE 1@"
 Route2Name:          db "ROUTE 2@"
+ViridianForestName:  db "VIRIDIAN<BSP>FOREST@"
 Route3Name:          db "ROUTE 3@"
 Route4Name:          db "ROUTE 4@"
 Route5Name:          db "ROUTE 5@"

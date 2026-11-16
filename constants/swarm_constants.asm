@@ -11,7 +11,8 @@
 	const SWARM_WATER ; 1
 DEF SWARM_TERRAIN_MASK EQU %00000001
 ; OR'd into a row's terrain: Team Rocket's mon, left behind when a Rocket operation fell. The
-; radio announces these with their own lines. Anything reading the terrain masks this off.
+; radio announces these with their own lines, and their mon are ROCKET_MON_SWARM in the battle.
+; Anything reading the terrain masks this off.
 DEF SWARM_ROCKET_F EQU 7
 DEF SWARM_ROCKET EQU 1 << SWARM_ROCKET_F
 	assert !(SWARM_ROCKET & SWARM_TERRAIN_MASK), "SWARM_ROCKET overlaps the terrain"
@@ -20,6 +21,14 @@ DEF SWARM_ROCKET EQU 1 << SWARM_ROCKET_F
 DEF SWARM_ALT_SHINY_F EQU 6
 DEF SWARM_ALT_SHINY EQU 1 << SWARM_ALT_SHINY_F
 	assert !(SWARM_ALT_SHINY & (SWARM_TERRAIN_MASK | SWARM_ROCKET)), "SWARM_ALT_SHINY overlaps another terrain bit"
+
+; wTempWildMonRocket: what being one of Team Rocket's mon does to a wild battle. A Rocket swarm's
+; mon get both; the Rocket Base Electrodes, marked by their scripts, are only unhappy.
+DEF ROCKET_MON_UNHAPPY_F EQU 0 ; happiness ROCKET_MON_HAPPINESS
+DEF ROCKET_MON_MOVES_F   EQU 1 ; knows Thief and Frustration
+DEF ROCKET_MON_UNHAPPY EQU 1 << ROCKET_MON_UNHAPPY_F
+DEF ROCKET_MON_MOVES   EQU 1 << ROCKET_MON_MOVES_F
+DEF ROCKET_MON_SWARM   EQU ROCKET_MON_UNHAPPY | ROCKET_MON_MOVES
 
 ; A row's story gate when it has none (event flag 0 is a real flag)
 DEF SWARM_NO_GATE EQU -1
@@ -55,6 +64,7 @@ DEF FIRST_STUDIED_SWARM EQU const_value
 	const SWARM_DRATINI_ALT_SHINY ; 22
 	const SWARM_MAGIKARP_ALT_SHINY ; 23
 	const SWARM_MARILL_ALT_SHINY ; 24
+	const SWARM_PIKACHU_RB     ; 25
 DEF NUM_SWARMS EQU const_value - 1
 
 DEF MAX_ACTIVE_SWARMS EQU 3 ; Arnie's call, Anthony's call, and the radio's daily roll

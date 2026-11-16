@@ -365,6 +365,7 @@ SavePlayerData:
 
 SavePokemonData:
 	farcall SaveDexForms ; the Pokédex's forms record goes with the Pokémon data
+	farcall SaveRememberedShinies ; and so do the remembered overworld shinies
 	ld a, BANK(sPokemonData)
 	call OpenSRAM
 	ld hl, wPokemonData
@@ -457,6 +458,7 @@ SaveBackupPlayerData:
 
 SaveBackupPokemonData:
 	farcall SaveBackupDexForms ; the Pokédex's forms record goes with the Pokémon data
+	farcall SaveBackupRememberedShinies
 	ld a, BANK(sBackupPokemonData)
 	call OpenSRAM
 	ld hl, wPokemonData
@@ -686,6 +688,7 @@ LoadPlayerData:
 
 LoadPokemonData:
 	farcall LoadDexForms ; the Pokédex's forms record goes with the Pokémon data
+	farcall LoadRememberedShinies ; and so do the remembered overworld shinies
 	ld a, BANK(sPokemonData)
 	call OpenSRAM
 	ld hl, sPokemonData
@@ -791,6 +794,7 @@ LoadBackupPlayerData:
 
 LoadBackupPokemonData:
 	farcall LoadBackupDexForms ; the Pokédex's forms record goes with the Pokémon data
+	farcall LoadBackupRememberedShinies
 	ld a, BANK(sBackupPokemonData)
 	call OpenSRAM
 	ld hl, sBackupPokemonData

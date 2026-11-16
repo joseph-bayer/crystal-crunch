@@ -111,7 +111,10 @@
 	const SPRITE_LORELEI ; 6b
 	const SPRITE_AGATHA ; 6c
 	const SPRITE_GIOVANNI ; 6d
-	const SPRITE_FOLLOWER ; 69
+	const SPRITE_FOLLOWER ; 6e
+; New sprites go after the follower: its id is kept in saved object structs.
+	const SPRITE_CHRIS_MOPED ; 6f
+	const SPRITE_KRIS_MOPED ; 70
 DEF NUM_OVERWORLD_SPRITES EQU const_value - 1
 
 ; SpriteMons indexes (see data/sprites/sprite_mons.asm)

@@ -190,6 +190,7 @@ KeyItemNames::
 	li "DOME FOSSIL"  ; 0117
 	li "HELIX FOSSIL" ; 0118
 	li "BADGE CASE"   ; 0119
+	li "MOPED"        ; 011A
 	assert_list_length NUM_KEY_ITEM_POCKET
 
 BallNames::

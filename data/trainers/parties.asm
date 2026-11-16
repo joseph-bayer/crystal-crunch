@@ -1267,6 +1267,16 @@ ScientistGroup:
 	dw HIDDEN_POWER, NO_MOVE, NO_MOVE, NO_MOVE
 	db -1 ; end
 
+	next_list_item ; SCIENTIST (8)
+	db "RETURN@", TRAINERTYPE_MOVES
+	db 50
+	dw TAUROS
+	dw RETURN, NO_MOVE, NO_MOVE, NO_MOVE
+	db 50
+	dw TAUROS
+	dw FRUSTRATION, NO_MOVE, NO_MOVE, NO_MOVE
+	db -1 ; end
+
 	end_list_items
 
 SECTION "Erika Trainer Party", ROMX

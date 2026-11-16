@@ -566,6 +566,9 @@ INCLUDE "data/tilesets/shaman_house_collision.asm"
 TilesetShamanHouseAttr::
 INCBIN "data/tilesets/shaman_house_attributes.bin.lz"
 
+TilesetForestAttr::
+INCBIN "data/tilesets/forest_attributes.bin.lz"
+
 SECTION "Tileset Data 9", ROMX
 
 Tileset0Attr::
@@ -662,9 +665,6 @@ INCBIN "data/tilesets/underground_attributes.bin.lz"
 
 TilesetIcePathAttr::
 INCBIN "data/tilesets/ice_path_attributes.bin.lz"
-
-TilesetForestAttr::
-INCBIN "data/tilesets/forest_attributes.bin.lz"
 
 TilesetBetaWordRoomAttr::
 INCBIN "data/tilesets/beta_word_room_attributes.bin.lz"

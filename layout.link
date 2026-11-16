@@ -346,6 +346,7 @@ WRAM0
 	align 8
 	"wSpriteAnims"
 	"Key Items List"
+	"Rocket Mon"
 	align 8
 	"Sprites"
 	"Tilemap"
@@ -355,6 +356,7 @@ WRAM0
 	"Overworld Map"
 	"Vermilion Port Truck"
 	"Swarm Moves"
+	"Moped Ramp"
 	align 4
 	"Video"
 	align 5
@@ -402,6 +404,7 @@ SRAM $00
 	"Backup Save"
 	org $be80 ; the same in every build: the debug ROM's backup save is a byte longer
 	"Pokedex Forms Backup"
+	"Remembered Shinies Backup"
 SRAM $01
 	"Save"
 	"Box Metadata"
@@ -412,6 +415,7 @@ SRAM $01
 	"PokeDB Bank 1 Ext"
 	"PokeDB Bank 2 Ext"
 	"Pokedex Forms Save"
+	"Remembered Shinies Save"
 SRAM $02
 	"PokeDB Bank 1"
 SRAM $03

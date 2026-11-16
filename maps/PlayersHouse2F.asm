@@ -66,7 +66,9 @@ if DEF(_DEBUG)
 	giveitem RARE_CANDY, 99
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
+	giveitem FRIEND_BALL, 99
 	giveitem BICYCLE
+	; giveitem MOPED
 	giveitem GOOD_ROD
 	giveitem PASS ; Magnet Train
 	giveitem BADGE_CASE ; sets the badge count
@@ -841,6 +843,7 @@ PlayersHouseDebugHPBattlesScript::
 	ifequal 2, .WildUnown
 	ifequal 3, .Screens
 	ifequal 4, .EnemyHiddenPower
+	ifequal 5, .EnemyReturn
 	closetext
 	end
 
@@ -893,19 +896,30 @@ PlayersHouseDebugHPBattlesScript::
 	reloadmap
 	end
 
+.EnemyReturn:
+; Two TAUROS, one knowing only RETURN, then one knowing only FRUSTRATION: both 102 from a trainer.
+	closetext
+	winlosstext PlayersHouseDebugBattleWinText, PlayersHouseDebugBattleWinText
+	loadtrainer SCIENTIST, SCIENTIST_DEBUG_RETURN
+	loadvar VAR_BATTLETYPE, BATTLETYPE_CANLOSE
+	startbattle
+	reloadmap
+	end
+
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 13, 11
+	menu_coords 0, 0, 14, 13
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 5 ; items
+	db 6 ; items
 	db "WILD MEW@"
 	db "WILD UNOWN@"
 	db "SCREENS@"
 	db "ENEMY HP@"
+	db "ENEMY RETURN@"
 	db "CANCEL@"
 
 PlayersHouseDebugHiddenPowerText:

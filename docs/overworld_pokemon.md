@@ -304,14 +304,21 @@ other shiny rates:
 
 | Constant | Value | Against |
 | --- | --- | --- |
-| `OVERWORLD_MON_SHINY_NUMERATOR` | 128/65536 = 1/512 | a grass encounter's 1/8192 |
+| `OVERWORLD_MON_SHINY_NUMERATOR` | 32/65536 = 1/2048 | a grass encounter's 1/8192 |
 | `OVERWORLD_MON_MIN_DV` | 6 of 15, as a floor on each DV | a free roll |
 | `OVERWORLD_MON_NO_ITEM_CHANCE` | 20% | a grass encounter's 50% |
+
+A population's member rolls at `POPULATION_MON_SHINY_NUMERATOR` (1/512) instead, and a swarm's at
+`SWARM_SHINY_NUMERATOR` (1/512). `.RollForm` tells them apart by `wOverworldMonRollFromSwarm`: 0 for
+the route's roster, `OW_ROLL_FROM_POPULATION` for a population, a swarm row's bit for the swarm.
 
 Per entry, an `OW_PERK_*` bit field:
 
 - `OW_PERK_ALWAYS_ITEM` — skip the item roll
 - `OW_PERK_EXTRA_SHINY` — `OVERWORLD_MON_EXTRA_SHINY_NUMERATOR`, currently 1/256
+- `OW_PERK_ROCKET` — one of Team Rocket's: `ApplyWildMonMove` gives it Thief and Frustration and
+  happiness `ROCKET_MON_HAPPINESS` (0). The engine sets it for a Rocket swarm's mon (below); a table
+  row can set it too.
 
 **The perks use `shift_const`**, giving each both a value for the tables and an `_F` bit number for
 the code. That is not decoration: a plain `1, 2, 3` enumeration reads fine in the data and is a
@@ -349,6 +356,61 @@ Two touches around the encounter: the player and the follower are hidden for the
 so only the mon is on screen, and a route that rolled a shiny plays `SFX_SHINE` once, the first
 frame the player has control.
 
+The chime is pending in `wOverworldMonShinyPending`, one bit per slot. A roll notes its slot
+(`NoteOverworldMonShiny`), and anything that empties or overwrites a slot afterwards drops it
+(`EmptyOverworldMonSlot`, `ForgetOverworldMonShiny`): the spent slot after a swarm battle,
+`KeepSwarmClearOfPlayer`, and a roaming beast taking a grass slot. So the chime only plays for a
+shiny that is still on the map. The same chime follows a population or swarm reroll after a battle,
+which rolls through the same path.
+
+
+## Remembered shinies
+
+The last `NUM_REMEMBERED_SHINIES` (5) shinies the wandering mon roll are remembered in
+`wRememberedShinies`, newest first: a route's own, a swarm's, or a population's. Each comes back to
+its slot whenever its map is entered, and after every swarm reroll or population reshuffle there,
+until it is battled. Leaving a map doesn't lose a shiny you haven't reached yet.
+
+- **What counts.** Any shiny `.RollForm` makes. Not a static mon, not a roster row that is always
+  shiny (it comes back by itself), not a roaming beast (it stays shiny by itself).
+- **An entry is 4 bytes**: map group and number, a source byte, an index byte (layout in
+  `constants/overworld_mon_constants.asm`). The source byte holds the slot, the kind, the
+  alternate-shiny bit, and three bits the kind uses. The entry points at the row the mon came from:
+
+  | Kind | Kept | Rebuilt from it |
+  | --- | --- | --- |
+  | A route's grass or water roster | time-of-day roster × 4 + row | species, form, perks, extra move and level from the row |
+  | A swarm | its `SWARM_*` id (9 bits) and the time-of-day roster | species, form and move from its `SwarmTable` row, whether or not the swarm is still running; the level from the roster's heaviest row, the first row a swarm takes |
+  | A population | its `pop_mon` row (6 bits) and the form it rolled | species and perks from the row, a level rolled in its range; the form is its own, so a contest Scyther keeps its colour and an Unown its letter |
+
+  Levels scale to today's badges where the row scales. The DVs and the held item are rolled again
+  every time. Because entries point at rows by position, rows in the area tables, `SwarmTable` and
+  `MonPopulations` can only be added at the end once players have saves; reordering or editing one
+  changes what a saved entry comes back as.
+- **Recording.** `.got_entry` stashes the row in `wOverworldMonRollRow`, `GetSwarmSpeciesForMap` the
+  swarm's id in `wOverworldMonSwarmId`; `.RollForm` sets `wOverworldMonRecordShiny` to the kind + 1;
+  `.RememberShiny` pushes the entry once the roll is done (a population's row comes from
+  `wPopulationEntry`). A slot that already holds a remembered shiny keeps it, and the new roll there
+  is not recorded: the restore is about to put the old one back over it.
+- **Restoring.** `.RestoreRememberedShinies` runs at the end of `RollOverworldMons` (after the water
+  roll and so after the beasts, or straight after a population's roll), and at the end of
+  `RerollPopulation`. A remembered shiny takes its slot back, and a beast placed there sits out the
+  visit. It sets the slot's bit in `wOverworldMonShinyPending`, so the chime plays each time one comes
+  back. It comes back whatever the time of day, so a night species can stand in its slot by day; in
+  Hidden Grove it stays even when the visit's species is another one. It keeps its place in the
+  list; coming back doesn't make it newer. A population member's species isn't written to
+  `wPopulationSpecies`, so a continue still restores the visit's own species.
+- **Forgetting.** `EndOverworldMonBattle` calls `ForgetRememberedShiny` for the slot just fought.
+  `BugContestResultsScript`, where every way out of the contest ends, calls `ForgetContestShinies`:
+  a contest shiny lasts only for that contest.
+- **Saving.** Two SRAM blocks of its own, main and backup, each a magic word, the list and a
+  checksum, saved and loaded beside the Pokédex forms record. A save without the current magic
+  (every save from before the list existed, or from before entries were 4 bytes) loads as nothing
+  remembered. The WRAM list sits past `wGameDataEnd` and moves nothing in the save; `ResetWRAM`
+  clears it for a new game.
+- **Debug.** The Scientist's BEASTS → FORCE SHINY makes every wandering mon shiny, Hidden Grove's
+  included, which is how `tests/test_remembered_shinies.py` gets real rolls.
+
 
 ## Saving and loading
 
@@ -365,7 +427,9 @@ previous Pikachu's colors.
 
 **Consequence: reloading a save rerolls the route**, the same as walking out and back. Reload
 scumming for a shiny therefore works. Moving the encounter struct inside `wGameData` would close
-that, at the cost of a save-layout shift.
+that, at the cost of a save-layout shift. A remembered shiny (see
+[Remembered shinies](#remembered-shinies)) is the exception: the list is saved, so it comes back on
+a continue too.
 
 Populations keep one thing across a save: each member's **species**, in `wPopulationSpecies`
 inside `wPlayerData`. The continue roll restores those and rolls everything else afresh. See the
@@ -430,7 +494,15 @@ side; the encounter side is `ApplySwarmToWildSlot` in `engine/overworld/wildmons
 - **A taken row** gets the swarm's species, form and move (the row's optional last argument in
   `swarm_def`, `NO_MOVE` for none) and keeps the row's level. It does not keep the row's perks or
   extra move, which belong to the species it displaced. A swarm's grass and surf mon get the same
-  move: `ApplySwarmToWildSlot` puts it in `wTempWildMonMove`, which `ApplyWildMonMove` uses up. On
+  move: `ApplySwarmToWildSlot` puts it in `wTempWildMonMove`, which `ApplyWildMonMove` uses up.
+- **Team Rocket's swarms** (`SWARM_ROCKET` in the terrain) give a taken row `OW_PERK_ROCKET`, and
+  their grass mon `ROCKET_MON_SWARM` in `wTempWildMonRocket`. Either way `ApplyWildMonMove` sets
+  the wild mon's happiness to `ROCKET_MON_HAPPINESS` (0) and teaches it Thief and Frustration:
+  each skips a known move, else takes the first empty slot, and with four moves Thief replaces
+  move 1 and Frustration move 2. A caught one keeps the happiness (`TryAddMonToParty`,
+  `SendMonIntoBox`), and a Friend Ball raises it only to `FRIEND_BALL_ROCKET_HAPPINESS` (100).
+  The Rocket Base Electrodes' scripts set `ROCKET_MON_UNHAPPY` alone with `loadmem`, for the
+  happiness without the moves. On
   water, whether it floats
   comes from its species, as for any water mon. Its shininess is rolled at `SWARM_SHINY_NUMERATOR`.
 - **After a battle with one of its wandering mon**, a swarming route rerolls every slot, so standing
@@ -468,6 +540,8 @@ How it works:
   grass slot that rolled a mon. The encounter comes from the roam struct (species, level, DVs and
   form), with nothing kept from the row it displaces. Each placement rolls 1/512 for shininess,
   and a shiny stays shiny. With both beasts here and one slot, a coin toss picks which appears.
+  A shiny beast plays the shiny chime each time it is placed, though not when a swarm reroll puts
+  it back.
 - **Moving.** `UpdateRoamMons` runs *before* `HandleNewMap` in the connection and door setup
   scripts, so the roll sees where the beasts are for this visit, and the Pokégear agrees with the
   sprite. Warps and Fly don't run it; Fly runs `JumpRoamMons`. After a battle, a roamer on the

@@ -365,16 +365,9 @@ SpecialEggPatterns:
 	dw 0 ; end
 
 if DEF(_DEBUG)
-DebugForceSwarmMonShiny::
-; For a wandering mon being rolled: whether the swarm supplied it and FORCE SHINY is on.
-; out: nz if both. Preserves bc, de and hl.
-	ld a, [wOverworldMonRollFromSwarm]
-	and a
-	ret z
-	; fallthrough
-
 DebugForceShinyOn::
-; Whether the Scientist's BEASTS -> FORCE SHINY is on, which swarm shinies honor in a debug build.
+; Whether the Scientist's BEASTS -> FORCE SHINY is on, which every wandering mon honors in a debug
+; build.
 ; out: nz if it is. Preserves bc, de and hl.
 	push bc
 	push de

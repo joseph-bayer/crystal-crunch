@@ -109,11 +109,7 @@ def test_force_shiny_makes_every_swarm_mon_shiny(game):
 		assert result & A.SHINY_MASK, "seed %d should be forced shiny" % seed
 		alternates += bool(result & A.ALT_SHINY_MASK)
 	assert 60 <= alternates <= 95, "about 4 in 5 should still be alternates"
-
-	game.poke("wOverworldMonRollFromSwarm", 1)
-	assert A.call(game, "DebugForceSwarmMonShiny")["a"], "a swarm's wanderer is forced too"
-	game.poke("wOverworldMonRollFromSwarm", 0)
-	assert not A.call(game, "DebugForceSwarmMonShiny")["a"], "the route's own mon are left alone"
+	# Every wandering mon, a swarm's included: test_remembered_shinies.test_force_shiny_reaches_every_wanderer
 
 
 CARRY = 0x10
@@ -137,6 +133,40 @@ def test_radio_reports_only_the_alt_shiny_swarm_as_oddly_colored(game):
 		assert rocket == (name == "SWARM_GOLBAT_ROCKET"), name
 	game.poke("wDailySwarm", 0)
 	assert not A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY, "no swarm today"
+
+
+def swarm_rows():
+	"""[(species, map, terrain, move)] for each SwarmTable row, in id order."""
+	text = (A.constants.ROOT / "data" / "wild" / "swarms.asm").read_text(encoding="utf-8")
+	rows = []
+	for line in text.splitlines():
+		m = re.match(r"\s*swarm_def\s+([^;]+)", line)
+		if m:
+			args = [arg.strip() for arg in m.group(1).split(",")]
+			move = args[5] if len(args) > 5 else "NO_MOVE"
+			rows.append((args[0], args[2], args[3], move))
+	return rows
+
+
+def test_wanderer_reads_its_own_swarms_row(game):
+	"""The wandering mon's roll learns its swarm's alternate-shiny odds, species and move from
+	GetSwarmSpeciesForMap. It read the alternate-shiny bit from the row after its own, so the
+	alternate-shiny swarms' wanderers never got their 4 in 5."""
+	moves = A.constants._consts(A.constants.ROOT / "constants" / "move_constants.asm")
+	rows = swarm_rows()
+	assert len(rows) == max(swarm_ids().values()), "every swarm constant has a row"
+	for swarm_id, (species, map_name, terrain, move) in enumerate(rows, 1):
+		group, number = A.constants.maps()[map_name]
+		water = int("SWARM_WATER" in terrain)
+		game.poke("wActiveSwarms", swarm_id)
+		game.poke("wOverworldMonSwarmAltShiny", 0xff)
+		result = A.call(game, "GetSwarmSpeciesForMap", de=group << 8 | number, bc=water << 8)
+		assert result["f"] & CARRY, "%s should swarm on %s" % (species, map_name)
+		assert result["de"] == A.pokemon_index(species), species
+		assert result["bc"] == moves[move], "%s's move" % species
+		alt = A.SWARM_ALT_SHINY if "SWARM_ALT_SHINY" in terrain else 0
+		assert game.peek("wOverworldMonSwarmAltShiny") == alt, "%s on %s" % (species, map_name)
+	game.poke("wActiveSwarms", 0)
 
 
 def palette_and_icon(game, species, form):

@@ -539,6 +539,16 @@ LoadBlockData::
 	ld a, MAPCALLBACK_TILES
 	jmp RunMapCallback
 
+ReloadMapBlocks::
+; LoadBlockData for code outside a map load. FillMapConnections leaves the ROM bank on a connected
+; map's blocks, so banked code can't call LoadBlockData directly: it would return into that bank.
+	ldh a, [hROMBank]
+	push af
+	call LoadBlockData
+	pop af
+	rst Bankswitch
+	ret
+
 ChangeMap::
 	ldh a, [hROMBank]
 	push af
