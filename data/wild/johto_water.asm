@@ -60,9 +60,9 @@ JohtoWaterWildMons:
 
 	def_water_wildmons MOUNT_MORTAR_2F_INSIDE
 	db 2 percent ; encounter rate
-	dbw LEVEL_FROM_BADGES - 17, GOLDEEN
-	dbw LEVEL_FROM_BADGES - 12, MARILL
-	dbw LEVEL_FROM_BADGES - 12, SEAKING
+	dbw LEVEL_FROM_BADGES - 8, GOLDEEN
+	dbw LEVEL_FROM_BADGES - 3, MARILL
+	dbw LEVEL_FROM_BADGES - 3, SEAKING
 	end_water_wildmons
 
 	def_water_wildmons MOUNT_MORTAR_B1F

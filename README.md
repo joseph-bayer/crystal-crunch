@@ -262,6 +262,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 - Some routes have scaling trainers and/or scaling Pokémon to make sure they're the right level based on your badge count
 - Scaled trainer Pokémon evolve to fit their level (a Geodude early, a Golem late); wild ones keep their species.
+- In Kanto, the gym leaders, the gym and route trainers, and your rival at Mt. Moon all scale with your badges, so you can take Kanto's gyms in any order.
 
 </details>
 

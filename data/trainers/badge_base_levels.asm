@@ -1,9 +1,10 @@
 BadgeBaseLevels:
-; The level a LEVEL_FROM_BADGES Pokémon starts from, by the player's number of badges: the ace of
-; each gym in turn. Chuck, Pryce and Jasmine can be beaten in any order, and so can the Kanto
-; leaders, so those stretches are their aces sorted. 5 and 6 are smoothed from 25 to 36 in steps
-; of 3, since the routes open then stay at 24-31. Badges don't count the Elite Four, hence the
-; jump from 8 to 9.
+; The level a LEVEL_FROM_BADGES Pokémon starts from, by the player's total badges (Johto and Kanto).
+; In Johto, entry n is the ace of the gym just beaten; Chuck, Pryce and Jasmine can be beaten in
+; any order, so that stretch is their aces sorted, and 5 and 6 are smoothed from 25 to 36 in steps
+; of 3, since the routes open then stay at 24-31. No Johto map reads past 7: those that open later
+; are capped (BadgeScalingCaps). In Kanto, entry n is the ace of the next leader the player fights,
+; in whatever order, rising from 58 to 67, and 69 once all 16 are won.
 	table_width 1
 	db  5 ;  0
 	db 10 ;  1: Falkner
@@ -13,13 +14,13 @@ BadgeBaseLevels:
 	db 28 ;  5: Chuck
 	db 31 ;  6: Pryce
 	db 36 ;  7: Jasmine
-	db 45 ;  8: Clair
-	db 60 ;  9: Lt. Surge
-	db 62 ; 10: Erika
-	db 63 ; 11: Misty
-	db 64 ; 12: Janine
-	db 66 ; 13: Sabrina
-	db 66 ; 14: Brock
-	db 67 ; 15: Blaine
-	db 69 ; 16: Blue
+	db 58 ;  8: the first Kanto leader
+	db 59 ;  9
+	db 61 ; 10
+	db 62 ; 11
+	db 64 ; 12
+	db 65 ; 13
+	db 66 ; 14
+	db 67 ; 15: the last Kanto leader
+	db 69 ; 16: all badges
 	assert_table_length NUM_BADGES + 1

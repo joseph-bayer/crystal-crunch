@@ -38,6 +38,11 @@ def test_base_table_has_a_level_per_badge_count():
 	assert levels == sorted(levels), "more badges should never lower the base"
 
 
+def test_kanto_base_levels():
+	"""8-15: the ace of the next Kanto leader, in any order; 16: every badge."""
+	assert base_levels()[8:] == [58, 59, 61, 62, 64, 65, 66, 67, 69]
+
+
 @pytest.mark.parametrize("badges", range(17))
 def test_offset_zero_is_the_base(game, badges):
 	set_badges(game, badges)
@@ -239,8 +244,64 @@ def test_reader_grows_a_scaled_party(game):
 
 # M3: the scaled parties. Route 46's first fights and Mt. Mortar's, each scaled whole.
 
-SCALED_PARTIES = [("CAMPER", "TED"), ("PICNICKER", "ERIN1"), ("HIKER", "BAILEY"),
+JOHTO_SCALED_PARTIES = [("CAMPER", "TED"), ("PICNICKER", "ERIN1"), ("HIKER", "BAILEY"),
 	("POKEMANIAC", "MILLER"), ("SUPER_NERD", "MARKUS"), ("BLACKBELT_T", "KIYO"), ("SUPER_NERD", "HUGH")]
+
+# Kanto's gyms: map file, leader, then the gym's trainers
+KANTO_GYMS = {
+	"PewterGym": (("BROCK", "BROCK1"), [("CAMPER", "JERRY")]),
+	"CeruleanGym": (("MISTY", "MISTY1"), [("SWIMMERF", "BRIANA"), ("SWIMMERF", "DIANA"), ("SWIMMERM", "PARKER")]),
+	"VermilionGym": (("LT_SURGE", "LT_SURGE1"), [("GENTLEMAN", "GREGORY"), ("GUITARIST", "VINCENT"),
+		("JUGGLER", "HORTON")]),
+	"CeladonGym": (("ERIKA", "ERIKA1"), [("BEAUTY", "JULIA"), ("LASS", "MICHELLE"), ("PICNICKER", "TANYA"),
+		("TWINS", "JOANDZOE1"), ("TWINS", "JOANDZOE2")]),
+	"FuchsiaGym": (("JANINE", "JANINE1"), [("CAMPER", "BARRY"), ("LASS", "ALICE"), ("LASS", "LINDA"),
+		("PICNICKER", "CINDY")]),
+	"SaffronGym": (("SABRINA", "SABRINA1"), [("MEDIUM", "DORIS"), ("MEDIUM", "REBECCA"),
+		("PSYCHIC_T", "FRANKLIN"), ("PSYCHIC_T", "JARED")]),
+	"SeafoamGym": (("BLAINE", "BLAINE1"), []),
+	"ViridianGym": (("BLUE", "BLUE1"), []),
+}
+KANTO_LEADERS = [leader for leader, _ in KANTO_GYMS.values()]
+KANTO_GYM_TRAINERS = [trainer for _, trainers in KANTO_GYMS.values() for trainer in trainers]
+# Kanto's route trainers, by map
+KANTO_ROUTES = {
+	"Route1": [("SCHOOLBOY", "DANNY"), ("COOLTRAINERF", "QUINN")],
+	"Route2": [("BUG_CATCHER", "ROB"), ("BUG_CATCHER", "ED"), ("BUG_CATCHER", "DOUG")],
+	"Route3": [("FIREBREATHER", "OTIS"), ("YOUNGSTER", "WARREN"), ("YOUNGSTER", "JIMMY"),
+		("FIREBREATHER", "BURT")],
+	"Route4": [("BIRD_KEEPER", "HANK"), ("PICNICKER", "HOPE"), ("PICNICKER", "SHARON")],
+	"Route6": [("POKEFANM", "REX"), ("POKEFANM", "ALLAN")],
+	"Route8": [("BIKER", "DWAYNE"), ("BIKER", "HARRIS"), ("BIKER", "ZEKE"), ("SUPER_NERD", "SAM"),
+		("SUPER_NERD", "TOM")],
+	"Route9": [("CAMPER", "DEAN"), ("PICNICKER", "HEIDI"), ("CAMPER", "SID"),
+		("PICNICKER", "EDNA"), ("HIKER", "TIM"), ("HIKER", "SIDNEY")],
+	"Route10South": [("HIKER", "JIM"), ("POKEFANM", "ROBERT")],
+	"Route11": [("YOUNGSTER", "OWEN"), ("YOUNGSTER", "JASON"), ("PSYCHIC_T", "HERMAN"),
+		("PSYCHIC_T", "FIDEL")],
+	"Route12": [("FISHER", "KYLE"), ("FISHER", "MARTIN"), ("FISHER", "STEPHEN"),
+		("FISHER", "BARNEY")],
+	"Route13": [("POKEFANM", "ALEX"), ("POKEFANM", "JOSHUA"), ("BIRD_KEEPER", "PERRY"),
+		("BIRD_KEEPER", "BRET"), ("HIKER", "KENNY")],
+	"Route14": [("POKEFANM", "CARTER"), ("BIRD_KEEPER", "ROY"), ("POKEFANM", "TREVOR")],
+	"Route15": [("TEACHER", "COLETTE"), ("TEACHER", "HILLARY"), ("SCHOOLBOY", "KIPP"),
+		("SCHOOLBOY", "TOMMY"), ("SCHOOLBOY", "JOHNNY"), ("SCHOOLBOY", "BILLY")],
+	"Route17": [("BIKER", "CHARLES"), ("BIKER", "RILEY"), ("BIKER", "JOEL"), ("BIKER", "GLENN")],
+	"Route18": [("BIRD_KEEPER", "BORIS"), ("BIRD_KEEPER", "BOB")],
+	"Route19": [("SWIMMERF", "DAWN"), ("SWIMMERM", "HAROLD"), ("SWIMMERM", "JEROME"),
+		("SWIMMERM", "TUCKER")],
+	"Route20": [("SWIMMERF", "NICOLE"), ("SWIMMERF", "LORI"), ("SWIMMERM", "CAMERON")],
+	"Route21": [("SWIMMERM", "SETH"), ("SWIMMERF", "NIKKI"), ("FISHER", "ARNOLD")],
+	"Route24": [("GRUNTM", "GRUNTM_31")],
+	"Route25": [("SCHOOLBOY", "DUDLEY"), ("LASS", "ELLEN"), ("SCHOOLBOY", "JOE"),
+		("LASS", "LAURA"), ("CAMPER", "LLOYD"), ("LASS", "SHANNON"), ("SUPER_NERD", "PAT"),
+		("COOLTRAINERM", "KEVIN")],
+}
+KANTO_ROUTE_TRAINERS = [trainer for trainers in KANTO_ROUTES.values() for trainer in trainers]
+MT_MOON_RIVAL = [("RIVAL2", "RIVAL2_1_TOTODILE"), ("RIVAL2", "RIVAL2_1_CHIKORITA"),
+	("RIVAL2", "RIVAL2_1_CYNDAQUIL")]
+KANTO_PARTIES = KANTO_LEADERS + KANTO_GYM_TRAINERS + KANTO_ROUTE_TRAINERS + MT_MOON_RIVAL
+SCALED_PARTIES = JOHTO_SCALED_PARTIES + KANTO_PARTIES
 
 
 def scaled_parties():
@@ -286,7 +347,7 @@ def test_scaled_parties_are_scaled_whole(trainer_class, trainer):
 	assert all(isinstance(mon["level"], data.ScaledLevel) for mon in mons)
 
 
-@pytest.mark.parametrize("badges", [0, 4, 7, 8, 16])
+@pytest.mark.parametrize("badges", [0, 4, 7, 8, 11, 15, 16])
 @pytest.mark.parametrize("trainer_class, trainer", SCALED_PARTIES)
 def test_reader_scales_the_party(game, trainer_class, trainer, badges):
 	"""Each scaled party, read on its map at a badge count: its levels come from the badges (no more
@@ -321,7 +382,7 @@ def test_route_46_after_morty():
 	"""The report's case: at 4 badges Route 46 is no longer level 38-40."""
 	from harness import data
 	groups = data.parties()
-	for trainer_class, trainer in SCALED_PARTIES[:3]:
+	for trainer_class, trainer in JOHTO_SCALED_PARTIES[:3]:
 		for mon in data.party(groups, trainer_class, trainer)["mons"]:
 			assert data.level_at(mon["level"], 4) <= 30
 
@@ -360,7 +421,8 @@ def test_wild_levels_when_each_area_opens():
 		for map_name, rows in data.wild_tables(kind):
 			if map_name in opening:
 				low, high = opening[map_name]
-				levels = {data.level_at(level, SCALED_WILD_MAPS[map_name]) for level, _ in rows}
+				cap = data.badge_scaling_caps().get(map_name)
+				levels = {data.level_at(level, SCALED_WILD_MAPS[map_name], cap) for level, _ in rows}
 				assert low <= min(levels) and max(levels) <= high, (kind, map_name, sorted(levels))
 
 
@@ -510,7 +572,10 @@ def test_open_league_seats_set_their_own_levels(game, seat, trainer_class, train
 # M5: a badge cap per map. A capped map's scaled levels stop rising at its cap; others don't.
 
 AGREED_CAPS = {"ROUTE_46": 7, "MOUNT_MORTAR_1F_OUTSIDE": 7, "MOUNT_MORTAR_1F_INSIDE": 7,
-	"MOUNT_MORTAR_B1F": 7, "MOUNT_MORTAR_2F_INSIDE": 8}
+	"MOUNT_MORTAR_B1F": 7, "MOUNT_MORTAR_2F_INSIDE": 7}
+
+# Before Kanto scaled: Mt. Mortar 2F was capped at 8 badges, which then read 45.
+BEFORE_KANTO = "80236a122"
 
 
 def test_the_agreed_caps():
@@ -521,8 +586,31 @@ def test_the_agreed_caps():
 def test_every_scaled_map_has_a_cap():
 	"""Every map with scaled trainers or wild Pokémon is capped."""
 	from harness import data
-	maps = {trainer_map(*party) for party in SCALED_PARTIES} | set(SCALED_WILD_MAPS)
+	maps = {trainer_map(*party) for party in JOHTO_SCALED_PARTIES} | set(SCALED_WILD_MAPS)
 	assert maps <= set(data.badge_scaling_caps())
+
+
+def test_no_johto_map_reads_kanto_levels():
+	"""Entries 8 and up are Kanto's: every scaled Johto map stops at 7 badges."""
+	from harness import data
+	maps = {trainer_map(*party) for party in JOHTO_SCALED_PARTIES} | set(SCALED_WILD_MAPS)
+	caps = data.badge_scaling_caps()
+	assert {m: caps[m] for m in maps if caps[m] > 7} == {}
+
+
+@pytest.mark.parametrize("badges", [7, 8, 16])
+def test_mortar_2f_plays_as_before(badges):
+	"""Its lower cap is made up by its offsets: at 7 badges or more, the levels it had at 8."""
+	from harness import data
+	cap = data.badge_scaling_caps()["MOUNT_MORTAR_2F_INSIDE"]
+	old_base = 45
+	for kind in data.WILD_TABLES:
+		rows = lambda rev: [row for m, rows in data.wild_tables(kind, rev) if m == "MOUNT_MORTAR_2F_INSIDE"
+			for row in rows]
+		old, new = rows(BEFORE_KANTO), rows(None)
+		assert [(data.level_at(level, badges, cap), mon) for level, mon in new] == 			[(old_base + level.offset, mon) for level, mon in old], kind
+	hugh = lambda groups: data.party(groups, "SUPER_NERD", "HUGH")["mons"][0]["level"]
+	assert data.level_at(hugh(data.parties()), badges, cap) == old_base + hugh(data.parties(BEFORE_KANTO)).offset
 
 
 @pytest.mark.parametrize("map_name", sorted(AGREED_CAPS))
@@ -538,3 +626,95 @@ def test_uncapped_maps_keep_rising(game):
 	set_badges(game, 16)
 	go_to_map(game, "ROUTE_29")
 	assert level(game, LEVEL_FROM_BADGES) == base_levels()[16]
+
+
+
+# Kanto. Leaders' aces are the base (Blue's the base + 2), the rest keep their distance below; gym
+# trainers keep their levels relative to the gyms' median ace (58 before), 7 below the base, and
+# route trainers to the routes' (59 before), 10 below it. The Mt. Moon rival is the base + 2.
+
+def kanto_levels(trainer_class, trainer, rev=None):
+	from harness import data
+	return [mon["level"] for mon in data.party(data.parties(rev), trainer_class, trainer)["mons"]]
+
+
+@pytest.mark.parametrize("badges", [8, 11, 15])
+@pytest.mark.parametrize("trainer_class, trainer", KANTO_LEADERS)
+def test_kanto_leaders_ace_is_the_base(trainer_class, trainer, badges):
+	from harness import data
+	old = kanto_levels(trainer_class, trainer, BEFORE_KANTO)
+	new = [data.level_at(level, badges) for level in kanto_levels(trainer_class, trainer)]
+	ace = base_levels()[badges] + (2 if trainer_class == "BLUE" else 0)
+	assert max(new) == ace
+	assert [level - max(new) for level in new] == [level - max(old) for level in old], "the gaps below the ace"
+
+
+@pytest.mark.parametrize("trainer_class, trainer", KANTO_GYM_TRAINERS)
+def test_kanto_gym_trainers_keep_their_levels_relative(trainer_class, trainer):
+	old = kanto_levels(trainer_class, trainer, BEFORE_KANTO)
+	assert [level.offset for level in kanto_levels(trainer_class, trainer)] == [level - 58 - 7 for level in old]
+
+
+@pytest.mark.parametrize("trainer_class, trainer", KANTO_ROUTE_TRAINERS)
+def test_kanto_route_trainers_keep_their_levels_relative(trainer_class, trainer):
+	old = kanto_levels(trainer_class, trainer, BEFORE_KANTO)
+	assert [level.offset for level in kanto_levels(trainer_class, trainer)] == [level - 59 - 10 for level in old]
+
+
+@pytest.mark.parametrize("badges", [8, 15, 16])
+@pytest.mark.parametrize("trainer_class, trainer", MT_MOON_RIVAL)
+def test_mt_moon_rival_is_the_base_plus_two(trainer_class, trainer, badges):
+	from harness import data
+	levels = [data.level_at(level, badges) for level in kanto_levels(trainer_class, trainer)]
+	assert levels == [base_levels()[badges] + 2] * 6
+
+
+@pytest.mark.parametrize("badges", range(8, 17))
+def test_gym_trainers_stay_below_their_leader(badges):
+	from harness import data
+	for gym, (leader, trainers) in KANTO_GYMS.items():
+		ace = max(data.level_at(level, badges) for level in kanto_levels(*leader))
+		for trainer in trainers:
+			assert max(data.level_at(level, badges) for level in kanto_levels(*trainer)) < ace, (gym, trainer)
+
+
+@pytest.mark.parametrize("badges", range(8, 17))
+def test_kanto_species_stay_as_named(badges):
+	"""From the first Kanto badge count on, no Kanto trainer's Pokemon is read as an earlier stage."""
+	from harness import data
+	evos = evolutions()
+	firsts = first_stages()
+	for party in KANTO_PARTIES:
+		for mon in data.party(data.parties(), *party)["mons"]:
+			level = data.level_at(mon["level"], badges)
+			assert expected_stage(mon["species"], level, evos, firsts) == mon["species"], (party, mon["species"], level)
+
+
+def test_kanto_gyms_are_the_battles_on_their_maps():
+	"""KANTO_GYMS lists every trainer each gym fights."""
+	from harness import data
+	battles = data.trainer_battles()
+	for gym, (leader, trainers) in KANTO_GYMS.items():
+		path = next(p for p in battles if p.endswith("/%s.asm" % gym))
+		assert set(battles[path]) == {leader, *trainers}, gym
+
+
+def test_kanto_routes_are_the_battles_on_their_maps():
+	"""KANTO_ROUTES lists every trainer each route fights."""
+	from harness import data
+	battles = data.trainer_battles()
+	for route, trainers in KANTO_ROUTES.items():
+		path = next(p for p in battles if p.endswith("/%s.asm" % route))
+		assert set(battles[path]) == set(trainers), route
+
+
+@pytest.mark.parametrize("badges", range(17))
+@pytest.mark.parametrize("trainer_class, trainer", [("POKEFANM", "CARTER"), ("POKEFANM", "JOSHUA")])
+def test_theme_parties_keep_their_species(trainer_class, trainer, badges):
+	"""Carter's starter trio and Joshua's Pikachu never evolve, at any badge count."""
+	from harness import data
+	evos = evolutions()
+	firsts = first_stages()
+	for mon in data.party(data.parties(), trainer_class, trainer)["mons"]:
+		level = data.level_at(mon["level"], badges)
+		assert expected_stage(mon["species"], level, evos, firsts) == mon["species"], (mon["species"], level)

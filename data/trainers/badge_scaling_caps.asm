@@ -10,5 +10,5 @@ BadgeScalingCaps:
 	map_id MOUNT_MORTAR_B1F
 	db 7
 	map_id MOUNT_MORTAR_2F_INSIDE
-	db 8 ; it opens at 8 (Waterfall)
+	db 7 ; it opens at 8 (Waterfall); its offsets are set for base 36, so it plays as it did at 8
 	db -1 ; end
