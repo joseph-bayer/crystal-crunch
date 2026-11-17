@@ -497,6 +497,12 @@ def test_open_league_seats_set_their_own_levels(game, seat, trainer_class, train
 	mons = data.party(data.parties(), trainer_class, trainer)["mons"]
 	want = [base + offset for offset in offsets][:len(mons)]
 	set_badges(game, 4)
+	# A seat battle reads its seat holder's roster entry (the nicknames) through the lineup, which
+	# the game rolls before any seat battle. Left all zero, it points outside the roster, and what
+	# the read finds there depends on where the linker put the code.
+	roster = constants._consts(constants.ROOT / "constants" / "elite_four_constants.asm")
+	for i, member in enumerate(["WILL", "KOGA", "BRUNO", "KAREN", "LANCE"]):
+		game.poke("wEliteFourLineup", roster["E4_ROSTER_" + member], i)
 	classes = [name for name, _ in data.trainer_classes()]
 	game.poke("wOtherTrainerClass", classes.index(trainer_class))
 	game.poke("wOtherTrainerID", dict(data.trainer_classes())[trainer_class][trainer])
