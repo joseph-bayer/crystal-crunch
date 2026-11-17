@@ -17,7 +17,7 @@ SwarmTable::
 	swarm_def DUNSPARCE,  PLAIN_FORM,          DARK_CAVE_VIOLET_ENTRANCE,     SWARM_GRASS
 	swarm_def YANMA,      PLAIN_FORM,          ROUTE_35,                      SWARM_GRASS
 
-; From here on, the Collection Guild's radio station picks one row a day (DailySwarmBroadcast).
+; From here on, the Collection Guild's radio station picks two rows a day (DailySwarmBroadcast).
 	; Johto
 	; - Grass
 	swarm_def MACHOP,     MACHOP_RB_FORM,      ROUTE_45,                      SWARM_GRASS

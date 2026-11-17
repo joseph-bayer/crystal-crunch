@@ -1385,9 +1385,10 @@ EvolutionRadio:
 	ld [wNumRadioLinesPrinted], a
 	ret
 
-; The Collection Guild's station reports the one swarm it rolls each day. Tuning in is what
-; starts it, on the line that names the place (SwarmRadio4). The show loops, and rereads the
-; day's roll each time round, which stays put until the daily reset.
+; The Collection Guild's station reports one of the two swarms it picks each day: the day's, or
+; from EVE_HOUR to midnight the evening's. Tuning in is what starts it, on the line that names the
+; place (SwarmRadio4). The show loops, and each time round looks at the clock again and rereads
+; that pick, which stays put until the daily reset.
 SwarmRadio1:
 	call StartRadioStation
 	farcall DailySwarmBroadcast

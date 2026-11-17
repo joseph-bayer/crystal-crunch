@@ -82,6 +82,7 @@ DEF NUM_SPRITEANIMDICT_ENTRIES EQU 10
 	const SPRITE_ANIM_OBJ_MAP_MON_ICON_3            ; 2c
 	const SPRITE_ANIM_OBJ_MAP_MON_ICON_4            ; 2d
 	const SPRITE_ANIM_OBJ_MAP_MON_ICON_5            ; 2e
+	const SPRITE_ANIM_OBJ_MAP_MON_ICON_6            ; 2f
 DEF NUM_SPRITE_ANIM_OBJS EQU const_value
 
 ; DoSpriteAnimFrame.Jumptable indexes (see engine/sprite_anims/functions.asm)
@@ -202,6 +203,7 @@ DEF NUM_SPRITE_ANIM_FUNCS EQU const_value
 	const SPRITE_ANIM_FRAMESET_MAP_MON_ICON_3            ; 49
 	const SPRITE_ANIM_FRAMESET_MAP_MON_ICON_4            ; 4a
 	const SPRITE_ANIM_FRAMESET_MAP_MON_ICON_5            ; 4b
+	const SPRITE_ANIM_FRAMESET_MAP_MON_ICON_6            ; 4c
 DEF NUM_SPRITE_ANIM_FRAMESETS EQU const_value
 
 ; SpriteAnimOAMData indexes (see data/sprite_anims/oam.asm)
@@ -362,6 +364,8 @@ DEF NUM_SPRITE_ANIM_FRAMESETS EQU const_value
 	const SPRITE_ANIM_OAMSET_MAP_MON_ICON_4_2            ; 99
 	const SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_1            ; 9a
 	const SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_2            ; 9b
+	const SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_1            ; 9c
+	const SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_2            ; 9d
 DEF NUM_SPRITE_ANIM_OAMSETS EQU const_value
 
 assert NUM_SPRITE_ANIM_OAMSETS <= FIRST_OAM_CMD, \
@@ -369,7 +373,7 @@ assert NUM_SPRITE_ANIM_OAMSETS <= FIRST_OAM_CMD, \
 
 ; The Pokégear map's mon icons (see PokegearMap_InitMonIcon). Each icon slot owns 8 tiles, two
 ; frames of 2x2, and one OBJ palette, so nothing is shared or allocated at runtime.
-DEF NUM_MAP_MON_ICONS EQU 5 ; the three swarms, then Raikou and Entei
+DEF NUM_MAP_MON_ICONS EQU 6 ; the four swarms, then Raikou and Entei
 DEF MAP_MON_ICON_FIRST_TILE EQU $18 ; after the player icon's $10-$17
 DEF MAP_MON_ICON_FIRST_PAL EQU 2 ; _CGB_PokegearPals only writes OBJ palettes 0 and 1
 assert MAP_MON_ICON_FIRST_PAL + NUM_MAP_MON_ICONS <= 8, "the map's mon icons run out of OBJ palettes"

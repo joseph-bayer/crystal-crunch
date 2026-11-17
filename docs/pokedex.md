@@ -136,7 +136,9 @@ Rules every category keeps:
 - **No swarms, gifts, trades or events** are listed.
 - **Place names** are the landmark's name plus a floor from `data/maps/dex_floor_names.asm`, which
   has a row for every map in the wild tables whose constant names a floor
-  (`tests/test_data_pokedex.py` checks it, and that each name fits the page).
+  (`tests/test_data_pokedex.py` checks it, and that each name fits the page). The Collection
+  Guild's swarm report names its places the same way (`GetMapNameWithFloor`), so a swarm on a
+  floor map needs its row too (`tests/test_swarm_radio.py` checks the swarm table).
 
 ### Adding a category
 

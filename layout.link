@@ -132,6 +132,7 @@ ROMX $24
 ROMX $25
 	"Map Headers"
 	"Events"
+	"Battle Transition"
 ROMX $26
 	"Map Scripts 11"
 ROMX $27
@@ -347,6 +348,7 @@ WRAM0
 	"wSpriteAnims"
 	"Key Items List"
 	"Rocket Mon"
+	"Map Icon Scratch"
 	align 8
 	"Sprites"
 	"Tilemap"
@@ -405,6 +407,7 @@ SRAM $00
 	org $be80 ; the same in every build: the debug ROM's backup save is a byte longer
 	"Pokedex Forms Backup"
 	"Remembered Shinies Backup"
+	"Swarm State Backup"
 SRAM $01
 	"Save"
 	"Box Metadata"
@@ -416,6 +419,7 @@ SRAM $01
 	"PokeDB Bank 2 Ext"
 	"Pokedex Forms Save"
 	"Remembered Shinies Save"
+	"Swarm State Save"
 SRAM $02
 	"PokeDB Bank 1"
 SRAM $03

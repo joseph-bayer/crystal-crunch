@@ -33,6 +33,25 @@ DEF ROCKET_MON_SWARM   EQU ROCKET_MON_UNHAPPY | ROCKET_MON_MOVES
 ; A row's story gate when it has none (event flag 0 is a real flag)
 DEF SWARM_NO_GATE EQU -1
 
+DEF MAX_ACTIVE_SWARMS EQU 4 ; Arnie's call, Anthony's call, and the radio's day and evening picks
+
+; The Collection Guild's radio picks two swarms a day (wDailySwarms), one for each part of the day.
+; The evening's is announced from EVE_HOUR to midnight; the day's the rest of the time, midnight to
+; MORN_HOUR included, since that is already the next day. Each runs until midnight once heard.
+	const_def
+	const SWARM_PICK_DAY     ; 0
+	const SWARM_PICK_EVENING ; 1
+DEF NUM_SWARM_PICKS EQU const_value
+; wSwarmHistory: both picks of each of the last two days, none of which the radio picks again
+DEF NUM_SWARM_HISTORY EQU 2 * NUM_SWARM_PICKS
+
+; The swarm state is saved in SRAM blocks of its own (sSwarmState), marked by this. Anything else
+; there is a save from before them, whose swarms are still in wPlayerData's old bytes (wV1*).
+DEF SWARM_STATE_SAVE_MAGIC EQU $5a7e
+; Those old bytes held three active swarms, one daily pick and two days of history.
+DEF V1_MAX_ACTIVE_SWARMS EQU 3
+DEF V1_SWARM_HISTORY EQU 2
+
 	const_def 1
 ; The two vanilla swarms, kept because their phone calls still start them. They are enumerated
 ; first so that FIRST_STUDIED_SWARM can exclude them from the Collection Guild's milestones
@@ -66,8 +85,6 @@ DEF FIRST_STUDIED_SWARM EQU const_value
 	const SWARM_MARILL_ALT_SHINY ; 24
 	const SWARM_PIKACHU_RB     ; 25
 DEF NUM_SWARMS EQU const_value - 1
-
-DEF MAX_ACTIVE_SWARMS EQU 3 ; Arnie's call, Anthony's call, and the radio's daily roll
 
 ; How much of a swarming map's encounters the swarm takes. It substitutes into the map's own
 ; slots rather than bringing a table of its own, and those slots have fixed odds (see

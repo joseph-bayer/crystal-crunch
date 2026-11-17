@@ -95,12 +95,26 @@ RestartDailyResetTimer:
 	jr InitOneDayCountdown
 
 ShiftSwarmHistory::
-; Before the daily reset clears today's radio swarm, remember it (0 if none was rolled) and forget
-; the oldest.
-	ld a, [wSwarmHistory]
-	ld [wSwarmHistory + 1], a
-	ld a, [wDailySwarm]
-	ld [wSwarmHistory], a
+; Before the daily reset clears today's radio picks, remember them (0 for one not rolled) and forget
+; the oldest day's.
+	assert NUM_SWARM_HISTORY == 2 * NUM_SWARM_PICKS
+	ld hl, wSwarmHistory
+	ld de, wSwarmHistory + NUM_SWARM_PICKS
+	ld bc, NUM_SWARM_PICKS
+	rst CopyBytes
+	ld hl, wDailySwarms
+	ld de, wSwarmHistory
+	ld bc, NUM_SWARM_PICKS
+	rst CopyBytes
+	ret
+
+ClearTodaysSwarms::
+; Midnight: every running swarm ends, and the radio rolls both picks again.
+	assert wDailySwarms == wActiveSwarms + MAX_ACTIVE_SWARMS
+	ld hl, wActiveSwarms
+	ld bc, MAX_ACTIVE_SWARMS + NUM_SWARM_PICKS
+	xor a
+	rst ByteFill
 	ret
 
 CheckDailyResetTimer::
@@ -108,15 +122,12 @@ CheckDailyResetTimer::
 	call CheckDayDependentEventHL
 	ret nc
 	call ShiftSwarmHistory
+	call ClearTodaysSwarms
 	xor a
 	ld hl, wDailyFlags1
 	ld [hli], a ; wDailyFlags1
 	ld [hli], a ; wDailyFlags2
-	ld [hli], a ; wDailyFlags3
-rept MAX_ACTIVE_SWARMS
-	ld [hli], a ; wActiveSwarms
-endr
-	ld [hl], a ; wDailySwarm
+	ld [hl], a ; wDailyFlags3
 	ld hl, wDailyRematchFlags
 rept 3
 	ld [hli], a

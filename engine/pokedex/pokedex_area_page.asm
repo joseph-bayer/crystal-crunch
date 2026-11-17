@@ -792,14 +792,47 @@ PlaceMapNameWithFloor::
 	ld de, wStringBuffer1
 	rst PlaceString
 	pop de ; map group and number
-	ld h, b
-	ld l, c
-	push hl ; the name's end
+	push bc ; the name's end
+	call GetMapFloor
+	pop hl
+	ret z
+	inc hl
+	jmp PlaceString
+
+GetMapNameWithFloor::
+; For the swarm report: the landmark name of map bc, and its floor if the place has several, as a
+; string in wStringBuffer1 -- the same name PlaceMapNameWithFloor draws.
+	push bc
+	call GetWorldMapLocation
+	ld e, a
+	farcall GetLandmarkName
+	pop de ; map group and number
+	call GetMapFloor
+	ret z
+	ld hl, wStringBuffer1
+.find_end
+	ld a, [hli]
+	cp "@"
+	jr nz, .find_end
+	dec hl
+	ld [hl], " "
+.copy_floor
+	inc hl
+	ld a, [de]
+	inc de
+	ld [hl], a
+	cp "@"
+	jr nz, .copy_floor
+	ret
+
+GetMapFloor:
+; in: d = map group, e = map number
+; out: nz and de = its floor's name, if the place has several floors (PokedexAreaFloors); else z
 	ld hl, PokedexAreaFloors
 .floor
 	ld a, [hli]
 	and a
-	jr z, .no_floor
+	ret z
 	cp d
 	jr nz, .next_map
 	ld a, [hli]
@@ -818,12 +851,7 @@ PlaceMapNameWithFloor::
 .got_floor
 	ld d, h
 	ld e, l
-	pop hl
-	inc hl
-	jmp PlaceString
-
-.no_floor
-	pop hl
+	or 1 ; a map number is never 0, but nz must not depend on it
 	ret
 
 Pokedex_AreaPlaceValues:

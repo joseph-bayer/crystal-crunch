@@ -163,6 +163,8 @@ SpriteAnimOAMData:
 	spriteanimoam $04, .OAMData_MapMonIcon4              ; SPRITE_ANIM_OAMSET_MAP_MON_ICON_4_2
 	spriteanimoam $00, .OAMData_MapMonIcon5              ; SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_1
 	spriteanimoam $04, .OAMData_MapMonIcon5              ; SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_2
+	spriteanimoam $00, .OAMData_MapMonIcon6              ; SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_1
+	spriteanimoam $04, .OAMData_MapMonIcon6              ; SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_2
 	assert_table_length NUM_SPRITE_ANIM_OAMSETS
 
 .OAMData_1x1_Palette0:
@@ -1195,3 +1197,10 @@ SpriteAnimOAMData:
 	dbsprite  0, -1,  0,  0, $01, MAP_MON_ICON_FIRST_PAL + 4
 	dbsprite -1,  0,  0,  0, $02, MAP_MON_ICON_FIRST_PAL + 4
 	dbsprite  0,  0,  0,  0, $03, MAP_MON_ICON_FIRST_PAL + 4
+
+.OAMData_MapMonIcon6:
+	db 4
+	dbsprite -1, -1,  0,  0, $00, MAP_MON_ICON_FIRST_PAL + 5
+	dbsprite  0, -1,  0,  0, $01, MAP_MON_ICON_FIRST_PAL + 5
+	dbsprite -1,  0,  0,  0, $02, MAP_MON_ICON_FIRST_PAL + 5
+	dbsprite  0,  0,  0,  0, $03, MAP_MON_ICON_FIRST_PAL + 5

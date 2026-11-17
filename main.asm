@@ -309,14 +309,19 @@ INCLUDE "engine/events/battle_tower/rules.asm"
 SECTION "bank23", ROMX
 
 INCLUDE "engine/tilesets/timeofday_pals.asm"
-INCLUDE "engine/battle/battle_transition.asm"
 INCLUDE "engine/events/field_moves.asm"
-INCLUDE "engine/battle/battlestart_copytilemapatonce.asm"
 INCLUDE "engine/sprite_anims/core.asm"
 INCLUDE "engine/gfx/mon_icons.asm"
 
 INCLUDE "data/pokemon/cosmetic_form_icon_pointers.asm"
 INCLUDE "gfx/cosmetic_icons.asm"
+
+
+SECTION "Battle Transition", ROMX
+
+; Out of bank23, which the sprite anim data fills; reached only by predef
+INCLUDE "engine/battle/battle_transition.asm"
+INCLUDE "engine/battle/battlestart_copytilemapatonce.asm"
 
 
 SECTION "Magnet Train", ROMX

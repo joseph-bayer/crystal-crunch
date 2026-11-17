@@ -106,6 +106,7 @@ _ResetWRAM:
 ; Past wGameDataEnd, so nothing below clears it, and a new game started after loading a save would
 ; inherit the save's remembered shinies.
 	farcall ClearRememberedShinies
+	farcall ClearSwarmState ; past wGameDataEnd too
 
 	ld hl, wShadowOAM
 	ld bc, wOptions - wShadowOAM

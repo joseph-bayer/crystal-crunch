@@ -1,8 +1,8 @@
 if DEF(_DEBUG)
 
 ; The swarm debug tools: SWARMS in the Scientist's debug menu (engine/debug/menus.asm). The
-; radio's swarm is rolled once a day and starts when 12.5 is heard; these let that be tested
-; without waiting for midnight.
+; radio's two swarms are rolled once a day, one for the day and one for the evening, and each starts
+; when 6.0 announces it; these let that be tested without waiting for midnight.
 
 DebugSwarmScript::
 	faceplayer
@@ -19,8 +19,8 @@ DebugSwarmScript::
 	end
 
 .NewDay:
-; What midnight does to swarms: today's goes into the history, every running swarm ends, and
-; 12.5 rolls again on the next listen.
+; What midnight does to swarms: today's picks go into the history, every running swarm ends, and
+; 6.0 rolls again on the next listen.
 	callasm DebugSwarmNewDay
 	writetext DebugSwarmNewDayText
 	waitbutton
@@ -58,8 +58,8 @@ DebugSwarmScript::
 	end
 
 .RocketSwarm:
-; Makes one of Team Rocket's rows today's swarm, whatever the story flags say. It starts when 12.5
-; is heard, as any radio swarm does.
+; Makes one of Team Rocket's rows the pick for the time of day now, whatever the story flags say,
+; after ending today's swarms. It starts when 6.0 announces it, as any radio swarm does.
 	loadmenu .RocketMenuHeader
 	verticalmenu
 	closewindow
@@ -73,8 +73,9 @@ DebugSwarmScript::
 	end
 
 .AltShinySwarm:
-; Makes one of the swarms whose shinies are alternates 4 times in 5 today's swarm, whatever its
-; story flag says. It starts when 12.5 is heard. BEASTS -> FORCE SHINY makes every one shiny.
+; Makes one of the swarms whose shinies are alternates 4 times in 5 the pick for the time of day
+; now, whatever its story flag says, after ending today's swarms. It starts when 6.0 announces it.
+; BEASTS -> FORCE SHINY makes every one shiny.
 	loadmenu .AltShinyMenuHeader
 	verticalmenu
 	closewindow
@@ -146,39 +147,39 @@ DebugSwarmScript::
 	db "CANCEL@"
 
 DebugSwarmNewDay:
-; As the daily reset does: today's swarm goes into the history first.
+; As the daily reset does: today's picks go into the history first.
 	farcall ShiftSwarmHistory
-	; fallthrough
+	farjp ClearTodaysSwarms
 
-DebugSwarmClearDay:
-	xor a
-	ld hl, wActiveSwarms
-rept MAX_ACTIVE_SWARMS
-	ld [hli], a
-endr
-	ld [wDailySwarm], a
+DebugSwarmSetNow:
+; in: a = a SWARM_* id, to be the pick for the time of day now once today's swarms have ended
+	push af
+	farcall ClearTodaysSwarms
+	farcall GetSwarmRadioPickNow
+	ld e, a
+	ld d, 0
+	ld hl, wDailySwarms
+	add hl, de
+	pop af
+	ld [hl], a
 	ret
 
 DebugSwarmSetRocket:
 ; in: wScriptVar = 1-4, the Rocket menu's pick
 	assert SWARM_WEEZING_ROCKET == SWARM_GOLBAT_ROCKET + 1 && SWARM_CHARMELEON_ROCKET == SWARM_GOLBAT_ROCKET + 2 \
 		&& SWARM_ARBOK_ROCKET == SWARM_GOLBAT_ROCKET + 3, "the Rocket menu expects these ids in a row"
-	call DebugSwarmClearDay
 	ld a, [wScriptVar]
 	add SWARM_GOLBAT_ROCKET - 1
-	ld [wDailySwarm], a
-	ret
+	jr DebugSwarmSetNow
 
 DebugSwarmSetAltShiny:
 ; in: wScriptVar = 1-4, the alternate-shiny menu's pick
 	assert SWARM_DRATINI_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 1 \
 		&& SWARM_MAGIKARP_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 2 \
 		&& SWARM_MARILL_ALT_SHINY == SWARM_SCYTHER_ALT_SHINY + 3, "the alternate-shiny menu expects these ids in a row"
-	call DebugSwarmClearDay
 	ld a, [wScriptVar]
 	add SWARM_SCYTHER_ALT_SHINY - 1
-	ld [wDailySwarm], a
-	ret
+	jr DebugSwarmSetNow
 
 DebugSwarmText:
 	text "DEBUG: swarms."
@@ -186,7 +187,7 @@ DebugSwarmText:
 
 DebugSwarmNewDayText:
 	text "Swarms cleared."
-	line "12.5 rolls again."
+	line "6.0 rolls again."
 	done
 
 DebugSwarmDoneText:
@@ -194,9 +195,9 @@ DebugSwarmDoneText:
 	done
 
 DebugSwarmRocketText:
-	text "Today's swarm is"
-	line "set. Tune in 12.5"
-	cont "to start it."
+	text "Swarm set for this"
+	line "time of day. Tune"
+	cont "in 6.0 to start."
 	done
 
 endc
