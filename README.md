@@ -70,11 +70,11 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 <details>
 <summary>Show details</summary>
 
-- Daily swarms are announced via the radio on station 12.5, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
+- Daily swarms are announced via the radio on station 6.0, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
 - Strange looking Pokémon potentially from the past?
 - Swarms with higher chances to have alternate shiny colors.
 - Team Rocket's Pokémon, left behind as you complete the story, swarm the routes. They all know Thief and Frustration, and they don't like you: one holding nothing can steal your Pokémon's item, which you only get back by catching it. Caught, they start with no happiness, so their Frustration hits hard; a Friend Ball only brings them up to 100. The Electrodes in the Rocket hideout start with no happiness too.
-- Up to three swarms can be going at once: Arnie's and Anthony's phone calls still start theirs (Yanma on Route 35, Dunsparce in Dark Cave), and a new radio station picks one more every day.
+- Up to four swarms can be going at once: Arnie's and Anthony's phone calls still start theirs (Yanma on Route 35, Dunsparce in Dark Cave), and a new radio station picks two more every day: one it announces from midnight until 5 PM, and one from 5 PM until midnight. Each starts when you hear it.
 - Swarms end at midnight.
 - The radio won't announce the same swarm as either of the last two days you played.
 - A swarm takes over about 60% of a route's grass or surf encounters, at the route's own levels.
@@ -195,7 +195,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 - The Bug Catching Contest now appears on Sundays as well (on top of Tuesdays, Thursdays, and Saturdays).
 - A Sailor in Cianwood will take you to a mystery island once a day, where you can find new places to explore, rare Pokémon, and more.
-- Once a day, find rare variants in swarms by tuning into radio channel 12.5.
+- Twice a day, find rare variants in swarms by tuning into radio channel 6.0.
 - Mystery Gift with various NPCs once per day for rare items.
 
 </details>

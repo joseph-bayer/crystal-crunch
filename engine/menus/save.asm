@@ -351,6 +351,7 @@ SaveOptions:
 	jmp CloseSRAM
 
 SavePlayerData:
+	farcall SaveSwarmState ; the swarms go with the player data
 	ld a, BANK(sPlayerData)
 	call OpenSRAM
 	ld hl, wPlayerData
@@ -444,6 +445,7 @@ SaveBackupOptions:
 	jmp CloseSRAM
 
 SaveBackupPlayerData:
+	farcall SaveBackupSwarmState
 	ld a, BANK(sBackupPlayerData)
 	call OpenSRAM
 	ld hl, wPlayerData
@@ -676,6 +678,7 @@ LoadPlayerData:
 	ld bc, wCurMapDataEnd - wCurMapData
 	rst CopyBytes
 	call CloseSRAM
+	farcall LoadSwarmState ; after the player data, where an older save keeps its swarms
 	ld a, BANK(sBattleTowerChallengeState)
 	call OpenSRAM
 	ld a, [sBattleTowerChallengeState]
@@ -790,7 +793,8 @@ LoadBackupPlayerData:
 	ld de, wCurMapData
 	ld bc, wCurMapDataEnd - wCurMapData
 	rst CopyBytes
-	jmp CloseSRAM
+	call CloseSRAM
+	farjp LoadBackupSwarmState ; after the player data, where an older save keeps its swarms
 
 LoadBackupPokemonData:
 	farcall LoadBackupDexForms ; the Pokédex's forms record goes with the Pokémon data

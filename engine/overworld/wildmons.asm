@@ -1254,12 +1254,17 @@ endc
 	ret
 
 DailySwarmBroadcast::
-; For the Collection Guild's radio station. Rolls today's swarm if that has not happened yet,
-; and loads its names for the broadcast: the species into wMonOrItemNameBuffer and its map's
-; landmark into wStringBuffer1. The swarm only starts once the player hears where it is -- see
-; StartDailySwarm.
+; For the Collection Guild's radio station, at the top of each loop of its report. Picks which of
+; today's two swarms the clock says to announce (wSwarmRadioPick), rolls it if that has not
+; happened yet, and loads its names for the broadcast: the species into wMonOrItemNameBuffer and
+; its place into wStringBuffer1, with the floor as the Pokédex names it (GetMapNameWithFloor). The
+; swarm only starts once the player hears where it is
+; -- see StartDailySwarm. The rest of the loop keeps to the pick made here, so a loop running over
+; EVE_HOUR names and starts the same swarm.
 ; out: carry if there is a swarm to announce
-	ld a, [wDailySwarm]
+	call GetSwarmRadioPickNow
+	ld [wSwarmRadioPick], a
+	call GetBroadcastSwarm
 	and a
 	jr nz, .rolled
 
@@ -1296,8 +1301,9 @@ DailySwarmBroadcast::
 	jr .pick
 
 .picked
+	call GetBroadcastSwarm ; preserves bc
+	ld [hl], b
 	ld a, b
-	ld [wDailySwarm], a
 .rolled
 	call GetSwarmRow
 	ld a, [hli]
@@ -1317,25 +1323,52 @@ DailySwarmBroadcast::
 	ld a, [hli]
 	ld b, a
 	ld c, [hl]
-	call GetWorldMapLocation
-	ld e, a
-	farcall GetLandmarkName
+	farcall GetMapNameWithFloor
 	scf
 	ret
 
 .IsOnOffer:
 ; in: a = a SWARM_* id
-; out: carry if the Guild can report it. Not if it was rolled on either of the last two days
-; (wSwarmHistory). A row with a story gate waits for its event flag, and Kanto's rows wait for
-; the Elite Four.
+; out: carry if the Guild can report it. Not if it was picked on either of the last two days
+; (wSwarmHistory), or if it is today's other pick or would swarm the same map and terrain as that
+; one, which StartSwarm would turn away. A row with a story gate waits for its event flag, and
+; Kanto's rows wait for the Elite Four.
 ; Preserves bc.
-	ld hl, wSwarmHistory
-	cp [hl] ; an empty entry is 0, which no id is
-	jr z, .recent
-	inc hl
-	cp [hl]
-	jr z, .recent
 	push bc
+	ld c, a ; the id
+	ld hl, wSwarmHistory
+	ld b, NUM_SWARM_HISTORY
+.history
+	cp [hl] ; an empty entry is 0, which no id is
+	jr z, .not_on_offer
+	inc hl
+	dec b
+	jr nz, .history
+
+	call GetOtherDailySwarm ; preserves c
+	and a
+	jr z, .check_gate ; not rolled yet
+	cp c
+	jr z, .not_on_offer
+	call GetSwarmPlace ; preserves c
+	push de ; the other pick's map
+	push bc ; b = its terrain
+	ld a, c
+	call GetSwarmPlace ; preserves c
+	pop hl ; h = the other pick's terrain
+	ld a, b
+	cp h
+	pop hl ; the other pick's map
+	jr nz, .check_gate
+	ld a, d
+	cp h
+	jr nz, .check_gate
+	ld a, e
+	cp l
+	jr z, .not_on_offer
+
+.check_gate
+	ld a, c
 	call GetSwarmRow
 	push hl
 	ld bc, 2 + 1 + 2 + 1
@@ -1377,13 +1410,68 @@ DailySwarmBroadcast::
 	pop bc
 	ret
 
-.recent
+.not_on_offer
 	and a
+	pop bc
+	ret
+
+GetSwarmRadioPickNow::
+; out: a = the SWARM_PICK_* the clock says to announce: the evening's from EVE_HOUR to midnight,
+; the day's otherwise. Midnight to MORN_HOUR is night, but it is the next day by then, so it is
+; the new day's pick that is announced.
+	call UpdateTime
+	ldh a, [hHours]
+	cp EVE_HOUR
+	ld a, SWARM_PICK_DAY
+	ret c
+	ld a, SWARM_PICK_EVENING
+	ret
+
+GetOtherDailySwarm:
+; out: a = today's pick other than the broadcast's (0 if not rolled yet), hl = its wDailySwarms entry
+; Preserves bc.
+	assert NUM_SWARM_PICKS == 2
+	ld a, [wSwarmRadioPick]
+	xor 1
+	jr GetDailySwarm
+
+GetBroadcastSwarm:
+; out: a = the broadcast's pick (0 if not rolled yet), hl = its wDailySwarms entry
+; Preserves bc.
+	ld a, [wSwarmRadioPick]
+	; fallthrough
+
+GetDailySwarm:
+; in: a = a SWARM_PICK_*
+; out: a = today's pick for it (0 if not rolled yet), hl = its wDailySwarms entry
+; Preserves bc.
+	ld e, a
+	ld d, 0
+	ld hl, wDailySwarms
+	add hl, de
+	ld a, [hl]
+	ret
+
+GetSwarmPlace:
+; in: a = a SWARM_* id
+; out: d = its map group, e = its map number, b = its terrain (SWARM_GRASS or SWARM_WATER)
+; Preserves c.
+	call GetSwarmRow
+	inc hl
+	inc hl
+	inc hl ; past the species and form, to the map
+	ld a, [hli]
+	ld d, a
+	ld a, [hli]
+	ld e, a
+	ld a, [hl]
+	and SWARM_TERRAIN_MASK
+	ld b, a
 	ret
 
 IsDailySwarmRocket::
 ; For the radio, which picks Team Rocket's lines for their mon.
-; out: carry if today's swarm is one of SWARM_ROCKET's rows
+; out: carry if the broadcast's swarm is one of SWARM_ROCKET's rows
 	call GetDailySwarmTerrain
 	add a
 	assert SWARM_ROCKET_F == 7
@@ -1391,7 +1479,7 @@ IsDailySwarmRocket::
 
 IsDailySwarmAltShiny::
 ; For the radio, which reports oddly colored mon for an alternate-shiny swarm.
-; out: carry if today's swarm is one of SWARM_ALT_SHINY's rows
+; out: carry if the broadcast's swarm is one of SWARM_ALT_SHINY's rows
 	call GetDailySwarmTerrain
 	add a
 	add a
@@ -1399,8 +1487,8 @@ IsDailySwarmAltShiny::
 	ret
 
 GetDailySwarmTerrain:
-; out: a = today's swarm's terrain byte, or 0 if there is none
-	ld a, [wDailySwarm]
+; out: a = the broadcast's swarm's terrain byte, or 0 if there is none
+	call GetBroadcastSwarm
 	and a
 	ret z
 	call GetSwarmRow
@@ -1410,8 +1498,9 @@ GetDailySwarmTerrain:
 	ret
 
 StartDailySwarm::
-; The player has heard where today's swarm is, so it begins.
-	ld a, [wDailySwarm]
+; The player has heard where the broadcast's swarm is, so it begins. It runs until midnight,
+; whichever pick it is.
+	call GetBroadcastSwarm
 	and a
 	ret z
 	; fallthrough
@@ -1425,17 +1514,7 @@ StartSwarm::
 	ret c
 
 	ld a, c
-	call GetSwarmRow
-	inc hl
-	inc hl
-	inc hl ; past the species and form, to the map
-	ld a, [hli]
-	ld d, a
-	ld a, [hli]
-	ld e, a
-	ld a, [hl]
-	and SWARM_TERRAIN_MASK
-	ld b, a ; its terrain
+	call GetSwarmPlace
 	call GetActiveSwarmForMap ; preserves bc
 	ret c
 
@@ -1675,6 +1754,125 @@ GetActiveSwarmForMap::
 	pop bc
 	pop de
 	and a
+	ret
+
+; Saving and loading the swarms, beside the player data (engine/menus/save.asm). The caller is
+; responsible for WRAM bank 1 being current.
+
+SaveSwarmState::
+	ld a, BANK(sSwarmStateMagic)
+	ld hl, sSwarmStateMagic
+	jr _SaveSwarmState
+
+SaveBackupSwarmState::
+	ld a, BANK(sBackupSwarmStateMagic)
+	ld hl, sBackupSwarmStateMagic
+_SaveSwarmState:
+; a = the copy's SRAM bank, hl = its magic
+	assert sSwarmState - sSwarmStateMagic == 2 && \
+		sSwarmStateChecksum - sSwarmState == wSwarmStateEnd - wSwarmState
+	assert sBackupSwarmState - sBackupSwarmStateMagic == 2 && \
+		sBackupSwarmStateChecksum - sBackupSwarmState == wSwarmStateEnd - wSwarmState
+	call OpenSRAM
+	ld a, LOW(SWARM_STATE_SAVE_MAGIC)
+	ld [hli], a
+	ld a, HIGH(SWARM_STATE_SAVE_MAGIC)
+	ld [hli], a
+	ld d, h
+	ld e, l
+	ld hl, wSwarmState
+	ld bc, wSwarmStateEnd - wSwarmState
+	rst CopyBytes
+	push de
+	ld hl, wSwarmState
+	call SwarmState_Checksum
+	pop hl
+	ld a, e
+	ld [hli], a
+	ld [hl], d
+	jmp CloseSRAM
+
+LoadSwarmState::
+	ld a, BANK(sSwarmStateMagic)
+	ld hl, sSwarmStateMagic
+	jr _LoadSwarmState
+
+LoadBackupSwarmState::
+	ld a, BANK(sBackupSwarmStateMagic)
+	ld hl, sBackupSwarmStateMagic
+_LoadSwarmState:
+; a = the copy's SRAM bank, hl = its magic. A copy without the magic or with a bad checksum is a
+; save from before the swarms had a block of their own: they come across from wPlayerData's old
+; bytes, which the caller has just loaded.
+	call OpenSRAM
+	ld a, [hli]
+	cp LOW(SWARM_STATE_SAVE_MAGIC)
+	jr nz, .old_save
+	ld a, [hli]
+	cp HIGH(SWARM_STATE_SAVE_MAGIC)
+	jr nz, .old_save
+	push hl
+	call SwarmState_Checksum ; hl ends on the checksum
+	ld a, [hli]
+	cp e
+	jr nz, .bad
+	ld a, [hl]
+	cp d
+	jr nz, .bad
+	pop hl
+	ld de, wSwarmState
+	ld bc, wSwarmStateEnd - wSwarmState
+	rst CopyBytes
+	jmp CloseSRAM
+
+.bad
+	pop hl
+.old_save
+	call CloseSRAM
+; The old save's three active swarms, its one pick as the day's, and its two days of history as
+; the most recent. The fourth slot, the evening pick and the rest of the history start empty.
+	assert V1_MAX_ACTIVE_SWARMS <= MAX_ACTIVE_SWARMS && V1_SWARM_HISTORY <= NUM_SWARM_HISTORY
+	call ClearSwarmState
+	ld hl, wV1ActiveSwarms
+	ld de, wActiveSwarms
+	ld bc, V1_MAX_ACTIVE_SWARMS
+	rst CopyBytes
+	ld a, [wV1DailySwarm]
+	ld [wDailySwarms + SWARM_PICK_DAY], a
+	ld hl, wV1SwarmHistory
+	ld de, wSwarmHistory
+	ld bc, V1_SWARM_HISTORY
+	rst CopyBytes
+; The old bytes are spare from here on.
+	assert wV1DailySwarm == wV1ActiveSwarms + V1_MAX_ACTIVE_SWARMS && \
+		wV1SwarmHistory == wV1DailySwarm + 1
+	ld hl, wV1ActiveSwarms
+	ld bc, V1_MAX_ACTIVE_SWARMS + 1 + V1_SWARM_HISTORY
+	xor a
+	rst ByteFill
+	ret
+
+ClearSwarmState::
+	ld hl, wSwarmState
+	ld bc, wSwarmStateEnd - wSwarmState
+	xor a
+	rst ByteFill
+	ret
+
+SwarmState_Checksum:
+; in:  hl = a copy of wSwarmState
+; out: de = the sum of its bytes, hl = just past it
+	ld de, 0
+	ld b, wSwarmStateEnd - wSwarmState
+.loop
+	ld a, [hli]
+	add e
+	ld e, a
+	adc d
+	sub e
+	ld d, a
+	dec b
+	jr nz, .loop
 	ret
 
 INCLUDE "data/wild/swarms.asm"

@@ -77,6 +77,7 @@ SpriteAnimFrameData:
 	dw .Frameset_MapMonIcon3
 	dw .Frameset_MapMonIcon4
 	dw .Frameset_MapMonIcon5
+	dw .Frameset_MapMonIcon6
 	assert_table_length NUM_SPRITE_ANIM_FRAMESETS
 
 .Frameset_00:
@@ -510,4 +511,9 @@ SpriteAnimFrameData:
 .Frameset_MapMonIcon5:
 	oamframe SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_1, 8
 	oamframe SPRITE_ANIM_OAMSET_MAP_MON_ICON_5_2, 8
+	oamrestart
+
+.Frameset_MapMonIcon6:
+	oamframe SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_1, 8
+	oamframe SPRITE_ANIM_OAMSET_MAP_MON_ICON_6_2, 8
 	oamrestart

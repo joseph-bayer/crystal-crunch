@@ -21,9 +21,11 @@ BLOCKS = [("wPlayerData", "sPlayerData"), ("wCurMapData", "sCurMapData"), ("wPok
 # clock runs, the map's sprites take up their animation, spawning the player sets its facing (saved
 # as $ff), and the roaming Pokémon note the map you're on. Loading the map also points at its warp,
 # coord and bg event tables afresh (ReadMapEvents), and those move in ROM whenever the map's script
-# changes, as the bedroom's debug script does.
+# changes, as the bedroom's debug script does. And a save from before the swarms had SRAM blocks of
+# their own has its swarms moved out of wPlayerData's old bytes (wV1*), which are zeroed
+# (test_swarm_radio.test_a_v1_save_keeps_its_swarms).
 CHANGES_ON_CONTINUE = ("wGameTime", "wObject", "wPlayerFacing", "wRoamMons_CurMap",
-	"wCurMapWarpEventsPointer", "wCurMapCoordEventsPointer", "wCurMapBGEventsPointer")
+	"wCurMapWarpEventsPointer", "wCurMapCoordEventsPointer", "wCurMapBGEventsPointer", "wV1")
 
 CHERRYGROVE = ["v1.0_cherrygrove.sav", "1.1_cherrygrove.sav"]
 

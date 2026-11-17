@@ -1797,7 +1797,9 @@ wNextRadioLine:: db
 wRadioTextDelay:: db
 wNumRadioLinesPrinted:: db
 wOaksPKMNTalkSegmentCounter:: db
-	ds 5
+; The SWARM_PICK_* the swarm report is announcing, chosen by the clock when it starts its loop
+wSwarmRadioPick:: db
+	ds 4
 wRadioText:: ds 2 * SCREEN_WIDTH
 
 
@@ -3022,16 +3024,12 @@ wDailyResetTimer:: dw
 wDailyFlags1:: db
 wDailyFlags2:: db
 wDailyFlags3:: db
-; Which swarms are running, as SWARM_* row ids, 0 for an empty slot. Several can be active at
-; once as long as they are on different maps, or on the same map with different terrain -- the
-; phone calls and the radio each claim a slot. Cleared with the daily flags above.
-wActiveSwarms:: ds MAX_ACTIVE_SWARMS
-; The Collection Guild's pick for today, as a SWARM_* id, or 0 if it has not been rolled yet. It
-; only goes into wActiveSwarms once the player hears the broadcast. Cleared with the daily flags.
-wDailySwarm:: db
-; The Guild's picks on the last two days the game was running, most recent first, 0 for none.
-; The radio won't roll either again. Shifted by the daily reset, never cleared by it.
-wSwarmHistory:: ds 2
+; Where older saves kept the swarms: three active slots, the day's pick and two days of history.
+; The swarms now live in wSwarmState, saved in blocks of their own. LoadSwarmState brings an old
+; save's across from here once and zeroes these; nothing else reads or writes them.
+wV1ActiveSwarms:: ds V1_MAX_ACTIVE_SWARMS
+wV1DailySwarm:: db
+wV1SwarmHistory:: ds V1_SWARM_HISTORY
 wTimerEventStartDay:: db
 
 wFruitTreeFlags:: flag_array NUM_FRUIT_TREES
@@ -3194,6 +3192,24 @@ wMagikarpRecordHoldersName:: ds NAME_LENGTH
 
 wPokemonDataEnd::
 wGameDataEnd::
+
+
+SECTION "Swarm State", WRAMX, BANK[1]
+
+; The swarms, saved in SRAM blocks of their own (sSwarmState) so that adding the evening pick moved
+; nothing in the save. Out here past wGameDataEnd, so a new game clears it itself (ClearSwarmState).
+wSwarmState::
+; Which swarms are running, as SWARM_* row ids, 0 for an empty slot. Several can be active at
+; once as long as they are on different maps, or on the same map with different terrain -- the
+; phone calls and the radio's two picks each claim a slot. Cleared at midnight.
+wActiveSwarms:: ds MAX_ACTIVE_SWARMS
+; The Collection Guild's picks for today, by SWARM_PICK_*, as SWARM_* ids, 0 for one not rolled
+; yet. A pick only goes into wActiveSwarms once the player hears it announced. Cleared at midnight.
+wDailySwarms:: ds NUM_SWARM_PICKS
+; The Guild's picks on the last two days the game was running, most recent day first, 0 for none.
+; The radio won't pick any of them again. Shifted at midnight, never cleared.
+wSwarmHistory:: ds NUM_SWARM_HISTORY
+wSwarmStateEnd::
 
 
 SECTION "Overworld Wild Mon", WRAMX, BANK[1]
@@ -3566,6 +3582,12 @@ SECTION "Map Icon Turns", WRAM0
 wMapIconCount:: db ; how many icons wMapIcons holds
 wMapIconTimer:: db ; frames into the current turn
 wMapIconTurn:: db ; which turn icons sharing a landmark are on
-wMapIconGroupSize:: db ; scratch for MapIcons_Apply
-wMapIconRank:: db ; scratch for MapIcons_Apply
 wMapIcons:: ds NUM_MAP_ICONS * 3 ; each icon's sprite anim struct (dw) and landmark, in turn order
+
+
+SECTION "Map Icon Scratch", WRAM0
+
+; MapIcons_Apply's scratch, apart from the rest of the turns: with them, that section no longer fit
+; before the aligned "Overworld Map"
+wMapIconGroupSize:: db
+wMapIconRank:: db

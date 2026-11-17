@@ -154,6 +154,22 @@ sBackupRememberedShinies:: ds wRememberedShiniesEnd - wRememberedShinies
 sBackupRememberedShiniesChecksum:: dw
 
 
+SECTION "Swarm State Save", SRAM
+
+; wSwarmState, guarded by its own magic and checksum like the forms record: older saves have
+; neither, and their swarms are brought across from wPlayerData's old bytes
+sSwarmStateMagic:: dw
+sSwarmState:: ds wSwarmStateEnd - wSwarmState
+sSwarmStateChecksum:: dw
+
+
+SECTION "Swarm State Backup", SRAM
+
+sBackupSwarmStateMagic:: dw
+sBackupSwarmState:: ds wSwarmStateEnd - wSwarmState
+sBackupSwarmStateChecksum:: dw
+
+
 SECTION "Box Metadata", SRAM
 
 for n, 1, NUM_BOXES + 1

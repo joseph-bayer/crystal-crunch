@@ -124,15 +124,19 @@ def test_radio_reports_only_the_alt_shiny_swarm_as_oddly_colored(game):
 	"""The swarm report picks its "Oddly colored" lines from IsDailySwarmAltShiny, and Team Rocket's
 	from IsDailySwarmRocket: each must say yes for its own rows only."""
 	ids = swarm_ids()
-	for name in ("SWARM_SCYTHER_ALT_SHINY", "SWARM_DRATINI_ALT_SHINY", "SWARM_MAGIKARP_ALT_SHINY", "SWARM_MARILL_ALT_SHINY",
-			"SWARM_GOLBAT_ROCKET", "SWARM_DUNSPARCE"):
-		game.poke("wDailySwarm", ids[name])
-		alt = bool(A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY)
-		rocket = bool(A.call(game, "IsDailySwarmRocket")["f"] & CARRY)
-		assert alt == name.endswith("_ALT_SHINY"), name
-		assert rocket == (name == "SWARM_GOLBAT_ROCKET"), name
-	game.poke("wDailySwarm", 0)
-	assert not A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY, "no swarm today"
+	for pick in range(2): # SWARM_PICK_DAY, SWARM_PICK_EVENING
+		game.poke("wSwarmRadioPick", pick)
+		game.poke("wDailySwarms", 0, 1 - pick) # the other pick says nothing about this one
+		for name in ("SWARM_SCYTHER_ALT_SHINY", "SWARM_DRATINI_ALT_SHINY", "SWARM_MAGIKARP_ALT_SHINY",
+				"SWARM_MARILL_ALT_SHINY", "SWARM_GOLBAT_ROCKET", "SWARM_DUNSPARCE"):
+			game.poke("wDailySwarms", ids[name], pick)
+			alt = bool(A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY)
+			rocket = bool(A.call(game, "IsDailySwarmRocket")["f"] & CARRY)
+			assert alt == name.endswith("_ALT_SHINY"), name
+			assert rocket == (name == "SWARM_GOLBAT_ROCKET"), name
+		game.poke("wDailySwarms", 0, pick)
+		game.poke("wDailySwarms", ids["SWARM_SCYTHER_ALT_SHINY"], 1 - pick)
+		assert not A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY, "no swarm for this pick"
 
 
 def swarm_rows():
