@@ -5,6 +5,11 @@
 	const ROUTE12_FISHER4
 	const ROUTE12_POKE_BALL1
 	const ROUTE12_POKE_BALL2
+; New Kanto trainers: begin
+	const ROUTE12_BIRD_KEEPER_JUSTIN
+	const ROUTE12_BIRD_KEEPER_GAIL
+	const ROUTE12_FISHER_KYLER
+; New Kanto trainers: end
 	const ROUTE12_WILD_MON_1
 	const ROUTE12_WILD_MON_2
 	const ROUTE12_WILD_MON_3
@@ -58,6 +63,41 @@ TrainerFisherBarney:
 	waitbutton
 	closetext
 	end
+; New Kanto trainers: begin
+
+TrainerBirdKeeperJustin:
+	trainer BIRD_KEEPER, BIRD_KEEPER_JUSTIN, EVENT_BEAT_BIRD_KEEPER_JUSTIN, BirdKeeperJustinSeenText, BirdKeeperJustinBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext BirdKeeperJustinAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerBirdKeeperGail:
+	trainer BIRD_KEEPER, GAIL, EVENT_BEAT_BIRD_KEEPER_GAIL, BirdKeeperGailSeenText, BirdKeeperGailBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext BirdKeeperGailAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerFisherKyler:
+	trainer FISHER, KYLER, EVENT_BEAT_FISHER_KYLER, FisherKylerSeenText, FisherKylerBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext FisherKylerAfterBattleText
+	waitbutton
+	closetext
+	end
+; New Kanto trainers: end
 
 Route12Sign:
 	jumptext Route12SignText
@@ -168,6 +208,54 @@ FishingSpotSignText:
 	text "FISHING SPOT"
 	done
 
+; New Kanto trainers: begin
+BirdKeeperJustinSeenText:
+	text "Huh? The wind has"
+	line "changed direction!"
+	done
+
+BirdKeeperJustinBeatenText:
+	text "Phew…"
+	done
+
+BirdKeeperJustinAfterBattleText:
+	text "Since the wind has"
+	line "changed, I'll lay"
+	cont "low…"
+	done
+
+BirdKeeperGailSeenText:
+	text "BASABASABASABASA!"
+	done
+
+BirdKeeperGailBeatenText:
+	text "Pyopyopyopyo…"
+	done
+
+BirdKeeperGailAfterBattleText:
+	text "Chuun-Chuun?"
+	line "Chunchun!"
+	done
+
+FisherKylerSeenText:
+	text "#MON battles"
+	line "lure people in!"
+	done
+
+FisherKylerBeatenText:
+	text "My #MON bucket"
+	line "is empty!"
+	done
+
+FisherKylerAfterBattleText:
+	text "Really? Rather"
+	line "than always"
+	cont "catching new"
+	cont "#MON, it's good"
+	cont "to train them?"
+	done
+
+; New Kanto trainers: end
 Route12_MapEvents:
 	db 0, 0 ; filler
 
@@ -188,6 +276,11 @@ Route12_MapEvents:
 	object_event  6,  7, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerFisherKyle, -1
 	object_event  5, 43, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route12Calcium, EVENT_ROUTE_12_CALCIUM
 	object_event  5, 51, SPRITE_POKE_BALL, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_ITEMBALL, 0, Route12Nugget, EVENT_ROUTE_12_NUGGET
+; New Kanto trainers: begin
+	object_event  8, 17, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerBirdKeeperJustin, -1
+	object_event  7, 33, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 1, TrainerBirdKeeperGail, -1
+	object_event 10, 47, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 0, TrainerFisherKyler, -1
+; New Kanto trainers: end
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors. Slots run static, then grass, then water -- the

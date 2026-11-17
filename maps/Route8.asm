@@ -5,6 +5,9 @@
 	const ROUTE8_SUPER_NERD1
 	const ROUTE8_SUPER_NERD2
 	const ROUTE8_FRUIT_TREE
+; New Kanto trainers: begin
+	const ROUTE8_GENTLEMAN_MILTON
+; New Kanto trainers: end
 	const ROUTE8_WILD_MON_1
 	const ROUTE8_WILD_MON_2
 
@@ -67,6 +70,19 @@ TrainerSupernerdTom:
 	waitbutton
 	closetext
 	end
+; New Kanto trainers: begin
+
+TrainerGentlemanMilton:
+	trainer GENTLEMAN, MILTON, EVENT_BEAT_GENTLEMAN_MILTON, GentlemanMiltonSeenText, GentlemanMiltonBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext GentlemanMiltonAfterBattleText
+	waitbutton
+	closetext
+	end
+; New Kanto trainers: end
 
 Route8LockedDoor:
 	jumptext Route8LockedDoorText
@@ -172,6 +188,33 @@ Route8UndergroundPathSignText:
 	line "read…"
 	done
 
+; New Kanto trainers: begin
+GentlemanMiltonSeenText:
+	text "I am but a"
+	line "Gentleman stopped"
+	cont "on the road. Would"
+	cont "you care to join"
+	cont "me in a"
+
+	para "quick contest?"
+	done
+
+GentlemanMiltonBeatenText:
+	text "You were very"
+	line "skillful."
+	done
+
+GentlemanMiltonAfterBattleText:
+	text "Stopping in the"
+	line "road for a battle"
+	cont "isn't rude. No"
+	cont "matter what, I am"
+	cont "a"
+
+	para "Gentleman first!"
+	done
+
+; New Kanto trainers: end
 Route8_MapEvents:
 	db 0, 0 ; filler
 
@@ -192,6 +235,9 @@ Route8_MapEvents:
 	object_event 23,  2, SPRITE_SUPER_NERD, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 3, TrainerSupernerdSam, -1
 	object_event 31, 12, SPRITE_SUPER_NERD, SPRITEMOVEDATA_SPINRANDOM_FAST, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerSupernerdTom, -1
 	object_event 33,  5, SPRITE_FRUIT_TREE, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, Route8FruitTree, -1
+; New Kanto trainers: begin
+	object_event 24,  8, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_TRAINER, 3, TrainerGentlemanMilton, -1
+; New Kanto trainers: end
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors. Slots run static, then grass, then water -- the

@@ -4,6 +4,12 @@
 	const ROUTE13_POKEFAN_M1
 	const ROUTE13_POKEFAN_M2
 	const ROUTE13_POKEFAN_M3
+; New Kanto trainers: begin
+	const ROUTE13_CAMPER_CLARK
+	const ROUTE13_CAMPER_TANNER
+	const ROUTE13_PICNICKER_PIPER
+	const ROUTE13_PICNICKER_GINGER
+; New Kanto trainers: end
 	const ROUTE13_WILD_MON_1
 	const ROUTE13_WILD_MON_2
 	const ROUTE13_WILD_MON_3
@@ -68,6 +74,52 @@ TrainerHikerKenny:
 	waitbutton
 	closetext
 	end
+; New Kanto trainers: begin
+
+TrainerCamperClark:
+	trainer CAMPER, CLARK, EVENT_BEAT_CAMPER_CLARK, CamperClarkSeenText, CamperClarkBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext CamperClarkAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerCamperTanner:
+	trainer CAMPER, TANNER, EVENT_BEAT_CAMPER_TANNER, CamperTannerSeenText, CamperTannerBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext CamperTannerAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerPicnickerPiper:
+	trainer PICNICKER, PIPER, EVENT_BEAT_PICNICKER_PIPER, PicnickerPiperSeenText, PicnickerPiperBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext PicnickerPiperAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerPicnickerGinger:
+	trainer PICNICKER, GINGER, EVENT_BEAT_PICNICKER_GINGER, PicnickerGingerSeenText, PicnickerGingerBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext PicnickerGingerAfterBattleText
+	waitbutton
+	closetext
+	end
+; New Kanto trainers: end
 
 Route13TrainerTips:
 	jumptext Route13TrainerTipsText
@@ -193,6 +245,88 @@ Route13DirectionsSignText:
 	line "CITY"
 	done
 
+; New Kanto trainers: begin
+CamperClarkSeenText:
+	text "Collect water!"
+	line "Don't let the fire"
+	cont "go out!"
+
+	para "Look out for wild"
+	line "#MON!"
+
+	para "Let's go, Campfire!"
+	done
+
+CamperClarkBeatenText:
+	text "Pfuuuuhh…"
+	done
+
+CamperClarkAfterBattleText:
+	text "It doesn't matter"
+	line "what kind of prep"
+	cont "you've done."
+
+	para "If you lose, you"
+	line "lose."
+	done
+
+CamperTannerSeenText:
+	text "I can fit in a"
+	line "quick battle while"
+	cont "I'm in the midst of"
+	cont "prepping a meal!"
+	done
+
+CamperTannerBeatenText:
+	text "Oh, I'm hungry…"
+	done
+
+CamperTannerAfterBattleText:
+	text "I figured that"
+	line "would be easier…"
+	done
+
+PicnickerPiperSeenText:
+	text "Hey, hey, how"
+	line "about we bring out"
+	cont "your #MON and"
+	cont "mine for a battle?"
+	done
+
+PicnickerPiperBeatenText:
+	text "Oh, that's too bad…"
+	done
+
+PicnickerPiperAfterBattleText:
+	text "The way you were"
+	line "walking with your"
+	cont "#MON made me"
+	cont "think that I'd win."
+	done
+
+PicnickerGingerSeenText:
+	text "Why is it I always"
+	line "get the urge to"
+	cont "whistle when"
+	cont "walking in nature?"
+	done
+
+PicnickerGingerBeatenText:
+	text "Tweeee!"
+	done
+
+PicnickerGingerAfterBattleText:
+	text "Instead of"
+	line "communicating with"
+	cont "#MON with"
+	cont "words, you can"
+	cont "communicate with"
+
+	para "them through"
+	line "whistling!"
+	done
+
+; New Kanto trainers: end
 Route13_MapEvents:
 	db 0, 0 ; filler
 
@@ -212,6 +346,12 @@ Route13_MapEvents:
 	object_event 32,  8, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 3, TrainerPokefanmJoshua, -1
 	object_event 14, 10, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_TRAINER, 4, TrainerHikerKenny, -1
 	object_event 25,  6, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 4, TrainerPokefanmAlex, -1
+; New Kanto trainers: begin
+	object_event  5,  5, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 1, TrainerCamperClark, -1
+	object_event 17, 10, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 4, TrainerCamperTanner, -1
+	object_event 51, 10, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerPicnickerPiper, -1
+	object_event  4, 10, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 2, TrainerPicnickerGinger, -1
+; New Kanto trainers: end
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors. Slots run static, then grass, then water -- the

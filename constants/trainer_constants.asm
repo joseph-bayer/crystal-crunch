@@ -148,6 +148,9 @@ DEF KRIS EQU __trainer_class__
 	const JASON
 	const JOEY4
 	const JOEY5
+; New Kanto trainers: begin
+	const REGIS
+; New Kanto trainers: end
 
 	trainerclass SCHOOLBOY ; 17
 	const JACK1
@@ -174,6 +177,12 @@ DEF KRIS EQU __trainer_class__
 	const ALAN5
 	const CHAD4
 	const CHAD5
+; New Kanto trainers: begin
+	const SHERMAN
+	const TORIN
+	const CONNOR
+	const TRAVIS
+; New Kanto trainers: end
 
 	trainerclass BIRD_KEEPER ; 18
 	const ROD
@@ -195,6 +204,12 @@ DEF KRIS EQU __trainer_class__
 	const JOSE3
 	const VANCE2
 	const VANCE3
+; New Kanto trainers: begin
+	const BIRD_KEEPER_JUSTIN
+	const GAIL
+	const BIRD_KEEPER_JOSH
+	const KINSLEY
+; New Kanto trainers: end
 
 	trainerclass LASS ; 19
 	const CARRIE
@@ -240,6 +255,9 @@ DEF KRIS EQU __trainer_class__
 	const STEVE ; unused
 	const ALLEN
 	const DARIN
+; New Kanto trainers: begin
+	const FRENCH
+; New Kanto trainers: end
 
 	trainerclass COOLTRAINERF ; 1c
 	const GWEN
@@ -339,6 +357,9 @@ DEF KRIS EQU __trainer_class__
 	const GREGORY
 	const VIRGIL ; unused
 	const ALFRED
+; New Kanto trainers: begin
+	const MILTON
+; New Kanto trainers: end
 
 	trainerclass SKIER ; 21
 	const ROXANNE
@@ -348,6 +369,9 @@ DEF KRIS EQU __trainer_class__
 	const COLETTE
 	const HILLARY
 	const SHIRLEY
+; New Kanto trainers: begin
+	const CLARICE
+; New Kanto trainers: end
 
 	trainerclass SABRINA ; 23
 	const SABRINA1
@@ -373,6 +397,13 @@ DEF KRIS EQU __trainer_class__
 	const ARNIE4
 	const ARNIE5
 	const WAYNE
+; New Kanto trainers: begin
+	const DANE
+	const DION
+	const STACEY
+	const ELLIS
+	const ABNER
+; New Kanto trainers: end
 
 	trainerclass FISHER ; 25
 	const JUSTIN
@@ -400,6 +431,10 @@ DEF KRIS EQU __trainer_class__
 	const RALPH4
 	const RALPH5
 	const TULLY4
+; New Kanto trainers: begin
+	const KYLER
+	const GIDEON
+; New Kanto trainers: end
 
 	trainerclass SWIMMERM ; 26
 	const HAROLD
@@ -511,6 +546,10 @@ DEF KRIS EQU __trainer_class__
 	const PARRY3
 	const ANTHONY4
 	const ANTHONY5
+; New Kanto trainers: begin
+	const BRUCE
+	const DWIGHT
+; New Kanto trainers: end
 
 	trainerclass BIKER ; 2d
 	const BIKER_BENNY ; unused
@@ -560,6 +599,10 @@ DEF KRIS EQU __trainer_class__
 	const LUNG
 	const KENJI3
 	const WAI
+; New Kanto trainers: begin
+	const MANFORD
+	const ANDER
+; New Kanto trainers: end
 
 	trainerclass EXECUTIVEM ; 33
 	const EXECUTIVEM_1
@@ -608,6 +651,11 @@ DEF KRIS EQU __trainer_class__
 	const GINA4
 	const GINA5
 	const TIFFANY4
+; New Kanto trainers: begin
+	const SELINA
+	const PIPER
+	const GINGER
+; New Kanto trainers: end
 
 	trainerclass CAMPER ; 36
 	const ROLAND
@@ -632,6 +680,11 @@ DEF KRIS EQU __trainer_class__
 	const TODD4
 	const TODD5
 	const QUENTIN
+; New Kanto trainers: begin
+	const CAMPER_VIRGIL
+	const CLARK
+	const TANNER
+; New Kanto trainers: end
 
 	trainerclass EXECUTIVEF ; 37
 	const EXECUTIVEF_1

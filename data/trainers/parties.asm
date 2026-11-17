@@ -1450,6 +1450,18 @@ YoungsterGroup:
 	dw BODY_SLAM, THUNDERBOLT, PURSUIT, IRON_TAIL
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; YOUNGSTER (15)
+	db "REGIS@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 13
+	dw GOLBAT
+	dw CONFUSE_RAY, MEAN_LOOK, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES - 13
+	dw ELECTRODE
+	dw SELFDESTRUCT, SWIFT, NO_MOVE, NO_MOVE
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Schoolboy Trainer Party", ROMX
@@ -1670,6 +1682,43 @@ SchoolboyGroup:
 	dw THUNDER, THUNDER_WAVE, LOCK_ON, TRI_ATTACK
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; SCHOOLBOY (25)
+	db "SHERMAN@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 10
+	dw FURRET
+	dw DOUBLE_TEAM, BATON_PASS, AMNESIA, HEADBUTT
+	db LEVEL_FROM_BADGES - 10
+	dw PIDGEOT
+	dw REST, WING_ATTACK, STEEL_WING, RETURN
+	db -1 ; end
+
+	next_list_item ; SCHOOLBOY (26)
+	db "TORIN@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 12
+	dw SANDSLASH
+	dw HEADBUTT, FURY_CUTTER, MUD_SLAP, SLASH
+	db LEVEL_FROM_BADGES - 14
+	dw GOLBAT
+	dw CONFUSE_RAY, WING_ATTACK, MEAN_LOOK, SLUDGE_BOMB
+	db -1 ; end
+
+	next_list_item ; SCHOOLBOY (27)
+	db "CONNOR@", TRAINERTYPE_ITEM | TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 11
+	dw SMEARGLE
+	dw MINT_BERRY
+	dw BELLY_DRUM, REST, FLAIL, NO_MOVE
+	db -1 ; end
+
+	next_list_item ; SCHOOLBOY (28)
+	db "TRAVIS@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 11
+	dw BULBASAUR
+	dw SLEEP_POWDER, GIGA_DRAIN, SLUDGE_BOMB, GROWTH
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Bird Keeper Trainer Party", ROMX
@@ -1849,6 +1898,48 @@ BirdKeeperGroup:
 	dw SKARMORY
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; BIRD_KEEPER (20)
+	db "JUSTIN@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 9
+	dw XATU
+	dw PSYCHIC_M, STEEL_WING, WING_ATTACK, FUTURE_SIGHT
+	db LEVEL_FROM_BADGES - 14
+	dw NOCTOWL
+	dw PSYBEAM, TAKE_DOWN, WING_ATTACK, SHADOW_BALL
+	db -1 ; end
+
+	next_list_item ; BIRD_KEEPER (21)
+	db "GAIL@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 11
+	dw FEAROW
+	dw MIRROR_MOVE, AGILITY, FAINT_ATTACK, DETECT
+	db LEVEL_FROM_BADGES - 14
+	dw SPEAROW
+	dw AGILITY, PURSUIT, MIRROR_MOVE, DRILL_PECK
+	db -1 ; end
+
+	next_list_item ; BIRD_KEEPER (22)
+	db "JOSH@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 16
+	dw FEAROW
+	dw DRILL_PECK, MIRROR_MOVE, AGILITY, FAINT_ATTACK
+	db -1 ; end
+
+	next_list_item ; BIRD_KEEPER (23)
+	db "KINSLEY@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 17
+	dw FARFETCH_D
+	dw PECK, SWORDS_DANCE, AGILITY, SLASH
+	db LEVEL_FROM_BADGES - 17
+	dw FEAROW
+	dw DRILL_PECK, MIRROR_MOVE, AGILITY, FAINT_ATTACK
+	db LEVEL_FROM_BADGES - 16
+	dw PIDGEOTTO
+	dw QUICK_ATTACK, MIRROR_MOVE, AGILITY, WING_ATTACK
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Lass Trainer Party", ROMX
@@ -2340,6 +2431,18 @@ CooltrainerMGroup:
 	dw ICE_BEAM, SURF, DRAGON_RAGE, SLAM
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; COOLTRAINERM (21)
+	db "FRENCH@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 6
+	dw SNEASEL
+	dw FAINT_ATTACK, METAL_CLAW, SLASH, QUICK_ATTACK
+	db LEVEL_FROM_BADGES - 6
+	dw ALAKAZAM
+	dw PSYCHIC_M, THUNDERPUNCH, SHADOW_BALL, DISABLE
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Cooltrainer F Trainer Party", ROMX
@@ -3227,6 +3330,15 @@ GentlemanGroup:
 	dw NOCTOWL
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; GENTLEMAN (6)
+	db "MILTON@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 8
+	dw GROWLITHE
+	dw FLAMETHROWER, AGILITY, CRUNCH, DIG
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Skier Trainer Party", ROMX
@@ -3271,6 +3383,20 @@ TeacherGroup:
 	dw WIGGLYTUFF
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; TEACHER (4)
+	db "CLARICE@", TRAINERTYPE_ITEM | TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 12
+	dw FURRET
+	dw GOLD_BERRY
+	dw EXTREMESPEED, DIG, RETURN, IRON_TAIL
+	db LEVEL_FROM_BADGES - 10
+	dw GLOOM
+	dw NO_ITEM
+	dw STUN_SPORE, SYNTHESIS, TOXIC, PETAL_DANCE
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Sabrina Trainer Party", ROMX
@@ -3510,6 +3636,64 @@ BugCatcherGroup:
 	dw ODDISH
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; BUG_CATCHER (20)
+	db "DANE@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 9
+	dw BEEDRILL
+	dw AGILITY, PURSUIT, SLUDGE_BOMB, RETURN
+	db LEVEL_FROM_BADGES - 5
+	dw BUTTERFREE
+	dw LEECH_LIFE, SAFEGUARD, SUPERSONIC, ATTRACT
+	db -1 ; end
+
+	next_list_item ; BUG_CATCHER (21)
+	db "DION@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 3
+	dw ARIADOS
+	dw AGILITY, CUT, PSYCHIC_M, SLUDGE_BOMB
+	db -1 ; end
+
+	next_list_item ; BUG_CATCHER (22)
+	db "STACEY@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 1
+	dw METAPOD
+	dw HARDEN, NO_MOVE, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES + 3
+	dw METAPOD
+	dw HARDEN, NO_MOVE, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES + 7
+	dw METAPOD
+	dw HARDEN, NO_MOVE, NO_MOVE, NO_MOVE
+	db -1 ; end
+
+	next_list_item ; BUG_CATCHER (23)
+	db "ELLIS@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 25
+	dw WEEDLE
+	dw POISON_STING, STRING_SHOT, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES - 15
+	dw KAKUNA
+	dw HARDEN, NO_MOVE, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES - 7
+	dw BEEDRILL
+	dw AGILITY, PURSUIT, SLUDGE_BOMB, RETURN
+	db -1 ; end
+
+	next_list_item ; BUG_CATCHER (24)
+	db "ABNER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 9
+	dw BUTTERFREE
+	dw LEECH_LIFE, SAFEGUARD, ATTRACT, GIGA_DRAIN
+	db LEVEL_FROM_BADGES - 9
+	dw BEEDRILL
+	dw AGILITY, PURSUIT, SLUDGE_BOMB, RETURN
+	db LEVEL_FROM_BADGES - 9
+	dw PIKACHU
+	dw THUNDERBOLT, AGILITY, SWEET_KISS, LIGHT_SCREEN
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Fisher Trainer Party", ROMX
@@ -3742,6 +3926,31 @@ FisherGroup:
 	dw SEAKING
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; FISHER (26)
+	db "KYLER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 35
+	dw MAGIKARP
+	dw SPLASH, TACKLE, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES - 35
+	dw MAGIKARP
+	dw SPLASH, TACKLE, NO_MOVE, NO_MOVE
+	db LEVEL_FROM_BADGES - 35
+	dw MAGIKARP
+	dw SPLASH, TACKLE, NO_MOVE, NO_MOVE
+	db -1 ; end
+
+	next_list_item ; FISHER (27)
+	db "GIDEON@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 9
+	dw LANTURN
+	dw THUNDERBOLT, ICE_BEAM, SURF, CONFUSE_RAY
+	db LEVEL_FROM_BADGES - 13
+	dw MANTINE
+	dw WATERFALL, WING_ATTACK, HEADBUTT, CONFUSE_RAY
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Swimmer M Trainer Party", ROMX
@@ -4741,6 +4950,31 @@ HikerGroup:
 	dw EARTHQUAKE, EXPLOSION, ROCK_SLIDE, ROLLOUT
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; HIKER (23)
+	db "BRUCE@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 14
+	dw GRAVELER
+	dw ROLLOUT, ROCK_SLIDE, EARTHQUAKE, EXPLOSION
+	db LEVEL_FROM_BADGES - 9
+	dw RHYDON
+	dw ROCK_SLIDE, TAKE_DOWN, HORN_DRILL, DYNAMICPUNCH
+	db LEVEL_FROM_BADGES - 8
+	dw CLEFAIRY
+	dw IRON_TAIL, MOONLIGHT, LIGHT_SCREEN, TOXIC
+	db -1 ; end
+
+	next_list_item ; HIKER (24)
+	db "DWIGHT@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 9
+	dw MAGNETON
+	dw LOCK_ON, THUNDERBOLT, SCREECH, RAIN_DANCE
+	db LEVEL_FROM_BADGES - 9
+	dw STEELIX
+	dw REST, DRAGONBREATH, CURSE, IRON_TAIL
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Biker Trainer Party", ROMX
@@ -5170,6 +5404,28 @@ BlackbeltGroup:
 	dw MACHAMP
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; BLACKBELT_T (10)
+	db "MANFORD@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 6
+	dw POLIWRATH
+	dw HYDRO_PUMP, DYNAMICPUNCH, EARTHQUAKE, HYPNOSIS
+	db -1 ; end
+
+	next_list_item ; BLACKBELT_T (11)
+	db "ANDER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 10
+	dw PRIMEAPE
+	dw BEAT_UP, RAGE, SWAGGER, CROSS_CHOP
+	db LEVEL_FROM_BADGES - 14
+	dw GRAVELER
+	dw ROLLOUT, ROCK_THROW, EARTHQUAKE, EXPLOSION
+	db LEVEL_FROM_BADGES - 9
+	dw MACHOKE
+	dw SUBMISSION, ROCK_SMASH, CROSS_CHOP, SCARY_FACE
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Executive M Trainer Party", ROMX
@@ -5625,6 +5881,29 @@ PicnickerGroup:
 	dw SING, DOUBLESLAP, DEFENSE_CURL, HEADBUTT
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; PICNICKER (27)
+	db "SELINA@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 11
+	dw SKIPLOOM
+	dw GIGA_DRAIN, HEADBUTT, SOLARBEAM, LEECH_SEED
+	db -1 ; end
+
+	next_list_item ; PICNICKER (28)
+	db "PIPER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 13
+	dw DROWZEE
+	dw PSYCHIC_M, REST, SNORE, TOXIC
+	db -1 ; end
+
+	next_list_item ; PICNICKER (29)
+	db "GINGER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 12
+	dw WARTORTLE
+	dw ICE_BEAM, SURF, REST, SLEEP_TALK
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Camper Trainer Party", ROMX
@@ -5834,6 +6113,29 @@ CamperGroup:
 	dw RAICHU
 	db -1 ; end
 
+; New Kanto trainers: begin
+	next_list_item ; CAMPER (23)
+	db "VIRGIL@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 10
+	dw MEOWTH
+	dw AMNESIA, PAY_DAY, FURY_SWIPES, DOUBLE_TEAM
+	db -1 ; end
+
+	next_list_item ; CAMPER (24)
+	db "CLARK@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 13
+	dw LANTURN
+	dw TAKE_DOWN, WATERFALL, CONFUSE_RAY, WHIRLPOOL
+	db -1 ; end
+
+	next_list_item ; CAMPER (25)
+	db "TANNER@", TRAINERTYPE_MOVES
+	db LEVEL_FROM_BADGES - 15
+	dw SUDOWOODO
+	dw FAINT_ATTACK, ROLLOUT, ROCK_SLIDE, HEADBUTT
+	db -1 ; end
+
+; New Kanto trainers: end
 	end_list_items
 
 SECTION "Executive F Trainer Party", ROMX

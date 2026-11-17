@@ -2,6 +2,10 @@
 	const ROUTE6_POKEFAN_M1
 	const ROUTE6_POKEFAN_M2
 	const ROUTE6_POKEFAN_M3
+; New Kanto trainers: begin
+	const ROUTE6_CAMPER_VIRGIL
+	const ROUTE6_PICNICKER_SELINA
+; New Kanto trainers: end
 	const ROUTE6_WILD_MON_1
 	const ROUTE6_WILD_MON_2
 	const ROUTE6_WILD_MON_3
@@ -33,6 +37,30 @@ TrainerPokefanmAllan:
 	waitbutton
 	closetext
 	end
+; New Kanto trainers: begin
+
+TrainerCamperVirgil:
+	trainer CAMPER, CAMPER_VIRGIL, EVENT_BEAT_CAMPER_VIRGIL, CamperVirgilSeenText, CamperVirgilBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext CamperVirgilAfterBattleText
+	waitbutton
+	closetext
+	end
+
+TrainerPicnickerSelina:
+	trainer PICNICKER, SELINA, EVENT_BEAT_PICNICKER_SELINA, PicnickerSelinaSeenText, PicnickerSelinaBeatenText, 0, .Script
+
+.Script:
+	endifjustbattled
+	opentext
+	writetext PicnickerSelinaAfterBattleText
+	waitbutton
+	closetext
+	end
+; New Kanto trainers: end
 
 Route6PokefanMScript:
 	jumptextfaceplayer Route6PokefanMText
@@ -93,6 +121,47 @@ PokefanmAllanAfterBattleText:
 	cont "your heart melt?"
 	done
 
+; New Kanto trainers: begin
+CamperVirgilSeenText:
+	text "Walking along with"
+	line "gear and your"
+	cont "#MON gives a"
+	cont "great feeling"
+
+	para "of outdoor life!"
+	done
+
+CamperVirgilBeatenText:
+	text "Yaha! I lost!"
+	done
+
+CamperVirgilAfterBattleText:
+	text "Are you also on a"
+	line "solo journey? See"
+	cont "ya again sometime!"
+	done
+
+PicnickerSelinaSeenText:
+	text "I'm headed out on a"
+	line "picnic. Do you"
+	cont "know why?"
+	done
+
+PicnickerSelinaBeatenText:
+	text "You are pretty"
+	line "good!"
+	done
+
+PicnickerSelinaAfterBattleText:
+	text "The reason I'm"
+	line "going on a picnic…"
+	cont "It's cuz I really"
+	cont "want to smell the"
+	cont "fresh air… Y'know"
+	cont "what I mean?"
+	done
+
+; New Kanto trainers: end
 Route6_MapEvents:
 	db 0, 0 ; filler
 
@@ -109,6 +178,10 @@ Route6_MapEvents:
 	object_event 17,  4, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 2, Route6PokefanMScript, EVENT_ROUTE_5_6_POKEFAN_M_BLOCKS_UNDERGROUND_PATH
 	object_event  9, 12, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, TrainerPokefanmRex, -1
 	object_event 10, 12, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_TRAINER, 0, TrainerPokefanmAllan, -1
+; New Kanto trainers: begin
+	object_event  4,  8, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 3, TrainerCamperVirgil, -1
+	object_event 11, 14, SPRITE_LASS, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_TRAINER, 4, TrainerPicnickerSelina, -1
+; New Kanto trainers: end
 ; Wandering Pokemon. The species, form, shininess, level, DVs and held item are all rolled by
 ; RollOverworldMons when the map is entered; the sprite id only names which rolled slot this is.
 ; Palette 0 so they take the mon's own colors. Slots run static, then grass, then water -- the

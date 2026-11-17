@@ -298,10 +298,25 @@ KANTO_ROUTES = {
 		("COOLTRAINERM", "KEVIN")],
 }
 KANTO_ROUTE_TRAINERS = [trainer for trainers in KANTO_ROUTES.values() for trainer in trainers]
+# New Kanto trainers: begin
+# New Kanto trainers, by map
+NEW_KANTO_TRAINER_ROUTES = {
+	"Route1": [("COOLTRAINERM", "FRENCH"), ("SCHOOLBOY", "SHERMAN")],
+	"ViridianForest": [("BUG_CATCHER", "DANE"), ("BUG_CATCHER", "DION"), ("BUG_CATCHER", "STACEY"), ("BUG_CATCHER", "ELLIS"), ("BUG_CATCHER", "ABNER")],
+	"Route3": [("HIKER", "BRUCE"), ("BLACKBELT_T", "MANFORD"), ("BLACKBELT_T", "ANDER"), ("HIKER", "DWIGHT"), ("YOUNGSTER", "REGIS")],
+	"Route6": [("CAMPER", "CAMPER_VIRGIL"), ("PICNICKER", "SELINA")],
+	"Route8": [("GENTLEMAN", "MILTON")],
+	"Route12": [("BIRD_KEEPER", "BIRD_KEEPER_JUSTIN"), ("BIRD_KEEPER", "GAIL"), ("FISHER", "KYLER")],
+	"Route13": [("CAMPER", "CLARK"), ("CAMPER", "TANNER"), ("PICNICKER", "PIPER"), ("PICNICKER", "GINGER")],
+	"Route14": [("TEACHER", "CLARICE"), ("BIRD_KEEPER", "BIRD_KEEPER_JOSH"), ("SCHOOLBOY", "TORIN"), ("SCHOOLBOY", "CONNOR"), ("SCHOOLBOY", "TRAVIS")],
+	"Route21": [("FISHER", "GIDEON"), ("BIRD_KEEPER", "KINSLEY")],
+}
+# New Kanto trainers: end
 MT_MOON_RIVAL = [("RIVAL2", "RIVAL2_1_TOTODILE"), ("RIVAL2", "RIVAL2_1_CHIKORITA"),
 	("RIVAL2", "RIVAL2_1_CYNDAQUIL")]
 KANTO_PARTIES = KANTO_LEADERS + KANTO_GYM_TRAINERS + KANTO_ROUTE_TRAINERS + MT_MOON_RIVAL
-SCALED_PARTIES = JOHTO_SCALED_PARTIES + KANTO_PARTIES
+NEW_KANTO_TRAINERS = [trainer for trainers in NEW_KANTO_TRAINER_ROUTES.values() for trainer in trainers]
+SCALED_PARTIES = JOHTO_SCALED_PARTIES + KANTO_PARTIES + NEW_KANTO_TRAINERS
 
 
 def scaled_parties():
@@ -706,12 +721,12 @@ def test_kanto_gyms_are_the_battles_on_their_maps():
 
 
 def test_kanto_routes_are_the_battles_on_their_maps():
-	"""KANTO_ROUTES lists every trainer each route fights."""
+	"""KANTO_ROUTES and NEW_KANTO_TRAINER_ROUTES together list every trainer each route fights."""
 	from harness import data
 	battles = data.trainer_battles()
-	for route, trainers in KANTO_ROUTES.items():
+	for route in KANTO_ROUTES.keys() | NEW_KANTO_TRAINER_ROUTES.keys():
 		path = next(p for p in battles if p.endswith("/%s.asm" % route))
-		assert set(battles[path]) == set(trainers), route
+		assert set(battles[path]) == set(KANTO_ROUTES.get(route, []) + NEW_KANTO_TRAINER_ROUTES.get(route, [])), route
 
 
 @pytest.mark.parametrize("badges", range(17))
