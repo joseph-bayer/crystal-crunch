@@ -804,6 +804,7 @@ def grass_shakes(game):
 def ride_through_grass(game, item):
 	"""Through the patch and out over the ledge; return the parents of every shake seen."""
 	with_follower(game, GRASS_START, "left")
+	pin_wanderers_aside(game)
 	if item:
 		get_on(game, item)
 	pyboy = game.pyboy
@@ -875,7 +876,8 @@ ROUTE_5_LEDGES = ("ROUTE_5", 13, 3)
 
 
 def pin_wanderers_aside(game):
-	"""Hold each wandering Pokemon still off column 13, so none walks into the run and starts a battle."""
+	"""Hold each wandering Pokemon still at the map's west edge, out of the way of a run along Route 5's
+	column 13 or through Route 29's grass, so none walks into the player and starts a battle."""
 	for i, s in enumerate(s for s in range(F.NUM_OBJECT_STRUCTS)
 			if sprite("SPRITE_OW_MON_1") <= F.object_field(game, s, F.OBJECT_SPRITE) <= sprite("SPRITE_OW_MON_4")):
 		pin_wanderer(game, s, (3, 2 + 2 * i))

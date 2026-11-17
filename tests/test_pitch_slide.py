@@ -17,7 +17,10 @@ FRAMES = 30
 
 
 def test_evolution_music_slides(game):
-	call(game, "PlayMusic", de=MUSIC_EVOLUTION)
+	# PlayMusic is done within a frame, but `call` only sees it return on a frame that ends back in
+	# the stub, which can be several frames later, after the first slide has already played.
+	call(game, "PlayMusic", de=MUSIC_EVOLUTION, must_return=False, frames=1)
+	assert game.peek("wMusicID") == MUSIC_EVOLUTION
 	amounts = []
 	previous = None
 	for _ in range(FRAMES):
