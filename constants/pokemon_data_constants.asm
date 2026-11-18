@@ -189,10 +189,12 @@ assert !(SHINY_MASK & ALT_SHINY_MASK) && !(FORM_MASK & ALT_SHINY_MASK), "MON_FOR
 DEF PLAIN_FORM EQU 0
 
 ; The Pokédex's record of the forms and alternate shinies met (engine/pokedex/dex_forms.asm). The
-; capacities are the save's: raising one moves every flag after it in old saves.
+; capacities size the saved record: changing one changes its size, so a save's existing record fails
+; its checksum and loads as nothing met.
 DEF DEX_FORM_FLAG_CAPACITY EQU 160 ; one flag per non-plain form, numbered by DexFormFlagRows
-DEF DEX_ALT_SHINY_CAPACITY EQU 16  ; one flag per AltShinyPalettes row
-DEF DEX_FORMS_SAVE_MAGIC EQU $d3f1 ; marks a saved copy of the record; anything else loads as nothing met
+DEF DEX_ALT_SHINY_CAPACITY EQU 256 ; one flag per AltShinyPalettes row
+assert DEX_ALT_SHINY_CAPACITY <= 256, "alt shiny flags are numbered by a byte"
+DEF DEX_FORMS_SAVE_MAGIC EQU $d3f2 ; marks a saved copy of the record; anything else loads as nothing met
 
 ; Hidden Power level byte (MON_HP_LEVEL): the level raises Hidden Power's power, in even steps
 ; rounded down, from HIDDEN_POWER_MIN_POWER at 0 to the max at MAX_HP_LEVEL. A wild mon's Hidden

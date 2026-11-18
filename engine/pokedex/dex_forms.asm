@@ -1,10 +1,10 @@
 ; The forms and alternate shinies the Pokédex has recorded, and how the PICS page shows them.
 ;
-; Each non-plain form of a form species has a flag in wDexFormsSeen and wDexFormsCaught, numbered
-; by DexFormFlagRows. Each species in AltShinyPalettes has a flag in wDexAltShiniesSeen and
-; wDexAltShiniesCaught, numbered by its row there. A plain form needs no flag: it shows whenever its
-; species has been seen. The record lives in WRAMX bank BANK(wDexForms) and is saved to SRAM copies
-; of its own (sDexForms, sBackupDexForms).
+; Each non-plain form of a form species has a flag in wDexFormsCaught, numbered by DexFormFlagRows.
+; Each species in AltShinyPalettes has a flag in wDexAltShiniesCaught, numbered by its row there. A
+; form or alternate shiny shows only once one has been caught. A plain form needs no flag: it shows
+; whenever its species has been seen. The record lives in WRAMX bank BANK(wDexForms) and is saved
+; to SRAM copies of its own (sDexForms, sBackupDexForms).
 
 DEF NUM_UNOWN_FORMS EQU NUM_UNOWN
 
@@ -93,16 +93,9 @@ DexFormsLookPlain:
 
 ; Recording. Every entry point keeps every register; a = the species ID.
 
-DexRecordEnemyFormSeen::
+DexRecordEnemyFormCaught::
 ; the form byte in wEnemyMonForm
 	push bc
-	ld c, FALSE
-	jr DexRecordEnemyForm
-
-DexRecordEnemyFormCaught::
-	push bc
-	ld c, TRUE
-DexRecordEnemyForm:
 	push af
 	ld a, [wEnemyMonForm]
 	ld b, a
@@ -116,7 +109,6 @@ DexRecordTempMonFormCaught::
 	ld a, [wTempMonForm]
 	ld b, a
 	pop af
-	ld c, TRUE
 	jr DexRecordForm
 
 DexRecordPartyMonFormCaught::
@@ -130,22 +122,14 @@ DexRecordPartyMonFormCaught::
 	ld b, [hl]
 	pop af
 	pop hl
-	ld c, TRUE
-	jr DexRecordForm
-
-DexRecordFormSeen::
-; b = the form byte
-	push bc
-	ld c, FALSE
 	jr DexRecordForm
 
 DexRecordFormCaught::
 ; b = the form byte
 	push bc
-	ld c, TRUE
 	; fallthrough
 DexRecordForm:
-; b = the form byte, c = TRUE to record it caught as well as seen; bc is on the stack
+; b = the form byte; bc is on the stack
 	push af
 	push de
 	push hl
@@ -168,7 +152,7 @@ DexRecordForm:
 	ret
 
 .Record:
-; de = the species index, b = the form byte, c = caught too
+; de = the species index, b = the form byte
 	ld a, b
 	and FORM_MASK
 	jr z, .alternate
@@ -177,30 +161,16 @@ DexRecordForm:
 	call DexForms_GetFlag
 	pop bc
 	jr nc, .alternate
-	ld hl, wDexFormsSeen
-	push af
-	call DexForms_SetBit
-	pop af
 	ld hl, wDexFormsCaught
-	dec c
-	call z, DexForms_SetBit
-	inc c
+	call DexForms_SetBit
 .alternate
 	ld a, b
 	or ~(SHINY_MASK | ALT_SHINY_MASK)
 	inc a ; zero only if both bits were set
 	ret nz
-	push bc
 	call DexForms_GetAltShinyFlag
-	pop bc
 	ret nc
-	ld hl, wDexAltShiniesSeen
-	push af
-	call DexForms_SetBit
-	pop af
 	ld hl, wDexAltShiniesCaught
-	dec c
-	ret nz
 	; fallthrough
 
 DexForms_SetBit:
@@ -537,7 +507,7 @@ DexFormsSetHold:
 
 DexForms_IsViewable:
 ; in: de = species index, c = form number
-; out: nz if the dex may show that form: the plain form, or a seen one that doesn't look plain.
+; out: nz if the dex may show that form: the plain form, or a caught one that doesn't look plain.
 ; Clobbers a, b and hl.
 	ld a, c
 	and a
@@ -549,12 +519,12 @@ DexForms_IsViewable:
 	ld b, a
 	ldh a, [rSVBK]
 	push af
-	ld a, BANK(wDexFormsSeen)
+	ld a, BANK(wDexFormsCaught)
 	ldh [rSVBK], a
 	ld a, b
-	ld hl, wDexFormsSeen
+	ld hl, wDexFormsCaught
 	call DexForms_TestBit
-	ld b, a ; nz if seen
+	ld b, a ; nz if caught
 	pop af
 	ldh [rSVBK], a
 	ld a, b
@@ -586,16 +556,16 @@ DexForms_CheckFlag:
 	and a
 	ret
 
-Pokedex_UpdateAltSeen::
-; Set wPokedexAltSeen for species ID a. Keeps every register.
+Pokedex_UpdateAltCaught::
+; Set wPokedexAltCaught for species ID a. Keeps every register.
 	push af
-	call Pokedex_CheckAltSeen
-	ld [wPokedexAltSeen], a
+	call Pokedex_CheckAltCaught
+	ld [wPokedexAltCaught], a
 	pop af
 	ret
 
-Pokedex_CheckAltSeen:
-; out: a = TRUE if species ID a has been seen as an alternate shiny, else FALSE. Keeps bc, de and hl.
+Pokedex_CheckAltCaught:
+; out: a = TRUE if species ID a has been caught as an alternate shiny, else FALSE. Keeps bc, de and hl.
 	push bc
 	push de
 	push hl
@@ -605,7 +575,7 @@ Pokedex_CheckAltSeen:
 	call DexForms_GetAltShinyFlag
 	ld b, FALSE
 	jr nc, .got
-	ld hl, wDexAltShiniesSeen
+	ld hl, wDexAltShiniesCaught
 	call DexForms_CheckFlag
 	jr z, .got
 	ld b, TRUE
@@ -619,7 +589,7 @@ Pokedex_CheckAltSeen:
 Pokedex_IconForm:
 ; out: a = the form byte the evolution chart colors species ID a's icon with: plain, shiny when the
 ; shiny toggle is on, and its alternate shiny when the toggle is set to that and its alternate has
-; been seen. Keeps bc, de and hl.
+; been caught. Keeps bc, de and hl.
 	push bc
 	ld c, a
 	ld a, [wPokedexShinyToggle]
@@ -631,7 +601,7 @@ Pokedex_IconForm:
 	bit POKEDEX_ALT_SHINY_F, b
 	jr z, .done
 	ld a, c
-	call Pokedex_CheckAltSeen
+	call Pokedex_CheckAltCaught
 	and a
 	ld a, SHINY_MASK
 	jr z, .done
@@ -769,44 +739,19 @@ Pokedex_PlaceFormLabel::
 
 Pokedex_PicsCaughtBall::
 ; nz if the PICS page shows its caught ball for species [wTempSpecies] in wPokedexViewForm and the
-; colors in wPokedexDisplayForm: the species caught for the plain form, the form caught for any other,
-; and when an alternate shiny is shown, that caught too.
+; colors in wPokedexDisplayForm: always for a form or an alternate shiny, since only caught ones are
+; shown; otherwise when the species has been caught.
+	ld a, [wPokedexViewForm]
+	and a
+	ret nz
+	ld a, [wPokedexDisplayForm]
+	and ALT_SHINY_MASK
+	ret nz
 	ld a, [wTempSpecies]
 	call GetPokemonIndexFromID
 	ld d, h
 	ld e, l
-	ld a, [wPokedexViewForm]
-	and a
-	jr nz, .form
-	push de
-	call CheckCaughtMonIndex
-	pop de
-	ret z
-	jr .alternate
-
-.form
-	ld c, a
-	call DexForms_GetFlag
-	jr nc, .not_caught
-	ld hl, wDexFormsCaught
-	call DexForms_CheckFlag
-	ret z
-.alternate
-	ld a, [wPokedexDisplayForm]
-	and ALT_SHINY_MASK
-	jr z, .caught
-	call DexForms_GetAltShinyFlag
-	jr nc, .not_caught
-	ld hl, wDexAltShiniesCaught
-	jmp DexForms_CheckFlag
-
-.caught
-	inc a
-	ret
-
-.not_caught
-	xor a
-	ret
+	jmp CheckCaughtMonIndex
 
 Pokedex_ShinyGlyph::
 ; out: a = the glyph for the colors in wPokedexDisplayForm: none, "<DEX_⁂>" or "<ALT_SHINY>"
@@ -832,7 +777,7 @@ Pokedex_PlaceShinyGlyph::
 GetPokedexDisplayForm::
 ; out: a = [wPokedexDisplayForm] = the form the PICS page shows (plain everywhere else), shiny when
 ; the Pokédex shiny toggle is on, and an alternate shiny when the toggle is set to that and the
-; species' alternate has been seen. Keeps bc, de and hl.
+; species' alternate has been caught. Keeps bc, de and hl.
 	push bc
 	ld a, [wPokedexShinyToggle]
 	ld c, a
@@ -843,7 +788,7 @@ GetPokedexDisplayForm::
 	bit POKEDEX_ALT_SHINY_F, c
 	jr z, .got_form
 	ld b, a
-	ld a, [wPokedexAltSeen]
+	ld a, [wPokedexAltCaught]
 	and a
 	ld a, b
 	jr z, .got_form

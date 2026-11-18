@@ -571,15 +571,11 @@ GetShinyIcon::
 	push hl
 	call GetMonNormalOrShinyPalettePointer
 	ld a, l
-	sub LOW(AltShinyPalettes)
+	cp LOW(wAltShinyColors)
+	jr nz, .ordinary
 	ld a, h
-	sbc HIGH(AltShinyPalettes)
-	jr c, .ordinary ; before the table
-	ld a, l
-	sub LOW(AltShinyPalettes.End)
-	ld a, h
-	sbc HIGH(AltShinyPalettes.End)
-	jr nc, .ordinary ; past it
+	cp HIGH(wAltShinyColors)
+	jr nz, .ordinary ; only an alternate shiny's colors come back in wAltShinyColors
 	ld a, "<ALT_SHINY>"
 	pop hl
 	ret
@@ -790,7 +786,8 @@ GetMonPalettePointer:
 
 GetMonNormalOrShinyPalettePointer:
 ; in: a = 8bit mon species id, bc = form address
-; out: hl = the two colors this mon draws with: normal, shiny, or its alternate shiny
+; out: hl = the two colors this mon draws with: normal, shiny, or its alternate shiny (a copy in
+; wAltShinyColors, overwritten by the next alternate's lookup)
 	push af
 	call .NormalOrShiny
 	pop af
@@ -813,31 +810,41 @@ GetMonNormalOrShinyPalettePointer:
 	ld e, l ; de = its species index
 	ld hl, AltShinyPalettes
 .alt_loop
-	ld a, [hli]
-	ld c, a
-	ld a, [hli]
-	ld b, a ; bc = this row's species index
-	or c
+	push hl
+	ld a, BANK(AltShinyPalettes)
+	call GetFarWord ; hl = this row's species index
+	ld a, h
+	or l
 	jr z, .no_alternate ; the end
-	ld a, b
+	ld a, h
 	cp d
 	jr nz, .next_alt
-	ld a, c
+	ld a, l
 	cp e
 	jr z, .got_alternate
 .next_alt
-rept 2 * COLOR_SIZE
-	inc hl
-endr
+	pop hl
+	ld bc, 2 + 2 * COLOR_SIZE
+	add hl, bc
 	jr .alt_loop
 
 .got_alternate
+; The table is in a bank of its own, so its colors are copied to where any bank can read them.
+	pop hl
+	inc hl
+	inc hl
+	ld de, wAltShinyColors
+	ld bc, 2 * COLOR_SIZE
+	ld a, BANK(AltShinyPalettes)
+	call FarCopyBytes
 	pop de
 	pop bc
 	pop af ; drop the shiny colors
+	ld hl, wAltShinyColors
 	ret
 
 .no_alternate
+	pop hl
 	pop de
 	pop bc
 	pop hl
@@ -1302,7 +1309,8 @@ INCLUDE "data/trainers/palettes.asm"
 
 INCLUDE "data/pokemon/cosmetic_palettes.asm"
 
-INCLUDE "data/pokemon/alt_shiny_palettes.asm"
+; AltShinyPalettes has a section of its own (main.asm); GetMonNormalOrShinyPalettePointer copies a
+; row's colors to wAltShinyColors.
 ; The master table, CosmeticFormPalettePointersTable, is read with GetFarWord and has a section of
 ; its own (main.asm); the per-form tables it points to stay here, beside PokemonPalettes.
 

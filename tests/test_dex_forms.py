@@ -1,5 +1,5 @@
-"""Forms and alternate shinies in the Pokédex: the record of the ones met (set where a species is
-marked seen or caught), the PICS page showing only those, and the record's own copy in the save.
+"""Forms and alternate shinies in the Pokédex: the record of the ones caught (set where a species is
+marked caught), the PICS page showing only those, and the record's own copy in the save.
 Every check reads the record, wTilemap or the dex's variables."""
 
 
@@ -83,36 +83,32 @@ def form_label(game):
 
 # Recording
 
-def test_wild_form_is_recorded_seen(game):
-	wild_battle(game, "SCYTHER", SCYTHER_TEAL)
-	assert D.set_flags(game) == [("wDexFormsSeen", D.form_flag("SCYTHER", SCYTHER_TEAL))]
-
-
 def test_caught_form_is_recorded_caught(game):
 	wild_battle(game, "SCYTHER", SCYTHER_TEAL, room=True)
 	throw_ball(game, "MASTER BALL")
 	answer_prompts(game, lambda: out_of_battle(game), timeout=400)
 	teal = D.form_flag("SCYTHER", SCYTHER_TEAL)
-	assert D.set_flags(game) == [("wDexFormsSeen", teal), ("wDexFormsCaught", teal)]
+	assert D.set_flags(game) == [("wDexFormsCaught", teal)]
 
 
-def test_alternate_shiny_is_recorded_seen(game):
-	wild_battle(game, "SCYTHER", D.SHINY_MASK | D.ALT_SHINY_MASK)
-	assert D.set_flags(game) == [("wDexAltShiniesSeen", D.alt_flag("SCYTHER"))]
-
-
-def test_alternate_shiny_form_records_both(game):
-	wild_battle(game, "SCYTHER", D.SHINY_MASK | D.ALT_SHINY_MASK | SCYTHER_FOREST_GREEN)
-	assert D.set_flags(game) == [("wDexFormsSeen", D.form_flag("SCYTHER", SCYTHER_FOREST_GREEN)),
-		("wDexAltShiniesSeen", D.alt_flag("SCYTHER"))]
+def test_alternate_shiny_form_is_recorded_caught(game):
+	wild_battle(game, "SCYTHER", D.SHINY_MASK | D.ALT_SHINY_MASK | SCYTHER_FOREST_GREEN, room=True)
+	throw_ball(game, "MASTER BALL")
+	answer_prompts(game, lambda: out_of_battle(game), timeout=400)
+	assert D.set_flags(game) == [("wDexFormsCaught", D.form_flag("SCYTHER", SCYTHER_FOREST_GREEN)),
+		("wDexAltShiniesCaught", D.alt_flag("SCYTHER"))]
 
 
 @pytest.mark.parametrize("species, form", [
+	# Only catching records: battling a form or an alternate shiny records nothing
+	("SCYTHER", SCYTHER_TEAL),
+	("SCYTHER", D.SHINY_MASK | D.ALT_SHINY_MASK),
+	("SCYTHER", D.SHINY_MASK | D.ALT_SHINY_MASK | SCYTHER_FOREST_GREEN),
 	("SCYTHER", D.SHINY_MASK), # an ordinary shiny
 	("SCYTHER", D.ALT_SHINY_MASK), # the alternate bit without the shiny one draws plain
 	("MEW", D.SHINY_MASK | D.ALT_SHINY_MASK), # a species without an alternate
 ])
-def test_nothing_else_is_recorded(game, species, form):
+def test_battling_records_nothing(game, species, form):
 	wild_battle(game, species, form)
 	assert D.set_flags(game) == []
 
@@ -144,7 +140,7 @@ def test_hatched_form_is_recorded_caught(game):
 		and game.peek("wScriptRunning") == 0 and game.peek("wWindowStackSize") == 0)
 	assert game.peek("wPartySpecies", 0) == scyther
 	teal = D.form_flag("SCYTHER", SCYTHER_TEAL)
-	assert D.set_flags(game) == [("wDexFormsSeen", teal), ("wDexFormsCaught", teal)]
+	assert D.set_flags(game) == [("wDexFormsCaught", teal)]
 
 
 def test_evolved_form_is_recorded_caught(game):
@@ -160,7 +156,7 @@ def test_evolved_form_is_recorded_caught(game):
 	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES)
 	assert party_field(game, 0, "Species") == A.species_id(game, "SCIZOR"), "Scyther should have evolved"
 	dusty_rose = D.form_flag("SCIZOR", SCIZOR_DUSTY_ROSE)
-	assert D.set_flags(game) == [("wDexFormsSeen", dusty_rose), ("wDexFormsCaught", dusty_rose)]
+	assert D.set_flags(game) == [("wDexFormsCaught", dusty_rose)]
 
 
 def test_traded_form_is_recorded_caught(game):
@@ -178,13 +174,12 @@ def test_traded_form_is_recorded_caught(game):
 	assert game.peek("wPartyCount") == 6
 	green = D.form_flag("SCYTHER", SCYTHER_FOREST_GREEN)
 	alt = D.alt_flag("SCYTHER")
-	assert D.set_flags(game) == [("wDexFormsSeen", green), ("wDexFormsCaught", green),
-		("wDexAltShiniesSeen", alt), ("wDexAltShiniesCaught", alt)]
+	assert D.set_flags(game) == [("wDexFormsCaught", green), ("wDexAltShiniesCaught", alt)]
 
 
 # The PICS page
 
-def test_unseen_forms_and_alternates_stay_hidden(game):
+def test_uncaught_forms_and_alternates_stay_hidden(game):
 	open_pics(game, "SCYTHER")
 	for button in ("right", "left"):
 		press(game, button)
@@ -199,12 +194,12 @@ def test_unseen_forms_and_alternates_stay_hidden(game):
 	assert game.peek("wPokedexDisplayForm") == 0
 
 
-def test_pics_page_steps_through_the_seen_forms(game):
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL) # Forest Green stays unseen
+def test_pics_page_steps_through_the_caught_forms(game):
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL) # Forest Green stays uncaught
 	open_pics(game, "SCYTHER")
 	assert form_label(game) == "FORM ◀1/2▶"
 	press(game, "right")
-	assert game.peek("wPokedexViewForm") == SCYTHER_TEAL, "Forest Green hasn't been seen"
+	assert game.peek("wPokedexViewForm") == SCYTHER_TEAL, "Forest Green hasn't been caught"
 	assert game.peek("wPokedexDisplayForm") == SCYTHER_TEAL
 	assert game.peek("wForm") == SCYTHER_TEAL, "the pics should load in that form"
 	assert form_label(game) == "FORM ◀2/2▶"
@@ -217,7 +212,7 @@ def test_pics_page_steps_through_the_seen_forms(game):
 
 
 def test_shiny_toggle_colors_the_form_shown(game):
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL)
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
 	open_pics(game, "SCYTHER")
 	press(game, "right")
 	press(game, "select")
@@ -227,8 +222,8 @@ def test_shiny_toggle_colors_the_form_shown(game):
 
 
 def test_forms_that_look_plain_are_never_offered(game):
-	D.see_form(game, "GYARADOS", GYARADOS_XS)
-	D.see_form(game, "GYARADOS", GYARADOS_RB)
+	D.catch_form(game, "GYARADOS", GYARADOS_XS)
+	D.catch_form(game, "GYARADOS", GYARADOS_RB)
 	open_pics(game, "GYARADOS")
 	assert form_label(game) == "FORM ◀1/2▶"
 	press(game, "right")
@@ -236,17 +231,17 @@ def test_forms_that_look_plain_are_never_offered(game):
 
 
 def test_neutral_shuckie_is_never_offered(game):
-	D.see_form(game, "SHUCKLE", D.form_constant("SHUCKLE_SHUCKIE_NEUTRAL_FORM"))
-	D.see_form(game, "SHUCKLE", D.form_constant("SHUCKLE_SHUCKIE_HAPPY_FORM"))
+	D.catch_form(game, "SHUCKLE", D.form_constant("SHUCKLE_SHUCKIE_NEUTRAL_FORM"))
+	D.catch_form(game, "SHUCKLE", D.form_constant("SHUCKLE_SHUCKIE_HAPPY_FORM"))
 	open_pics(game, "SHUCKLE")
 	assert form_label(game) == "FORM ◀1/2▶"
 	press(game, "right")
 	assert game.peek("wPokedexViewForm") == D.form_constant("SHUCKLE_SHUCKIE_HAPPY_FORM")
 
 
-def test_alternate_shiny_once_seen(game):
-	D.see_alt(game, "SCYTHER")
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL)
+def test_alternate_shiny_once_caught(game):
+	D.catch_alt(game, "SCYTHER")
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
 	open_pics(game, "SCYTHER")
 	press(game, "select")
 	assert game.peek("wPokedexDisplayForm") == D.SHINY_MASK
@@ -266,7 +261,7 @@ def test_alternate_shiny_once_seen(game):
 
 
 def test_alternate_toggle_on_the_entry_screen(game):
-	D.see_alt(game, "MAGIKARP")
+	D.catch_alt(game, "MAGIKARP")
 	open_pokedex_entry(game, "MAGIKARP")
 	game.press("select", after=120)
 	game.press("select", after=120)
@@ -274,30 +269,34 @@ def test_alternate_toggle_on_the_entry_screen(game):
 	assert D.tile_at(game, 8, 1) == D.ALT_SHINY_GLYPH
 
 
-def test_alternate_is_only_shown_for_a_species_whose_alternate_was_seen(game):
-	"""The saved toggle stays on "alternate", but a species without one seen shows ordinary shiny."""
-	D.see_alt(game, "SCYTHER")
+def test_alternate_is_only_shown_for_a_species_whose_alternate_was_caught(game):
+	"""The saved toggle stays on "alternate", but a species without one caught shows ordinary shiny."""
+	D.catch_alt(game, "SCYTHER")
 	game.poke("wPokedexShinyToggle", 3)
 	open_pics(game, "SCIZOR", others=["SCYTHER"])
 	assert game.peek("wPokedexDisplayForm") == D.SHINY_MASK
 	assert D.tile_at(game, *D.PICS_SHINY_GLYPH) == D.DEX_SHINY_GLYPH
 
 
-def test_caught_ball_follows_the_look_shown(game):
-	D.see_form(game, "SCYTHER", SCYTHER_FOREST_GREEN, caught=True)
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL)
+def test_caught_ball_on_every_form_and_the_alternate(game):
+	"""Only caught forms and alternates are shown, so the ball is always on for them."""
+	D.catch_form(game, "SCYTHER", SCYTHER_FOREST_GREEN)
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
+	D.catch_alt(game, "SCYTHER")
 	open_pics(game, "SCYTHER")
 	assert D.tile_at(game, *D.PICS_CAUGHT_BALL) == D.CAUGHT_BALL, "the species is caught"
-	press(game, "right")
-	assert game.peek("wPokedexViewForm") == SCYTHER_FOREST_GREEN
+	for form in (SCYTHER_FOREST_GREEN, SCYTHER_TEAL):
+		press(game, "right")
+		assert game.peek("wPokedexViewForm") == form
+		assert D.tile_at(game, *D.PICS_CAUGHT_BALL) == D.CAUGHT_BALL
+	press(game, "select")
+	press(game, "select")
+	assert game.peek("wPokedexDisplayForm") == D.SHINY_MASK | D.ALT_SHINY_MASK | SCYTHER_TEAL
 	assert D.tile_at(game, *D.PICS_CAUGHT_BALL) == D.CAUGHT_BALL
-	press(game, "right")
-	assert game.peek("wPokedexViewForm") == SCYTHER_TEAL
-	assert D.tile_at(game, *D.PICS_CAUGHT_BALL) != D.CAUGHT_BALL, "Teal was only seen"
 
 
 def test_leaving_pics_goes_back_to_the_plain_form(game):
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL)
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
 	open_pics(game, "SCYTHER")
 	press(game, "right")
 	assert game.peek("wPokedexViewForm") == SCYTHER_TEAL
@@ -343,10 +342,10 @@ def test_evo_icons_follow_the_shiny_toggle(game):
 	assert shown[0] != icon_colors(game, "SCYTHER", 0)
 
 
-def test_evo_icons_show_only_seen_alternates(game):
+def test_evo_icons_show_only_caught_alternates(game):
 	"""With the toggle on "alternate", an icon takes its alternate shiny colors only if that
-	species' alternate has been seen, and its ordinary shiny colors otherwise."""
-	D.see_alt(game, "SCYTHER")
+	species' alternate has been caught, and its ordinary shiny colors otherwise."""
+	D.catch_alt(game, "SCYTHER")
 	shown = open_scyther_evos(game, 3)
 	alternate = D.SHINY_MASK | D.ALT_SHINY_MASK
 	assert shown == [icon_colors(game, "SCYTHER", alternate), icon_colors(game, "SCIZOR", D.SHINY_MASK)]
@@ -415,7 +414,7 @@ def test_species_step_stays_black_until_the_page_is_drawn(game):
 
 def test_form_step_swaps_the_pics_in_place(game):
 	"""A form step changes the pics, icon, colors, label and marks without blacking out the page."""
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL)
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
 	open_pics(game, "SCYTHER")
 	game.press("right", after=0)
 	for _ in range(PICS_SETTLE):
@@ -479,9 +478,9 @@ def test_new_entry_shows_the_caught_form(game):
 # Saving
 
 def test_record_survives_saving_and_continuing(game, tmp_path):
-	D.see_form(game, "SCYTHER", SCYTHER_TEAL, caught=True)
-	D.see_form(game, "UNOWN", D.form_constant("UNOWN_K"))
-	D.see_alt(game, "GYARADOS", caught=True)
+	D.catch_form(game, "SCYTHER", SCYTHER_TEAL)
+	D.catch_form(game, "UNOWN", D.form_constant("UNOWN_K"))
+	D.catch_alt(game, "GYARADOS")
 	recorded = D.record(game)
 	D.save_game(game)
 	path = tmp_path / "dex_forms.sav"

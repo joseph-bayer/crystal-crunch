@@ -197,6 +197,7 @@ ROMX $40
 	"bank2_2"
 ROMX $41
 	"bank41"
+	"Alt Shiny Palettes"
 ROMX $42
 	"Intro Logo"
 	"Credits"
@@ -359,6 +360,7 @@ WRAM0
 	"Vermilion Port Truck"
 	"Swarm Moves"
 	"Moped Ramp"
+	"Alt Shiny Colors"
 	align 4
 	"Video"
 	align 5

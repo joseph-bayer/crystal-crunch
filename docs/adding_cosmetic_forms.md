@@ -287,8 +287,9 @@ it. Evolution, the PC and trades keep the whole form byte, and the move deleter,
 Shuckie's form change keep both shiny bits.
 
 **How it shows.** `GetMonNormalOrShinyPalettePointer` (`engine/gfx/color.asm`) returns the species'
-row in `AltShinyPalettes` when both bits are set, so battle, party, PC, stats, the follower and
-Pokémon NPCs all follow. The stats screen, both battle HUDs and Bill's PC show `<ALT_SHINY>` instead of `⁂`
+alternate colors when both bits are set, so battle, party, PC, stats, the follower and Pokémon NPCs
+all follow. `AltShinyPalettes` has a ROM section of its own, so the lookup copies the row's colors
+to `wAltShinyColors` (WRAM0) and returns that. The stats screen, both battle HUDs and Bill's PC show `<ALT_SHINY>` instead of `⁂`
 (`GetShinyIcon`), only when the species actually has an alternate.
 
 **Adding one:**
@@ -303,7 +304,7 @@ That's all; nothing else is per species.
 
 ## The Pokédex
 
-The Pokédex records each form seen and caught, one flag per non-plain form, numbered by
+The Pokédex records each form caught, one flag per non-plain form, numbered by
 `DexFormFlagRows` in `engine/pokedex/dex_forms.asm` (`docs/pokedex.md`). That order is the save's:
 
 - A new form species gets a `dex_form_flags SPECIES, 1, <forms - 1>` row **at the end**.

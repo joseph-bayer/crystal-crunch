@@ -19,7 +19,7 @@ NewPokedexEntry:
 	jr z, .got_toggle
 	ld c, 1 << POKEDEX_SHINY_F | 1 << POKEDEX_ALT_SHINY_F
 	ld a, TRUE
-	ld [wPokedexAltSeen], a
+	ld [wPokedexAltCaught], a
 .got_toggle
 	ld a, c
 	ld [wPokedexShinyToggle], a

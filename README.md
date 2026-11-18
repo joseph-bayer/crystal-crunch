@@ -158,7 +158,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Nayru's dex has been updated to...
   - Tab navigation wrapping
   - No waiting for animations/cries before moving
-  - Show forms and alternate shinies
+  - Show the forms and alternate shinies you've caught
 
 </details>
 

@@ -569,6 +569,11 @@ INCLUDE "mobile/mobile_41.asm"
 INCLUDE "engine/gfx/load_overworld_font.asm"
 
 
+SECTION "Alt Shiny Palettes", ROMX
+
+INCLUDE "data/pokemon/alt_shiny_palettes.asm"
+
+
 SECTION "Move Animation Framesets", ROMX
 
 INCLUDE "engine/battle_anims/framesets.asm"

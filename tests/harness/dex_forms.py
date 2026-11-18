@@ -67,32 +67,20 @@ def set_flag(game, symbol, number, value=True):
 	game.poke(symbol, old | 1 << bit if value else old & ~(1 << bit), byte)
 
 
-def form_seen(game, species, form):
-	return flag(game, "wDexFormsSeen", form_flag(species, form))
-
-
 def form_caught(game, species, form):
 	return flag(game, "wDexFormsCaught", form_flag(species, form))
-
-
-def alt_seen(game, species):
-	return flag(game, "wDexAltShiniesSeen", alt_flag(species))
 
 
 def alt_caught(game, species):
 	return flag(game, "wDexAltShiniesCaught", alt_flag(species))
 
 
-def see_form(game, species, form, caught=False):
-	set_flag(game, "wDexFormsSeen", form_flag(species, form))
-	if caught:
-		set_flag(game, "wDexFormsCaught", form_flag(species, form))
+def catch_form(game, species, form):
+	set_flag(game, "wDexFormsCaught", form_flag(species, form))
 
 
-def see_alt(game, species, caught=False):
-	set_flag(game, "wDexAltShiniesSeen", alt_flag(species))
-	if caught:
-		set_flag(game, "wDexAltShiniesCaught", alt_flag(species))
+def catch_alt(game, species):
+	set_flag(game, "wDexAltShiniesCaught", alt_flag(species))
 
 
 def record_length(game):
@@ -112,8 +100,7 @@ def clear_record(game, value=0):
 def set_flags(game):
 	"""Every set flag, as (array, number)."""
 	found = []
-	for symbol, end in [("wDexFormsSeen", "wDexFormsCaught"), ("wDexFormsCaught", "wDexAltShiniesSeen"),
-			("wDexAltShiniesSeen", "wDexAltShiniesCaught"), ("wDexAltShiniesCaught", "wDexFormsEnd")]:
+	for symbol, end in [("wDexFormsCaught", "wDexAltShiniesCaught"), ("wDexAltShiniesCaught", "wDexFormsEnd")]:
 		length = game._address(end)[1] - game._address(symbol)[1]
 		for i, value in enumerate(game.peek(symbol, 0, length)):
 			found += [(symbol, i * 8 + bit) for bit in range(8) if value >> bit & 1]

@@ -96,7 +96,7 @@ InitPokedex:
 	ld [wPrevDexEntryBackup], a
 	ld [wPrevDexEntryBackup + 1], a
 	ld [wPokedexViewForm], a
-	ld [wPokedexAltSeen], a
+	ld [wPokedexAltCaught], a
 
 	call Pokedex_CheckUnlockedUnownMode
 
@@ -404,7 +404,7 @@ Pokedex_InitDexEntryScreen:
 
 	call Pokedex_GetSelectedMon
 	ld [wCurPartySpecies], a
-	farcall Pokedex_UpdateAltSeen
+	farcall Pokedex_UpdateAltCaught
 	ld a, SCGB_POKEDEX
 	call Pokedex_GetSGBLayout
 
@@ -502,7 +502,7 @@ Pokedex_toggle_shininess1:
 	jr z, .shiny
 	bit POKEDEX_ALT_SHINY_F, [hl]
 	jr nz, .off
-	ld a, [wPokedexAltSeen]
+	ld a, [wPokedexAltCaught]
 	and a
 	jr z, .off
 	set POKEDEX_ALT_SHINY_F, [hl]
@@ -534,7 +534,7 @@ Pokedex_ReinitDexEntryScreen:
 	call Pokedex_DrawDexEntryScreenBG
 	call Pokedex_LoadCurrentFootprint
 	call Pokedex_GetSelectedMon
-	farcall Pokedex_UpdateAltSeen
+	farcall Pokedex_UpdateAltCaught
 	ld a, l
 	ld [wPrevDexEntry], a
 	ld a, h
@@ -951,7 +951,7 @@ Pics_Page:
 	xor a
 	ld [wPokedexViewForm], a
 	ld a, [wCurPartySpecies]
-	farcall Pokedex_UpdateAltSeen
+	farcall Pokedex_UpdateAltCaught
 	ld a, [wPrevDexEntryJumptableIndex] ; same ram as wPokedexPageFlags
 	ld b, a
 	ld a, [wPokedexEntryType]

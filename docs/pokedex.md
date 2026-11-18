@@ -16,7 +16,7 @@ This page covers where its pages get their data and how to extend the AREA page.
 | `engine/pokedex/pokedex_pics_page.asm` | `$7d` | PICS |
 | `engine/pokedex/pokedex_area_page.asm` | `$7d` | AREA, and the extra nests for the Town Map |
 | `engine/pokedex/pokedex_pals.asm` | `$7d` | The pages' palettes and attributes, type colors (`gfx/type_pals.asm`) |
-| `engine/pokedex/dex_forms.asm` | `$7d` | The record of forms and alternate shinies met, its save copies, the display form byte, and the PICS page's forms and shiny glyphs |
+| `engine/pokedex/dex_forms.asm` | `$7d` | The record of forms and alternate shinies caught, its save copies, the display form byte, and the PICS page's forms and shiny glyphs |
 | `engine/pokegear/clock_card.asm` | `$7d` ("Pokegear Clock Card") | The clock card's time of day, place and fishing group |
 | `gfx/pokedex/*.png`, `gfx/pokedex_type_tiles.asm` | `$7a` ("Pokedex Graphics") | Tab bar, page numbers, symbols, type tiles |
 
@@ -40,7 +40,7 @@ next one plays the cry without waiting for it (`PlayMonCry2`), so buttons work d
   - TM/HM and tutor rows walk the TM/HM/tutor flags and print `TMnn`, `HMnn` or `MT`.
 - **EVO** reads the evolution rows; item parameters are 16-bit item indexes. Species the player
   hasn't seen show as `?????` with the `???` type tile.
-- **PICS** draws the plain form, and **Left**/**Right** step through the forms met (below);
+- **PICS** draws the plain form, and **Left**/**Right** step through the forms caught (below);
   **Select** steps the shiny toggle. Buttons work from the first frame: the front pic animates, and cries, a step a frame inside
   the page loop (`Pokedex_PicsPageFrame`).
   Its own tiles sit in VRAM bank 1 above the front pic's animation frames (`DEXPICS_*` in
@@ -50,7 +50,7 @@ next one plays the cry without waiting for it (`PlayMonCry2`), so buttons work d
 - **Colors and shininess** go through `wPokedexDisplayForm` (`GetPokedexDisplayForm`): the form the
   PICS page shows (`wPokedexViewForm`, 0 everywhere else), `| SHINY_MASK` when the shiny toggle is
   on, and `| ALT_SHINY_MASK` when it is on the alternate step and the species' alternate has been
-  seen (`wPokedexAltSeen`). `GetMonNormalOrShinyPalettePointer` and the pic loaders (through
+  caught (`wPokedexAltCaught`). `GetMonNormalOrShinyPalettePointer` and the pic loaders (through
   `wForm`) take it from there.
 - **Saved settings**: `wPokedexShinyToggle` and `wCurPokedexColor` are the last two bytes of the
   options block (`wOptions` to `wOptionsEnd`, defaults in `data/default_options.asm`). The toggle's
@@ -60,50 +60,48 @@ next one plays the cry without waiting for it (`PlayMonCry2`), so buttons work d
 ## Forms and alternate shinies
 
 The dex shows a species' cosmetic forms (Unown's letters included) and its alternate shiny once
-the player has met them. The plain form shows whenever the species has been seen, as it always has.
+the player has caught one. Seeing one in battle isn't enough. The plain form shows whenever the
+species has been seen, as it always has.
 
-**The record.** `wDexForms` (WRAMX bank 5) holds four flag arrays: `wDexFormsSeen` and
-`wDexFormsCaught`, one flag per non-plain form, and `wDexAltShiniesSeen` and `wDexAltShiniesCaught`,
-one flag per row of `AltShinyPalettes`. A form's flag is numbered by `DexFormFlagRows`
+**The record.** `wDexForms` (WRAMX bank 5) holds two flag arrays: `wDexFormsCaught`, one flag per
+non-plain form, and `wDexAltShiniesCaught`, one flag per row of `AltShinyPalettes`. A form's flag is numbered by `DexFormFlagRows`
 (`engine/pokedex/dex_forms.asm`): the counts of the rows before its row, plus its place in the row.
 Both lists are in save order, so they only ever grow at the end (see
 `docs/adding_cosmetic_forms.md`). Capacities: `DEX_FORM_FLAG_CAPACITY` (160) and
-`DEX_ALT_SHINY_CAPACITY` (16), asserted.
+`DEX_ALT_SHINY_CAPACITY` (256, the most a byte can number), asserted.
 
-**What records it.** `DexRecordForm*` (`a` = the species ID, every register kept), beside each
-place that marks a species seen or caught:
+**What records it.** `DexRecord*FormCaught` (`a` = the species ID, every register kept), beside
+each place that marks a species caught:
 
-| Event | Records | Form byte from |
-|---|---|---|
-| An enemy sent out or loaded in battle, an Elite Four seat's mon | seen | `wEnemyMonForm` |
-| A catch; a gift or NPC trade (`GeneratePartyMonStats`); sent to the PC (`SendMonIntoBox`) | caught | `wEnemyMonForm` |
-| A link trade (`AddTempmonToParty`); an evolution | caught | `wTempMonForm` |
-| A hatch | caught | the hatched party mon |
+| Event | Form byte from |
+|---|---|
+| A catch; a gift or NPC trade (`GeneratePartyMonStats`); sent to the PC (`SendMonIntoBox`) | `wEnemyMonForm` |
+| A link trade (`AddTempmonToParty`); an evolution | `wTempMonForm` |
+| A hatch | the hatched party mon |
 
-Caught sets seen too. A shiny with `ALT_SHINY_MASK` records its species' alternate flag, if it has
-one. `GiveEgg` holds the record off (`DexFormsHoldOn`/`Off`) while it adds the egg, as it takes back
-the species flags. Game Corner prizes are plain, and wanderers seen on the map don't count until
-battled.
+A shiny with `ALT_SHINY_MASK` records its species' alternate flag, if it has one. Battles record
+nothing: they mark only the species seen. `GiveEgg` holds the record off (`DexFormsHoldOn`/`Off`)
+while it adds the egg, as it takes back the species flags. Game Corner prizes are plain.
 
 **Saving.** The record isn't in `wGameData`: it has its own SRAM copies, `sDexForms` (bank 1) and
 `sBackupDexForms` (bank 0), each a magic word (`DEX_FORMS_SAVE_MAGIC`), the record and a checksum.
 `SavePokemonData`, `SaveBackupPokemonData`, `LoadPokemonData` and `LoadBackupPokemonData` save and
 load it with the Pokémon data, so every save, load and reload path carries it. A copy without the
-magic or with a bad checksum, as in every save from before it, loads as nothing met. A new game
+magic or with a bad checksum, as in every save from before it, loads as nothing caught. A new game
 clears it (`_ResetWRAM`).
 
 **The PICS page.**
 - **Left**/**Right** step through the forms the dex may show (`Pokedex_StepViewForm`): the plain
-  form and each form seen, skipping the forms in `DexFormsLookPlain`, which keep an evolution line's
+  form and each form caught, skipping the forms in `DexFormsLookPlain`, which keep an evolution line's
   form number but are drawn as the plain form. The pics, icon, colors, label and marks change in place (`Pokedex_PicsSwapForm`).
 - `FORM ◀n/m▶` under the name when there is more than one to show: the form shown is the n-th of m
   (the ◀ is a ▶ the attrmap flips).
 - Up/Down and leaving the page go back to the plain form.
-- The caught ball follows the look shown: the species caught for the plain form, the form caught
-  for any other, and the alternate caught too while the alternate is shown.
+- The caught ball: for the plain form, whether the species has been caught; always on for any
+  other form or the alternate, since only caught ones are shown.
 
 **The shiny toggle** (Select, on the entry screen and PICS) steps off, shiny, alternate, off; the
-alternate step only when the species' alternate has been seen. The glyph is `<DEX_⁂>` for shiny and
+alternate step only when the species' alternate has been caught. The glyph is `<DEX_⁂>` for shiny and
 `<ALT_SHINY>` for the alternate (`Pokedex_PlaceShinyGlyph`).
 
 `tests/test_dex_forms.py` and `tests/test_data_dex_forms.py` cover the record, the PICS page and the

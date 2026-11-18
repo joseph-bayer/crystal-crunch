@@ -705,7 +705,7 @@ wPokedexEvoStage2:: db
 wPokedexEvoStage3:: db
 wPokedexDisplayForm:: db ; form byte the entry screen draws with
 wPokedexViewForm:: db ; the form the PICS page shows; 0 everywhere else
-wPokedexAltSeen:: db ; TRUE if the selected species has been seen as an alternate shiny
+wPokedexAltCaught:: db ; TRUE if the selected species has been caught as an alternate shiny
 wPokedexFormCount:: db ; the PICS page's form label: how many forms the species has,
 wPokedexFormsShown:: db ; how many of them the dex may show,
 wPokedexFormPlace:: db ; and where the one shown falls among those
@@ -1192,6 +1192,13 @@ wMopedRampTiles:: db
 ; Full-speed tiles left after letting go of B: built up, the moped needs B held for full speed,
 ; and coasts on for these before dropping to the bike's speed.
 wMopedCoastTiles:: db
+
+
+SECTION "Alt Shiny Colors", WRAM0
+
+; The alternate shiny colors GetMonNormalOrShinyPalettePointer last looked up, copied out of
+; AltShinyPalettes's bank so a palette read from any bank finds them.
+wAltShinyColors:: ds 2 * COLOR_SIZE
 
 
 SECTION "Video", WRAM0
@@ -3520,9 +3527,7 @@ SECTION "Pokedex Forms", WRAMX
 ; The forms and alternate shinies the Pokédex has recorded (engine/pokedex/dex_forms.asm). Saved to
 ; SRAM copies of their own rather than inside wGameData, so saves made before it load unchanged.
 wDexForms::
-wDexFormsSeen:: flag_array DEX_FORM_FLAG_CAPACITY
 wDexFormsCaught:: flag_array DEX_FORM_FLAG_CAPACITY
-wDexAltShiniesSeen:: flag_array DEX_ALT_SHINY_CAPACITY
 wDexAltShiniesCaught:: flag_array DEX_ALT_SHINY_CAPACITY
 wDexFormsEnd::
 
