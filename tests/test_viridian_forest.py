@@ -240,11 +240,11 @@ def test_route_2s_items_are_found_in_the_forest(game):
 # The RB Pikachu swarm
 
 def test_rb_pikachu_swarm_row():
-	"""Appended last, since a swarm's id is what the save holds."""
-	ids = re.findall(r"const (SWARM_\w+)\s*; (\d+)", read("constants/swarm_constants.asm"))
-	assert ids[-1] == ("SWARM_PIKACHU_RB", "25")
+	"""Appended after every older row, since a swarm's id is what the save holds."""
+	ids = dict(re.findall(r"const (SWARM_\w+)\s*; (\d+)", read("constants/swarm_constants.asm")))
+	assert ids["SWARM_PIKACHU_RB"] == "25"
 	rows = re.findall(r"^\tswarm_def (.+)$", read("data/wild/swarms.asm"), re.M)
-	assert [c.strip() for c in rows[-1].split(",")] == ["PIKACHU", "PIKACHU_RB_FORM", FOREST, "SWARM_GRASS"]
+	assert [c.strip() for c in rows[25 - 1].split(",")] == ["PIKACHU", "PIKACHU_RB_FORM", FOREST, "SWARM_GRASS"]
 
 
 def test_rb_pikachu_swarms_the_forests_grass(game):

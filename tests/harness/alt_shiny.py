@@ -24,7 +24,7 @@ ALT_SHINY_RANGE = 256 - 256 % ALT_SHINY_DENOMINATOR
 SHINY_ICON = 0xc0
 ALT_SHINY_ICON = 0xc1
 
-# Past wOverworldMonShinyPending, the last variable in WRAM bank 1
+# Past wOverworldMonRecordShiny, the last variable in WRAM bank 1
 STUB_BANK = 1
 STUB_ADDRESS = 0xdf80
 RSVBK = 0xff70

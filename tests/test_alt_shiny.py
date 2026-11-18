@@ -128,7 +128,7 @@ def test_radio_reports_only_the_alt_shiny_swarm_as_oddly_colored(game):
 		game.poke("wSwarmRadioPick", pick)
 		game.poke("wDailySwarms", 0, 1 - pick) # the other pick says nothing about this one
 		for name in ("SWARM_SCYTHER_ALT_SHINY", "SWARM_DRATINI_ALT_SHINY", "SWARM_MAGIKARP_ALT_SHINY",
-				"SWARM_MARILL_ALT_SHINY", "SWARM_GOLBAT_ROCKET", "SWARM_DUNSPARCE"):
+				"SWARM_MARILL_ALT_SHINY", "SWARM_WEEDLE_ALT_SHINY", "SWARM_GOLBAT_ROCKET", "SWARM_DUNSPARCE"):
 			game.poke("wDailySwarms", ids[name], pick)
 			alt = bool(A.call(game, "IsDailySwarmAltShiny")["f"] & CARRY)
 			rocket = bool(A.call(game, "IsDailySwarmRocket")["f"] & CARRY)
@@ -150,6 +150,24 @@ def swarm_rows():
 			move = args[5] if len(args) > 5 else "NO_MOVE"
 			rows.append((args[0], args[2], args[3], move))
 	return rows
+
+
+def test_every_alt_shiny_swarm_has_an_alternate():
+	"""An alternate-shiny swarm of a species with no alternate colors would raise nothing's odds."""
+	text = (A.constants.ROOT / "data" / "pokemon" / "alt_shiny_palettes.asm").read_text(encoding="utf-8")
+	alternates = set(re.findall(r"^\tdw (\w+)", text, re.M))
+	swarmed = [species for species, _, terrain, _ in swarm_rows() if "SWARM_ALT_SHINY" in terrain]
+	assert "WEEDLE" in swarmed
+	assert [s for s in swarmed if s not in alternates] == []
+
+
+def test_weedle_swarm_row():
+	"""Route 30, ungated, appended after every older row since a swarm's id is what the save holds."""
+	ids = swarm_ids()
+	assert ids["SWARM_WEEDLE_ALT_SHINY"] == 26
+	text = (A.constants.ROOT / "data" / "wild" / "swarms.asm").read_text(encoding="utf-8")
+	row = re.search(r"^\tswarm_def WEEDLE,(.*)$", text, re.M).group(1)
+	assert [arg.strip() for arg in row.split(",")] == ["PLAIN_FORM", "ROUTE_30", "SWARM_GRASS | SWARM_ALT_SHINY"]
 
 
 def test_wanderer_reads_its_own_swarms_row(game):
