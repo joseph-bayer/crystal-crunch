@@ -84,6 +84,7 @@ DEF FIRST_STUDIED_SWARM EQU const_value
 	const SWARM_MAGIKARP_ALT_SHINY ; 23
 	const SWARM_MARILL_ALT_SHINY ; 24
 	const SWARM_PIKACHU_RB     ; 25
+	const SWARM_WEEDLE_ALT_SHINY ; 26
 DEF NUM_SWARMS EQU const_value - 1
 
 ; How much of a swarming map's encounters the swarm takes. It substitutes into the map's own

@@ -61,5 +61,8 @@ SwarmTable::
 	; - Grass
 	swarm_def PIKACHU,    PIKACHU_RB_FORM,        VIRIDIAN_FOREST, SWARM_GRASS
 
+	; Alternate-shiny swarms, added after the rows above
+	swarm_def WEEDLE,     PLAIN_FORM,             ROUTE_30, SWARM_GRASS | SWARM_ALT_SHINY
+
 
 	assert_table_length NUM_SWARMS
