@@ -276,6 +276,7 @@ FurretEvosAttacks:
 	dbw 35, REST
 	dbw 40, AMNESIA
 	dbw 45, DOUBLE_EDGE
+	dbw 50, BATON_PASS
 	db 0 ; no more level-up moves
 
 HoothootEvosAttacks:
