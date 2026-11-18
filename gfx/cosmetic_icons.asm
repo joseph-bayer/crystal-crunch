@@ -35,5 +35,14 @@ SnorlaxApricornIcon:: INCBIN "gfx/icons/snorlax_apricorn.2bpp"
 IgglybuffPlainIcon:: INCBIN "gfx/icons/igglybuff.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
 IgglybuffBetaIcon::  INCBIN "gfx/icons/igglybuff_beta.2bpp"
 
+PichuPlainIcon:: INCBIN "gfx/icons/pichu.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
+PichuBetaIcon::  INCBIN "gfx/icons/pichu_beta.2bpp"
+
+CloysterPlainIcon:: INCBIN "gfx/icons/cloyster.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
+CloysterRBIcon::    INCBIN "gfx/icons/cloyster_rb.2bpp"
+
+KingdraPlainIcon:: INCBIN "gfx/icons/kingdra.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
+KingdraBetaIcon::  INCBIN "gfx/icons/kingdra_beta.2bpp"
+
 EggPlainIcon::  INCBIN "gfx/icons/egg.2bpp" ; a copy in this bank; see adding_cosmetic_forms.md
 EggElekidIcon:: INCBIN "gfx/icons/egg_elekid.2bpp"

@@ -141,7 +141,7 @@ On top of either kind, three rows are taken only when they apply:
 | Row | Take it when | Who has it |
 |---|---|---|
 | Palettes | a redraw uses different colors from the species (a redraw in the species' colors, or in greys, leaves it 0) | Pikachu and every recolor |
-| Party icons | some form has its own icon | Pikachu (Surf, Fly), Unown, Snorlax (Apricorn), Igglybuff (Beta) |
+| Party icons | some form has its own icon | Pikachu (Surf, Fly), Unown, Snorlax (Apricorn), Igglybuff (Beta), Pichu (Beta), Cloyster (RB), Kingdra (Beta) |
 | Symbol | some form shows a glyph beside its name | Pikachu (RB), Golbat (Rocket) |
 | Dimensions | some form is a different pic size from the species | Pikachu, Magikarp |
 

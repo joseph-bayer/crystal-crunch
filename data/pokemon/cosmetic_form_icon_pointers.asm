@@ -98,7 +98,7 @@ CosmeticFormIconPointersTable:
 	dw 0					; GRIMER (58) - no cosmetic forms
 	dw 0					; MUK (59) - no cosmetic forms
 	dw 0					; SHELLDER (5a) - no cosmetic forms
-	dw 0					; CLOYSTER (5b) - no cosmetic forms
+	dw CloysterIconPointers			; CLOYSTER (5b) - has cosmetic forms
 	dw 0					; GASTLY (5c) - no cosmetic forms
 	dw 0					; HAUNTER (5d) - no cosmetic forms
 	dw 0					; GENGAR (5e) - no cosmetic forms
@@ -179,7 +179,7 @@ CosmeticFormIconPointersTable:
 	dw 0					; CROBAT (a9) - no cosmetic forms
 	dw 0					; CHINCHOU (aa) - no cosmetic forms
 	dw 0					; LANTURN (ab) - no cosmetic forms
-	dw 0					; PICHU (ac) - no cosmetic forms
+	dw PichuIconPointers			; PICHU (ac) - has cosmetic forms
 	dw 0					; CLEFFA (ad) - no cosmetic forms
 	dw IgglybuffIconPointers		; IGGLYBUFF (ae) - has cosmetic forms
 	dw 0					; TOGEPI (af) - no cosmetic forms
@@ -237,7 +237,7 @@ CosmeticFormIconPointersTable:
 	dw 0					; SKARMORY (e3) - no cosmetic forms
 	dw 0					; HOUNDOUR (e4) - no cosmetic forms
 	dw 0					; HOUNDOOM (e5) - no cosmetic forms
-	dw 0					; KINGDRA (e6) - no cosmetic forms
+	dw KingdraIconPointers			; KINGDRA (e6) - has cosmetic forms
 	dw 0					; PHANPY (e7) - no cosmetic forms
 	dw 0					; DONPHAN (e8) - no cosmetic forms
 	dw 0					; PORYGON2 (e9) - no cosmetic forms
@@ -280,6 +280,26 @@ IgglybuffIconPointers:
 	dw IgglybuffPlainIcon
 	dw IgglybuffBetaIcon
 	assert_table_length NUM_IGGLYBUFF_FORMS
+
+PichuIconPointers:
+	table_width 2, PichuIconPointers
+	dw PichuPlainIcon
+	dw PichuPlainIcon
+	dw PichuPlainIcon
+	dw PichuBetaIcon
+	assert_table_length NUM_PICHU_FORMS
+
+CloysterIconPointers:
+	table_width 2, CloysterIconPointers
+	dw CloysterPlainIcon
+	dw CloysterRBIcon
+	assert_table_length NUM_CLOYSTER_FORMS
+
+KingdraIconPointers:
+	table_width 2, KingdraIconPointers
+	dw KingdraPlainIcon
+	dw KingdraBetaIcon
+	assert_table_length NUM_KINGDRA_FORMS
 
 EggIconPointers:
 ; indexed by egg pattern (EGG_*_PATTERN), not by form
