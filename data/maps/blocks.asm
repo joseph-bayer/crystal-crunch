@@ -361,8 +361,8 @@ VioletNicknameSpeechHouse_Blocks:
 VioletKylesHouse_Blocks:
 	INCBIN "maps/House2.ablk"
 
-RuinsOfAlphShamanHouse_Blocks:
-	INCBIN "maps/RuinsOfAlphShamanHouse.ablk"
+RuinsOfAlphShamanCave_Blocks:
+	INCBIN "maps/RuinsOfAlphShamanCave.ablk"
 
 UnionCaveB1F_Blocks:
 	INCBIN "maps/UnionCaveB1F.ablk"

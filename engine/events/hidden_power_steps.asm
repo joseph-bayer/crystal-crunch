@@ -1,20 +1,13 @@
 StepHiddenPower::
-; Every 256 steps, each party mon may gain a Hidden Power level -- at most one, from either of two
-; 1/4 chances: holding a GLYPH SHARD, or a single roll shared by the whole party when a hatched
-; Unown that hasn't fainted is in it. Eggs and fainted mons never gain, and MAX_HP_LEVEL is the cap.
+; Every 256 steps, while a hatched Unown that hasn't fainted is in the party, each party mon may
+; gain a Hidden Power level -- at most one, from either of two 1/4 chances of its own: one for
+; travelling with the Unown, and a second when it holds a GLYPH SHARD. Without such an Unown
+; nobody gains, shard or not. Eggs and fainted mons never gain, and MAX_HP_LEVEL is the cap.
 	ld a, [wPartyCount]
 	and a
 	ret z
-
-	; The shared roll: d = TRUE if the party has an Unown and the roll hit.
-	ld d, FALSE
 	call .PartyHasUnown
-	jr nc, .got_shared_roll
-	call Random
-	and %11
-	jr nz, .got_shared_roll
-	ld d, TRUE
-.got_shared_roll
+	ret nc
 
 	ld e, 0 ; party slot
 .loop
@@ -46,11 +39,12 @@ StepHiddenPower::
 	cp MAX_HP_LEVEL
 	jr nc, .next
 
-	ld a, d
-	and a
-	jr nz, .gain
+	; its roll for travelling with the Unown
+	call Random
+	and %11
+	jr z, .gain
 
-	; the GLYPH SHARD holder's own roll
+	; the GLYPH SHARD holder's second roll
 	push de
 	push hl
 	ld a, e

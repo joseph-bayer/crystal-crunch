@@ -635,8 +635,21 @@ LoadPinkPage:
 	ld de, .OK_str
 	rst PlaceString
 .done_status
+	; an Unown is purely its Hidden Power type
+	ld a, [wTempMonSpecies]
+	farcall IsUnownID
+	jr z, .unown_type
 	hlcoord 1, 15
 	predef PrintMonTypes
+	jr .done_types
+
+.unown_type
+	ld hl, wTempMon
+	farcall GetMonStructHiddenPowerType
+	ld b, a
+	hlcoord 1, 15
+	predef PrintType
+.done_types
 	hlcoord 9, 8
 	ld de, SCREEN_WIDTH
 	ld b, 10
@@ -866,18 +879,19 @@ StatsScreen_LastPage:
 	ret
 
 LoadPurplePage:
-; Hidden Power: its type, and a bar for its level.
+; Hidden Power: its type, power and side, and a bar for its level.
 	ld de, .HiddenPowerString
 	hlcoord 0, 10
 	rst PlaceString
 	ld de, .TypeString
 	hlcoord 0, 12
 	rst PlaceString
-	ld hl, wTempMonDVs
-	farcall GetHiddenPowerType
+	ld hl, wTempMon
+	farcall GetMonStructHiddenPowerType
 	ld b, a
 	hlcoord 1, 13
 	predef PrintType
+	farcall StatsScreen_PlaceHiddenPowerDetails
 	hlcoord 0, 15
 	ld [hl], $40 ; left bar end cap
 	hlcoord 9, 15

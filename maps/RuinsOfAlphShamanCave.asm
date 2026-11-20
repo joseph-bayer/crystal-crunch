@@ -1,24 +1,24 @@
 	object_const_def
-	const RUINSOFALPHSHAMANHOUSE_SHAMAN
-	const RUINSOFALPHSHAMANHOUSE_CAMPFIRE
-	const RUINSOFALPHSHAMANHOUSE_XATU
+	const RUINSOFALPHSHAMANCAVE_SHAMAN
+	const RUINSOFALPHSHAMANCAVE_CAMPFIRE
+	const RUINSOFALPHSHAMANCAVE_XATU
 
-RuinsOfAlphShamanHouse_MapScripts:
+RuinsOfAlphShamanCave_MapScripts:
 	def_scene_scripts
 
 	def_callbacks
-	callback MAPCALLBACK_OBJECTS, RuinsOfAlphShamanHouseShamanCallback
+	callback MAPCALLBACK_OBJECTS, RuinsOfAlphShamanCaveShamanCallback
 
-RuinsOfAlphShamanHouseShamanCallback:
-; The house stands empty until the player has met the Shaman at the Ruins of Alph Research Center.
+RuinsOfAlphShamanCaveShamanCallback:
+; The cave stands empty until the player has met the Shaman at the Ruins of Alph Research Center.
 ; Her campfire and her Xatu share her object's event flag, so they come and go with her.
 	checkevent EVENT_MET_HIDDEN_POWER_SHAMAN
 	iftrue .Home
-	disappear RUINSOFALPHSHAMANHOUSE_SHAMAN
+	disappear RUINSOFALPHSHAMANCAVE_SHAMAN
 	endcallback
 
 .Home:
-	appear RUINSOFALPHSHAMANHOUSE_SHAMAN
+	appear RUINSOFALPHSHAMANCAVE_SHAMAN
 	endcallback
 
 HiddenPowerShamanScript:
@@ -129,17 +129,23 @@ HiddenPowerShamanExplainText:
 	line "POWER type can't"
 	cont "be changed."
 
-	para "But its power can"
-	line "be brought out by"
+	para "But traveling"
+	line "with an UNOWN"
+	cont "strengthens the"
+	cont "HIDDEN POWER of"
+	cont "your whole team,"
+	cont "UNOWN included."
 
-	para "traveling with an"
-	line "UNOWN, or holding"
-	cont "a GLYPH SHARD."
+	para "A GLYPH SHARD"
+	line "helps its holder"
+	cont "grow, but only"
+	cont "with an UNOWN"
+	cont "by its side."
 
-	para "UNOWN's HIDDEN"
-	line "POWER is stronger"
-	cont "than any other"
-	cont "#MON's."
+	para "And no #MON's"
+	line "HIDDEN POWER can"
+	cont "grow as strong"
+	cont "as an UNOWN's."
 	done
 
 HiddenPowerShamanOfferText:
@@ -175,10 +181,10 @@ HiddenPowerShamanBagFullText:
 	cont "come back."
 	done
 
-RuinsOfAlphShamanHouseCampfire:
-	jumptext RuinsOfAlphShamanHouseCampfireText
+RuinsOfAlphShamanCaveCampfire:
+	jumptext RuinsOfAlphShamanCaveCampfireText
 
-RuinsOfAlphShamanHouseCampfireText:
+RuinsOfAlphShamanCaveCampfireText:
 	text "The fire is"
 	line "crackling."
 
@@ -188,19 +194,19 @@ RuinsOfAlphShamanHouseCampfireText:
 	cont "flickers."
 	done
 
-RuinsOfAlphShamanHouseXatu:
-	jumptext RuinsOfAlphShamanHouseXatuText
+RuinsOfAlphShamanCaveXatu:
+	jumptext RuinsOfAlphShamanCaveXatuText
 
-RuinsOfAlphShamanHouseXatuText:
+RuinsOfAlphShamanCaveXatuText:
 	text "…"
 	done
 
-RuinsOfAlphShamanHouse_MapEvents:
+RuinsOfAlphShamanCave_MapEvents:
 	db 0, 0 ; filler
 
 	def_warp_events
+	warp_event  2,  7, RUINS_OF_ALPH_OUTSIDE, 12
 	warp_event  3,  7, RUINS_OF_ALPH_OUTSIDE, 12
-	warp_event  4,  7, RUINS_OF_ALPH_OUTSIDE, 12
 
 	def_coord_events
 
@@ -209,6 +215,6 @@ RuinsOfAlphShamanHouse_MapEvents:
 	def_object_events
 	object_event  3,  3, SPRITE_SHAMAN, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, HiddenPowerShamanScript, EVENT_RUINS_OF_ALPH_SHAMAN_HOUSE_SHAMAN
 	; Polished Crystal's campfire: a bouncing 2-frame sprite, in the scene of blocks $40-$43
-	object_event  3,  4, SPRITE_CAMPFIRE, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphShamanHouseCampfire, EVENT_RUINS_OF_ALPH_SHAMAN_HOUSE_SHAMAN
+	object_event  3,  4, SPRITE_CAMPFIRE, SPRITEMOVEDATA_POKEMON, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphShamanCaveCampfire, EVENT_RUINS_OF_ALPH_SHAMAN_HOUSE_SHAMAN
 	; her Xatu (data/maps/overworld_mons.asm), standing in place with its two-frame idle
-	object_event  1,  1, SPRITE_OW_MON_1, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphShamanHouseXatu, EVENT_RUINS_OF_ALPH_SHAMAN_HOUSE_SHAMAN
+	object_event  1,  1, SPRITE_OW_MON_1, SPRITEMOVEDATA_STILL, 0, 0, -1, -1, 0, OBJECTTYPE_SCRIPT, 0, RuinsOfAlphShamanCaveXatu, EVENT_RUINS_OF_ALPH_SHAMAN_HOUSE_SHAMAN

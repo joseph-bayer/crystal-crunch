@@ -49,6 +49,53 @@ DebugSetLeadHPLevel::
 	ld [wScriptVar], a
 	ret
 
+DebugGetLeadHPType::
+; out: wStringBuffer1 = the name of the lead mon's Hidden Power type
+	ld hl, wPartyMon1
+	farcall GetMonStructHiddenPowerType
+	ld [wNamedObjectIndex], a
+	predef_jump GetTypeName
+
+DebugSetLeadHPType::
+; Change the lead mon's Hidden Power type, through its type offset, by the HP TYPE menu's choice.
+; in: wScriptVar = 1 (next type), 2 (previous type) or 3 (its DVs' type: offset 0)
+; out: wStringBuffer1 = the new type's name
+	ld hl, wPartyMon1DVs
+	farcall GetDVHiddenPowerIndex
+	ld d, a ; the DVs' index
+	ld hl, wPartyMon1HPLevel
+	ld a, [hl]
+	swap a
+	and HP_TYPE_MASK >> 4
+	xor d
+	ld e, a ; the current index
+	ld a, [wScriptVar]
+	dec a
+	jr z, .next
+	dec a
+	jr z, .previous
+	ld a, d
+	jr .set
+
+.next
+	ld a, e
+	inc a
+	jr .set
+
+.previous
+	ld a, e
+	dec a
+.set
+	and HP_TYPE_MASK >> 4 ; wrap around the 16 types
+	xor d ; the offset that gives this index
+	swap a
+	ld b, a
+	ld a, [hl]
+	and HP_LEVEL_MASK
+	or b
+	ld [hl], a
+	jr DebugGetLeadHPType
+
 DebugSetUpHiddenPowerPair::
 ; The last two party mons, just given as Machamp then Alakazam, get DVs that make Machamp's Hidden
 ; Power a special-side type (Fire) and Alakazam's a physical-side one (Fighting), and Hidden Power

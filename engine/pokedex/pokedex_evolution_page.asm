@@ -1,7 +1,5 @@
-; the "???" row of gfx/pokedex/types_*.png and TypeIconPals
-DEF DEX_TYPE_UNKNOWN EQU 18
 ; stands in for an unseen mon's types
-DEF EVO_UNSEEN_TYPE EQU $ff
+DEF EVO_UNSEEN_TYPE EQU DEX_UNKNOWN_TYPE
 
 DisplayDexMonEvos:
 	ld a, DEXENTRY_EVO
@@ -503,6 +501,7 @@ EVO_place_Mon_Types:
 	ld a, [wTempSpecies]
 	ld [wCurSpecies], a
 	call GetBaseData
+	farcall SetUnownDexTypes
 	call EVO_CheckSeenMon
 	jr nz, .seen
 	ld a, EVO_UNSEEN_TYPE

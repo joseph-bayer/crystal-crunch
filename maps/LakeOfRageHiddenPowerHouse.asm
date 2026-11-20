@@ -56,6 +56,10 @@ HiddenPowerGuyText2:
 	cont "the #MON that"
 	cont "holds it."
 
+	para "But only when an"
+	line "UNOWN travels"
+	cont "with you."
+
 	para "Remember this: a"
 	line "SHAMAN in the"
 	cont "RUINS OF ALPH can"

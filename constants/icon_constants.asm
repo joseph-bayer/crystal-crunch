@@ -38,15 +38,26 @@ DEF TRADE_MON_ICON_PAL EQU 1
 ; These are flags, so ICON_PAL_SWAP | ICON_PAL_OFFWHITE is a valid combination.
 DEF ICON_PAL_SWAP_F     EQU 0 ; use color 2 where color 1 would go, and vice versa
 DEF ICON_PAL_OFFWHITE_F EQU 1 ; replace whichever color lands in the light slot with off-white
+DEF ICON_PAL_INK_F      EQU 2 ; off-white light slot, and a fixed ink in the dark slot (ICON_INK_*)
 
 DEF ICON_PAL_NORMAL   EQU 0
 DEF ICON_PAL_SWAP     EQU 1 << ICON_PAL_SWAP_F
 DEF ICON_PAL_OFFWHITE EQU 1 << ICON_PAL_OFFWHITE_F
+DEF ICON_PAL_INK      EQU 1 << ICON_PAL_INK_F
 
 ; What ICON_PAL_OFFWHITE puts in the light slot. White reads cleanly because slot 0 of an OBJ
 ; palette is transparent rather than drawn, so nothing else on the icon is already this color.
 ; Dial it down for a softer off-white.
 DEF PALRGB_ICON_LIGHT EQU palred 31 + palgreen 31 + palblue 31
+
+; What ICON_PAL_INK puts in the dark slot, in place of the mon's own color: black, or navy when
+; it's shiny. Unown's icons are drawn in this one ink around a white eye, so a shiny reads at a
+; glance, in Bill's PC too (whose icons get only two colors of their own). Its pics keep its own
+; colors.
+DEF PALRGB_ICON_INK       EQU palred  0 + palgreen 0 + palblue  0
+DEF PALRGB_ICON_SHINY_INK EQU palred  0 + palgreen 4 + palblue 18
+; Wandering and following Unown draw a shiny one shade darker still (GetArrangedOverworldMonColors).
+DEF PALRGB_OW_SHINY_INK   EQU palred  0 + palgreen 2 + palblue 14
 
 ; party menu icon palettes
 	const_def

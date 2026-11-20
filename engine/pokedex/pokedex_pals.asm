@@ -7,6 +7,7 @@ Pokedex_LoadEntryTypePals:
 	ld a, [wTempSpecies]
 	ld [wCurSpecies], a
 	call GetBaseData
+	farcall SetUnownDexTypes
 	ld a, [wBaseType1]
 	ld c, a
 	predef GetMonTypeIndex

@@ -295,6 +295,7 @@ endr
 
 DisplayDexMonType_CustomGFX:
 	call GetBaseData
+	farcall SetUnownDexTypes
 	ld a, [wBaseType1]
 
 	ld c, a ; farcall will clobber a for the bank

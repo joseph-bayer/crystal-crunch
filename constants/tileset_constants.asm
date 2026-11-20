@@ -37,7 +37,7 @@
 	const TILESET_OMANYTE_WORD_ROOM    ; 23
 	const TILESET_AERODACTYL_WORD_ROOM ; 24
 	const TILESET_ISLANDS              ; 25 ; the mystery islands; began as a copy of Johto
-	const TILESET_SHAMAN_HOUSE         ; 26 ; the Hidden Power Shaman's house; began as a copy of the traditional house
+	const TILESET_SHAMAN_CAVE          ; 26 ; the Hidden Power Shaman's cave; began as a copy of the cave, plus her campfire scene
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

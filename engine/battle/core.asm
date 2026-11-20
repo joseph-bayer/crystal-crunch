@@ -3831,6 +3831,7 @@ InitBattleMon:
 	ld [wBattleMonType1], a
 	ld a, [wBaseType2]
 	ld [wBattleMonType2], a
+	farcall SetPlayerUnownTypes
 	ld hl, wPartyMonNicknames
 	ld a, [wCurBattleMon]
 	call SkipNames
@@ -3973,7 +3974,8 @@ InitEnemyMon:
 	ld [de], a
 	ld a, [wCurPartyMon]
 	ld [wCurOTMon], a
-	ret
+	; needs wCurOTMon, for the mon's Hidden Power type offset
+	farjp SetEnemyUnownTypes
 
 SwitchPlayerMon:
 	call ClearSprites
@@ -5703,10 +5705,9 @@ MoveInfoBox:
 	predef_jump PrintMoveType
 
 .hidden_power_type
-; Hidden Power's type comes from the user's DVs, not the move data.
+; Hidden Power's type is the user's Hidden Power type, not the move data's.
 	push hl
-	ld hl, wBattleMonDVs
-	farcall GetHiddenPowerType
+	farcall GetPlayerHiddenPowerType
 	pop hl
 	ld b, a
 	predef_jump PrintType
@@ -6492,6 +6493,7 @@ LoadEnemyMon:
 	inc de
 	ld a, [hl]
 	ld [de], a
+	farcall SetEnemyUnownTypes
 
 ; Get moves
 	ld de, wEnemyMonMoves

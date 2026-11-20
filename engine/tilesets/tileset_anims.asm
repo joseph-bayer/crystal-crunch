@@ -120,6 +120,7 @@ TilesetEliteFourRoomAnim::
 	dw NULL,  DoneTileAnimation
 
 TilesetCaveAnim::
+TilesetShamanCaveAnim::
 TilesetDarkCaveAnim::
 	dw vTiles2 tile $14, ReadTileToAnimBuffer
 	dw NULL,  FlickeringCaveEntrancePalette
@@ -191,7 +192,6 @@ TilesetMartAnim::
 TilesetMansionAnim::
 TilesetGameCornerAnim::
 TilesetTraditionalHouseAnim::
-TilesetShamanHouseAnim::
 TilesetTrainStationAnim::
 TilesetChampionsRoomAnim::
 TilesetLighthouseAnim::
