@@ -110,13 +110,14 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 <summary>Show details</summary>
 
 - Every Pokémon's Hidden Power attack power can be increased via various methods. The attack power starts at **20** and caps at **70**. Unown cap at **120**.
-- Every 256 steps a Pokémon's Hidden Power attack power can go up via the following methods:
-  - Pokémon holding a new item, the **GLYPH SHARD**, get a 25% chance to increase their power.
+- Every 256 steps, while an Unown is in the party, a Pokémon's Hidden Power attack power can go up:
+  - Each Pokémon in the party, has a chance to increase their power
+  - Pokémon holding a new item, the **GLYPH SHARD**, get an extra chance. The GLYPH SHARD does nothing without an Unown in the party.
     - The GLYPH SHARD can be found as a rare item on wild Unown.
-  - If an Unown is in the party, every Pokémon in the party gets a 25% chance to increase their power.
+- **Unown are the type of their Hidden Power**, so their Hidden Power gets STAB. The Pokédex lists Unown's type as ???.
 - Hidden Power can be Physical or Special, depending on which of its user's stats is higher (no longer dependent on type).
 - **The Shaman**: based on the TCG card art for Desert Shaman illustrated by Kagemaru Himeno.
-  - She unlocks a 4th stats page showing each Pokémon's Hidden Power type and level.
+  - She unlocks a 4th stats page showing each Pokémon's Hidden Power type, power, whether it's Physical or Special, and its level. A star marks a maxed-out Hidden Power.
   - She gives you your first GLYPH SHARD.
   - She teaches Hidden Power for free, any time.
 
@@ -451,8 +452,8 @@ Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal
   - Pokédex tab, page number and symbol tiles, and the Pokégear's time of day icons, from Nayru's Pokédex
 - **[Polished Crystal](https://github.com/Rangi42/polishedcrystal)**
   - Type tiles and Pokédex tiles modified from Nayru's Pokédex
-  - Unown party menu icons. I could not find specific artist credits for these icons. If you made them, please let me know and I'll update this!
-  - Campfire sprite and fire-pit tiles in the Shaman's house
+  - Unown party menu icons, recolored here so a shiny Unown stands out. I could not find specific artist credits for these icons. If you made them, please let me know and I'll update this!
+  - Campfire sprite and fire-pit tiles in the Shaman's cave
 - **[Sour Crystal](https://github.com/SoupPotato/sourcrystal)**
   - Most Pokémon party menu icons
   - New and redrawn move animation graphics

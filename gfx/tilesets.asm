@@ -546,25 +546,25 @@ INCLUDE "data/tilesets/islands_collision.asm"
 TilesetIslandsAttr::
 INCBIN "data/tilesets/islands_attributes.bin.lz"
 
-; The Hidden Power Shaman's house. A copy of the traditional house to begin with, plus her hearth,
-; its fire frames and the glowing floor around it.
-TilesetShamanHousevTiles2GFX::
-INCBIN "gfx/tilesets/shaman_house.2bpp.vtiles2.lz"
+; The Hidden Power Shaman's cave. A copy of the cave to begin with, plus the four blocks of her
+; campfire scene (blocks $6a-$6d, tiles $60-$70).
+TilesetShamanCavevTiles2GFX::
+INCBIN "gfx/tilesets/shaman_cave.2bpp.vtiles2.lz"
 
-TilesetShamanHousevTiles5GFX::
-INCBIN "gfx/tilesets/shaman_house.2bpp.vtiles5.lz"
+TilesetShamanCavevTiles5GFX::
+INCBIN "gfx/tilesets/shaman_cave.2bpp.vtiles5.lz"
 
-TilesetShamanHousevTiles4GFX::
-INCBIN "gfx/tilesets/shaman_house.2bpp.vtiles4.lz"
+TilesetShamanCavevTiles4GFX::
+INCBIN "gfx/tilesets/shaman_cave.2bpp.vtiles4.lz"
 
-TilesetShamanHouseMeta::
-INCBIN "data/tilesets/shaman_house_metatiles.bin.lz"
+TilesetShamanCaveMeta::
+INCBIN "data/tilesets/shaman_cave_metatiles.bin.lz"
 
-TilesetShamanHouseColl::
-INCLUDE "data/tilesets/shaman_house_collision.asm"
+TilesetShamanCaveColl::
+INCLUDE "data/tilesets/shaman_cave_collision.asm"
 
-TilesetShamanHouseAttr::
-INCBIN "data/tilesets/shaman_house_attributes.bin.lz"
+TilesetShamanCaveAttr::
+INCBIN "data/tilesets/shaman_cave_attributes.bin.lz"
 
 TilesetForestAttr::
 INCBIN "data/tilesets/forest_attributes.bin.lz"

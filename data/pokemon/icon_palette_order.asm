@@ -228,7 +228,7 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; MURKROW
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; SLOWKING
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; MISDREAVUS
-	db ICON_PAL_OFFWHITE                 ; UNOWN
+	db ICON_PAL_INK                      ; UNOWN
 	db ICON_PAL_NORMAL                   ; WOBBUFFET
 	db ICON_PAL_NORMAL                   ; GIRAFARIG
 	db ICON_PAL_NORMAL                   ; PINECO

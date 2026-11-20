@@ -657,7 +657,7 @@ _GetSpritePalette::
 	scf
 	ret z
 	ld bc, wForm
-	farcall GetArrangedMonIconColors ; bc = the light color, de = the dark one
+	farcall GetArrangedOverworldMonColors ; bc = the light color, de = the dark one
 	jr ClaimOverworldMonPalette
 
 .GetBeast:
@@ -722,7 +722,7 @@ _GetSpritePalette::
 	ld [wForm], a
 	ld bc, wForm ; the follower's draw form, its shiny bit included
 	pop af
-	farcall GetArrangedMonIconColors ; bc = the light color, de = the dark one
+	farcall GetArrangedOverworldMonColors ; bc = the light color, de = the dark one
 	call StoreFollowerPalette
 	ld c, PAL_OW_FOLLOWER
 	ret

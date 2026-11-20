@@ -348,6 +348,7 @@ FindEnemyMonsImmuneToLastCounterMove:
 	ld a, [hl]
 	ld [wCurSpecies], a
 	call GetBaseData
+	farcall SetMonStructUnownBaseTypes ; hl = the mon
 
 	; the player's last move is damaging...
 	ld a, [wLastPlayerCounterMove]
@@ -509,6 +510,7 @@ FindEnemyMonsWithASuperEffectiveMove:
 	ret
 
 FindEnemyMonsThatResistPlayer:
+	assert HIGH(wOTPartySpecies) == HIGH(wOTPartySpecies + PARTY_LENGTH), 		"the Unown check below finds a slot from the low byte alone"
 	push bc
 	ld hl, wOTPartySpecies
 	lb bc, 1 << (PARTY_LENGTH - 1), 0
@@ -521,6 +523,16 @@ FindEnemyMonsThatResistPlayer:
 	push hl
 	ld [wCurSpecies], a
 	call GetBaseData
+	; an Unown's types are its Hidden Power type, from its party struct
+	push bc
+	ld a, l
+	sub LOW(wOTPartySpecies + 1) ; hl is past this mon's species
+	ld hl, wOTPartyMon1
+	call GetPartyLocation
+	farcall SetMonStructUnownBaseTypes
+	pop bc
+	pop hl
+	push hl
 	ld a, [wLastPlayerCounterMove]
 	and a
 	jr z, .skip_move

@@ -86,7 +86,7 @@ DEF MON_DEF_EV             rb
 DEF MON_SPD_EV             rb
 DEF MON_SAT_EV             rb
 DEF MON_SDF_EV             rb
-DEF MON_HP_LEVEL           rb    ; low nibble: Hidden Power level (HP_LEVEL_MASK)
+DEF MON_HP_LEVEL           rb    ; low nibble: Hidden Power level (HP_LEVEL_MASK); high: type offset (HP_TYPE_MASK)
                            rb_skip
 DEF MON_FORM               rb    ; new byte for pokemon form
 DEF MON_CAUGHTBALL         rb    ; new byte for pokeball type
@@ -135,7 +135,7 @@ DEF SAVEMON_DEF_EV             rb
 DEF SAVEMON_SPD_EV             rb
 DEF SAVEMON_SAT_EV             rb
 DEF SAVEMON_SDF_EV             rb
-DEF SAVEMON_HP_LEVEL           rb    ; low nibble: Hidden Power level (HP_LEVEL_MASK)
+DEF SAVEMON_HP_LEVEL           rb    ; low nibble: Hidden Power level (HP_LEVEL_MASK); high: type offset (HP_TYPE_MASK)
                                rb_skip
 DEF SAVEMON_FORM               rb    ; new byte for pokemon form
 DEF SAVEMON_CAUGHTBALL         rb    ; new byte for pokeball type
@@ -203,6 +203,12 @@ DEF HIDDEN_POWER_MIN_POWER EQU 20
 DEF HIDDEN_POWER_MAX_POWER EQU 70
 DEF HIDDEN_POWER_UNOWN_MAX_POWER EQU 120
 assert MAX_HP_LEVEL <= HP_LEVEL_MASK, "MAX_HP_LEVEL doesn't fit in HP_LEVEL_MASK"
+; The same byte's high nibble is a Hidden Power type offset. The DVs give a type index 0-15 (see
+; GetHiddenPowerType), and the mon's type is the one at (that index XOR the offset). Every mon is
+; made with 0 there, so its type is the one its DVs give; a non-zero offset picks another type
+; without touching the DVs.
+DEF HP_TYPE_MASK EQU %11110000
+assert !(HP_TYPE_MASK & HP_LEVEL_MASK), "HP_TYPE_MASK overlaps HP_LEVEL_MASK"
 
 ; These numerators are used after a 1/256 check, resulting in a denominator of 65536.
 DEF SHINY_NUMERATOR EQU 8 ; 8/65536 = 1/8192

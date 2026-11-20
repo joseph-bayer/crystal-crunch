@@ -465,8 +465,10 @@ ListMoves:
 	ret
 
 GetMonTypeIndex:
-; in: c = type; out: c = its row in the Pokédex type tiles and TypeIconPals
+; in: c = type, or DEX_UNKNOWN_TYPE; out: c = its row in the Pokédex type tiles and TypeIconPals
 	ld a, c
+	cp DEX_UNKNOWN_TYPE
+	jr z, .unknown
 	cp BIRD
 	jr c, .done
 	cp UNUSED_TYPES
@@ -475,4 +477,8 @@ GetMonTypeIndex:
 	sub UNUSED_TYPES_END - UNUSED_TYPES
 .done
 	ld c, a
+	ret
+
+.unknown
+	ld c, DEX_TYPE_UNKNOWN
 	ret

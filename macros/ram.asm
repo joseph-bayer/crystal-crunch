@@ -17,7 +17,7 @@ MACRO box_struct
 \1SpdEV::          db
 \1SpclAtkEV::      db
 \1SpclDefEV::      db
-\1HPLevel::        db ; low nibble: Hidden Power level (HP_LEVEL_MASK); high nibble unused
+\1HPLevel::        db ; low nibble: Hidden Power level (HP_LEVEL_MASK); high: type offset (HP_TYPE_MASK)
 \1Padding::        db
 \1Form::           db
 \1CaughtBall::     db
@@ -48,7 +48,7 @@ MACRO savemon_struct
 \1SpdEV::          db
 \1SpclAtkEV::      db
 \1SpclDefEV::      db
-\1HPLevel::        db ; low nibble: Hidden Power level (HP_LEVEL_MASK); high nibble unused
+\1HPLevel::        db ; low nibble: Hidden Power level (HP_LEVEL_MASK); high: type offset (HP_TYPE_MASK)
 \1Padding::        db
 \1Form::           db
 \1CaughtBall::     db

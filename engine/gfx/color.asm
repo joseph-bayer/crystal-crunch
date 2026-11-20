@@ -531,6 +531,8 @@ GetArrangedMonIconColors::
 	push bc
 	push af
 	call GetMonIconPaletteOrder
+	bit ICON_PAL_INK_F, a
+	jr nz, .ink
 	ld e, a
 	pop af
 	pop bc
@@ -562,6 +564,34 @@ GetArrangedMonIconColors::
 	ld a, [hli]
 	ld e, a
 	ld d, [hl]
+	ret
+
+.ink
+	pop af
+	pop bc
+	ld a, [bc]
+	and SHINY_MASK
+	ld de, PALRGB_ICON_INK
+	jr z, .got_ink
+	ld de, PALRGB_ICON_SHINY_INK
+.got_ink
+	ld bc, PALRGB_ICON_LIGHT
+	ret
+
+GetArrangedOverworldMonColors::
+; GetArrangedMonIconColors for a wandering or following mon: the same, except that a shiny drawn
+; in ICON_PAL_INK takes the overworld's darker navy.
+; in: a = species ID, bc = address of its form byte, its shiny bit included
+; out: bc = the color for the light slot, de = the color for the dark slot
+	assert PALRGB_ICON_SHINY_INK != PALRGB_ICON_INK
+	call GetArrangedMonIconColors
+	ld a, e
+	cp LOW(PALRGB_ICON_SHINY_INK)
+	ret nz
+	ld a, d
+	cp HIGH(PALRGB_ICON_SHINY_INK)
+	ret nz
+	ld de, PALRGB_OW_SHINY_INK
 	ret
 
 GetShinyIcon::

@@ -107,6 +107,15 @@ DoFollowerInteraction:
 	ld a, [wFollowerSpriteID]
 	ld [wCurSpecies], a
 	call GetBaseData
+	; an Unown's types are its Hidden Power type
+	farcall GetFollowerPartySlot
+	and a
+	jr z, .got_types
+	dec a
+	ld hl, wPartyMon1
+	call GetPartyLocation
+	farcall SetMonStructUnownBaseTypes
+.got_types
 	ld a, [wFollowerSpriteID]
 	call GetPokemonIndexFromID
 	ld c, l ; bc/d = 16-bit species index (b is reused as the row byte counter)

@@ -128,8 +128,8 @@ RuinsOfAlphSign:
 RuinsOfAlphResearchCenterSign:
 	jumptext RuinsOfAlphResearchCenterSignText
 
-RuinsOfAlphShamanHouseSign:
-	jumptext RuinsOfAlphShamanHouseSignText
+RuinsOfAlphShamanCaveSign:
+	jumptext RuinsOfAlphShamanCaveSignText
 
 RuinsOfAlphOutsideScientistWalkToLabMovement:
 	step RIGHT
@@ -201,9 +201,8 @@ RuinsOfAlphSignText:
 	line "VISITORS WELCOME"
 	done
 
-RuinsOfAlphShamanHouseSignText:
-	text "HIDDEN POWER"
-	line "SHAMAN'S HOUSE"
+RuinsOfAlphShamanCaveSignText:
+	text "SHAMAN'S CAVE"
 	done
 
 RuinsOfAlphResearchCenterSignText:
@@ -268,7 +267,7 @@ RuinsOfAlphOutside_MapEvents:
 	warp_event  7,  5, ROUTE_36_RUINS_OF_ALPH_GATE, 3
 	warp_event 13, 20, ROUTE_32_RUINS_OF_ALPH_GATE, 1
 	warp_event 13, 21, ROUTE_32_RUINS_OF_ALPH_GATE, 2
-	warp_event  3,  7, RUINS_OF_ALPH_SHAMAN_HOUSE, 1 ; the Hidden Power Shaman's house
+	warp_event  4,  7, RUINS_OF_ALPH_SHAMAN_CAVE, 1 ; the Hidden Power Shaman's cave
 
 	def_coord_events
 	coord_event 11, 14, SCENE_RUINSOFALPHOUTSIDE_GET_UNOWN_DEX, RuinsOfAlphOutsideScientistScene1
@@ -278,7 +277,7 @@ RuinsOfAlphOutside_MapEvents:
 	bg_event 16,  8, BGEVENT_READ, RuinsOfAlphOutsideMysteryChamberSign
 	bg_event 12, 16, BGEVENT_READ, RuinsOfAlphSign
 	bg_event 18, 12, BGEVENT_READ, RuinsOfAlphResearchCenterSign
-	bg_event  2,  8, BGEVENT_READ, RuinsOfAlphShamanHouseSign
+	bg_event  2,  8, BGEVENT_READ, RuinsOfAlphShamanCaveSign
 
 	def_object_events
 	object_event  4, 20, SPRITE_YOUNGSTER, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, 0, OBJECTTYPE_TRAINER, 1, TrainerPsychicNathan, -1

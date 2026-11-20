@@ -37,3 +37,9 @@ DEF TYPES_END EQU const_value
 DEF NUM_TYPES EQU TYPES_END + UNUSED_TYPES - UNUSED_TYPES_END - 1 ; discount BIRD
 
 DEF POKEDEX_TYPE_STRING_LENGTH EQU 9
+
+; Not a type: the Pokédex draws it as ??? (Unown's type, which varies by Pokémon, and an unseen
+; Pokémon's types on the evolution page)
+DEF DEX_UNKNOWN_TYPE EQU $ff
+; the ??? row of gfx/pokedex/types_*.png and TypeIconPals
+DEF DEX_TYPE_UNKNOWN EQU 18

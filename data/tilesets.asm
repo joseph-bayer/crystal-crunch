@@ -51,5 +51,5 @@ Tilesets::
 	tileset TilesetOmanyteWordRoom
 	tileset TilesetAerodactylWordRoom
 	tileset TilesetIslands
-	tileset TilesetShamanHouse
+	tileset TilesetShamanCave
 	assert_table_length NUM_TILESETS + 1

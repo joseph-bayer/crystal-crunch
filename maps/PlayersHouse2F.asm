@@ -714,8 +714,8 @@ PlayersHouseDebugLabItems::
 
 PlayersHouseDebugHPToolsScript::
 ; Tools for testing Hidden Power: the lead's Hidden Power level, the
-; stats page, one 256-step cycle's rolls, a GLYPH SHARD, and a pair whose higher stat is the other
-; side from their Hidden Power type.
+; stats page, one 256-step cycle's rolls, a GLYPH SHARD, a pair whose higher stat is the other
+; side from their Hidden Power type, an Unown, and the lead's Hidden Power type.
 	writetext PlayersHouseDebugHiddenPowerText
 	loadmenu .MenuHeader
 	verticalmenu
@@ -726,6 +726,23 @@ PlayersHouseDebugHPToolsScript::
 	ifequal 4, .GlyphShard
 	ifequal 5, .TestPair
 	ifequal 6, .GiveUnown
+	ifequal 7, .HPType
+	closetext
+	end
+
+.HPType:
+	callasm DebugGetLeadHPType
+.HPTypeLoop:
+	writetext PlayersHouseDebugHPTypeText
+	loadmenu .HPTypeMenuHeader
+	verticalmenu
+	closewindow
+	iffalse .HPTypeDone
+	ifequal 4, .HPTypeDone
+	callasm DebugSetLeadHPType
+	sjump .HPTypeLoop
+
+.HPTypeDone:
 	closetext
 	end
 
@@ -762,7 +779,9 @@ PlayersHouseDebugHPToolsScript::
 	end
 
 .HPPage:
+	; as if her first talk were done: the page, and her GLYPH SHARD given
 	setevent EVENT_HIDDEN_POWER_PAGE_UNLOCKED
+	setevent EVENT_GOT_GLYPH_SHARD_FROM_SHAMAN
 	writetext PlayersHouseDebugHPPageText
 	waitbutton
 	closetext
@@ -803,19 +822,20 @@ PlayersHouseDebugHPToolsScript::
 
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 0, 13, 15
+	menu_coords 0, 0, 13, 17
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 7 ; items
+	db 8 ; items
 	db "HP LEVEL@"
 	db "HP PAGE@"
 	db "HP STEP@"
 	db "GLYPH SHARD@"
 	db "TEST PAIR@"
 	db "GIVE UNOWN@"
+	db "HP TYPE@"
 	db "CANCEL@"
 
 .HPLevelMenuHeader:
@@ -831,6 +851,20 @@ PlayersHouseDebugHPToolsScript::
 	db "DOWN 1@"
 	db "SET 0@"
 	db "SET 15@"
+	db "DONE@"
+
+.HPTypeMenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 10, 9
+	dw .HPTypeMenuData
+	db 1 ; default option
+
+.HPTypeMenuData:
+	db STATICMENU_CURSOR ; flags
+	db 4 ; items
+	db "NEXT@"
+	db "PREVIOUS@"
+	db "FROM DVS@"
 	db "DONE@"
 
 PlayersHouseDebugHPBattlesScript::
@@ -931,6 +965,14 @@ PlayersHouseDebugHPLevelText:
 	text "DEBUG: the lead's"
 	line "HP level is @"
 	text_decimal wScriptVar, 1, 2
+	text "."
+	done
+
+PlayersHouseDebugHPTypeText:
+	text "DEBUG: the lead's"
+	line "HP type is"
+	cont "@"
+	text_ram wStringBuffer1
 	text "."
 	done
 
