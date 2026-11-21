@@ -4617,15 +4617,13 @@ PrintPlayerHUD:
 
 	push bc
 
+	; The form too, since a Red/Blue form has no gender
 	ld a, [wCurBattleMon]
-	ld hl, wPartyMon1DVs
+	ld hl, wPartyMon1Form
 	call GetPartyLocation
-	ld de, wTempMonDVs
-	ld a, [hli]
-	ld [de], a
-	inc de
-	ld a, [hl]
-	ld [de], a
+	ld de, wTempMonForm
+	ld bc, MON_DVS + 2 - MON_FORM
+	rst CopyBytes
 	ld hl, wBattleMonLevel
 	ld de, wTempMonLevel
 	ld bc, wTempMonStructEnd - wTempMonLevel
@@ -4761,6 +4759,9 @@ DrawEnemyHUD:
 	inc de
 	ld a, [hl]
 	ld [de], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wEnemyMonForm]
+	ld [wTempMonForm], a
 
 	ld a, TEMPMON
 	ld [wMonType], a
@@ -7410,6 +7411,7 @@ GiveExperiencePoints:
 	ld b, a
 	jr .ev_loop
 .evs_done
+	farcall PoolRBFormBattleEVs
 	xor a
 	ldh [hMultiplicand + 0], a
 	ldh [hMultiplicand + 1], a

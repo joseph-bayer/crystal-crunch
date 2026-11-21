@@ -1074,6 +1074,7 @@ CalcMonStats:
 ; hl is the path to the EVs
 ; de points to where the final stats will be saved
 
+	farcall ApplyRBFormStats
 	ld c, STAT_HP - 1 ; first stat
 .loop
 	inc c
@@ -1286,6 +1287,9 @@ GivePoke::
 	push bc
 	xor a ; PARTYMON
 	ld [wMonType], a
+	; The new mon's stats depend on its form, which TryAddMonToParty takes from here.
+	call GivePokeStoredForm
+	ld [wEnemyMonForm], a
 	call TryAddMonToParty
 	jr nc, .failed
 	ld hl, wPartyMonNicknames

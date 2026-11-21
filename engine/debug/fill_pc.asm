@@ -373,6 +373,7 @@ endc
 	dwb PICHU,      NUM_PICHU_FORMS      ; 4, running total 111
 	dwb RAICHU,     NUM_RAICHU_FORMS     ; 4, running total 115
 	dwb SMEARGLE,   NUM_SMEARGLE_FORMS   ; 6, running total 121
+	dwb AERODACTYL, NUM_AERODACTYL_FORMS ; 2, running total 123
 if FILL_PC_ALL_UNOWN_LETTERS
 	dwb UNOWN,    NUM_UNOWN
 endc

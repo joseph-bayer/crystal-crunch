@@ -8,8 +8,10 @@ and the CPU is pointed at it. The game's main loop is abandoned, so a test that 
 saved state before it plays on."""
 
 import re
+from functools import lru_cache
 
 from . import constants
+from .game import rom_path
 
 SHINY_MASK = 0x80
 ALT_SHINY_MASK = 0x40
@@ -24,9 +26,9 @@ ALT_SHINY_RANGE = 256 - 256 % ALT_SHINY_DENOMINATOR
 SHINY_ICON = 0xc0
 ALT_SHINY_ICON = 0xc1
 
-# Past wOverworldMonRecordShiny, the last variable in WRAM bank 1
+# WRAM bank 1's free space past its last variable, read from the test ROM's map file
 STUB_BANK = 1
-STUB_ADDRESS = 0xdf80
+STUB_LENGTH = 12
 RSVBK = 0xff70
 SCRATCH_SYMBOL = "wTilemap"
 MAX_CALL_FRAMES = 2000
@@ -77,14 +79,30 @@ def pal_colors(path):
 	return [int(r) | int(g) << 5 | int(b) << 10 for r, g, b in re.findall(r"RGB (\d+), (\d+), (\d+)", text)]
 
 
+@lru_cache(maxsize=None)
+def stub_address():
+	"""The start of the free space at the end of WRAMX bank 1, by the linker's map. Section placement
+	shifts whenever a variable is added there, so a fixed address ends up on top of one."""
+	text = rom_path().with_suffix(".map").read_text(encoding="utf-8")
+	bank = re.search(r"^WRAMX bank #%d:\n(.*?)(?:\n\n|\Z)" % STUB_BANK, text, re.M | re.S).group(1)
+	start, end = (int(x, 16) for x in re.findall(r"EMPTY: \$([0-9a-f]{4})-\$([0-9a-f]{4})", bank)[-1])
+	assert end == 0xdfff and end - start + 1 >= STUB_LENGTH, "no room for the call stub in WRAMX bank 1"
+	return start
+
+
 def call(game, routine, a=0, bc=0, de=0, hl=0, press_a_every=0, must_return=True,
-		frames=MAX_CALL_FRAMES):
+		frames=MAX_CALL_FRAMES, from_main_loop=False):
 	"""Call a routine by its symbol with these registers, and return the registers it returned.
 	A routine that ends somewhere else (one that reloads the map, say) is run for `frames` frames
-	with must_return=False instead, and its results are read from memory."""
+	with must_return=False instead, and its results are read from memory.
+
+	A frame can end with the CPU inside an interrupt handler, and a call started there never
+	returns from the interrupt, so interrupts stay off. A routine that waits on frames (one that
+	prints text or animates) is called with from_main_loop=True: it then starts the next time the
+	main loop waits for a frame, outside any interrupt."""
 	bank, address = game.pyboy.symbol_lookup(routine)
 	_, bankswitch = game.pyboy.symbol_lookup("Bankswitch")
-	stub = STUB_ADDRESS
+	stub = stub_address()
 	code = [
 		0x3e, bank,                                    # ld a, bank
 		0xcd, bankswitch & 0xff, bankswitch >> 8,      # call Bankswitch
@@ -95,12 +113,33 @@ def call(game, routine, a=0, bc=0, de=0, hl=0, press_a_every=0, must_return=True
 	for i, byte in enumerate(code):
 		game.pyboy.memory[STUB_BANK, stub + i] = byte
 	loop = stub + len(code) - 2
-	game.pyboy.memory[RSVBK] = STUB_BANK # so the CPU sees the stub where it was written
 	registers = game.pyboy.register_file
-	registers.B, registers.C = bc >> 8, bc & 0xff
-	registers.D, registers.E = de >> 8, de & 0xff
-	registers.HL = hl
-	registers.PC = stub
+
+	def start(started):
+		if started:
+			return
+		started.append(True)
+		game.pyboy.memory[RSVBK] = STUB_BANK # so the CPU sees the stub where it was written
+		registers.B, registers.C = bc >> 8, bc & 0xff
+		registers.D, registers.E = de >> 8, de & 0xff
+		registers.HL = hl
+		registers.PC = stub
+
+	started = []
+	if from_main_loop:
+		halt_bank, halt = game.pyboy.symbol_lookup("DelayFrame.halt")
+		game.pyboy.hook_register(halt_bank, halt, start, started)
+		try:
+			for _ in range(60):
+				game.pyboy.tick(1, False)
+				if started:
+					break
+			else:
+				raise AssertionError("the main loop never waited for a frame")
+		finally:
+			game.pyboy.hook_deregister(halt_bank, halt)
+	else:
+		start(started)
 	for frame in range(frames):
 		game.pyboy.tick(1, False)
 		if registers.PC in (loop, loop + 1):

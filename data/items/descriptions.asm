@@ -199,6 +199,7 @@ ItemDescriptionsKeyItems:
 	dw HelixFossilDesc  ; 0118
 	dw BadgeCaseDesc    ; 0119
 	dw MopedDesc        ; 011A
+	dw OlderAmberDesc   ; 011B
 .IndirectEnd:
 
 ItemDescriptionsBalls:
@@ -758,6 +759,10 @@ BadgeCaseDesc:
 MopedDesc:
 	db   "A motor scooter,"
 	next "faster than bikes.@"
+
+OlderAmberDesc:
+	db   "Fossilized Resin"
+	next "brimming with DNA.@"
 
 MysteryBerryDesc:
 	db   "A self-restore"

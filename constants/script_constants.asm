@@ -12,6 +12,12 @@ DEF NUM_STRING_BUFFERS EQU const_value
 
 DEF STRING_BUFFER_LENGTH EQU 19
 
+; FossilPic arguments (wScriptVar)
+	const_def
+	const MUSEUM_FOSSIL_AERODACTYL ; 0
+	const MUSEUM_FOSSIL_KABUTOPS   ; 1
+DEF NUM_MUSEUM_FOSSILS EQU const_value
+
 ; checkmoney/takemoney accounts
 	const_def
 	const YOUR_MONEY ; 0
@@ -343,8 +349,16 @@ DEF UNOWN_WALL_MENU_HEADER_SIZE EQU 5
 	const MOVETUTOR_ICE_BEAM     ; 3
 	const MOVETUTOR_HIDDEN_POWER ; 4 (the Hidden Power Shaman)
 
+; The Pewter Museum's Gen 1 tutor (Gen1Tutor)
+DEF GEN1_TUTOR_PRICE EQU 10000
+DEF MAX_GEN1_TUTOR_MOVES EQU 35 ; Gen1TutorMoves
+
+; The Pewter Museum's entrance ticket (Museum1FSellTicketScript)
+DEF MUSEUM_TICKET_PRICE EQU 60
+
 ; FossilScientist setval arguments
   const_def 1
   const REVIVE_OLD_AMBER ; 1
   const REVIVE_DOME_FOSSIL ; 2
   const REVIVE_HELIX_FOSSIL ; 3
+  const REVIVE_OLDER_AMBER ; 4

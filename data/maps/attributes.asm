@@ -707,3 +707,5 @@ ENDM
 	map_attributes CeruleanCave2F, CERULEAN_CAVE_2F, $1d, 0
 	map_attributes CeruleanCaveB1F, CERULEAN_CAVE_B1F, $1d, 0
 	map_attributes ViridianForest, VIRIDIAN_FOREST, $4d, 0
+	map_attributes Museum1F, MUSEUM_1F, $03, 0
+	map_attributes Museum2F, MUSEUM_2F, $03, 0

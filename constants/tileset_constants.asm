@@ -38,6 +38,7 @@
 	const TILESET_AERODACTYL_WORD_ROOM ; 24
 	const TILESET_ISLANDS              ; 25 ; the mystery islands; began as a copy of Johto
 	const TILESET_SHAMAN_CAVE          ; 26 ; the Hidden Power Shaman's cave; began as a copy of the cave, plus her campfire scene
+	const TILESET_MUSEUM               ; 27 ; the Pewter Museum; Yellow's museum tiles
 DEF NUM_TILESETS EQU const_value - 1
 
 ; wTileset struct size

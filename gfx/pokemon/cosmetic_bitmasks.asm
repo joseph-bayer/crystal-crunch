@@ -162,6 +162,9 @@ StaryuRBBitmask:		INCLUDE "gfx/pokemon/staryu_rb/bitmask.asm"
 StarmiePlainBitmask:		INCLUDE "gfx/pokemon/starmie/bitmask.asm"
 StarmieRBBitmask:		INCLUDE "gfx/pokemon/starmie_rb/bitmask.asm"
 
+AerodactylPlainBitmask:		INCLUDE "gfx/pokemon/aerodactyl/bitmask.asm"
+AerodactylRBBitmask:		INCLUDE "gfx/pokemon/aerodactyl_rb/bitmask.asm"
+
 PichuPlainBitmask:		INCLUDE "gfx/pokemon/pichu/bitmask.asm"
 PichuBetaBitmask:		INCLUDE "gfx/pokemon/pichu_beta/bitmask.asm"
 

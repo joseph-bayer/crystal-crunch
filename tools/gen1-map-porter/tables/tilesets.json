@@ -3,5 +3,13 @@
 	"FOREST": {
 		"cse": "TILESET_FOREST",
 		"warpColl": "DOOR"
+	},
+	"MUSEUM": {
+		"cse": "TILESET_MUSEUM",
+		"warpColl": "DOOR"
+	},
+	"OVERWORLD": {
+		"cse": "TILESET_KANTO",
+		"warpColl": "DOOR"
 	}
 }

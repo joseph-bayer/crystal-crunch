@@ -106,6 +106,17 @@ ReadTrainerPartyPieces:
 	; Past the species
 	inc hl
 	inc hl
+
+	; The mon's stats depend on its form, which TryAddMonToParty takes from wEnemyMonForm.
+	assert PLAIN_FORM == 0
+	ld a, [wOtherTrainerType]
+	and TRAINERTYPE_FORM
+	jr z, .got_form
+	ld a, [wTrainerGroupBank]
+	call GetFarByte
+.got_form
+	ld [wEnemyMonForm], a
+
 	push hl
 	ld h, d
 	ld l, e

@@ -470,6 +470,15 @@ INCBIN	"gfx/pokemon/starmie_rb/normal.gbcpal", middle_colors
 INCLUDE "gfx/pokemon/dmg_shiny.pal"
 	assert_table_length NUM_STARMIE_FORMS
 
+AerodactylPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/aerodactyl/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/aerodactyl/shiny.pal"
+INCBIN	"gfx/pokemon/aerodactyl_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_AERODACTYL_FORMS
+
 PichuPalettes:
 	; 4 middle palettes, normal and shiny, with 2 colors each
 	table_width COLOR_SIZE * 2 * 2

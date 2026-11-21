@@ -191,6 +191,7 @@ KeyItemNames::
 	li "HELIX FOSSIL" ; 0118
 	li "BADGE CASE"   ; 0119
 	li "MOPED"        ; 011A
+	li "OLDER AMBER"  ; 011B
 	assert_list_length NUM_KEY_ITEM_POCKET
 
 BallNames::

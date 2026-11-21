@@ -40,5 +40,70 @@
 		},
 		"tileset": "TILESET_FOREST",
 		"target": "new"
+	},
+	"MUSEUM_1F": {
+		"game": "yellow",
+		"name": "Museum1F",
+		"const": "MUSEUM_1F",
+		"group": "PEWTER",
+		"environment": "INDOOR",
+		"landmark": "LANDMARK_PEWTER_CITY",
+		"music": "MUSIC_VIRIDIAN_CITY",
+		"noPhone": "FALSE",
+		"palette": "PALETTE_AUTO",
+		"fishGroup": "FISHGROUP_SHORE",
+		"lastMap": null,
+		"warps": {
+			"1": {
+				"map": "PEWTER_CITY",
+				"warp": 6
+			},
+			"2": {
+				"map": "PEWTER_CITY",
+				"warp": 6
+			},
+			"3": {
+				"map": "PEWTER_CITY",
+				"warp": 7
+			},
+			"4": {
+				"map": "PEWTER_CITY",
+				"warp": 7
+			}
+		},
+		"tileset": "TILESET_MUSEUM",
+		"target": "new"
+	},
+	"MUSEUM_2F": {
+		"game": "yellow",
+		"name": "Museum2F",
+		"const": "MUSEUM_2F",
+		"group": "PEWTER",
+		"environment": "INDOOR",
+		"landmark": "LANDMARK_PEWTER_CITY",
+		"music": "MUSIC_VIRIDIAN_CITY",
+		"noPhone": "FALSE",
+		"palette": "PALETTE_AUTO",
+		"fishGroup": "FISHGROUP_SHORE",
+		"lastMap": null,
+		"warps": {},
+		"tileset": "TILESET_MUSEUM",
+		"target": "new"
+	},
+	"PEWTER_CITY": {
+		"game": "yellow",
+		"name": "PewterCityGen1",
+		"const": "PEWTER_CITY_GEN1",
+		"group": "PEWTER",
+		"environment": "TOWN",
+		"landmark": "LANDMARK_PEWTER_CITY",
+		"music": "MUSIC_VIRIDIAN_CITY",
+		"noPhone": "FALSE",
+		"palette": "PALETTE_AUTO",
+		"fishGroup": "FISHGROUP_SHORE",
+		"lastMap": null,
+		"warps": {},
+		"tileset": "TILESET_KANTO",
+		"target": "new"
 	}
 }

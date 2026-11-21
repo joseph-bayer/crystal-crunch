@@ -153,7 +153,8 @@ def test_evolved_form_is_recorded_caught(game):
 	game.poke("wCurItem", A.item_id(game, "METAL_COAT"))
 	game.poke("wForceEvolution", 1)
 	game.poke("wCurPartyMon", 0)
-	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES)
+	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES,
+		from_main_loop=True)
 	assert party_field(game, 0, "Species") == A.species_id(game, "SCIZOR"), "Scyther should have evolved"
 	dusty_rose = D.form_flag("SCIZOR", SCIZOR_DUSTY_ROSE)
 	assert D.set_flags(game) == [("wDexFormsCaught", dusty_rose)]

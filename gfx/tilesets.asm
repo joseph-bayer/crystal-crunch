@@ -566,6 +566,25 @@ INCLUDE "data/tilesets/shaman_cave_collision.asm"
 TilesetShamanCaveAttr::
 INCBIN "data/tilesets/shaman_cave_attributes.bin.lz"
 
+; The Pewter Museum. Its tiles are Yellow's museum tiles (pokeyellow's gfx/tilesets/gate.png).
+TilesetMuseumvTiles2GFX::
+INCBIN "gfx/tilesets/museum.2bpp.vtiles2.lz"
+
+TilesetMuseumvTiles5GFX::
+INCBIN "gfx/tilesets/museum.2bpp.vtiles5.lz"
+
+TilesetMuseumvTiles4GFX::
+INCBIN "gfx/tilesets/museum.2bpp.vtiles4.lz"
+
+TilesetMuseumMeta::
+INCBIN "data/tilesets/museum_metatiles.bin.lz"
+
+TilesetMuseumColl::
+INCLUDE "data/tilesets/museum_collision.asm"
+
+TilesetMuseumAttr::
+INCBIN "data/tilesets/museum_attributes.bin.lz"
+
 TilesetForestAttr::
 INCBIN "data/tilesets/forest_attributes.bin.lz"
 

@@ -200,6 +200,7 @@ SECTION "Crystal Features 1", ROMX
 INCLUDE "engine/menus/init_gender.asm"
 INCLUDE "engine/items/pack_kris.asm"
 INCLUDE "engine/events/move_tutor.asm"
+INCLUDE "engine/events/gen1_tutor.asm"
 INCLUDE "engine/gfx/crystal_layouts.asm"
 INCLUDE "engine/events/celebi.asm"
 INCLUDE "engine/menus/main_menu.asm"
@@ -813,6 +814,14 @@ SECTION "Trainer Extra Palettes", ROMX
 
 INCLUDE "engine/gfx/trainer_extra_palettes.asm"
 INCLUDE "data/trainers/extra_palettes.asm"
+
+
+SECTION "RB Forms", ROMX
+
+INCLUDE "engine/pokemon/rb_forms.asm"
+INCLUDE "data/pokemon/rb_forms.asm"
+INCLUDE "data/pokemon/rb_tutor_moves.asm"
+INCLUDE "engine/events/museum_fossils.asm"
 
 
 SECTION "Stadium 2 Checksums", ROMX[$7DE0], BANK[$7F]

@@ -149,7 +149,7 @@ CosmeticFormPalettePointersTable:
 	dw 0					; OMASTAR (8b)
 	dw 0					; KABUTO (8c)
 	dw 0					; KABUTOPS (8d)
-	dw 0					; AERODACTYL (8e)
+	dw AerodactylPalettes			; AERODACTYL (8e)
 	dw SnorlaxPalettes			; SNORLAX (8f)
 	dw 0					; ARTICUNO (90)
 	dw 0					; ZAPDOS (91)

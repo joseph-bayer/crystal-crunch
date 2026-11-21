@@ -544,6 +544,9 @@ DayCare_InitBreeding:
 	ld [wTempMonDVs], a
 	ld a, [wBreedMon1DVs + 1]
 	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wBreedMon1Form]
+	ld [wTempMonForm], a
 	ld a, [wBreedMon1Species]
 	ld [wCurPartySpecies], a
 	ld a, TEMPMON
@@ -559,10 +562,37 @@ DayCare_InitBreeding:
 	cp c
 	ld a, $0 ; no-optimize a = 0
 	jr z, .LoadWhichBreedmonIsTheMother
+	; A Red/Blue form has no gender: it's the mother unless its partner is female,
+	; and of two of them, either may be.
+	farcall GetRBBreedMons
+	rra
+	jr c, .breedmon1_rb
 	farcall GetGender
 	ld a, $0 ; no-optimize a = 0
 	jr z, .LoadWhichBreedmonIsTheMother
 	inc a
+	jr .LoadWhichBreedmonIsTheMother
+
+.breedmon1_rb
+	rra
+	jr nc, .breedmon2_gendered
+	call Random
+	and 1
+	jr .LoadWhichBreedmonIsTheMother
+
+.breedmon2_gendered
+	ld a, [wBreedMon2DVs]
+	ld [wTempMonDVs], a
+	ld a, [wBreedMon2DVs + 1]
+	ld [wTempMonDVs + 1], a
+	ld a, [wBreedMon2Form]
+	ld [wTempMonForm], a
+	ld a, [wBreedMon2Species]
+	ld [wCurPartySpecies], a
+	farcall GetGender
+	ld a, $1
+	jr z, .LoadWhichBreedmonIsTheMother
+	dec a
 
 .LoadWhichBreedmonIsTheMother:
 	ld [wBreedMotherOrNonDitto], a
@@ -628,6 +658,10 @@ DayCare_InitBreeding:
 	call Random
 	ld [hld], a
 	ld [wTempMonDVs + 1], a
+	; The egg's form isn't decided yet: its gender here only picks the parent whose DVs it gets
+	assert PLAIN_FORM == 0
+	xor a
+	ld [wTempMonForm], a
 	ld de, wBreedMon1DVs
 	ld a, [wBreedMon1Species]
 	cp b
@@ -1165,4 +1199,5 @@ MultiFormEggTable:
 	dwb PSYDUCK,    PSYDUCK_RB_FORM
 	dwb MAGIKARP,   MAGIKARP_RB_FORM     ; not XS or XL: those come from size at hatch
 	dwb STARYU,     STARYU_RB_FORM
+	dwb AERODACTYL, AERODACTYL_RB_FORM
 	dw $0000 ; end marker

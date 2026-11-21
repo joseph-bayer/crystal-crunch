@@ -149,7 +149,7 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; OMASTAR (8b) - no cosmetic forms
 	dw 0					; KABUTO (8c) - no cosmetic forms
 	dw 0					; KABUTOPS (8d) - no cosmetic forms
-	dw 0					; AERODACTYL (8e) - no cosmetic forms
+	dw AerodactylAnimationPointers		; AERODACTYL (8e) - has cosmetic forms
 	dw SnorlaxAnimationPointers		; SNORLAX (8f) - has cosmetic forms
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
@@ -405,7 +405,7 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; OMASTAR (8b) - no cosmetic forms
 	dw 0                           		; KABUTO (8c) - no cosmetic forms
 	dw 0                           		; KABUTOPS (8d) - no cosmetic forms
-	dw 0                           		; AERODACTYL (8e) - no cosmetic forms
+	dw AerodactylAnimationIdlePointers		; AERODACTYL (8e) - has cosmetic forms
 	dw SnorlaxAnimationIdlePointers		; SNORLAX (8f) - has cosmetic forms
 	dw 0                           		; ARTICUNO (90) - no cosmetic forms
 	dw 0                           		; ZAPDOS (91) - no cosmetic forms
@@ -953,6 +953,12 @@ StarmieAnimationPointers:
 	dw StarmieRBAnimation
 	assert_table_length NUM_STARMIE_FORMS
 
+AerodactylAnimationPointers:
+	table_width 2
+	dw AerodactylPlainAnimation
+	dw AerodactylRBAnimation
+	assert_table_length NUM_AERODACTYL_FORMS
+
 IgglybuffAnimationIdlePointers:
 	table_width 2
 	dw IgglybuffPlainAnimationIdle
@@ -1118,6 +1124,12 @@ StarmieAnimationIdlePointers:
 	dw StarmiePlainAnimationIdle
 	dw StarmieRBAnimationIdle
 	assert_table_length NUM_STARMIE_FORMS
+
+AerodactylAnimationIdlePointers:
+	table_width 2
+	dw AerodactylPlainAnimationIdle
+	dw AerodactylRBAnimationIdle
+	assert_table_length NUM_AERODACTYL_FORMS
 
 PichuAnimationPointers:
 	table_width 2

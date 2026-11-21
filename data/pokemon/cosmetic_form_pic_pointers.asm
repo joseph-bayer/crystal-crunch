@@ -149,7 +149,7 @@ CosmeticFormPicPointersTable::
 	dw 0					; OMASTAR (8b) - no cosmetic forms
 	dw 0					; KABUTO (8c) - no cosmetic forms
 	dw 0					; KABUTOPS (8d) - no cosmetic forms
-	dw 0					; AERODACTYL (8e) - no cosmetic forms
+	dw AerodactylPicPointers		; AERODACTYL (8e) - has cosmetic forms
 	dw SnorlaxPicPointers		; SNORLAX (8f) - has cosmetic forms
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
@@ -737,6 +737,15 @@ StarmiePicPointers::
 	dba StarmieRBFrontpic
 	dba StarmieRBBackpic
 	assert_table_length NUM_STARMIE_FORMS
+
+AerodactylPicPointers::
+; entries correspond to Aerodactyl's forms, two apiece
+	table_width 3 * 2
+	dba AerodactylFrontpic
+	dba AerodactylBackpic
+	dba AerodactylRBFrontpic
+	dba AerodactylRBBackpic
+	assert_table_length NUM_AERODACTYL_FORMS
 
 PichuPicPointers::
 ; entries correspond to Pichu's forms, two apiece

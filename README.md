@@ -35,6 +35,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 <img src="screenshots/18-apricorn-forest.png">
 <img src="screenshots/19-open-league-erika.png">
 <img src="screenshots/20-5-color-brock.png">
+<img src="screenshots/21-pewter_museum.png">
 </p>
 
 ## Features
@@ -102,6 +103,15 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 - Many Pokémon have new cosmetic forms - see the [screenshots](#screenshots), or [spoilers.md](spoilers.md) for where to find some of them.
 - *Note:* Some forms will have a symbol that displays on the battle and stats screen to indicate that they're different. Not all forms will have this.
+
+</details>
+
+### Red/Blue Pokémon
+<details>
+<summary>Show details</summary>
+
+Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like they came from Red and Blue - one special stat, no gender.
+- To see how breeding works with Red/Blue Pokémon, see [spoilers.md](spoilers.md#breeding-redblue-pokémon).
 
 </details>
 
