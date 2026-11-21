@@ -149,7 +149,7 @@ CosmeticFormSymbols::
 	dw 0					; OMASTAR (8b)
 	dw 0					; KABUTO (8c)
 	dw 0					; KABUTOPS (8d)
-	dw 0					; AERODACTYL (8e)
+	dw AerodactylFormSymbols			; AERODACTYL (8e)
 	dw 0					; SNORLAX (8f)
 	dw 0					; ARTICUNO (90)
 	dw 0					; ZAPDOS (91)
@@ -517,6 +517,12 @@ StarmieFormSymbols:
 	db 0
 	db "<CARTRIDGE>"
 	assert_table_length NUM_STARMIE_FORMS
+
+AerodactylFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_AERODACTYL_FORMS
 
 PichuFormSymbols:
 	table_width 1

@@ -75,6 +75,7 @@ WritePartyMenuTilemap:
 	dw PlacePartyMonGender
 	dw PlacePartyMonMobileBattleSelection
 	dw PlacePartyMonFollowerMark
+	dw PlacePartyMonGen1TutorCompatibility
 	assert_table_length NUM_PARTYMENUQUALITIES
 
 PlacePartyNicknames:
@@ -341,6 +342,38 @@ PlacePartyMonTMHMCompatibility:
 
 .string_not_able
 	db "NOT ABLE@"
+
+PlacePartyMonGen1TutorCompatibility:
+; ABLE for a Red/Blue or beta form with a Gen 1 tutor move left to learn.
+	ld a, [wPartyCount]
+	and a
+	ret z
+	ld c, a
+	ld b, 0
+	hlcoord 12, 2
+.loop
+	push bc
+	push hl
+	call PartyMenuCheckEgg
+	jr z, .next
+	ld a, b
+	farcall CountGen1TutorMoves
+	and a
+	ld de, PlacePartyMonTMHMCompatibility.string_not_able
+	jr z, .got_string
+	ld de, PlacePartyMonTMHMCompatibility.string_able
+.got_string
+	rst PlaceString
+
+.next
+	pop hl
+	ld de, 2 * SCREEN_WIDTH
+	add hl, de
+	pop bc
+	inc b
+	dec c
+	jr nz, .loop
+	ret
 
 PlacePartyMonEvoStoneCompatibility:
 	ld a, [wPartyCount]
@@ -777,6 +810,7 @@ PartyMenuStrings:
 	dw ChooseAMonString ; Probably used to be ChooseAFemalePKMNString
 	dw ChooseAMonString ; Probably used to be ChooseAMalePKMNString
 	dw ToWhichPKMNString
+	dw TeachWhichPKMNString ; PARTYMENUACTION_GEN1_TUTOR
 
 ChooseAMonString:
 	db "Choose a #MON.@"

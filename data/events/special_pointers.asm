@@ -163,6 +163,11 @@ SpecialsPointers::
 	add_special StylistColorMenu
 	add_special StylistSellColor
 
+; Pewter Museum
+	add_special FossilPic
+	add_special Gen1Tutor
+	add_special CheckPartyForRBAerodactyl
+
 if DEF(_DEBUG)
 	add_special RestartClock ; the phone debug NPC's clock tool
 endc

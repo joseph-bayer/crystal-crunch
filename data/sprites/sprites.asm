@@ -121,4 +121,6 @@ OverworldSprites:
 	overworld_sprite ChrisSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	overworld_sprite ChrisMopedSpriteGFX, 12, WALKING_SPRITE, PAL_OW_RED
 	overworld_sprite KrisMopedSpriteGFX, 12, WALKING_SPRITE, PAL_OW_BLUE
+	overworld_sprite OldAmberSpriteGFX, 4, STILL_SPRITE, PAL_OW_COPY_BG_YELLOW
+	overworld_sprite OldAmberGuySpriteGFX, 12, STANDING_SPRITE, PAL_OW_GRAY
 	assert_table_length NUM_OVERWORLD_SPRITES

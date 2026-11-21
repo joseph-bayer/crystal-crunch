@@ -1616,5 +1616,11 @@
 	const EVENT_BEAT_BIRD_KEEPER_KINSLEY
 ; New Kanto trainers: end
 
+; The Older Amber and the Gen 1 tutor (Pewter Museum)
+	const EVENT_GOT_OLDER_AMBER
+	const EVENT_GAVE_SCIENTIST_OLDER_AMBER
+	const EVENT_SHOWED_RB_AERODACTYL
+	const EVENT_BOUGHT_MUSEUM_TICKET
+
 	const_next 2304
 DEF NUM_EVENTS EQU const_value

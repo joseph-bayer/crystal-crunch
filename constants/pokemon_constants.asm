@@ -575,6 +575,12 @@ DEF NUM_STARYU_FORMS EQU const_value ; 2
   const STARMIE_RB_FORM    ; 1 -- its Red/Blue sprite
 DEF NUM_STARMIE_FORMS EQU const_value ; 2
 
+; Aerodactyl forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const AERODACTYL_PLAIN_FORM ; 0
+  const AERODACTYL_RB_FORM    ; 1 -- its Red/Blue sprite; revived from the Older Amber
+DEF NUM_AERODACTYL_FORMS EQU const_value ; 2
+
 ; Arbok forms
   const_def 0 ; Note that forms are now 0-indexed
   const ARBOK_PLAIN_FORM  ; 0

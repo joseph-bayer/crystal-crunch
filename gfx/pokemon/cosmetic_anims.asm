@@ -162,6 +162,9 @@ StaryuRBAnimation:		INCLUDE "gfx/pokemon/staryu_rb/anim.asm"
 StarmiePlainAnimation:		INCLUDE "gfx/pokemon/starmie/anim.asm"
 StarmieRBAnimation:		INCLUDE "gfx/pokemon/starmie_rb/anim.asm"
 
+AerodactylPlainAnimation:		INCLUDE "gfx/pokemon/aerodactyl/anim.asm"
+AerodactylRBAnimation:		INCLUDE "gfx/pokemon/aerodactyl_rb/anim.asm"
+
 PichuPlainAnimation:		INCLUDE "gfx/pokemon/pichu/anim.asm"
 PichuBetaAnimation:		INCLUDE "gfx/pokemon/pichu_beta/anim.asm"
 

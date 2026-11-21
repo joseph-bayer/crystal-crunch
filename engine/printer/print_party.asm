@@ -178,14 +178,24 @@ PrintPartyMonPage1:
 	call GetPokemonName
 	hlcoord 10, 6
 	rst PlaceString
+; The dex number is the species index, as on the stats screen, not its 8-bit ID
+	ld a, [wCurPartySpecies]
+	call GetPokemonIndexFromID
+	ld a, h
+	ld h, l
+	ld l, a
+	push hl ; big-endian, for PrintNum
+	ld hl, sp + 0
+	ld d, h
+	ld e, l
 	hlcoord 8, 0
 	ld a, "№"
 	ld [hli], a
 	ld a, "."
 	ld [hli], a
-	ld de, wNamedObjectIndex
-	lb bc, PRINTNUM_LEADINGZEROS | 1, 3
+	lb bc, PRINTNUM_LEADINGZEROS | 2, 3
 	call PrintNum
+	add sp, 2
 	hlcoord 1, 9
 	ld de, PrintParty_OTString
 	rst PlaceString
@@ -268,8 +278,14 @@ PrintPartyMonPage2:
 	hlcoord 7, 4
 	ld a, [wTempMonMoves + 3]
 	call PlaceMoveNameString
+	; A Red/Blue form has one Special stat, so it prints four
+	farcall IsTempMonRBForm
+	push af
 	hlcoord 7, 7
 	ld de, PrintParty_StatsString
+	jr nc, .got_stat_names
+	ld de, PrintParty_RBStatsString
+.got_stat_names
 	rst PlaceString
 	hlcoord 16, 7
 	ld de, wTempMonAttack
@@ -280,10 +296,13 @@ PrintPartyMonPage2:
 	hlcoord 16, 11
 	ld de, wTempMonSpclAtk
 	call .PrintTempMonStats
+	pop af
 	hlcoord 16, 13
+	jr c, .speed
 	ld de, wTempMonSpclDef
 	call .PrintTempMonStats
 	hlcoord 16, 15
+.speed
 	ld de, wTempMonSpeed
 	call .PrintTempMonStats
 	call WaitBGMap
@@ -349,6 +368,13 @@ PrintParty_StatsString:
 	next "DEFENSE"
 	next "SPCL.ATK"
 	next "SPCL.DEF"
+	next "SPEED"
+	db   "@"
+
+PrintParty_RBStatsString:
+	db   "ATTACK"
+	next "DEFENSE"
+	next "SPECIAL"
 	next "SPEED"
 	db   "@"
 

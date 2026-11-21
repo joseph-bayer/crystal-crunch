@@ -24,6 +24,29 @@
 ## Team Rocket Swarms
 - Team Rocket's Pokemon start turning up in swarms as the story goes on: some after you clear the Mahogany hideout, more after you free the Radio Tower.
 
+## Gen 1 TM Tutor
+- He teaches Red/Blue and beta Pokémon the Gen 1 TM moves this game has no TM, HM or tutor for (Body Slam, Counter, Seismic Toss, Softboiled, Substitute…), each only if their species learned it by TM in Red/Blue. Their babies can inherit these moves (see [Breeding Red/Blue Pokémon](#breeding-redblue-pokémon)).
+- He's Old Amber Guy, on the first floor of the Pewter Museum. A ticket at the front desk is ¥60.
+- Talk to him to get the OLDER AMBER, have it revived at the Ruins of Alph Research Center, and show him the Red/Blue Aerodactyl that comes out of it. From then on he teaches, even if the Aerodactyl isn't with you.
+- He teaches Red/Blue and beta Pokémon for ¥10000 a move. You only pay once the move is learned.
+- The beta forms use a Red/Blue relative's moves: Pichu uses Pikachu's, Igglybuff Jigglypuff's, Crobat Golbat's and Kingdra Seadra's.
+
+## Breeding Red/Blue Pokémon
+A Red/Blue or beta Pokémon has no gender, so it breeds as whichever gender its partner lacks. The mother decides the egg's species, as usual.
+
+| Partner | Egg? | The mother is | The baby is Red/Blue or beta |
+|---------|------|---------------|------------------------------|
+| A male of the same line (e.g. RB Pikachu + male Pikachu) | Yes | The RB Pokémon | Half the time |
+| A male of another line in its egg group (e.g. RB Pikachu + male Clefairy) | Yes | The RB Pokémon | Always |
+| A female of the same line (e.g. RB Pikachu + female Pikachu) | Yes | The female | Half the time |
+| A female of another line (e.g. RB Pikachu + female Clefairy) | Yes | The female | Never |
+| Another Red/Blue or beta Pokémon in its egg group | Yes | Either one, at random | Always |
+| Ditto | Yes | The RB Pokémon | Always |
+| A genderless Pokémon other than Ditto | No | — | — |
+
+- Evolved forms pass their form down their line: RB Pikachu and Raichu lay beta Pichu, RB Jigglypuff and Wigglytuff lay beta Igglybuff, beta Crobat lays RB Zubat, and beta Kingdra lays RB Horsea.
+- A baby inherits its father's Gen 1 TM tutor moves if its line learned them by TM in Red/Blue. For example, an RB Pikachu that knows Body Slam and a female Clefairy make a Cleffa that knows Body Slam.
+
 ## Cosmetic Forms
 | Species	| Form			| How to Obtain |
 |---------------|-----------------------|---------------|
@@ -78,8 +101,11 @@
 | Gyarados      | Red/Blue              | Evolve an RB Magikarp |
 | Staryu        | Red/Blue              | Tune into channel 6.0 |
 | Starmie       | Red/Blue              | Evolve an RB Staryu |
+| Aerodactyl    | Red/Blue              | Get the OLDER AMBER from Old Amber Guy in the Pewter Museum, and have it revived at the Ruins of Alph |
 | Golbat        | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Weezing       | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Charmeleon    | Team Rocket           | Tune into channel 6.0 after freeing the Radio Tower |
 | Arbok         | Team Rocket           | Tune into channel 6.0 after freeing the Radio Tower |
 | Electrode     | Team Rocket           | The six Electrode in the Mahogany hideout |
+
+*NOTE: There's one or two forms that aren't listed here. Good luck finding them!

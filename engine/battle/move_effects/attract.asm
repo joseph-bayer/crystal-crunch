@@ -53,6 +53,9 @@ CheckOppositeGender:
 	ld [wTempMonDVs], a
 	ld a, [hl]
 	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wEnemyMonForm]
+	ld [wTempMonForm], a
 	ld a, TEMPMON
 	ld [wMonType], a
 	farcall GetGender

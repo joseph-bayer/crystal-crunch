@@ -103,6 +103,7 @@ DEF HMENURETURN_ASM    EQU %11111111
 	const PARTYMENUQUALITY_GENDER
 	const PARTYMENUQUALITY_MOBILE_SELECTION
 	const PARTYMENUQUALITY_FOLLOWER
+	const PARTYMENUQUALITY_GEN1_TUTOR_COMPAT
 DEF NUM_PARTYMENUQUALITIES EQU const_value
 
 ; Where the follower mark sits in each party menu entry: under the first letter of the nickname,
@@ -127,6 +128,7 @@ DEF FOLLOWER_MARK_PAL EQU 4
 	const PARTYMENUACTION_GIVE_MON
 	const PARTYMENUACTION_GIVE_MON_FEMALE ; unused
 	const PARTYMENUACTION_GIVE_ITEM
+	const PARTYMENUACTION_GEN1_TUTOR
 DEF NUM_PARTYMENUACTIONS EQU const_value
 ; PrintPartyMenuActionText arguments (see engine/pokemon/party_menu.asm)
 	const_next $f0

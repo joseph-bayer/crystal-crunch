@@ -213,6 +213,9 @@ gfx/trainers/kris.2bpp: gfx/trainers/kris.png gfx/trainers/kris.allpals
 gfx/trainers/%.palx: gfx/trainers/%.png gfx/trainers/%.2bpp
 	tools/trainer_palettes --palx $(trainer_palettes_$*) $< gfx/trainers/$*.rgbgfxmap $@
 
+# The Pewter Museum's fossil pics, placed column by column like a front pic (FossilPic)
+gfx/museum/%.2bpp: rgbgfx += --columns
+
 check_trainer_art:
 	$(MAKE) -C tools trainer_palettes
 	tools/trainer_palettes --verbose $(trainer_palettes_$(TRAINER)) gfx/trainers/$(TRAINER).png

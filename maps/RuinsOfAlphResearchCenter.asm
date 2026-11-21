@@ -254,14 +254,28 @@ FossilScientist:
 	iftrue .GiveKabuto
 	checkevent EVENT_GAVE_SCIENTIST_HELIX_FOSSIL
 	iftrue .GiveOmanyte
+	checkevent EVENT_GAVE_SCIENTIST_OLDER_AMBER
+	iftrue .GiveRBAerodactyl
 	writetext FossilScientistIntroText
 	waitbutton
+	; The OLDER AMBER entry only appears once Old Amber Guy has given it, so it stays a surprise.
+	checkevent EVENT_GOT_OLDER_AMBER
+	iftrue .OlderAmberMenu
 	loadmenu .MoveMenuHeader
 	verticalmenu
 	closewindow
+	ifequal REVIVE_OLDER_AMBER, .No ; CANCEL is this menu's 4th entry
+	sjump .Revive
+
+.OlderAmberMenu:
+	loadmenu .OlderAmberMenuHeader
+	verticalmenu
+	closewindow
+.Revive:
 	ifequal REVIVE_OLD_AMBER, .OldAmber
 	ifequal REVIVE_DOME_FOSSIL, .DomeFossil
 	ifequal REVIVE_HELIX_FOSSIL, .HelixFossil
+	ifequal REVIVE_OLDER_AMBER, .OlderAmber
 	sjump .No
 
 .OldAmber
@@ -300,6 +314,19 @@ FossilScientist:
 	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1 ; remove this to immediately receive the fossil
 	setevent EVENT_GAVE_SCIENTIST_HELIX_FOSSIL
 	takeitem HELIX_FOSSIL
+	writetext FossilScientistGiveText
+	waitbutton
+	sjump .GaveScientistFossil
+
+.OlderAmber:
+	checkitem OLDER_AMBER
+	iffalse .No
+	getmonname STRING_BUFFER_3, AERODACTYL
+	writetext FossilScientistMonText
+	promptbutton
+	setevent EVENT_TEMPORARY_UNTIL_MAP_RELOAD_1
+	setevent EVENT_GAVE_SCIENTIST_OLDER_AMBER
+	takeitem OLDER_AMBER
 	writetext FossilScientistGiveText
 	waitbutton
 	sjump .GaveScientistFossil
@@ -367,6 +394,21 @@ FossilScientist:
 	closetext
 	end
 
+.GiveRBAerodactyl:
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, .NoRoom
+	clearevent EVENT_GAVE_SCIENTIST_OLDER_AMBER
+	writetext FossilScientistDoneText
+	promptbutton
+	getmonname STRING_BUFFER_3, AERODACTYL
+	writetext FossilScientistReceiveText
+	playsound SFX_CAUGHT_MON
+	waitsfx
+	waitbutton
+	givepoke AERODACTYL, 50, NO_ITEM, AERODACTYL_RB_FORM
+	closetext
+	end
+
 .NoRoom:
 	writetext FossilScientistPartyFullText
 	waitbutton
@@ -385,6 +427,21 @@ FossilScientist:
 	db "OLD AMBER@"
 	db "DOME FOSSIL@"
 	db "HELIX FOSSIL@"
+	db "CANCEL@"
+
+.OlderAmberMenuHeader:
+	db MENU_BACKUP_TILES ; flags
+	menu_coords 0, 0, 15, TEXTBOX_Y - 1
+	dw .OlderAmberMenuData
+	db 1 ; default option
+
+.OlderAmberMenuData:
+	db STATICMENU_CURSOR ; flags
+	db 5 ; items
+	db "OLD AMBER@"
+	db "DOME FOSSIL@"
+	db "HELIX FOSSIL@"
+	db "OLDER AMBER@"
 	db "CANCEL@"
 
 FossilScientistIntroText:

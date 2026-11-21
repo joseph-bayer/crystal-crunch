@@ -932,4 +932,10 @@ CeruleanMopedShop_Blocks:
 ViridianForest_Blocks:
 	INCBIN "maps/ViridianForest.ablk"
 
+Museum1F_Blocks:
+	INCBIN "maps/Museum1F.ablk"
+
+Museum2F_Blocks:
+	INCBIN "maps/Museum2F.ablk"
+
 ENDSECTION

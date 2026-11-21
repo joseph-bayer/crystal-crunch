@@ -3219,6 +3219,15 @@ wSwarmHistory:: ds NUM_SWARM_HISTORY
 wSwarmStateEnd::
 
 
+SECTION "Gen 1 Tutor", WRAMX, BANK[1]
+
+; The Gen 1 tutor's move list for the mon being taught (engine/events/gen1_tutor.asm), in
+; ScrollingMenu's form: a count, the moves as their places in Gen1TutorMoves, then -1. Out here
+; past wGameDataEnd, so it moves nothing in the save.
+wGen1TutorMoveCount:: db
+wGen1TutorMoves:: ds MAX_GEN1_TUTOR_MOVES + 1
+
+
 SECTION "Overworld Wild Mon", WRAMX, BANK[1]
 
 ; The rolled encounters standing on the current map, one per SPRITE_OW_MON_* slot. Filled when the

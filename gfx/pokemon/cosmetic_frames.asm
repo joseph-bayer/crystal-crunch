@@ -162,6 +162,9 @@ StaryuRBFrames:		INCLUDE "gfx/pokemon/staryu_rb/frames.asm"
 StarmiePlainFrames:		INCLUDE "gfx/pokemon/starmie/frames.asm"
 StarmieRBFrames:		INCLUDE "gfx/pokemon/starmie_rb/frames.asm"
 
+AerodactylPlainFrames:		INCLUDE "gfx/pokemon/aerodactyl/frames.asm"
+AerodactylRBFrames:		INCLUDE "gfx/pokemon/aerodactyl_rb/frames.asm"
+
 PichuPlainFrames:		INCLUDE "gfx/pokemon/pichu/frames.asm"
 PichuBetaFrames:		INCLUDE "gfx/pokemon/pichu_beta/frames.asm"
 

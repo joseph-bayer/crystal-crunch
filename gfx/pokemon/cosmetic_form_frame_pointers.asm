@@ -149,7 +149,7 @@ CosmeticFormFramePointersTable:
 	dw 0					; OMASTAR (8b) - no cosmetic forms
 	dw 0					; KABUTO (8c) - no cosmetic forms
 	dw 0					; KABUTOPS (8d) - no cosmetic forms
-	dw 0					; AERODACTYL (8e) - no cosmetic forms
+	dw AerodactylFramesPointers		; AERODACTYL (8e) - has cosmetic forms
 	dw SnorlaxFramesPointers		; SNORLAX (8f) - has cosmetic forms
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
@@ -560,6 +560,12 @@ StarmieFramesPointers:
 	dw StarmiePlainFrames
 	dw StarmieRBFrames
 	assert_table_length NUM_STARMIE_FORMS
+
+AerodactylFramesPointers:
+	table_width 2
+	dw AerodactylPlainFrames
+	dw AerodactylRBFrames
+	assert_table_length NUM_AERODACTYL_FORMS
 
 PichuFramesPointers:
 	table_width 2

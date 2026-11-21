@@ -219,6 +219,7 @@ ItemEffectsKeyItems:
 	dw NoEffect           ; DOME_FOSSIL
 	dw BadgeCaseEffect    ; BADGE_CASE
 	dw MopedEffect        ; MOPED
+	dw NoEffect           ; OLDER_AMBER
 .IndirectEnd:
 
 ItemEffectsBalls:
@@ -1237,7 +1238,19 @@ VitaminEffect:
 	call UpdateStatsAfterItem
 
 	call GetEVRelativePointer
-
+	ld a, c
+	cp MON_SAT_EV - MON_EVS
+	jr c, .got_stat
+	push bc
+	ld a, MON_FORM
+	call GetPartyParamLocation
+	ld c, [hl]
+	ld a, [wCurPartySpecies]
+	farcall GetRBFormSpecial
+	pop bc
+	jr nc, .got_stat
+	ld c, (StatStrings.rb_special - StatStrings) / 2 ; an RB form's Calcium and Zinc both raise its one SPECIAL
+.got_stat
 	ld hl, StatStrings
 	add hl, bc
 	add hl, bc
@@ -1289,6 +1302,8 @@ StatStrings:
 	dw .speed
 	dw .sp_atk
 	dw .sp_def
+.rb_special
+	dw .special
 
 .health  db "HEALTH@"
 .attack  db "ATTACK@"
@@ -1296,6 +1311,7 @@ StatStrings:
 .speed   db "SPEED@"
 .sp_atk  db "SPCL.ATK@"
 .sp_def  db "SPCL.DEF@"
+.special db "SPECIAL@"
 
 GetEVRelativePointer:
 	ld a, [wCurItem]

@@ -84,9 +84,15 @@ DrawHP:
 
 PrintTempMonStats:
 ; Print wTempMon's stats at hl, with spacing bc.
+; A Red/Blue form has one Special stat, so it prints four.
+	farcall IsTempMonRBForm
+	push af
 	push bc
 	push hl
 	ld de, .StatNames
+	jr nc, .got_names
+	ld de, .RBStatNames
+.got_names
 	rst PlaceString
 	pop hl
 	pop bc
@@ -100,8 +106,11 @@ PrintTempMonStats:
 	call .PrintStat
 	ld de, wTempMonSpclAtk
 	call .PrintStat
+	pop af
+	jr c, .speed
 	ld de, wTempMonSpclDef
 	call .PrintStat
+.speed
 	ld de, wTempMonSpeed
 	jmp PrintNum
 
@@ -118,6 +127,13 @@ PrintTempMonStats:
 	next "DEFENSE"
 	next "SPCL.ATK"
 	next "SPCL.DEF"
+	next "SPEED"
+	next "@"
+
+.RBStatNames:
+	db   "ATTACK"
+	next "DEFENSE"
+	next "SPECIAL"
 	next "SPEED"
 	next "@"
 
@@ -176,6 +192,10 @@ GetGender:
 	rst AddNTimes
 
 .DVs:
+; Red/Blue forms have no gender.
+	farcall IsRBFormGenderless
+	ret c
+
 ; Attack DV
 	ld a, [hli]
 	and $f0

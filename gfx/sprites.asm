@@ -125,3 +125,5 @@ AgathaSpriteGFX::              INCBIN "gfx/sprites/agatha.2bpp"
 GiovanniSpriteGFX::            INCBIN "gfx/sprites/giovanni.2bpp"
 ChrisMopedSpriteGFX::          INCBIN "gfx/sprites/chris_moped.2bpp"
 KrisMopedSpriteGFX::           INCBIN "gfx/sprites/kris_moped.2bpp"
+OldAmberSpriteGFX::            INCBIN "gfx/sprites/old_amber.2bpp" ; Yellow's
+OldAmberGuySpriteGFX::         INCBIN "gfx/sprites/old_amber_guy.2bpp"

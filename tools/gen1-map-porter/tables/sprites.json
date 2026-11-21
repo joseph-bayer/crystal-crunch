@@ -5,5 +5,26 @@
 	},
 	"SPRITE_COOLTRAINER_F": {
 		"palette": "PAL_NPC_BLUE"
+	},
+	"SPRITE_OLD_AMBER": {
+		"palette": "PAL_NPC_COPY_BG_YELLOW"
+	},
+	"SPRITE_SCIENTIST": {
+		"palette": "PAL_NPC_GRAY"
+	},
+	"SPRITE_GAMBLER": {
+		"cse": "SPRITE_POKEFAN_M",
+		"palette": "PAL_NPC_RED"
+	},
+	"SPRITE_BRUNETTE_GIRL": {
+		"cse": "SPRITE_LASS",
+		"palette": "PAL_NPC_DEFAULT"
+	},
+	"SPRITE_HIKER": {
+		"cse": "SPRITE_POKEFAN_M",
+		"palette": "PAL_NPC_DEFAULT"
+	},
+	"SPRITE_GRAMPS": {
+		"palette": "PAL_NPC_DEFAULT"
 	}
 }

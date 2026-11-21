@@ -1,16 +1,27 @@
 CheckBreedmonCompatibility:
 	call .CheckBreedingGroupCompatibility
 	ld c, $0
-	jmp nc, .done
-	ld a, [wBreedMon1Species]
-	ld [wCurPartySpecies], a
-	ld a, [wBreedMon1DVs]
-	ld [wTempMonDVs], a
-	ld a, [wBreedMon1DVs + 1]
-	ld [wTempMonDVs + 1], a
-	ld a, TEMPMON
-	ld [wMonType], a
-	predef GetGender
+	jr nc, .done
+	; A Red/Blue form has no gender, but breeds as whichever gender its partner lacks:
+	; two of them are compatible, and one needs a partner with a gender (or Ditto).
+	farcall GetRBBreedMons
+	and a
+	jr z, .gendered
+	cp %11
+	jr z, .compute
+	rra
+	jr nc, .rb_breedmon2
+	call .GetBreedmon2Gender
+	jr c, .genderless
+	jr .compute
+
+.rb_breedmon2
+	call .GetBreedmon1Gender
+	jr c, .genderless
+	jr .compute
+
+.gendered
+	call .GetBreedmon1Gender
 	jr c, .genderless
 	ld b, $1
 	jr nz, .breedmon2
@@ -18,15 +29,7 @@ CheckBreedmonCompatibility:
 
 .breedmon2
 	push bc
-	ld a, [wBreedMon2Species]
-	ld [wCurPartySpecies], a
-	ld a, [wBreedMon2DVs]
-	ld [wTempMonDVs], a
-	ld a, [wBreedMon2DVs + 1]
-	ld [wTempMonDVs + 1], a
-	ld a, TEMPMON
-	ld [wMonType], a
-	predef GetGender
+	call .GetBreedmon2Gender
 	pop bc
 	jr c, .genderless
 	ld a, $1
@@ -68,6 +71,34 @@ CheckBreedmonCompatibility:
 	ld a, c
 	ld [wBreedingCompatibility], a
 	ret
+
+.GetBreedmon1Gender:
+	ld a, [wBreedMon1Species]
+	ld [wCurPartySpecies], a
+	ld a, [wBreedMon1DVs]
+	ld [wTempMonDVs], a
+	ld a, [wBreedMon1DVs + 1]
+	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wBreedMon1Form]
+	ld [wTempMonForm], a
+	ld a, TEMPMON
+	ld [wMonType], a
+	predef_jump GetGender
+
+.GetBreedmon2Gender:
+	ld a, [wBreedMon2Species]
+	ld [wCurPartySpecies], a
+	ld a, [wBreedMon2DVs]
+	ld [wTempMonDVs], a
+	ld a, [wBreedMon2DVs + 1]
+	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wBreedMon2Form]
+	ld [wTempMonForm], a
+	ld a, TEMPMON
+	ld [wMonType], a
+	predef_jump GetGender
 
 .CheckBreedingGroupCompatibility:
 ; If either mon is in the No Eggs group,
@@ -453,7 +484,7 @@ GetEggMove:
 	call GetFarWord
 	ld a, h
 	and l
-	jr z, .done
+	jr z, .gen1_tutor_move
 	inc bc
 	inc bc
 	ld a, h
@@ -469,6 +500,11 @@ GetEggMove:
 	predef CanLearnTMHMMove
 	xor a
 	cp c ;will carry if non-zero
+	jr .done
+
+.gen1_tutor_move
+; A Gen 1 tutor move passes on if the egg's line learned it by TM in Red/Blue
+	farcall IsInheritableGen1TutorMove
 	jr .done
 
 .breedmon_found
@@ -567,6 +603,9 @@ GetHeritableMoves:
 	ld [wTempMonDVs], a
 	ld a, [wBreedMon2DVs + 1]
 	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wBreedMon2Form]
+	ld [wTempMonForm], a
 	ld a, TEMPMON
 	ld [wMonType], a
 	predef GetGender
@@ -583,6 +622,9 @@ GetHeritableMoves:
 	ld [wTempMonDVs], a
 	ld a, [wBreedMon1DVs + 1]
 	ld [wTempMonDVs + 1], a
+	; The form too, since a Red/Blue form has no gender
+	ld a, [wBreedMon1Form]
+	ld [wTempMonForm], a
 	ld a, TEMPMON
 	ld [wMonType], a
 	predef GetGender

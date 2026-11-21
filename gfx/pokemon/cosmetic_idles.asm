@@ -162,6 +162,9 @@ StaryuRBAnimationIdle:		INCLUDE "gfx/pokemon/staryu_rb/anim_idle.asm"
 StarmiePlainAnimationIdle:		INCLUDE "gfx/pokemon/starmie/anim_idle.asm"
 StarmieRBAnimationIdle:		INCLUDE "gfx/pokemon/starmie_rb/anim_idle.asm"
 
+AerodactylPlainAnimationIdle:		INCLUDE "gfx/pokemon/aerodactyl/anim_idle.asm"
+AerodactylRBAnimationIdle:		INCLUDE "gfx/pokemon/aerodactyl_rb/anim_idle.asm"
+
 PichuPlainAnimationIdle:		INCLUDE "gfx/pokemon/pichu/anim_idle.asm"
 PichuBetaAnimationIdle:		INCLUDE "gfx/pokemon/pichu_beta/anim_idle.asm"
 

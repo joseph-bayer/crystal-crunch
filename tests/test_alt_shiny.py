@@ -349,7 +349,8 @@ def test_alternate_survives_evolution(game):
 	game.poke("wForceEvolution", 1)
 	game.poke("wCurPartyMon", 0)
 	# It ends by going back to the map rather than returning, so give it time and look at the party
-	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES)
+	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES,
+		from_main_loop=True)
 
 	assert party_species(game)[0] == A.species_id(game, "SCIZOR"), "Scyther should have evolved"
 	assert party_field(game, 0, "Form") == form, "the evolved Scizor should still be an alternate"
