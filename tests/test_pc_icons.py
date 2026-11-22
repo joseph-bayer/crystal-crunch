@@ -6,6 +6,8 @@ in use. Paging through a full PC freed those IDs and handed them to other specie
 was dropped as another species' icon (its palette, copied as bytes, stayed right), and a box's
 icons could point at freed IDs while it was being drawn."""
 
+import re
+
 import pytest
 
 from harness import alt_shiny as A
@@ -15,8 +17,9 @@ from harness.forms import set_party_field, take_radio_items, wait_until
 # Bill's PC in the Cherrygrove Pokemon Center, used from (9, 2) facing up.
 PC_SPOT = (9, 2)
 
-# The radio fills the PC in dex order after the party overflows, so Bulbasaur is in box 1's top row.
-HELD_SPECIES = "BULBASAUR"
+# The radio's PC fill stores the dex in order, with species that have an alternate shiny moved to
+# the end, so those turn up again in the last boxes.
+ALT_SHINY_PALETTES = "data/pokemon/alt_shiny_palettes.asm"
 
 # Far enough that the boxes in between hold more species than the ID table has free slots.
 LAST_BOX = 16 # 0-based: box 17
@@ -24,6 +27,7 @@ LAST_BOX = 16 # 0-based: box 17
 SWAP_MODE = 1
 # wBillsPC_CursorPos is $yx: row 0 is the box name, rows 1-5 the box.
 FIRST_BOX_ROW = 0x10
+FIRST_BOX_SLOT = FIRST_BOX_ROW + 2 # the box's columns are 2-5
 
 # Party slot 1: the party is columns 0-1 of rows 3-5
 PARTY_MON_1_POS = 0x30
@@ -71,15 +75,32 @@ def assert_box_ids_in_use(game):
 				"box %d slot %d shows ID %d, which the table has freed" % (box, slot + 1, mon_id)
 
 
+def alt_shiny_species():
+	text = (constants.ROOT / ALT_SHINY_PALETTES).read_text(encoding="utf-8")
+	return {species_index(name) for name in re.findall(r"^\tdw ([A-Z]\w*)", text, re.M)} # not the 0 at the end
+
+
+def pick_held_species(game, top_row):
+	"""A mon in box 1's top row whose ID nothing else keeps in use: not a party species (the party's
+	IDs are always in use) and not one with an alternate shiny (those come again in the last boxes,
+	which would put its ID back in use there). Otherwise the bug could slip by unseen."""
+	party = {index_of_id(game, mon_id) for mon_id in game.peek("wPartySpecies", 0, game.peek("wPartyCount"))}
+	later = alt_shiny_species()
+	for species in top_row:
+		if species and species not in party and species not in later:
+			return species
+	raise AssertionError("no mon in box 1's top row is free of the party and the alternate shinies: %s" % top_row)
+
+
 def test_held_mon_keeps_its_icon_across_boxes(game):
 	take_radio_items(game)
 	open_bills_pc(game)
-	held = species_index(HELD_SPECIES)
 
 	top_row = [index_of_id(game, mon_id) for mon_id in game.peek("wBillsPC_BoxList", 0, 4)]
-	assert held in top_row, "box 1's top row should hold %s, not %s" % (HELD_SPECIES, top_row)
-	for _ in range(top_row.index(held)):
-		game.press("right", hold=6, after=20)
+	held = pick_held_species(game, top_row)
+	assert game.peek("wBillsPC_CursorPos") == FIRST_BOX_SLOT, "the cursor should start on box 1's first slot"
+	for column in range(top_row.index(held)):
+		move_cursor(game, "right", FIRST_BOX_SLOT + column + 1)
 	for _ in range(3):
 		if game.peek("wBillsPC_CursorMode") == SWAP_MODE:
 			break
@@ -88,7 +109,7 @@ def test_held_mon_keeps_its_icon_across_boxes(game):
 
 	game.press("a", after=30)
 	assert index_of_id(game, game.peek("wBillsPC_HeldIcon")) == held, \
-		"the held icon should be %s" % HELD_SPECIES
+		"the held icon should be species %d" % held
 
 	game.press("up", after=20)
 	assert game.peek("wBillsPC_CursorPos") < FIRST_BOX_ROW, "the cursor should be on the box name"
@@ -102,7 +123,7 @@ def test_held_mon_keeps_its_icon_across_boxes(game):
 		assert game.peek("wCurBox") == box + 1, "the PC didn't move on from box %d" % (box + 1)
 		assert_box_ids_in_use(game)
 		assert index_of_id(game, game.peek("wBillsPC_HeldIcon")) == held, \
-			"in box %d the held icon is no longer %s" % (box + 2, HELD_SPECIES)
+			"in box %d the held icon is no longer species %d" % (box + 2, held)
 
 	for _ in range(5):
 		game.press("down", hold=6, after=40)
@@ -118,8 +139,8 @@ def test_held_mon_keeps_its_icon_across_boxes(game):
 	assert game.peek("wBillsPC_CursorHeldSlot") == 0, "the held mon wasn't dropped"
 	dropped = game.peek("wBillsPC_BoxList", slot)
 	assert index_of_id(game, dropped) == held, \
-		"the mon dropped in box %d slot %d shows as species %d, not %s" % (
-			LAST_BOX + 1, slot + 1, index_of_id(game, dropped), HELD_SPECIES)
+		"the mon dropped in box %d slot %d shows as species %d, not %d" % (
+			LAST_BOX + 1, slot + 1, index_of_id(game, dropped), held)
 
 
 def move_cursor(game, button, pos):
