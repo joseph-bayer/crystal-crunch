@@ -155,6 +155,7 @@ SpecialsPointers::
 	add_special InitialClearDSTFlag
 
 	add_special FadeInPalettes_EnableDynNoApply
+	add_special Blackjack
 
 	add_special GetPlayerNPCPal
 	add_special StylistChangeStyle

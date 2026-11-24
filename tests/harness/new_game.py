@@ -4,6 +4,8 @@ Nothing here depends on a saved file or state from another build: the cache is k
 own hash, so a rebuild simply plays the intro again (about a second)."""
 
 import hashlib
+import os
+import tempfile
 from pathlib import Path
 
 from . import constants
@@ -45,7 +47,10 @@ def new_game_state(rom):
 	digest = hashlib.sha1(rom.read_bytes()).hexdigest()[:16]
 	path = CACHE / ("new_game-%s-v%d.state" % (digest, SCRIPT_VERSION))
 	if path.exists():
-		return path.read_bytes()
+		try:
+			return path.read_bytes()
+		except PermissionError:
+			pass # another test is writing it; play the intro here instead
 	game = Game(rom)
 	try:
 		play_intro(game)
@@ -53,5 +58,14 @@ def new_game_state(rom):
 	finally:
 		game.close()
 	CACHE.mkdir(parents=True, exist_ok=True)
-	path.write_bytes(state)
+	# Written whole and then renamed, so a test running in parallel never reads half a file. Tests
+	# starting together each play the intro; on Windows the rename fails while another has the file
+	# open, and then that one's copy, the same state, stands.
+	fd, temp = tempfile.mkstemp(dir=CACHE, suffix=".tmp")
+	with os.fdopen(fd, "wb") as f:
+		f.write(state)
+	try:
+		os.replace(temp, path)
+	except PermissionError:
+		os.remove(temp)
 	return state

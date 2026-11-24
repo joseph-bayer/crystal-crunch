@@ -1,0 +1,37 @@
+; One palette per suit, in suits.png's order (spades, clubs, hearts, diamonds), then the back.
+; A suit's colour 1 is the suit's own colour: its picture, the fill of its corner icon and the
+; shadow behind its rank, so it stays light against the black numbers. Colour 2
+; is a grey for the icon's outline. Colour 3, black, is the card's edge (corners included), the
+; faces and the ranks. The back uses colour 0 for its card, colour 1 for its pattern and colour 3
+; for its edge and the design in the middle; its colour 2 is the felt's green, set by the game.
+; spades
+	RGB 31, 31, 31
+	RGB 18, 18, 18
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+; clubs
+	RGB 31, 31, 31
+	RGB 18, 18, 18
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+; hearts
+	RGB 31, 31, 31
+	RGB 30, 22, 24
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+; diamonds
+	RGB 31, 31, 31
+	RGB 30, 22, 24
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+; the back: Meowth's yellow and brown (the sidebar's light and dark colours), with a black edge and
+; middle design. Colour 2 is the felt's green behind its corners: the game sets it, this one is a
+; stand-in. (A sliding card shows colour 2 as white anyway.)
+	RGB 30, 26, 16
+	RGB 20, 14, 09
+	RGB 10, 22, 12
+	RGB 00, 00, 00

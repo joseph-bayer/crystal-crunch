@@ -184,6 +184,13 @@ CardFlip:
 	ld hl, _CardFlip
 	jr StartGameCornerGame
 
+Blackjack:
+	call CheckCoinsAndCoinCase
+	ret c
+	ld a, BANK(_Blackjack)
+	ld hl, _Blackjack
+	jr StartGameCornerGame
+
 UnusedMemoryGame:
 	call CheckCoinsAndCoinCase
 	ret c

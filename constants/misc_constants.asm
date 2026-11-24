@@ -57,3 +57,21 @@ DEF JP_INSTRUCTION EQU $c3
 
 ; card flip
 DEF CARDFLIP_DECK_SIZE EQU 4 * 6
+
+; blackjack
+DEF BLACKJACK_NUM_SUITS       EQU 4
+DEF BLACKJACK_NUM_RANKS       EQU 13 ; ace = 1, jack = 11, queen = 12, king = 13
+DEF BLACKJACK_DECK_SIZE       EQU BLACKJACK_NUM_SUITS * BLACKJACK_NUM_RANKS
+DEF BLACKJACK_SHOE_DECKS      EQU 2
+DEF BLACKJACK_SHOE_SIZE       EQU BLACKJACK_DECK_SIZE * BLACKJACK_SHOE_DECKS
+DEF BLACKJACK_SHOE_CUT        EQU BLACKJACK_SHOE_SIZE * 3 / 4 ; reshuffled before the next hand
+DEF BLACKJACK_MAX_HAND        EQU 11 ; A A A A 2 2 2 2 3 3 3 is 21; a twelfth card is never dealt
+	assert BLACKJACK_SHOE_SIZE - BLACKJACK_SHOE_CUT >= BLACKJACK_MAX_HAND * 2, 		"a hand started before the cut card never runs out of shoe"
+DEF BLACKJACK_DEALER_STANDS   EQU 17 ; the dealer stands on every 17, soft or hard
+DEF BLACKJACK_BLACKJACK       EQU 21
+
+; blackjack decks: what the cards look like (BlackjackDecks)
+	const_def
+	const BJ_DECK_FRENCH     ; 0, the one the game uses
+	const BJ_DECK_SPACEWORLD ; 1
+DEF NUM_BJ_DECKS EQU const_value

@@ -54,6 +54,8 @@ StdScripts::
 	add_stdscript PCScript
 	add_stdscript GameCornerCoinVendorScript
 	add_stdscript HappinessCheckScript
+	add_stdscript BlackjackTableScript
+	add_stdscript BlackjackDealerScript
 
 PokecenterNurseScript:
 ; EVENT_WELCOMED_TO_POKECOM_CENTER is never set
@@ -1745,3 +1747,30 @@ Movement_ContestResults_WalkAfterWarp:
 	step DOWN
 	turn_head UP
 	step_end
+
+BlackjackTableScript:
+; A on the middle of a blackjack table's front: the dealer behind it asks
+	opentext
+	farwritetext BlackjackDealerAskText
+	yesorno
+	iffalse .NoGame
+	reanchormap
+	special Blackjack
+	closetext
+	end
+
+.NoGame:
+	farwritetext BlackjackDealerNoText
+	waitbutton
+	closetext
+	end
+
+BlackjackDealerScript:
+; The dealer, talked to from beside her table
+	faceplayer
+	opentext
+	farwritetext BlackjackDealerSideText
+	waitbutton
+	closetext
+	turnobject LAST_TALKED, DOWN
+	end

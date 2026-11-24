@@ -1622,5 +1622,10 @@
 	const EVENT_SHOWED_RB_AERODACTYL
 	const EVENT_BOUGHT_MUSEUM_TICKET
 
+; Blackjack at the Game Corners: the decks unlocked, and the one last picked, its number in two bits
+	const EVENT_BLACKJACK_SPACEWORLD_DECK
+	const EVENT_BLACKJACK_DECK_BIT_0
+	const EVENT_BLACKJACK_DECK_BIT_1
+
 	const_next 2304
 DEF NUM_EVENTS EQU const_value

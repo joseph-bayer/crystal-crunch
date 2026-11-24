@@ -1,0 +1,8 @@
+; PAL_BG_GAME_CORNER_TABLE: the blackjack tables' felt. Each line is green with gray's color 0 for
+; its white, from the bg_tiles.pal block an indoor map uses at that time of day (indoor for morn and
+; day, nite, eve). Loaded into the water slot on the Goldenrod and Celadon Game Corners only, which
+; have no water.
+	RGB 30,28,26, 15,20,01, 09,13,00, 07,07,07 ; morn
+	RGB 30,28,26, 15,20,01, 09,13,00, 07,07,07 ; day
+	RGB 15,14,24, 08,13,19, 00,11,13, 00,00,00 ; nite
+	RGB 31,21,14, 10,19,01, 04,10,00, 06,05,05 ; eve

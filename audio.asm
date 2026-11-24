@@ -151,6 +151,7 @@ INCLUDE "audio/music/route36.asm"
 INCLUDE "audio/music/tcgoverworld.asm"
 INCLUDE "audio/music/tcgclub1.asm"
 INCLUDE "audio/music/tcgclub2.asm"
+INCLUDE "audio/music/tcgronald.asm"
 INCLUDE "audio/music/goldenrodcity.asm"
 
 

@@ -65,3 +65,4 @@ DEF ROOF_LENGTH EQU 9
 DEF PAL_BG_TREE_CORNER EQU PAL_BG_ROOF
 DEF PAL_BG_SHIPWRECK   EQU PAL_BG_RED ; Shipwreck Beach only: brown with the overworld water's dark blue (LoadMapPals)
 DEF PAL_BG_VIRIDIAN_FOREST EQU PAL_BG_WATER ; Viridian Forest only: a brown/green of its own (LoadMapPals)
+DEF PAL_BG_GAME_CORNER_TABLE EQU PAL_BG_WATER ; Goldenrod and Celadon Game Corners only: the blackjack felt (LoadMapPals)

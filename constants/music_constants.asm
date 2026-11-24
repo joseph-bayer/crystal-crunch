@@ -109,6 +109,7 @@
 	const MUSIC_TCG_CLUB_1                   ; 68
 	const MUSIC_TCG_CLUB_2                   ; 69
 	const MUSIC_PUZZLE_TOTODILE              ; 6a
+	const MUSIC_TCG_RONALD                   ; 6b
 DEF NUM_MUSIC_SONGS EQU const_value
 
 ; GetMapMusic picks music for these values (see home/map.asm)

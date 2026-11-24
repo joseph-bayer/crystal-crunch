@@ -838,3 +838,8 @@ INCLUDE "engine/16/table_functions.asm"
 
 ; own section
 INCLUDE "data/trainers/parties.asm"
+
+
+SECTION "Blackjack", ROMX
+
+INCLUDE "engine/games/blackjack.asm"

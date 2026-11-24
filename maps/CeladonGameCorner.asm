@@ -8,6 +8,8 @@
 	const CELADONGAMECORNER_FISHER2
 	const CELADONGAMECORNER_GYM_GUIDE
 	const CELADONGAMECORNER_GRAMPS
+	const CELADONGAMECORNER_JANITOR
+	const CELADONGAMECORNER_BLACKJACK_DEALER
 
 CeladonGameCorner_MapScripts:
 	def_scene_scripts
@@ -129,6 +131,36 @@ CeladonGameCornerCardFlipScript:
 	special CardFlip
 	closetext
 	end
+
+CeladonGameCornerJanitorScript:
+	faceplayer
+	opentext
+	checkevent EVENT_BLACKJACK_SPACEWORLD_DECK
+	iftrue .GaveDeck
+	writetext CeladonGameCornerJanitorText
+	promptbutton
+	writetext CeladonGameCornerReceivedDeckText
+	playsound SFX_KEY_ITEM
+	waitsfx
+	setevent EVENT_BLACKJACK_SPACEWORLD_DECK
+	waitbutton
+	closetext
+	end
+
+.GaveDeck:
+	writetext CeladonGameCornerJanitorAfterText
+	waitbutton
+	closetext
+	end
+
+CeladonGameCornerBlackjackDealerScript:
+	jumpstd BlackjackDealerScript
+
+CeladonGameCornerBlackjackTableScript:
+	jumpstd BlackjackTableScript
+
+CeladonGameCornerTrashCanScript:
+	jumpstd TrashCanScript
 
 CeladonGameCornerLighterScript:
 	jumptext CeladonGameCornerLighterText
@@ -264,6 +296,42 @@ CeladonGameCornerLighterText:
 	line "here."
 	done
 
+CeladonGameCornerJanitorText:
+	text "I'm the janitor"
+	line "here."
+
+	para "I had to clean out"
+	line "that whole multi-"
+	cont "level base in the"
+	cont "back after"
+	cont "TEAM ROCKET left."
+
+	para "You wouldn't"
+	line "believe the junk"
+	cont "I found."
+
+	para "Like this old,"
+	line "dusty deck of"
+	cont "cards."
+
+	para "Here, take it off"
+	line "my hands."
+	done
+
+CeladonGameCornerReceivedDeckText:
+	text "<PLAYER> received"
+	line "SPACEWORLD deck!"
+	done
+
+CeladonGameCornerJanitorAfterText:
+	text "That's the only"
+	line "deck I've seen"
+	cont "like that."
+
+	para "Maybe it's a"
+	line "prototype…"
+	done
+
 CeladonGameCornerSodaCanText:
 	text "A can of soda…"
 
@@ -320,7 +388,9 @@ CeladonGameCorner_MapEvents:
 	bg_event 18, 10, BGEVENT_READ, CeladonGameCornerLuckySlotMachineScript
 	bg_event 18, 11, BGEVENT_RIGHT, CeladonGameCornerLuckySlotMachineScript
 	bg_event 15,  0, BGEVENT_READ, CeladonGameCornerPoster1Script
-	bg_event  9,  0, BGEVENT_READ, CeladonGameCornerPoster2Script
+	bg_event 11,  0, BGEVENT_READ, CeladonGameCornerPoster2Script
+	bg_event 12,  2, BGEVENT_UP, CeladonGameCornerBlackjackTableScript
+	bg_event  8,  1, BGEVENT_READ, CeladonGameCornerTrashCanScript
 
 	def_object_events
 	object_event  5,  2, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerClerkScript, -1
@@ -330,5 +400,7 @@ CeladonGameCorner_MapEvents:
 	object_event 11,  7, SPRITE_FISHING_GURU, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerFishingGuruScript, -1
 	object_event  8, 10, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, DAY, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerFisherScript, -1
 	object_event  8, 10, SPRITE_FISHER, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, NITE, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerFisherScript, -1
-	object_event 11,  3, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGymGuideScript, -1
+	object_event  6, 12, SPRITE_GYM_GUIDE, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGymGuideScript, -1
 	object_event  2,  8, SPRITE_GRAMPS, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerGrampsScript, -1
+	object_event  9,  1, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerJanitorScript, -1
+	object_event 12,  1, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, CeladonGameCornerBlackjackDealerScript, -1

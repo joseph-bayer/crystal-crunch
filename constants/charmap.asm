@@ -142,6 +142,9 @@
 	charmap "+",              $be
 	charmap "<%>",            $bf
 
+; Blackjack screen tiles (see engine/games/blackjack.asm)
+	charmap "<BJ_PLUS>",      $7a
+
 	charmap "'d",        $d0
 	charmap "'l",        $d1
 	charmap "'m",        $d2

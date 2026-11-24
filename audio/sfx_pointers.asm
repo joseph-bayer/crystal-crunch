@@ -211,4 +211,5 @@ SFX:
 	dba Sfx_Twinkle
 	dba Sfx_Thunder_OW
 	dba Sfx_Thunderbolt
+	dba Sfx_DealCard
 	assert_table_length NUM_SFX

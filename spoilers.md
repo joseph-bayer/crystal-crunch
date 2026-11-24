@@ -47,6 +47,10 @@ A Red/Blue or beta Pokémon has no gender, so it breeds as whichever gender its 
 - Evolved forms pass their form down their line: RB Pikachu and Raichu lay beta Pichu, RB Jigglypuff and Wigglytuff lay beta Igglybuff, beta Crobat lays RB Zubat, and beta Kingdra lays RB Horsea.
 - A baby inherits its father's Gen 1 TM tutor moves if its line learned them by TM in Red/Blue. For example, an RB Pikachu that knows Body Slam and a female Clefairy make a Cleffa that knows Body Slam.
 
+## The Spaceworld Blackjack Deck
+- The janitor in the Celadon Game Corner, by the trash can along the back wall, gives you an old deck of cards: the SPACEWORLD deck, with the cards from the unfinished poker game in the Spaceworld '97 demo.
+- Once you have it, the blackjack title screen shows the deck choice: press Left or Right to pick DEFAULT or SPACEWORLD. The game remembers the one you played last.
+
 ## Cosmetic Forms
 | Species	| Form			| How to Obtain |
 |---------------|-----------------------|---------------|

@@ -824,6 +824,60 @@ wBetaPokerSGBCol:: db
 wBetaPokerSGBRow:: db
 
 NEXTU
+; blackjack
+wBlackjackDeck:: ds BLACKJACK_SHOE_SIZE ; the shoe; each card is suit << 4 | rank
+wBlackjackDeckPos:: db ; the next card to deal
+wBlackjackPlayerHand:: ds BLACKJACK_MAX_HAND
+wBlackjackPlayerCount:: db
+wBlackjackDealerHand:: ds BLACKJACK_MAX_HAND
+wBlackjackDealerCount:: db
+wBlackjackHoleHidden:: db ; TRUE while the dealer's second card is face down
+wBlackjackBet:: db
+wBlackjackPayout:: db ; coins handed back at the end of the hand, the bet included
+wBlackjackWinnings:: db ; what the player is up, for the result text
+wBlackjackCardIndex:: db ; scratch for drawing a hand
+wBlackjackCardTiles:: ds 4 * 6 ; scratch: one card's tiles
+wBlackjackBar:: db ; what the bottom bar shows (BJBAR_*)
+wBlackjackBetChoice:: db ; the bet window's item last picked, where its cursor starts
+; a card sliding in
+wBlackjackSlideX:: db ; its left edge on screen, in pixels
+wBlackjackSlideY:: db ; its top edge, in pixels (negative above the screen)
+wBlackjackSlideDistX:: db ; how far it travels left
+wBlackjackSlideDistY:: db ; how far it travels down
+wBlackjackSlideAccX:: db ; the fraction of a pixel moved so far, in steps of 1 / BJ_SLIDE_FRAMES
+wBlackjackSlideAccY:: db
+wBlackjackSlidePalette:: db
+; the sidebar
+wBlackjackMeowth:: db ; MEOWTH_*
+wBlackjackMeowthFrame:: db ; the frame on screen, or -1 for none yet
+wBlackjackMeowthLastState:: db ; the state whose animation is playing
+wBlackjackMeowthTime:: db ; frames into its animation
+wBlackjackMeowthClock:: db ; hVBlankCounter at the last call
+wBlackjackSidebarLine:: ds 5 * 2 ; scratch: a line of text in the normal font's characters
+wBlackjackSidebarValue:: db ; scratch: a one-byte number to print
+wBlackjackSidebarDest:: dw ; scratch: where the next tiles of small text go
+wBlackjackArtPointer:: dw ; scratch: the sidebar art behind them
+wBlackjackArtCell:: dw ; scratch: the next cell of sidebar.tilemap behind them
+wBlackjackSidebarWhite:: db ; scratch: TRUE to draw them in white, not black
+wBlackjackSidebarNudgeX:: db ; scratch: pixels to nudge them right (-1: left)
+wBlackjackSidebarNudgeY:: db ; scratch: pixels to nudge them down
+wBlackjackFieldTiles:: db ; scratch: how many tiles they take
+wBlackjackFieldCells:: db ; scratch: the width of a centred number's field
+wBlackjackRegion:: ds 6 * 5 * 2 ; the screen's tiles, then attributes, where the message box meets the sidebar
+wBlackjackGlyphLeft:: db ; scratch: drawing a tile of small text
+wBlackjackGlyphRight:: db
+; the title screen
+wBlackjackTitleDeck:: db ; the deck shown, then played with
+wBlackjackTitleShift:: db ; how many pixels down the felt has moved, wrapping at its pattern's height
+wBlackjackTitleSet:: db ; which copy of the moving tiles is on screen: 0 in vTiles2, 1 in vTiles0
+wBlackjackTitleClock:: db ; frames to the felt's next step
+wBlackjackTitleMeowth:: db ; the logo's Meowth: which of its two frames is on screen
+wBlackjackTitleMeowthClock:: db ; frames to its other frame
+wBlackjackTitleCount:: db ; scratch
+wBlackjackTitleLine:: ds 16 ; scratch: the deck's line of text
+wBlackjackTitleLineEnd::
+
+NEXTU
 ; unused memory game
 wMemoryGameCards:: ds 9 * 5
 wMemoryGameCardsEnd::

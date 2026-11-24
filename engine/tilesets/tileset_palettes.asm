@@ -152,3 +152,36 @@ LoadMansionPalette:
 
 MansionPalette2:
 INCLUDE "gfx/tilesets/mansion_2.pal"
+
+LoadGameCornerTablePalette:
+; The Goldenrod and Celadon Game Corners have no water, so their blackjack tables' felt takes the
+; water slot: PAL_BG_GAME_CORNER_TABLE. Other maps on the Game Corner tileset keep it.
+	ld a, [wMapGroup]
+	cp GROUP_GOLDENROD_GAME_CORNER
+	jr nz, .not_goldenrod
+	ld a, [wMapNumber]
+	cp MAP_GOLDENROD_GAME_CORNER
+	jr z, .game_corner
+.not_goldenrod
+	ld a, [wMapGroup]
+	cp GROUP_CELADON_GAME_CORNER
+	ret nz
+	ld a, [wMapNumber]
+	cp MAP_CELADON_GAME_CORNER
+	ret nz
+.game_corner
+	ld a, [wTimeOfDayPal]
+	maskbits NUM_DAYTIMES
+	ld hl, GameCornerTablePals
+	ld bc, 1 palettes
+	rst AddNTimes
+	ld de, wBGPals1 palette PAL_BG_GAME_CORNER_TABLE
+	ld bc, 1 palettes
+	ld a, BANK(wBGPals1)
+	jmp FarCopyWRAM
+
+GameCornerTablePals:
+; PAL_BG_GAME_CORNER_TABLE, one palette per time of day
+	table_width 1 palettes
+INCLUDE "gfx/tilesets/game_corner_table.pal"
+	assert_table_length NUM_DAYTIMES

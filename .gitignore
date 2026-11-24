@@ -15,6 +15,7 @@
 *.dimensions
 *.animated.tilemap
 *.sgb.tilemap
+gfx/blackjack/*.tilemap
 gfx/pokemon/*/bitmask.asm
 gfx/pokemon/*/frames.asm
 gfx/pokemon/*/*/bitmask.asm

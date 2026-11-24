@@ -1421,6 +1421,8 @@ LoadMapPals:
 	ldh [rSVBK], a
 	farcall ClearSavedObjPals
 
+	farcall LoadGameCornerTablePalette
+
 ; Tilesets with no roofs give the roof slot to PAL_BG_TREE_CORNER. Checked before the environment,
 ; since Forest maps are CAVE and never reach the roof write below.
 	ld a, [wMapTileset]

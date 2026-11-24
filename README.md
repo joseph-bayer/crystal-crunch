@@ -36,6 +36,8 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 <img src="screenshots/19-open-league-erika.png">
 <img src="screenshots/20-5-color-brock.png">
 <img src="screenshots/21-pewter_museum.png">
+<img src="screenshots/22-blackjack-title.png">
+<img src="screenshots/23-blackjack-playfield.png">
 </p>
 
 ## Features
@@ -295,6 +297,12 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 
 </details>
 
+### Game Corner Blackjack
+
+- Play blackjack with Meowth at the Goldenrod and Celadon Game Corners!
+
+</details>
+
 ### Misc.
 <details>
 <summary>Show details</summary>
@@ -471,3 +479,4 @@ Ported from or based on [Sour Crystal](https://github.com/SoupPotato/sourcrystal
   - Most Pokémon front and back sprites, with their animations and many of their normal and shiny colors, by SoupPotato
 - **Game Freak**
   - The truck at Vermilion Port, from Pokémon Red and Blue, via [pret/pokered](https://github.com/pret/pokered)
+  - The blackjack cards, from the unfinished poker game in the Spaceworld '97 Gold demo, via [pret/pokegold-spaceworld](https://github.com/pret/pokegold-spaceworld)

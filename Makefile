@@ -66,7 +66,7 @@ crystal_test:  pokecrystal_test.gbc
 
 # The regression tests in tests/, run against the test ROM: a debug ROM with a fixed random sequence
 test: crystal_test
-	$(PYTHON) -m pytest tests
+	$(PYTHON) -m pytest -n auto tests
 
 # The files to upload to a GitHub release: a BPS patch for the game and the 3DS Virtual Console patch
 release: pokecrystal.gbc pokecrystal.patch
@@ -85,6 +85,7 @@ clean: tidy
 	        -o -name "*.rgbgfxmap" \
 	        -o -name "*.sgb.tilemap" \) \
 	     -delete
+	$(RM) gfx/blackjack/*.tilemap
 	find gfx/pokemon -mindepth 1 \
 	     ! -path "gfx/pokemon/unown/*" \
 	     \( -name "bitmask.asm" \
@@ -294,6 +295,15 @@ gfx/mail/large_note.1bpp: tools/gfx += --remove-whitespace
 gfx/mail/surf_mail_border.1bpp: tools/gfx += --remove-whitespace
 gfx/mail/flower_mail_border.1bpp: tools/gfx += --remove-whitespace
 gfx/mail/litebluemail_border.1bpp: tools/gfx += --remove-whitespace
+
+gfx/blackjack/card_parts.2bpp: tools/gfx += --trim-whitespace
+# Meowth's frames, the sidebar and the title's logo keep each different tile once, with a tilemap of
+# where they go
+gfx/blackjack/meowth.2bpp: rgbgfx += --unique-tiles
+gfx/blackjack/sidebar.2bpp: rgbgfx += --unique-tiles
+gfx/blackjack/logo.2bpp: rgbgfx += --unique-tiles
+gfx/blackjack/%.tilemap: gfx/blackjack/%.png
+	$(RGBGFX) --colors dmg=e4 --unique-tiles --tilemap $@ $<
 
 gfx/pokedex/pokedex.2bpp: tools/gfx += --trim-whitespace
 gfx/pokedex/pokedex_sgb.2bpp: tools/gfx += --trim-whitespace

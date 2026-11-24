@@ -4465,6 +4465,15 @@ Sfx_Thunderbolt:
 	channel 6, Sfx_Thunderbolt_Ch6
 	channel 8, Sfx_Thunderbolt_Ch8
 
+Sfx_DealCard:
+; Blackjack: Peck at full volume
+	channel_count 1
+	channel 8, .Ch8
+
+.Ch8:
+	noise_note 2, 15, 1, 18
+	sound_ret
+
 Sfx_Supersonic_Ch5:
 	duty_cycle 2
 	square_note 15, 3, -7, 1984

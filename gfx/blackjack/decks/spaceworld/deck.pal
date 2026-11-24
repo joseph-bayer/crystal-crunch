@@ -1,0 +1,27 @@
+; Pikachu, Oddish, Jigglypuff and Poliwag cards, then the back
+	RGB 31, 31, 31
+	RGB 29, 26, 05
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+	RGB 31, 31, 31
+	RGB 12, 31, 11
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+	RGB 31, 31, 31
+	RGB 30, 22, 24
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+	RGB 31, 31, 31
+	RGB 10, 11, 31
+	RGB 18, 18, 18
+	RGB 00, 00, 00
+
+; the back: its pattern grey in colour 1. Colour 2 is the felt's green behind its corners: the game
+; sets it, this one is a stand-in.
+	RGB 31, 31, 31
+	RGB 18, 18, 18
+	RGB 10, 22, 12
+	RGB 00, 00, 00

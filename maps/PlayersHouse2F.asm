@@ -71,6 +71,8 @@ if DEF(_DEBUG)
 	; giveitem MOPED
 	giveitem GOOD_ROD
 	giveitem PASS ; Magnet Train
+	giveitem COIN_CASE ; the Game Corners
+	givecoins 1000
 	giveitem BADGE_CASE ; sets the badge count
 	giveitem THUNDERSTONE, 10
 	giveitem FIRE_STONE, 10

@@ -402,3 +402,20 @@ RegisteredNumber2Text:
 	text_ram wStringBuffer3
 	text "'s number."
 	done
+
+BlackjackDealerAskText::
+	text "Care for a game"
+	line "of blackjack?"
+	done
+
+BlackjackDealerNoText::
+	text "Come back anytime!"
+	done
+
+BlackjackDealerSideText::
+	text "If you'd like to"
+	line "play blackjack,"
+	cont "talk to me from"
+	cont "the front of the"
+	cont "table."
+	done

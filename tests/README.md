@@ -6,8 +6,8 @@ Scripted in-game tests: PyBoy plays the test ROM with fixed inputs, and each tes
 ## Running them
 
 ```bash
-pip install pyboy pytest   # once
-make test                  # builds pokecrystal_test.gbc, then runs every test
+pip install pyboy pytest pytest-xdist pytest-timeout   # once
+make test                  # builds pokecrystal_test.gbc, then runs every test, one per core
 ```
 
 `make test` must pass before a commit. To run one file or one test:
@@ -16,9 +16,14 @@ make test                  # builds pokecrystal_test.gbc, then runs every test
 make crystal_test
 python -m pytest tests/test_legendary_respawn.py
 python -m pytest tests -k caught
+python -m pytest -n auto tests/test_blackjack.py   # in parallel (pytest-xdist)
 ```
 
-Set `TEST_ROM` to test another build of the ROM; its `.sym` must sit beside it.
+Every test runs its own emulator, so tests can run in parallel. A test that runs longer than
+`timeout` in `pytest.ini` fails rather than stalling the run, as when the game crashes into a loop
+the emulator never leaves.
+
+Set `TEST_ROM` to test another build of the ROM; its `.sym` and `.map` must sit beside it.
 
 ## The test ROM
 

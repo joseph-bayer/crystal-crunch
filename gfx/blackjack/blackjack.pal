@@ -1,0 +1,19 @@
+	RGB 10, 22, 12 ; felt
+	RGB 05, 15, 07 ; flecks
+	RGB 03, 13, 06
+	RGB 00, 00, 00
+
+	RGB 31, 31, 31 ; the back (replaced by the deck's own)
+	RGB 21, 21, 21
+	RGB 10, 10, 10
+	RGB 00, 00, 00
+
+	RGB 31, 31, 31 ; the sidebar: white
+	RGB 30, 26, 16 ; the light colour: the wall behind the totals
+	RGB 20, 14, 09 ; the dark colour
+	RGB 00, 00, 00 ; black: the totals' text
+
+	RGB 31, 31, 31 ; text
+	RGB 21, 21, 21
+	RGB 10, 10, 10
+	RGB 00, 00, 00

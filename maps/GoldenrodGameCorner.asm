@@ -18,6 +18,7 @@ DEF GOLDENRODGAMECORNER_DRATINI_COINS EQU 1500
 	const GOLDENRODGAMECORNER_GENTLEMAN
 	const GOLDENRODGAMECORNER_POKEFAN_M2
 	const GOLDENRODGAMECORNER_MOVETUTOR
+	const GOLDENRODGAMECORNER_BLACKJACK_DEALER
 
 GoldenrodGameCorner_MapScripts:
 	def_scene_scripts
@@ -294,9 +295,6 @@ GoldenrodGameCornerGentlemanScript:
 GoldenrodGameCornerPokefanM2Script:
 	jumptextfaceplayer GoldenrodGameCornerPokefanM2Text
 
-GoldenrodGameCornerLeftTheirDrinkScript:
-	jumptext GoldenrodGameCornerLeftTheirDrinkText
-
 GoldenrodGameCornerSlotsMachineScript:
 	random 6
 	ifequal 0, GoldenrodGameCornerLuckySlotsMachineScript
@@ -312,6 +310,12 @@ GoldenrodGameCornerLuckySlotsMachineScript:
 	special SlotMachine
 	closetext
 	end
+
+GoldenrodGameCornerBlackjackDealerScript:
+	jumpstd BlackjackDealerScript
+
+GoldenrodGameCornerBlackjackTableScript:
+	jumpstd BlackjackTableScript
 
 GoldenrodGameCornerCardFlipMachineScript:
 	reanchormap
@@ -434,13 +438,6 @@ MoveTutorInsideText:
 	line "keep rolling in!"
 	done
 
-GoldenrodGameCornerLeftTheirDrinkText:
-	text "Someone left their"
-	line "drink."
-
-	para "It smells sweet."
-	done
-
 GoldenrodGameCorner_MapEvents:
 	db 0, 0 ; filler
 
@@ -481,7 +478,7 @@ GoldenrodGameCorner_MapEvents:
 	bg_event 18,  9, BGEVENT_READ, GoldenrodGameCornerCardFlipMachineScript
 	bg_event 18, 10, BGEVENT_READ, GoldenrodGameCornerCardFlipMachineScript
 	bg_event 18, 11, BGEVENT_RIGHT, GoldenrodGameCornerCardFlipMachineScript
-	bg_event 12,  1, BGEVENT_LEFT, GoldenrodGameCornerLeftTheirDrinkScript
+	bg_event 10,  2, BGEVENT_UP, GoldenrodGameCornerBlackjackTableScript
 
 	def_object_events
 	object_event  3,  2, SPRITE_CLERK, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerCoinVendorScript, -1
@@ -492,7 +489,8 @@ GoldenrodGameCorner_MapEvents:
 	object_event 11, 10, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerPokefanM1Script, -1
 	object_event 14,  8, SPRITE_COOLTRAINER_M, SPRITEMOVEDATA_STANDING_LEFT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerCooltrainerMScript, -1
 	object_event 17,  6, SPRITE_POKEFAN_F, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerPokefanFScript, -1
-	object_event 10,  3, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WANDER, 2, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerCooltrainerFScript, -1
+	object_event 16, 12, SPRITE_COOLTRAINER_F, SPRITEMOVEDATA_WANDER, 2, 1, -1, -1, PAL_NPC_GREEN, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerCooltrainerFScript, -1
 	object_event  5, 10, SPRITE_GENTLEMAN, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_BLUE, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerGentlemanScript, -1
 	object_event  2,  9, SPRITE_POKEFAN_M, SPRITEMOVEDATA_WANDER, 1, 1, -1, -1, PAL_NPC_BROWN, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerPokefanM2Script, -1
 	object_event 17, 10, SPRITE_POKEFAN_M, SPRITEMOVEDATA_STANDING_RIGHT, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, MoveTutorInsideScript, EVENT_GOLDENROD_GAME_CORNER_MOVE_TUTOR
+	object_event 10,  1, SPRITE_RECEPTIONIST, SPRITEMOVEDATA_STANDING_DOWN, 0, 0, -1, -1, PAL_NPC_RED, OBJECTTYPE_SCRIPT, 0, GoldenrodGameCornerBlackjackDealerScript, -1

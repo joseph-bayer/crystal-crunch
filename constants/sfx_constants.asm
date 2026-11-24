@@ -210,4 +210,5 @@
 	const SFX_TWINKLE                     ; ce
 	const SFX_THUNDER_OW                  ; cf (Sour Crystal)
 	const SFX_THUNDERBOLT                 ; d0 (Sour Crystal)
+	const SFX_DEAL_CARD                   ; d1 (blackjack)
 DEF NUM_SFX EQU const_value
