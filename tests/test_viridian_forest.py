@@ -191,13 +191,16 @@ def test_ilex_forest_keeps_its_water(game):
 	assert water == rom_palette(game, "TilesetBGPalette", 0x13)
 
 
-@pytest.mark.parametrize("name,x,y", [(FOREST, 18, 48), ("ILEX_FOREST", 3, 42)])
-def test_both_forests_play_tcg_club_2(game, name, x, y):
+@pytest.mark.parametrize("name,x,y,song", [
+	(FOREST, 18, 48, "MUSIC_ROUTE_2"),
+	("ILEX_FOREST", 3, 42, "MUSIC_TCG_CLUB_2"),
+])
+def test_forest_music(game, name, x, y, song):
 	game.warp(name, x, y)
 	game.wait(30)
-	club_2 = global_constant("MUSIC_TCG_CLUB_2")
-	assert game.peek("wMapMusic") == club_2
-	assert game.peek("wMusicID") == club_2, "the song actually playing"
+	music = global_constant(song)
+	assert game.peek("wMapMusic") == music
+	assert game.peek("wMusicID") == music, "the song actually playing"
 
 
 def test_item_balls_wait_for_a_player_who_owns_every_color(game):
@@ -278,9 +281,8 @@ def test_route_2_and_its_gates_play_route_3(name):
 	assert map_music()[name] == "MUSIC_ROUTE_3"
 
 
-def test_route_2s_own_track_is_unused():
-	assert "MUSIC_ROUTE_2" not in map_music().values()
-	assert re.search(r"const MUSIC_ROUTE_2 +; 0f \(unused\)", read("constants/music_constants.asm"))
+def test_route_2s_own_track_plays_only_in_the_forest():
+	assert [name for name, song in map_music().items() if song == "MUSIC_ROUTE_2"] == ["ViridianForest"]
 
 
 def test_route_2s_wanderer_constants_match_its_objects():
