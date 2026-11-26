@@ -53,9 +53,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Where to find the legendaries is in [spoilers.md](spoilers.md).
 
 ### Following Pokémon
-<img src="screenshots/3-rattatas.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/3-rattatas.png">
 
 - Press **Select** on a party member to make it your follower.
 - A fainted follower waits in its Poké Ball, and comes back out when you heal it.
@@ -64,9 +65,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Wild Pokémon in the Overworld
-<img src="screenshots/5-overworld-mon.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/5-overworld-mon.png">
 
 - Many routes and towns have Pokémon wandering in the open.
 - Walk into one to start a wild battle.
@@ -81,10 +83,11 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 
 
 ### Blackjack!
-<img src="screenshots/22-blackjack-title.png">
-<img src="screenshots/23-blackjack-playfield.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/22-blackjack-title.png">
+<img src="screenshots/23-blackjack-playfield.png">
 
 - Play blackjack with Meowth at the Goldenrod and Celadon Game Corners!
 - Meowth reacts to every hand.
@@ -93,9 +96,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### An Improved Kanto Experience
-<img src="screenshots/21-pewter-museum.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/21-pewter-museum.png">
 
 **Returning Locations**
 - **Viridian Forest** is back, ported from Yellow.
@@ -110,10 +114,11 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Swarm System Overhaul
-<img src="screenshots/6-guild-swarm.png">
-<img src="screenshots/7-swarms-on-map.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/6-guild-swarm.png">
+<img src="screenshots/7-swarms-on-map.png">
 
 - Daily swarms are announced via the radio on station 6.0, the Collection Guild's swarm report. Kanto swarms start after beating the Elite Four.
 - Strange looking Pokémon potentially from the past?
@@ -130,9 +135,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Roaming Legendaries
-<img src="screenshots/12-overworld-beasts.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/12-overworld-beasts.png">
 
 - Roaming legendaries appear in the overworld now instead of in the grass.
 - The location of the roaming legendaries can be tracked on the Pokégear map immediately after the Burned Tower event.
@@ -143,10 +149,11 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Cosmetic Forms
-<img src="screenshots/25-cosmetic-form-flying-pika.png">
-<img src="screenshots/26-cosmetic-form-xl-magikarp.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/25-cosmetic-form-flying-pika.png">
+<img src="screenshots/26-cosmetic-form-xl-magikarp.png">
 
 - Many Pokémon have new cosmetic forms - see [spoilers.md](spoilers.md) for where to find some of them.
 - *Note:* Some forms will have a symbol that displays on the battle and stats screen to indicate that they're different. Not all forms will have this.
@@ -154,9 +161,10 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Red/Blue Pokémon
-<img src="screenshots/24-rb-mon-stats.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/24-rb-mon-stats.png">
 
 Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like they came from Red and Blue - one special stat, no gender.
 - To see how breeding works with Red/Blue Pokémon, see [spoilers.md](spoilers.md#breeding-redblue-pokémon).
@@ -164,10 +172,11 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Hidden Power System Overhaul
-<img src="screenshots/14-hidden-power-stats.png">
-<img src="screenshots/unown-type.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/14-hidden-power-stats.png">
+<img src="screenshots/unown-type.png">
 
 - Every Pokémon's Hidden Power attack power can be increased via various methods. The attack power starts at **20** and caps at **70**. Unown cap at **120**.
 - Every 256 steps, while an Unown is in the party, a Pokémon's Hidden Power attack power can go up:
@@ -184,10 +193,11 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### The Open League
-<img src="screenshots/19-open-league-erika.png">
-<img src="screenshots/20-5-color-brock.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/19-open-league-erika.png">
+<img src="screenshots/20-5-color-brock.png">
 
 - Once you hold all 16 badges, the Elite Four opens up: every run is a new, random lineup of four Elite Four members and a Champion.
 - The lineup is drawn from the Elite Four, the Johto and Kanto Gym Leaders, Lorelei and Agatha from Red and Blue, and a few surprises.
@@ -196,10 +206,11 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Pokégear Upgrades
-<img src="screenshots/9-rematches-on-map.png">
-<img src="screenshots/10-gifts-on-map.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/9-rematches-on-map.png">
+<img src="screenshots/10-gifts-on-map.png">
 
 - Press **Select** on the Pokégear map or the Fly map to switch what the map shows:
 
@@ -216,10 +227,11 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Pokédex Upgrade
-<img src="screenshots/27-dex-alakazam-egg-moves.png">
-<img src="screenshots/28-dex-ditto-locations.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/27-dex-alakazam-egg-moves.png">
+<img src="screenshots/28-dex-ditto-locations.png">
 
 - The Pokédex is built on massive improvements made by Nayru.
   - See where to find a species, its evolution line, front/back/overworld pics, and more!
@@ -260,9 +272,10 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Daily Events
-<img src="screenshots/31-mystery-island.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/31-mystery-island.png">
 
 - The Bug Catching Contest now appears on Sundays as well (on top of Tuesdays, Thursdays, and Saturdays).
 - A Sailor in Cianwood will take you to a mystery island once a day, where you can find new places to explore, rare Pokémon, and more.
@@ -272,9 +285,10 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Trainer Color
-<img src="screenshots/30-trainer-color.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/30-trainer-color.png">
 
 - Pick the color of your clothes at the beginning of your journey: red, blue, or green.
 - Purchase more colors from the Stylist in the Goldenrod Underground. The colors she sells change daily, and she'll let you switch between colors you own for free.
@@ -282,9 +296,10 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Moped
-<img src="screenshots/29-moped.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/29-moped.png">
 
 - Buy the MOPED, a new key item, at the Moped Shop in Cerulean City.
 - It builds up to the Bicycle's speed, and goes faster still while you hold **B**.
@@ -294,9 +309,10 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Mystery Gift Overhaul
-<img src="screenshots/mystery-gift.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/mystery-gift.png">
 
 - Improved rarity distribution - uncommon, rare, and super rare items appear more often.
 - Upgraded rewards - all evolution items can be obtained by Mystery Gifting with NPCs.
@@ -309,10 +325,11 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Breeding Upgrades
-<img src="screenshots/16-daycare-outside-fence.png">
-<img src="screenshots/17-egg-follower.png">
 <details>
 <summary>Show details</summary>
+
+<img src="screenshots/16-daycare-outside-fence.png">
+<img src="screenshots/17-egg-follower.png">
 
 - Fewer step cycles required to hatch eggs.
 - Updated "hatching soon" and egg animation logic to scale down with the lower overall cycles.
@@ -442,6 +459,9 @@ This hack relies on the Game Boy Color's real-time clock (daily swarms, Mystery 
 If you hit a bug, please mention which emulator you're using when you report it.
 
 ### What are the shiny rates?
+<details>
+<summary>Show details</summary>
+
 - Shiny Pokémon are no longer tied to specific DV spreads.
   - Unown can be shiny in any form - not just "I" and "V".
   - You can get shinies that are super weak, super strong, and everywhere in between.
@@ -470,6 +490,8 @@ If you hit a bug, please mention which emulator you're using when you report it.
   - When the beasts are first seen in the Burned Tower, they will each have a **1/512** chance of appearing as shiny (and will remain shiny as they roam). This makes them soft-resettable all at the same time.
   - After that, every time one turns up on the route you're on, it has another **1/512** chance to be shiny.
   - Once you see a shiny roaming Pokémon in the overworld, it will remain shiny for all subsequent encounters. You do not need to actually encounter it in battle for this to happen.
+
+</details>
 
 ---
 
