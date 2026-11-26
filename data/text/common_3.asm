@@ -1144,9 +1144,6 @@ _ElmText_AlreadyHasAPartner::
 	para "You already have"
 	line "a #MON partner!"
 
-	para "Then you don't"
-	line "need one of mine."
-
 	para "Raise it well,"
 	line "<PLAY_G>!"
 	done
