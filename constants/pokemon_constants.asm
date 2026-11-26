@@ -272,8 +272,20 @@ DEF JOHTO_POKEMON EQU const_value
 	const LUGIA      ; f9
 	const HO_OH      ; fa
 	const CELEBI     ; fb
+; Five slots for species the starter injector adds. The plain build fills each with one shared
+; placeholder (gfx/pokemon/new_mon); an injected ROM has its own species in them.
+	const NEW_MON_1  ; fc
+	const NEW_MON_2  ; fd
+	const NEW_MON_3  ; fe
+	const NEW_MON_4  ; ff
+	const NEW_MON_5  ; 100
 DEF NUM_JOHTO_POKEMON EQU const_value - 1
 DEF NUM_POKEMON EQU const_value - 1
+DEF NUM_ORIGINAL_POKEMON EQU CELEBI ; the game's own; completion counts only these
+DEF NUM_NEW_MONS EQU NUM_POKEMON - NUM_ORIGINAL_POKEMON
+; The saved Pokédex flags hold bit (index - 1) of 32 bytes: one species more would move every
+; saved byte after them.
+assert NUM_POKEMON <= 32 * 8, "more species than the saved Pokédex flags hold"
 
 DEF EGG EQU -3
 

@@ -487,13 +487,16 @@ GetMonIconPaletteOrder::
 
 ; A form only appears here when it wants something different from its species, so this list stays
 ; short and a scan is cheaper than a second table indexed by every species.
-	assert NUM_POKEMON < $100, "the form table matches only the low byte of the species index"
 	ld hl, IconPaletteOrderForms
 .form_loop
 	ld a, [hli]
-	inc hl ; the high byte of the index, always zero
-	and a
-	jr z, .by_species ; the terminator
+	ld c, a ; the low byte of the entry's species
+	or [hl]
+	jr z, .by_species ; the terminator, 0
+	ld a, [hli]
+	cp d
+	jr nz, .skip_form_entry
+	ld a, c
 	cp e
 	jr nz, .skip_form_entry
 	ld a, [hli]

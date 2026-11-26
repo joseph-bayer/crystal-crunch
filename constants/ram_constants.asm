@@ -53,6 +53,7 @@ DEF JUMPTABLE_INDEX_MASK EQU %01111111
 	const FOLLOWER_ENTERING_BALL_F      ; 4
 	const FOLLOWER_EXITING_BALL_F       ; 5
 	const FOLLOWER_RIDING_F             ; 6 ; put away while the player rides the bike or moped
+	const FOLLOWER_BESIDE_F             ; 7 ; SpawnFollowerObject puts the next follower to the player's left, in sight
 
 DEF FOLLOWER_INVISIBLE EQU (1 << FOLLOWER_INVISIBLE_F)
 

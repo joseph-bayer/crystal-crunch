@@ -21,9 +21,9 @@ DEF FILL_PC_ALL_UNOWN_LETTERS EQU 0
 
 ; The span of the dex to sweep, inclusive, when FILL_PC_FORM_SPECIES_ONLY is off.
 DEF FILL_PC_FIRST_SPECIES EQU 1
-DEF FILL_PC_LAST_SPECIES  EQU NUM_POKEMON
+DEF FILL_PC_LAST_SPECIES  EQU NUM_ORIGINAL_POKEMON ; not the new slots
 assert FILL_PC_FIRST_SPECIES >= 1, "the sweep range starts at species index 1"
-assert FILL_PC_LAST_SPECIES <= NUM_POKEMON, "the sweep range ends at NUM_POKEMON"
+assert FILL_PC_LAST_SPECIES < $100, "the sweep keeps the species index in one byte"
 
 ; Give each species every cosmetic form rather than only its default. Ignored when
 ; FILL_PC_FORM_SPECIES_ONLY is on, since the forms are the whole point of that mode.
@@ -55,7 +55,7 @@ if FILL_PC_FORM_SPECIES_ONLY
 	ld hl, .FormCounts
 .species_loop
 	ld a, [hli]
-	ld d, a ; species index; NUM_POKEMON fits in a byte, so the high byte is always zero
+	ld d, a ; species index; the sweep ends at NUM_ORIGINAL_POKEMON, so the high byte is always zero
 	inc hl
 	and a
 	ret z ; the terminator
@@ -132,7 +132,7 @@ endc
 	call GetFarWord
 	ld a, h
 	or l
-	ld d, l ; species index; NUM_POKEMON fits in a byte
+	ld d, l ; species index; the sweep ends at NUM_ORIGINAL_POKEMON, within a byte
 	pop hl
 	ret z ; the end
 	push hl
@@ -179,7 +179,7 @@ endc
 	or l
 	jr z, .no_alt ; the end
 	ld a, l
-	cp d ; NUM_POKEMON fits in a byte, so the high byte is always zero
+	cp d ; the sweep ends at NUM_ORIGINAL_POKEMON, so the high byte is always zero
 	jr z, .has_alt
 	pop hl
 	ld bc, 2 + 2 * COLOR_SIZE ; past this row's species and two colors
@@ -213,7 +213,7 @@ endc
 	ld a, [hli]
 	and a
 	jr z, .not_look_alike ; the end; `and a` has cleared carry
-	inc hl ; NUM_POKEMON fits in a byte, so the high byte is always zero
+	inc hl ; the sweep ends at NUM_ORIGINAL_POKEMON, so the high byte is always zero
 	cp d
 	ld a, [hli] ; the form
 	jr nz, .look_alike_loop

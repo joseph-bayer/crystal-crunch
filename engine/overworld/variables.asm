@@ -68,11 +68,10 @@ _GetVarAction::
 	dwb wFollowerState,                 RETVAR_ADDR_DE
 
 .CountCaughtMons:
-; Caught mons. Saturate at 255.
+; Caught mons, of the game's own: completion doesn't count the new slots. Saturate at 255.
 	ld hl, wPokedexCaught
 .count_caught_or_seen_mons
-	ld bc, wEndPokedexCaught - wPokedexCaught
-	call CountSetBits16
+	call CountOriginalDexFlags
 	ld a, b
 .load_or_saturate
 	add -1
@@ -81,19 +80,18 @@ _GetVarAction::
 	jr .loadstringbuffer2
 
 .CountSeenMons:
-; Seen mons. Saturate at 255.
+; Seen mons, of the game's own. Saturate at 255.
 	ld hl, wPokedexSeen
 	jr .count_caught_or_seen_mons
 
 .CountUncaughtMons:
-; Mons left to catch. Saturate at 255.
+; Mons left to catch, of the game's own. Saturate at 255.
 	ld hl, wPokedexCaught
-	ld bc, wEndPokedexCaught - wPokedexCaught
-	call CountSetBits16
-	ld a, LOW(NUM_POKEMON)
+	call CountOriginalDexFlags
+	ld a, LOW(NUM_ORIGINAL_POKEMON)
 	sub c
 	ld c, a
-	ld a, HIGH(NUM_POKEMON)
+	ld a, HIGH(NUM_ORIGINAL_POKEMON)
 	sbc b
 	jr .load_or_saturate
 
@@ -146,3 +144,21 @@ _GetVarAction::
 	ld a, [wBattleResult]
 	and ~BATTLERESULT_BITMASK
 	jmp .loadstringbuffer2
+
+CountOriginalDexFlags::
+; Count the set bits for the game's own species (indexes 1 to NUM_ORIGINAL_POKEMON) in the dex flag
+; array at hl. The new slots after them don't count towards completion.
+; Returns in bc; clobbers everything else
+	ld b, NUM_ORIGINAL_POKEMON / 8
+	call CountSetBits ; leaves hl at the byte holding the rest
+	ld b, 0
+	assert NUM_ORIGINAL_POKEMON % 8, "the last of the game's own species shares a byte with the new slots"
+	ld a, [hl]
+	and (1 << (NUM_ORIGINAL_POKEMON % 8)) - 1
+.rest
+	and a
+	ret z
+	srl a
+	jr nc, .rest
+	inc c
+	jr .rest

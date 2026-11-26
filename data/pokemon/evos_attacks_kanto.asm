@@ -2426,4 +2426,9 @@ MewEvosAttacks:
 	dbw 50, ANCIENTPOWER
 	db 0 ; no more level-up moves
 
+; The starter injector's room for one existing species' evolutions and moves, rewritten with an
+; extension's new evolutions (see constants/injector_constants.asm)
+InjectorExtensionEvosRoom1::
+	ds INJECTOR_EXTENSION_EVOS_ROOM
+
 ENDSECTION

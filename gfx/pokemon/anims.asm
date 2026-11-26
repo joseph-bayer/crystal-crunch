@@ -245,4 +245,6 @@ TyranitarAnimation:  INCLUDE "gfx/pokemon/tyranitar/anim.asm"
 LugiaAnimation:      INCLUDE "gfx/pokemon/lugia/anim.asm"
 HoOhAnimation:       INCLUDE "gfx/pokemon/ho_oh/anim.asm"
 CelebiAnimation:     INCLUDE "gfx/pokemon/celebi/anim.asm"
+NewMonAnimation:     INCLUDE "gfx/pokemon/new_mon/anim.asm"
+InjectorAnimRoom::   ds INJECTOR_ANIM_ROOM * NUM_NEW_MONS ; the starter injector's, a script per slot
 EggAnimation:        INCLUDE "gfx/pokemon/egg/anim.asm"

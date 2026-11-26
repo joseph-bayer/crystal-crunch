@@ -388,7 +388,10 @@ PlacePartyMonEvoStoneCompatibility:
 	call PartyMenuCheckEgg
 	jr z, .next
 	push hl
+	ld a, [wCurPartyMon]
+	push af
 	ld a, b
+	ld [wCurPartyMon], a ; for a stone that evolves only one gender
 	ld bc, PARTYMON_STRUCT_LENGTH
 	ld hl, wPartyMon1Species
 	rst AddNTimes
@@ -401,7 +404,9 @@ PlacePartyMonEvoStoneCompatibility:
 	call LoadDoubleIndirectPointer
 	ld d, h
 	ld e, l
-	farcall DetermineEvolutionItemResults
+	farcall DeterminePartyMonEvolutionItemResults
+	pop af
+	ld [wCurPartyMon], a
 	ld a, d
 	or e
 	ld de, .string_not_able

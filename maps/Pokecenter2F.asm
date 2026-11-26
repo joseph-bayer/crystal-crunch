@@ -65,6 +65,8 @@ endc
 	writetext Text_TradeReceptionistIntro
 	yesorno
 	iffalse .Cancel
+	special CheckPartyForNewMons
+	iftrue Script_NewMonCantLink
 	special SetBitsForLinkTradeRequest
 	writetext Text_PleaseWait
 	special WaitForLinkedFriend
@@ -129,6 +131,8 @@ endc
 	writetext Text_BattleReceptionistIntro
 	yesorno
 	iffalse .Cancel
+	special CheckPartyForNewMons
+	iftrue Script_NewMonCantLink
 	special SetBitsForBattleRequest
 	writetext Text_PleaseWait
 	special WaitForLinkedFriend
@@ -181,6 +185,12 @@ endc
 .AbortLink:
 	special WaitForOtherPlayerToExit
 .Cancel:
+	closetext
+	end
+
+Script_NewMonCantLink:
+	writetext Text_NewMonCantLink
+	waitbutton
 	closetext
 	end
 
@@ -429,6 +439,15 @@ Text_LinkTimedOut:
 Text_PleaseComeAgain:
 	text "Please come again."
 	prompt
+
+Text_NewMonCantLink:
+	text_ram wStringBuffer1
+	text " can't"
+	line "travel by link."
+
+	para "Please leave it"
+	line "in your PC."
+	done
 
 Text_CantLinkToThePast:
 	text "You can't link to"

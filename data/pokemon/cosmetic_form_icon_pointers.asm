@@ -259,6 +259,11 @@ CosmeticFormIconPointersTable:
 	dw 0					; LUGIA (f9) - no cosmetic forms
 	dw 0					; HO_OH (fa) - no cosmetic forms
 	dw 0					; CELEBI (fb) - no cosmetic forms
+	dw 0					; NEW_MON_1 (fc)
+	dw 0					; NEW_MON_2 (fd)
+	dw 0					; NEW_MON_3 (fe)
+	dw 0					; NEW_MON_4 (ff)
+	dw 0					; NEW_MON_5 (100)
 	assert_table_length NUM_POKEMON
 
 PikachuIconPointers:

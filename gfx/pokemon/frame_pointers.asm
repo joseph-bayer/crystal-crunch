@@ -251,4 +251,9 @@ FramesPointers:
 	dba LugiaFrames
 	dba HoOhFrames
 	dba CelebiFrames
+	dba NewMonFrames ; NEW_MON_1
+	dba NewMonFrames ; NEW_MON_2
+	dba NewMonFrames ; NEW_MON_3
+	dba NewMonFrames ; NEW_MON_4
+	dba NewMonFrames ; NEW_MON_5
 	assert_table_length NUM_POKEMON

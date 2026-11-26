@@ -689,18 +689,30 @@ endr
 	ret
 
 GetIconBank:
+; Species before MAGIKARP are in "Mon Icons 1", the rest of the game's own and the egg in
+; "Mon Icons 2", and the new species slots in "Mon Icons 3".
+	assert HIGH(MAGIKARP) == 0 && NUM_ORIGINAL_POKEMON < $100
 	push hl
 	ld a, [wCurIcon]
 	call GetPokemonIndexFromID
+	lb bc, BANK("Mon Icons 2"), 8
 	ld a, h
-	cp HIGH(MAGIKARP) ; first species in "Mon Icons 2"
-	lb bc, BANK("Mon Icons 1"), 8
-	jr c, .return
+	inc a
+	jr z, .return ; $ffxx: the egg
+	dec a
 	ld a, l
+	jr nz, .new_species ; an index past 255
+	cp NUM_ORIGINAL_POKEMON + 1
+	jr nc, .new_species
 	cp LOW(MAGIKARP)
-	jr c, .return
-	ld b, BANK("Mon Icons 2")
+	jr nc, .return
+	ld b, BANK("Mon Icons 1")
 .return
+	pop hl
+	ret
+
+.new_species
+	ld b, BANK("Mon Icons 3")
 	pop hl
 	ret
 

@@ -101,6 +101,11 @@ EvosAttacksPointers2::
 	dw LugiaEvosAttacks
 	dw HoOhEvosAttacks
 	dw CelebiEvosAttacks
+	dw NewMonEvosAttacks ; NEW_MON_1
+	dw NewMonEvosAttacks ; NEW_MON_2
+	dw NewMonEvosAttacks ; NEW_MON_3
+	dw NewMonEvosAttacks ; NEW_MON_4
+	dw NewMonEvosAttacks ; NEW_MON_5
 .IndirectEnd::
 
 ChikoritaEvosAttacks:
@@ -1579,5 +1584,17 @@ CelebiEvosAttacks:
 	dbw 55, FUTURE_SIGHT
 	dbw 60, PERISH_SONG
 	db 0 ; no more level-up moves
+
+NewMonEvosAttacks:
+	db 0 ; no more evolutions
+	dbw 1, TACKLE
+	db 0 ; no more level-up moves
+
+; The starter injector's room: each new species slot's evolutions and moves, then one existing
+; species' rewritten with an extension's new evolutions (see constants/injector_constants.asm)
+InjectorEvosAttacksRoom::
+	ds INJECTOR_EVOS_ROOM * NUM_NEW_MONS
+InjectorExtensionEvosRoom2::
+	ds INJECTOR_EXTENSION_EVOS_ROOM
 
 ENDSECTION

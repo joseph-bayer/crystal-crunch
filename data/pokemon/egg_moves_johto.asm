@@ -106,6 +106,11 @@ EggMovePointers2::
 	dw NoEggMoves2
 	dw NoEggMoves2
 	dw NoEggMoves2
+	dw NoEggMoves2 ; NEW_MON_1
+	dw NoEggMoves2 ; NEW_MON_2
+	dw NoEggMoves2 ; NEW_MON_3
+	dw NoEggMoves2 ; NEW_MON_4
+	dw NoEggMoves2 ; NEW_MON_5
 .IndirectEnd::
 
 ChikoritaEggMoves:
@@ -471,5 +476,9 @@ LarvitarEggMoves:
 	dw ANCIENTPOWER
 NoEggMoves2:
 	dw -1 ; end
+
+; The starter injector's room: each new species slot's egg moves
+InjectorEggMovesRoom::
+	ds INJECTOR_EGG_MOVES_ROOM * NUM_NEW_MONS
 
 ENDSECTION

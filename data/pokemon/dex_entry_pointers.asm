@@ -252,4 +252,9 @@ PokedexDataPointerTable::
 	dba LugiaPokedexEntry
 	dba HoOhPokedexEntry
 	dba CelebiPokedexEntry
+	dba NewMonPokedexEntry ; NEW_MON_1
+	dba NewMonPokedexEntry ; NEW_MON_2
+	dba NewMonPokedexEntry ; NEW_MON_3
+	dba NewMonPokedexEntry ; NEW_MON_4
+	dba NewMonPokedexEntry ; NEW_MON_5
 	assert_table_length NUM_POKEMON

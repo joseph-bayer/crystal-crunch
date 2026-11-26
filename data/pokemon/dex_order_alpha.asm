@@ -253,4 +253,10 @@ AlphabeticalPokedexOrder:
 	dw YANMA
 	dw ZAPDOS
 	dw ZUBAT
+; The new slots come after the 251 in every order.
+	dw NEW_MON_1
+	dw NEW_MON_2
+	dw NEW_MON_3
+	dw NEW_MON_4
+	dw NEW_MON_5
 	assert_table_length NUM_POKEMON

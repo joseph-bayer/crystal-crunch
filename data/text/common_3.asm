@@ -1136,3 +1136,17 @@ _MomLostGearBookletText::
 	para "Come back again in"
 	line "a while."
 	prompt
+
+_ElmText_AlreadyHasAPartner::
+	text "Oh? Who's this"
+	line "with you?"
+
+	para "You already have"
+	line "a #MON partner!"
+
+	para "Then you don't"
+	line "need one of mine."
+
+	para "Raise it well,"
+	line "<PLAY_G>!"
+	done

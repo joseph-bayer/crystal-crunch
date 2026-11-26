@@ -255,3 +255,10 @@ LugiaIcon::      INCBIN "gfx/icons/lugia.2bpp"
 HoOhIcon::       INCBIN "gfx/icons/ho_oh.2bpp"
 CelebiIcon::     INCBIN "gfx/icons/celebi.2bpp"
 EggIcon::        INCBIN "gfx/icons/egg.2bpp"
+
+
+SECTION "Mon Icons 3", ROMX
+
+; The new species slots' icons (GetIconBank): the shared placeholder, then the starter injector's room
+NewMonIcon::     INCBIN "gfx/icons/new_mon.2bpp"
+InjectorIconRoom:: ds INJECTOR_ICON_ROOM * NUM_NEW_MONS

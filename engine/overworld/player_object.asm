@@ -100,9 +100,21 @@ SpawnFollowerObject::
 ; The flags go first. Whatever hid the previous follower -- a warp, a poke ball, an NPC walking
 ; through it -- has nothing to do with the mon just picked, and CopyMapObjectToObjectStruct folds
 ; FOLLOWER_INVISIBLE straight into the new object's own flags.
-	xor a
-	ld [wFollowerFlags], a
+	ld hl, wFollowerFlags
+	ld a, [hl]
+	ld [hl], 0
+	push af
 	call SpawnFollowerMapObject
+	pop af
+	bit FOLLOWER_BESIDE_F, a
+	jr z, .placed
+; A new game's injected starter, the first follower spawned: to the player's left, not on them
+	ld b, FOLLOWER
+	call GetObjectCoord
+	dec b
+	ld a, FOLLOWER
+	call MoveToCoord
+.placed
 	ld a, FOLLOWER
 	ldh [hMapObjectIndex], a
 	ld bc, wMap1Object

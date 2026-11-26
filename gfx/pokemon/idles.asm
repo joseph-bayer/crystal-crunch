@@ -245,4 +245,6 @@ TyranitarAnimationIdle:  INCLUDE "gfx/pokemon/tyranitar/anim_idle.asm"
 LugiaAnimationIdle:      INCLUDE "gfx/pokemon/lugia/anim_idle.asm"
 HoOhAnimationIdle:       INCLUDE "gfx/pokemon/ho_oh/anim_idle.asm"
 CelebiAnimationIdle:     INCLUDE "gfx/pokemon/celebi/anim_idle.asm"
+NewMonAnimationIdle:     INCLUDE "gfx/pokemon/new_mon/anim_idle.asm"
+InjectorIdleRoom::       ds INJECTOR_IDLE_ROOM * NUM_NEW_MONS ; the starter injector's, a script per slot
 EggAnimationIdle:        INCLUDE "gfx/pokemon/egg/anim_idle.asm"

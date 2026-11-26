@@ -527,4 +527,14 @@ PokemonPicPointers::
 	dba HoOhBackpic
 	dba CelebiFrontpic
 	dba CelebiBackpic
+	dba NewMonFrontpic ; NEW_MON_1
+	dba NewMonBackpic
+	dba NewMonFrontpic ; NEW_MON_2
+	dba NewMonBackpic
+	dba NewMonFrontpic ; NEW_MON_3
+	dba NewMonBackpic
+	dba NewMonFrontpic ; NEW_MON_4
+	dba NewMonBackpic
+	dba NewMonFrontpic ; NEW_MON_5
+	dba NewMonBackpic
 	assert_table_length NUM_POKEMON + 1

@@ -258,6 +258,10 @@ ReadEvolution:
 	ld c, SCALED_ITEM_EVO_LEVEL
 	cp EVOLVE_ITEM
 	jr z, .skip_byte
+	cp EVOLVE_ITEM_MALE
+	jr z, .skip_byte
+	cp EVOLVE_ITEM_FEMALE
+	jr z, .skip_byte
 	ld c, SCALED_TRADE_EVO_LEVEL
 .skip_byte
 	inc hl

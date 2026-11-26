@@ -98,5 +98,7 @@ TyranitarFrames:  INCLUDE "gfx/pokemon/tyranitar/frames.asm"
 LugiaFrames:      INCLUDE "gfx/pokemon/lugia/frames.asm"
 HoOhFrames:       INCLUDE "gfx/pokemon/ho_oh/frames.asm"
 CelebiFrames:     INCLUDE "gfx/pokemon/celebi/frames.asm"
+NewMonFrames:     INCLUDE "gfx/pokemon/new_mon/frames.asm"
+InjectorFramesRoom:: ds INJECTOR_FRAMES_ROOM * NUM_NEW_MONS ; the starter injector's, per slot
 EggFrames:        INCLUDE "gfx/pokemon/egg/frames.asm"
 EggElekidFrames:  INCLUDE "gfx/pokemon/egg_elekid/frames.asm"
