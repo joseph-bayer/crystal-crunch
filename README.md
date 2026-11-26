@@ -35,9 +35,16 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 <img src="screenshots/18-apricorn-forest.png">
 <img src="screenshots/19-open-league-erika.png">
 <img src="screenshots/20-5-color-brock.png">
-<img src="screenshots/21-pewter_museum.png">
+<img src="screenshots/21-pewter-museum.png">
 <img src="screenshots/22-blackjack-title.png">
 <img src="screenshots/23-blackjack-playfield.png">
+<img src="screenshots/24-rb-mon-stats.png">
+<img src="screenshots/25-cosmetic-form-flying-pika.png">
+<img src="screenshots/26-cosmetic-form-xl-magikarp.png">
+<img src="screenshots/27-dex-alakazam-egg-moves.png">
+<img src="screenshots/28-dex-ditto-locations.png">
+<img src="screenshots/29-moped.png">
+<img src="screenshots/30-trainer-color.png">
 </p>
 
 ## Features
@@ -46,6 +53,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Where to find the legendaries is in [spoilers.md](spoilers.md).
 
 ### Following Pokémon
+<img src="screenshots/3-rattatas.png">
 <details>
 <summary>Show details</summary>
 
@@ -56,6 +64,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Wild Pokémon in the Overworld
+<img src="screenshots/5-overworld-mon.png">
 <details>
 <summary>Show details</summary>
 
@@ -64,12 +73,45 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - What you see is what you fight - a shiny out in the grass is shiny in the battle.
 - They are worth chasing: better DVs, far more likely to be holding an item, and better shiny odds than the same Pokémon in the grass.
 - Some know egg moves or otherwise unobtainable moves.
-- A chime plays when you walk into an area that has a shiny in it.
+- A chime plays when you walk into an area where a shiny is out on the map. Shiny roaming legendaries chime too.
+- The last 5 shinies that turn up among wandering Pokémon are remembered: leave, battle something else, or save and quit, and the shiny is still there until you battle it (see [What are the shiny rates?](#what-are-the-shiny-rates)).
 - Who turns up is decided fresh each time you enter an area, so it is worth passing back through.
 
 </details>
 
+
+### Blackjack!
+<img src="screenshots/22-blackjack-title.png">
+<img src="screenshots/23-blackjack-playfield.png">
+<details>
+<summary>Show details</summary>
+
+- Play blackjack with Meowth at the Goldenrod and Celadon Game Corners!
+- Meowth reacts to every hand.
+- Some say there's another deck you can find and play with in Kanto...
+
+</details>
+
+### An Improved Kanto Experience
+<img src="screenshots/21-pewter-museum.png">
+<details>
+<summary>Show details</summary>
+
+**Returning Locations**
+- **Viridian Forest** is back, ported from Yellow.
+- **The Pewter Museum** is open, ported from Red and Blue: two floors of exhibits, including the Aerodactyl and Kabutops fossils.
+
+**Livelier Routes**
+- Around 40 new trainers have been added across Kanto's routes and Viridian Forest, scaling with your badges.
+
+**A new way to travel**
+- Save up your money and pick up a new moped from the Cerulean Moped Shop (see [Moped](#moped)).
+
+</details>
+
 ### Swarm System Overhaul
+<img src="screenshots/6-guild-swarm.png">
+<img src="screenshots/7-swarms-on-map.png">
 <details>
 <summary>Show details</summary>
 
@@ -88,6 +130,7 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Roaming Legendaries
+<img src="screenshots/12-overworld-beasts.png">
 <details>
 <summary>Show details</summary>
 
@@ -100,15 +143,18 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 </details>
 
 ### Cosmetic Forms
+<img src="screenshots/25-cosmetic-form-flying-pika.png">
+<img src="screenshots/26-cosmetic-form-xl-magikarp.png">
 <details>
 <summary>Show details</summary>
 
-- Many Pokémon have new cosmetic forms - see the [screenshots](#screenshots), or [spoilers.md](spoilers.md) for where to find some of them.
+- Many Pokémon have new cosmetic forms - see [spoilers.md](spoilers.md) for where to find some of them.
 - *Note:* Some forms will have a symbol that displays on the battle and stats screen to indicate that they're different. Not all forms will have this.
 
 </details>
 
 ### Red/Blue Pokémon
+<img src="screenshots/24-rb-mon-stats.png">
 <details>
 <summary>Show details</summary>
 
@@ -118,6 +164,8 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Hidden Power System Overhaul
+<img src="screenshots/14-hidden-power-stats.png">
+<img src="screenshots/unown-type.png">
 <details>
 <summary>Show details</summary>
 
@@ -136,6 +184,8 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### The Open League
+<img src="screenshots/19-open-league-erika.png">
+<img src="screenshots/20-5-color-brock.png">
 <details>
 <summary>Show details</summary>
 
@@ -146,6 +196,8 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Pokégear Upgrades
+<img src="screenshots/9-rematches-on-map.png">
+<img src="screenshots/10-gifts-on-map.png">
 <details>
 <summary>Show details</summary>
 
@@ -159,10 +211,13 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 
 - When there are more trainers than fit on screen, they take turns showing.
 - Press **Start** to slide over to the other region's map, once you've visited Indigo Plateau. On the Fly map, **Left** and **Right** still work too.
+- The clock card shows the time of day, where you are, and the fishing group.
 
 </details>
 
 ### Pokédex Upgrade
+<img src="screenshots/27-dex-alakazam-egg-moves.png">
+<img src="screenshots/28-dex-ditto-locations.png">
 <details>
 <summary>Show details</summary>
 
@@ -172,6 +227,8 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
   - Tab navigation wrapping
   - No waiting for animations/cries before moving
   - Show the forms and alternate shinies you've caught
+- Press **Select** on a Pokémon's pic to switch between its normal, shiny and alternate shiny colors.
+- Pick the color of the Pokédex's frame.
 
 </details>
 
@@ -203,6 +260,7 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Daily Events
+<img src="screenshots/31-mystery-island.png">
 <details>
 <summary>Show details</summary>
 
@@ -213,7 +271,30 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 
 </details>
 
+### Trainer Color
+<img src="screenshots/30-trainer-color.png">
+<details>
+<summary>Show details</summary>
+
+- Pick the color of your clothes at the beginning of your journey: red, blue, or green.
+- Purchase more colors from the Stylist in the Goldenrod Underground. The colors she sells change daily, and she'll let you switch between colors you own for free.
+
+</details>
+
+### Moped
+<img src="screenshots/29-moped.png">
+<details>
+<summary>Show details</summary>
+
+- Buy the MOPED, a new key item, at the Moped Shop in Cerulean City.
+- It builds up to the Bicycle's speed, and goes faster still while you hold **B**.
+- Totodile's theme from Pokémon Puzzle Challenge plays while you ride.
+- Cycling Road has new ledges and moved trainers to make the ride more fun.
+
+</details>
+
 ### Mystery Gift Overhaul
+<img src="screenshots/mystery-gift.png">
 <details>
 <summary>Show details</summary>
 
@@ -228,6 +309,8 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 </details>
 
 ### Breeding Upgrades
+<img src="screenshots/16-daycare-outside-fence.png">
+<img src="screenshots/17-egg-follower.png">
 <details>
 <summary>Show details</summary>
 
@@ -288,21 +371,6 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 
 </details>
 
-### Trainer Color
-<details>
-<summary>Show details</summary>
-
-- Pick the color of your clothes at the beginning of your journey: red, blue, or green.
-- Purchase more colors from the Stylist in the Goldenrod Underground. The colors she sells change daily, and she'll let you switch between colors you own for free.
-
-</details>
-
-### Game Corner Blackjack
-
-- Play blackjack with Meowth at the Goldenrod and Celadon Game Corners!
-
-</details>
-
 ### Misc.
 <details>
 <summary>Show details</summary>
@@ -322,6 +390,9 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 - Text speed defaults to FAST, and there's a new INSTANT speed.
 - The ball that a Pokémon is caught in is displayed on the stats screen.
 - Only roaming legendaries flee wild battles.
+- Trainers' Pokémon use Return and Frustration at full power, as they do Hidden Power.
+- Level-up moves from Red, Blue and Yellow that were missing are back.
+- Songs from the Pokémon Trading Card Game play in Ilex Forest and Apricorn Forest's clearing.
 - Wild Pokémon are more likely to hold items:
 
   | Common Item | Rare Item |
@@ -336,8 +407,6 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 - A larger variety of forms and swarms
 - A larger variety of Mystery Islands to visit on a daily basis
 - A larger variety of trainers in the Open League
-- An improved Dex
-- Additional trainers and locations in Kanto
 - Enhanced tilesets and sprites
 - A large assortment of new systems and QOL improvements
 

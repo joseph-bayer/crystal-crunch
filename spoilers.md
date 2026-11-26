@@ -16,7 +16,7 @@
 - Solve the fossil Pokemon puzzles in the Ruins of Alph for each respective fossil.
 
 ## The Shaman
-- Meet her at the Ruins of Alph Research Center, then visit her house in the Ruins of Alph.
+- Meet her at the Ruins of Alph Research Center, then visit her cave in the Ruins of Alph.
 
 ## Starters
 - If your rival steals a shiny starter, it stays shiny on his team for the rest of the game.
@@ -56,7 +56,7 @@ A Red/Blue or beta Pokémon has no gender, so it breeds as whichever gender its 
 |---------------|-----------------------|---------------|
 | Pikachu	| Surfing Pikachu	| Teach it Surf |
 | Pikachu	| Flying Pikachu	| Teach it Fly |
-| Pikachu	| Red/Blue		| Mystery Island - Potential Hidden Grove Spawn |
+| Pikachu	| Red/Blue		| Tune into channel 6.0 after beating the Elite Four (a Viridian Forest swarm) |
 | Magikarp	| Extra Small		| Wild Magikarp that's less than 2 feet |
 | Magikarp	| Extra Large		| Wild Magikarp that's larger than 4 feet 5 inches |
 | Smeargle	| Red			| Found in the Ruins of Alph outdoors |
