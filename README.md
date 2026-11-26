@@ -10,7 +10,7 @@ Still in playtesting. Don't be surprised if you find bugs! Future updates may br
 
 ## Download
 
-Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/crystal-for-friends/releases/latest) and apply it to your own Pokémon Crystal ROM. See [How do I patch the game?](#how-do-i-patch-the-game) for the steps.
+Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/crystal-crunch/releases/latest) and apply it to your own Pokémon Crystal ROM. See [How do I patch the game?](#how-do-i-patch-the-game) for the steps.
 
 ## Screenshots
 
@@ -433,7 +433,7 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 
 ### How do I patch the game?
 
-1. Download `crystal-crunch-<version>.bps` from the [latest release](https://github.com/joseph-bayer/crystal-for-friends/releases/latest).
+1. Download `crystal-crunch-<version>.bps` from the [latest release](https://github.com/joseph-bayer/crystal-crunch/releases/latest).
 2. You need your own unmodified **Pokémon Crystal (USA, Europe) (Rev 1)** ROM, also called version 1.1. Its SHA1 is `f2f52230b536214ef7c9924f483392993e226cfb`.
 3. Open [ROM Patcher JS](https://www.marcrobledo.com/RomPatcher.js/) in your browser. It works on a computer or a phone, with nothing to install. Choose your ROM, then the `.bps`, and click **Apply patch**. It saves the patched game as a new `.gbc` file.
 4. Load the patched `.gbc` in an emulator (see below).
