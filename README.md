@@ -12,6 +12,8 @@ Still in playtesting. Don't be surprised if you find bugs! Future updates may br
 
 Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/crystal-crunch/releases/latest) and apply it to your own Pokémon Crystal ROM. See [How do I patch the game?](#how-do-i-patch-the-game) for the steps.
 
+Want to choose any starter or create your own custom one? Try the [Starter Injector](https://joseph-bayer.github.io/crystal-crunch-starter-injector/) (see [Starter Injector](#starter-injector)).
+
 ## Screenshots
 
 <p>
@@ -61,6 +63,19 @@ Get the `.bps` patch from the [latest release](https://github.com/joseph-bayer/c
 - Press **Select** on a party member to make it your follower.
 - A fainted follower waits in its Poké Ball, and comes back out when you heal it.
 - Eggs can follow you too!
+
+</details>
+
+### Starter Injector
+<details>
+<summary>Show details</summary>
+
+Start the game with the partner you want, using the **[Crystal Crunch Starter Injector](https://joseph-bayer.github.io/crystal-crunch-starter-injector/)**.
+
+- Pick any of the 251, in any form, normal, shiny or alternate shiny. Or make Pokémon of your own: a whole new line, or new members of one of the game's lines, such as a new evolution or a new baby.
+- It works in your browser on your own patched ROM. Patch a fresh copy of the game, load it on the page, choose your starter, and download the result.
+- For your own custom Pokémon, upload/enter their pictures, stats, moves, evolutions, Pokédex entry and cry. Save your work as a pack (one `.zip`) to share it with others, save your progress, or load it again later.
+- New Pokémon can't be traded or battled over a link: the Cable Club turns them away, since other games wouldn't know them.
 
 </details>
 

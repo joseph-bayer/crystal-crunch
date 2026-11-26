@@ -10,6 +10,7 @@
 - **Blackjack** at the Goldenrod and Celadon Game Corners: talk to the dealer from the front of the table, bet 10, 50 or 100 coins, and play with Meowth cheering you on. There's a second deck to find.
 
 ### New features
+- **[Starter Injector](https://joseph-bayer.github.io/crystal-crunch-starter-injector/)**: a tool that injects the starter you want into your patched ROM, in your browser. Pick any of the 251 in any form, normal, shiny or alternate shiny, or make up to 5 Pokémon of your own: a new line, or new members of one of the game's lines. New Pokémon can't go over a link: the Cable Club turns them away.
 - **Nayru's Pokédex**: see where to find a species, its evolution line, and its front, back and overworld pics. Tabs wrap around, you don't wait for animations or cries, and it shows the forms and alternate shinies you've caught (press SELECT to cycle them). Pick the Pokédex's frame color, and toggle shiny pics.
 - **Pokégear clock card**: shows the time of day, where you are, and the fishing group.
 - **Trainer color**: pick red, blue or green at the start, and buy more colors from the Stylist in the Goldenrod Underground. Her stock changes daily, and switching between colors you own is free.
@@ -52,4 +53,4 @@
 
 ## Earlier versions
 
-See the [GitHub releases](https://github.com/joseph-bayer/crystal-for-friends/releases).
+See the [GitHub releases](https://github.com/joseph-bayer/crystal-crunch/releases).
