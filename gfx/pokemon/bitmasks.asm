@@ -245,5 +245,7 @@ TyranitarBitmasks:  INCLUDE "gfx/pokemon/tyranitar/bitmask.asm"
 LugiaBitmasks:      INCLUDE "gfx/pokemon/lugia/bitmask.asm"
 HoOhBitmasks:       INCLUDE "gfx/pokemon/ho_oh/bitmask.asm"
 CelebiBitmasks:     INCLUDE "gfx/pokemon/celebi/bitmask.asm"
+NewMonBitmasks:     INCLUDE "gfx/pokemon/new_mon/bitmask.asm"
+InjectorBitmaskRoom:: ds INJECTOR_BITMASK_ROOM * NUM_NEW_MONS ; the starter injector's, per slot
 EggBitmasks:        INCLUDE "gfx/pokemon/egg/bitmask.asm"
 EggElekidBitmasks:  INCLUDE "gfx/pokemon/egg_elekid/bitmask.asm"

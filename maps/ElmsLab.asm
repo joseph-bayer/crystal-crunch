@@ -69,6 +69,13 @@ ElmsLabObjectsCallback:
 	iffalse .MoveElm ; not stolen yet
 	setevent EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB
 	clearevent EVENT_CHIKORITA_WANDERING_IN_ELMS_LAB
+; With a starter injected, "yours" only told SILVER which to take: it was never taken, so it wanders
+; too, in the room below, apart from the other.
+	callasm CheckInjectedStarter
+	iffalse .MoveElm
+	setevent EVENT_CYNDAQUIL_POKEBALL_IN_ELMS_LAB
+	clearevent EVENT_CYNDAQUIL_WANDERING_IN_ELMS_LAB
+	moveobject ELMSLAB_WANDERING_CYNDAQUIL, 7, 9
 	sjump .MoveElm
 
 .GotTotodile:
@@ -77,6 +84,11 @@ ElmsLabObjectsCallback:
 	iffalse .MoveElm
 	setevent EVENT_CYNDAQUIL_POKEBALL_IN_ELMS_LAB
 	clearevent EVENT_CYNDAQUIL_WANDERING_IN_ELMS_LAB
+	callasm CheckInjectedStarter
+	iffalse .MoveElm
+	setevent EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB
+	clearevent EVENT_TOTODILE_WANDERING_IN_ELMS_LAB
+	moveobject ELMSLAB_WANDERING_TOTODILE, 7, 9
 	sjump .MoveElm
 
 .GotChikorita:
@@ -85,6 +97,11 @@ ElmsLabObjectsCallback:
 	iffalse .MoveElm
 	setevent EVENT_TOTODILE_POKEBALL_IN_ELMS_LAB
 	clearevent EVENT_TOTODILE_WANDERING_IN_ELMS_LAB
+	callasm CheckInjectedStarter
+	iffalse .MoveElm
+	setevent EVENT_CHIKORITA_POKEBALL_IN_ELMS_LAB
+	clearevent EVENT_CHIKORITA_WANDERING_IN_ELMS_LAB
+	moveobject ELMSLAB_WANDERING_CHIKORITA, 7, 9
 .MoveElm:
 	checkscene
 	iftrue .Skip ; not SCENE_ELMSLAB_MEET_ELM
@@ -130,11 +147,22 @@ endc
 	applymovement ELMSLAB_ELM, ElmsLab_ElmToDefaultPositionMovement2
 	turnobject PLAYER, RIGHT
 	opentext
+	callasm CheckInjectedStarter
+	iftrue .AlreadyHasAPartner
 	writetext ElmText_ChooseAPokemon
 	waitbutton
 	setscene SCENE_ELMSLAB_CANT_LEAVE
 	closetext
 	end
+
+.AlreadyHasAPartner:
+; A ROM with a starter injected: you came with it, so the three on the table stay there (they can't be
+; taken once you have a POKéMON from ELM), and SILVER steals the one for the rival's line.
+	writetext ElmText_AlreadyHasAPartner
+	waitbutton
+	closetext
+	callasm SetInjectedStarterRival
+	sjump ElmDirectionsFacingElmScript
 
 ProfElmScript:
 	faceplayer
@@ -297,6 +325,7 @@ DidntChooseStarterScript:
 ElmDirectionsScript:
 	turnobject PLAYER, UP
 	turnobject FOLLOWER, UP
+ElmDirectionsFacingElmScript:
 if !DEF(_DEBUG)
 	opentext
 	writetext ElmDirectionsText1
@@ -932,6 +961,11 @@ ElmText_ChooseAPokemon:
 
 	para "Go on. Pick one!"
 	done
+
+ElmText_AlreadyHasAPartner:
+	; in a common text bank: this map's script bank is full
+	text_far _ElmText_AlreadyHasAPartner
+	text_end
 
 ElmText_LetYourMonBattleIt:
 	text "If a wild #MON"

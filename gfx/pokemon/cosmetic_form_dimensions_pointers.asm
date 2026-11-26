@@ -259,4 +259,9 @@ CosmeticFormDimensionsPointersTable:
 	dw 0					; LUGIA (f9)
 	dw 0					; HO_OH (fa)
 	dw 0					; CELEBI (fb)
+	dw 0					; NEW_MON_1 (fc)
+	dw 0					; NEW_MON_2 (fd)
+	dw 0					; NEW_MON_3 (fe)
+	dw 0					; NEW_MON_4 (ff)
+	dw 0					; NEW_MON_5 (100)
 	assert_table_length NUM_POKEMON

@@ -27,14 +27,12 @@ ProfOaksPCRating:
 	jmp WaitSFX
 
 Rate:
-; calculate Seen/Owned
+; calculate Seen/Owned, of the game's own species: the new slots don't count towards a rating
 	ld hl, wPokedexCaught
-	ld bc, wEndPokedexCaught - wPokedexCaught
-	call CountSetBits16
+	farcall CountOriginalDexFlags
 	push bc
 	ld hl, wPokedexSeen
-	ld bc, wEndPokedexSeen - wPokedexSeen
-	call CountSetBits16
+	farcall CountOriginalDexFlags
 
 ; print appropriate rating
 	ld hl, wStringBuffer3

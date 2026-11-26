@@ -255,4 +255,9 @@ PokemonNames::
 	db "LUGIA@@@@@"
 	db "HO-OH@@@@@"
 	db "CELEBI@@@@"
+	db "?????@@@@@" ; NEW_MON_1
+	db "?????@@@@@" ; NEW_MON_2
+	db "?????@@@@@" ; NEW_MON_3
+	db "?????@@@@@" ; NEW_MON_4
+	db "?????@@@@@" ; NEW_MON_5
 	assert_table_length NUM_POKEMON

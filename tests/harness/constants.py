@@ -18,8 +18,8 @@ def _number(text):
 
 
 def _consts(path):
-	"""The value of every `const NAME` in an rgbds file that uses const_def, const, const_skip and
-	const_next, in order."""
+	"""The value of every `const NAME` in an rgbds file that uses const_def, const, const_skip,
+	const_next and const_align, in order."""
 	values = {}
 	value = 0
 	step = 1
@@ -39,6 +39,11 @@ def _consts(path):
 			continue
 		if re.match(r"const_skip\b", code):
 			value += step
+			continue
+		m = re.match(r"const_align\s+(\S+)", code)
+		if m: # up to the next multiple of 2 ** n, as the key items, balls and TMs start
+			size = 1 << _number(m.group(1))
+			value = -(-value // size) * size
 			continue
 		m = re.match(r"const\s+(\w+)", code)
 		if m:

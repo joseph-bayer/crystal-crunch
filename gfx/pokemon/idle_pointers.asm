@@ -251,4 +251,9 @@ AnimationIdlePointers:
 	dw LugiaAnimationIdle
 	dw HoOhAnimationIdle
 	dw CelebiAnimationIdle
+	dw NewMonAnimationIdle ; NEW_MON_1
+	dw NewMonAnimationIdle ; NEW_MON_2
+	dw NewMonAnimationIdle ; NEW_MON_3
+	dw NewMonAnimationIdle ; NEW_MON_4
+	dw NewMonAnimationIdle ; NEW_MON_5
 	assert_table_length NUM_POKEMON

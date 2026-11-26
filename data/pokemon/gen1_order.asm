@@ -253,4 +253,4 @@ Pokered_MonIndices:
 	db QWILFISH
 	db WOBBUFFET
 	db WOBBUFFET
-	assert_table_length NUM_POKEMON + 1
+	assert_table_length NUM_ORIGINAL_POKEMON + 1 ; the new slots never reach the Time Capsule

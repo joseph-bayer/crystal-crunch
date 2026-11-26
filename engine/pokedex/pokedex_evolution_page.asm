@@ -320,11 +320,15 @@ EVO_PrintMethod:
 	cp EVOLVE_ITEM
 	jr z, EVO_item
 	cp EVOLVE_TRADE
-	jr z, EVO_trade
+	jmp z, EVO_trade
 	cp EVOLVE_HAPPINESS
 	jmp z, EVO_happiness
 	cp EVOLVE_STAT
 	jmp z, EVO_stats
+	cp EVOLVE_ITEM_MALE
+	jr z, EVO_item_male
+	cp EVOLVE_ITEM_FEMALE
+	jr z, EVO_item_female
 	ret
 
 EVO_SkipExtraParamByte:
@@ -374,11 +378,20 @@ EVO_level:
 	call PrintNum ; lvl evolved at
 	jr EVO_inchlcoord
 
+EVO_item_male:
+	ld de, EVO_item_with_text.male_text
+	jr EVO_item_with_text
+
+EVO_item_female:
+	ld de, EVO_item_with_text.female_text
+	jr EVO_item_with_text
+
 EVO_item:
+	ld de, EVO_item_with_text.item_text
+EVO_item_with_text:
 	call EVO_GetItemParam
 	call EVO_inchlcoord
 	push af ; item ID
-	ld de, .item_text
 	rst PlaceString ; item:
 
 	pop af ; item index
@@ -390,6 +403,10 @@ EVO_item:
 	jmp EVO_inchlcoord
 .item_text:
 	db "ITEM@"
+.male_text:
+	db "ITEM ♂@"
+.female_text:
+	db "ITEM ♀@"
 
 EVO_trade:
 	call EVO_GetItemParam

@@ -286,4 +286,9 @@ INCLUDE "data/pokemon/base_stats/tyranitar.asm"
 INCLUDE "data/pokemon/base_stats/lugia.asm"
 INCLUDE "data/pokemon/base_stats/ho_oh.asm"
 INCLUDE "data/pokemon/base_stats/celebi.asm"
+INCLUDE "data/pokemon/base_stats/new_mon.asm" ; NEW_MON_1
+INCLUDE "data/pokemon/base_stats/new_mon.asm" ; NEW_MON_2
+INCLUDE "data/pokemon/base_stats/new_mon.asm" ; NEW_MON_3
+INCLUDE "data/pokemon/base_stats/new_mon.asm" ; NEW_MON_4
+INCLUDE "data/pokemon/base_stats/new_mon.asm" ; NEW_MON_5
 .IndirectEnd::

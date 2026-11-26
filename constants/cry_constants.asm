@@ -72,5 +72,11 @@
 	const CRY_AIPOM
 	const CRY_DUNSPARCE
 	const CRY_DONPHAN
+; a custom cry the starter injector writes, one per new species slot (NEW_MON_1 onward)
+	const CRY_NEW_MON_1
+	const CRY_NEW_MON_2
+	const CRY_NEW_MON_3
+	const CRY_NEW_MON_4
+	const CRY_NEW_MON_5
 
 DEF NUM_CRIES EQU const_value

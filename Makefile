@@ -66,13 +66,15 @@ crystal_test:  pokecrystal_test.gbc
 
 # The regression tests in tests/, run against the test ROM: a debug ROM with a fixed random sequence
 test: crystal_test
-	$(PYTHON) -m pytest -n auto tests
+	RGBASM=$(RGBASM) $(PYTHON) -m pytest -n auto tests
 
-# The files to upload to a GitHub release: a BPS patch for the game and the 3DS Virtual Console patch
+# The files to upload to a GitHub release: a BPS patch for the game and the 3DS Virtual Console patch,
+# plus the starter injector's map of the patched ROM (not uploaded: it goes into the injector's data)
 release: pokecrystal.gbc pokecrystal.patch
 	mkdir -p release
 	$(PYTHON) utils/make_bps.py $(BASEROM) pokecrystal.gbc release/crystal-crunch-$(VERSION).bps --sha1 $(BASEROM_SHA1)
 	cp pokecrystal.patch release/crystal-crunch-$(VERSION).patch
+	$(PYTHON) utils/injection_map.py --rom pokecrystal.gbc --out release/crystal-crunch-$(VERSION).inject.json --rgbasm $(RGBASM)
 
 clean: tidy
 	find gfx \

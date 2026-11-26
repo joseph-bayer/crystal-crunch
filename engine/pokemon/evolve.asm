@@ -64,7 +64,7 @@ EvolveAfterBattle_MasterLoop:
 	ld b, a
 
 	cp EVOLVE_TRADE
-	jr z, .trade
+	jmp z, .trade
 
 	ld a, [wLinkMode]
 	and a
@@ -73,6 +73,10 @@ EvolveAfterBattle_MasterLoop:
 	ld a, b
 	cp EVOLVE_ITEM
 	jmp z, .item
+	cp EVOLVE_ITEM_MALE
+	jmp z, .item_gender
+	cp EVOLVE_ITEM_FEMALE
+	jmp z, .item_gender
 
 	ld a, [wForceEvolution]
 	and a
@@ -158,6 +162,12 @@ EvolveAfterBattle_MasterLoop:
 	xor a
 	ld [wTempMonItem], a
 	jr .proceed
+
+.item_gender
+; A stone that evolves only one gender
+	call EvoGenderMismatch
+	jmp c, .skip_evolution_species_parameter_word
+	; fallthrough
 
 .item
 	call GetEvoItem
@@ -640,6 +650,17 @@ SkipEvolutions::
 DetermineEvolutionItemResults::
 ; in: b:de: pointer to evos and attacks struct, wCurItem: item
 ; out: de: species ID or zero; a, b, hl: clobbered
+; This asks about the species, so a stone for one gender counts whatever the gender.
+	push bc
+	ld c, FALSE
+	jr _DetermineEvolutionItemResults
+
+DeterminePartyMonEvolutionItemResults::
+; As DetermineEvolutionItemResults, for the party mon wCurPartyMon: a stone for one gender counts
+; only if the mon is that gender.
+	push bc
+	ld c, TRUE
+_DetermineEvolutionItemResults:
 	ld h, d
 	ld l, e
 	ld de, 0
@@ -648,13 +669,24 @@ DetermineEvolutionItemResults::
 .loop
 	call GetNextEvoAttackByte
 	and a
-	ret z
+	jr z, .done
 	cp EVOLVE_LEVEL
 	jr z, .skip_species_parameter_byte
 	cp EVOLVE_HAPPINESS
 	jr z, .skip_species_parameter_byte
 	cp EVOLVE_ITEM
+	jr z, .item
+	cp EVOLVE_ITEM_MALE
+	jr z, .item_gender
+	cp EVOLVE_ITEM_FEMALE
 	jr nz, .skip_species_parameter_word
+.item_gender
+	dec c
+	inc c
+	jr z, .item ; any gender
+	call EvoGenderMismatch
+	jr c, .skip_species_parameter_word
+.item
 	call GetEvoItem
 	ld a, [wCurItem]
 	cp b
@@ -663,6 +695,8 @@ DetermineEvolutionItemResults::
 	call GetFarWord
 	ld d, h
 	ld e, l
+.done
+	pop bc
 	ret
 
 .skip_species_parameter_word
@@ -673,6 +707,51 @@ DetermineEvolutionItemResults::
 	inc hl
 	inc hl
 	jr .loop
+
+EvoGenderMismatch:
+; in: a = EVOLVE_ITEM_MALE or EVOLVE_ITEM_FEMALE, for the party mon wCurPartyMon
+; out: carry if the mon isn't that gender (a genderless mon is neither). Preserves bc, de and hl.
+	push hl
+	push de
+	push bc
+	ld b, a
+	; GetGender reads the species from wCurPartySpecies and the DVs as wMonType says
+	ld a, [wCurPartySpecies]
+	push af
+	ld a, [wMonType]
+	push af
+	xor a ; PARTYMON
+	ld [wMonType], a
+	ld a, [wCurPartyMon]
+	ld e, a
+	ld d, 0
+	ld hl, wPartySpecies
+	add hl, de
+	ld a, [hl]
+	ld [wCurPartySpecies], a
+	push bc
+	farcall GetGender ; a = 1 male, 0 female; carry if genderless
+	pop bc
+	ld c, TRUE ; a mismatch
+	jr c, .got_result
+	ld e, a
+	assert EVOLVE_ITEM_FEMALE == EVOLVE_ITEM_MALE + 1
+	ld a, EVOLVE_ITEM_FEMALE
+	sub b ; the gender wanted: 1 male, 0 female
+	cp e
+	jr nz, .got_result
+	ld c, FALSE
+.got_result
+	pop af
+	ld [wMonType], a
+	pop af
+	ld [wCurPartySpecies], a
+	ld a, c
+	rrca ; carry if a mismatch
+	pop bc
+	pop de
+	pop hl
+	ret
 
 GetNextEvoAttackByte:
 	ldh a, [hTemp]

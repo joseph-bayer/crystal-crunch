@@ -279,6 +279,11 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; LUGIA
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; HO_OH
 	db ICON_PAL_SWAP | ICON_PAL_OFFWHITE ; CELEBI
+	db ICON_PAL_NORMAL                   ; NEW_MON_1
+	db ICON_PAL_NORMAL                   ; NEW_MON_2
+	db ICON_PAL_NORMAL                   ; NEW_MON_3
+	db ICON_PAL_NORMAL                   ; NEW_MON_4
+	db ICON_PAL_NORMAL                   ; NEW_MON_5
 	assert_table_length NUM_POKEMON
 
 ; Per-form overrides, checked before the species table. Entries are

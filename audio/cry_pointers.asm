@@ -69,4 +69,7 @@ Cries:
 	dba Cry_Aipom
 	dba Cry_Dunsparce
 	dba Cry_Donphan
+FOR n, NUM_NEW_MONS
+	dbw BANK(InjectorCryRoom), InjectorCryRoom + n * INJECTOR_CRY_ROOM
+ENDR
 	assert_table_length NUM_CRIES

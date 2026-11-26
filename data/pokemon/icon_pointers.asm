@@ -256,6 +256,11 @@ IconPointers:
 	dw LugiaIcon
 	dw HoOhIcon
 	dw CelebiIcon
+	dw NewMonIcon ; NEW_MON_1
+	dw NewMonIcon ; NEW_MON_2
+	dw NewMonIcon ; NEW_MON_3
+	dw NewMonIcon ; NEW_MON_4
+	dw NewMonIcon ; NEW_MON_5
 	assert_table_length NUM_POKEMON + 1
 
 	dw UnownBIcon

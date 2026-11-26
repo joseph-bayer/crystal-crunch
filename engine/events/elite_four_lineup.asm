@@ -884,7 +884,8 @@ DebugUncatchMon:
 	jmp FlagAction
 
 DebugFillPokedex:
-	ld de, NUM_POKEMON
+; The game's own species; the new slots stay empty
+	ld de, NUM_ORIGINAL_POKEMON
 .loop
 	push de
 	call SetSeenMonIndex
