@@ -2296,12 +2296,17 @@ def test_ronalds_theme_plays_on_the_title(game):
 	assert music(game) == music_constants()["MUSIC_TCG_RONALD"]
 
 
+# The janitor stands at (9, 1), his trash can at (8, 1) beside him
+BELOW_JANITOR = (9, 2)
+BELOW_TRASH_CAN = (8, 2)
+
+
 def test_the_celadon_janitor_gives_the_spaceworld_deck(game):
 	"""The janitor beside the trash can in Celadon Game Corner gives the SPACEWORLD deck once; the
 	title then has two decks to pick from."""
 	assert not game.event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
-	game.warp("CELADON_GAME_CORNER", 8, 3)
-	game.press("up") # he stands above, below his trash can
+	game.warp("CELADON_GAME_CORNER", *BELOW_JANITOR)
+	game.press("up") # he stands right of his trash can
 	game.press("a")
 	game.wait_for_text("janitor")
 	for _ in range(30):
@@ -2335,8 +2340,8 @@ def test_the_celadon_janitor_gives_the_spaceworld_deck(game):
 
 
 def test_the_celadon_janitors_trash_can(game):
-	game.warp("CELADON_GAME_CORNER", 9, 1)
-	game.press("left")
+	game.warp("CELADON_GAME_CORNER", *BELOW_TRASH_CAN)
+	game.press("up")
 	game.press("a")
 	game.wait_for_text("nothing in")
 
