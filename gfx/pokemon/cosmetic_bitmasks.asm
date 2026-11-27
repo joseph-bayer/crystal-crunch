@@ -165,6 +165,39 @@ StarmieRBBitmask:		INCLUDE "gfx/pokemon/starmie_rb/bitmask.asm"
 AerodactylPlainBitmask:		INCLUDE "gfx/pokemon/aerodactyl/bitmask.asm"
 AerodactylRBBitmask:		INCLUDE "gfx/pokemon/aerodactyl_rb/bitmask.asm"
 
+RhyhornPlainBitmask:		INCLUDE "gfx/pokemon/rhyhorn/bitmask.asm"
+RhyhornRBBitmask:		INCLUDE "gfx/pokemon/rhyhorn_rb/bitmask.asm"
+
+RhydonPlainBitmask:		INCLUDE "gfx/pokemon/rhydon/bitmask.asm"
+RhydonRBBitmask:		INCLUDE "gfx/pokemon/rhydon_rb/bitmask.asm"
+
+KangaskhanPlainBitmask:		INCLUDE "gfx/pokemon/kangaskhan/bitmask.asm"
+KangaskhanRBBitmask:		INCLUDE "gfx/pokemon/kangaskhan_rb/bitmask.asm"
+
+VenonatPlainBitmask:		INCLUDE "gfx/pokemon/venonat/bitmask.asm"
+VenonatRBBitmask:		INCLUDE "gfx/pokemon/venonat_rb/bitmask.asm"
+
+VenomothPlainBitmask:		INCLUDE "gfx/pokemon/venomoth/bitmask.asm"
+VenomothRBBitmask:		INCLUDE "gfx/pokemon/venomoth_rb/bitmask.asm"
+
+LaprasPlainBitmask:		INCLUDE "gfx/pokemon/lapras/bitmask.asm"
+LaprasRBBitmask:		INCLUDE "gfx/pokemon/lapras_rb/bitmask.asm"
+
+FarfetchDPlainBitmask:		INCLUDE "gfx/pokemon/farfetch_d/bitmask.asm"
+FarfetchDRBBitmask:		INCLUDE "gfx/pokemon/farfetch_d_rb/bitmask.asm"
+
+CubonePlainBitmask:		INCLUDE "gfx/pokemon/cubone/bitmask.asm"
+CuboneRBBitmask:		INCLUDE "gfx/pokemon/cubone_rb/bitmask.asm"
+
+MarowakPlainBitmask:		INCLUDE "gfx/pokemon/marowak/bitmask.asm"
+MarowakRBBitmask:		INCLUDE "gfx/pokemon/marowak_rb/bitmask.asm"
+
+ExeggcutePlainBitmask:		INCLUDE "gfx/pokemon/exeggcute/bitmask.asm"
+ExeggcuteRBBitmask:		INCLUDE "gfx/pokemon/exeggcute_rb/bitmask.asm"
+
+ExeggutorPlainBitmask:		INCLUDE "gfx/pokemon/exeggutor/bitmask.asm"
+ExeggutorRBBitmask:		INCLUDE "gfx/pokemon/exeggutor_rb/bitmask.asm"
+
 PichuPlainBitmask:		INCLUDE "gfx/pokemon/pichu/bitmask.asm"
 PichuBetaBitmask:		INCLUDE "gfx/pokemon/pichu_beta/bitmask.asm"
 

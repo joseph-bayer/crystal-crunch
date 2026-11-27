@@ -165,6 +165,39 @@ StarmieRBFrames:		INCLUDE "gfx/pokemon/starmie_rb/frames.asm"
 AerodactylPlainFrames:		INCLUDE "gfx/pokemon/aerodactyl/frames.asm"
 AerodactylRBFrames:		INCLUDE "gfx/pokemon/aerodactyl_rb/frames.asm"
 
+RhyhornPlainFrames:		INCLUDE "gfx/pokemon/rhyhorn/frames.asm"
+RhyhornRBFrames:		INCLUDE "gfx/pokemon/rhyhorn_rb/frames.asm"
+
+RhydonPlainFrames:		INCLUDE "gfx/pokemon/rhydon/frames.asm"
+RhydonRBFrames:		INCLUDE "gfx/pokemon/rhydon_rb/frames.asm"
+
+KangaskhanPlainFrames:		INCLUDE "gfx/pokemon/kangaskhan/frames.asm"
+KangaskhanRBFrames:		INCLUDE "gfx/pokemon/kangaskhan_rb/frames.asm"
+
+VenonatPlainFrames:		INCLUDE "gfx/pokemon/venonat/frames.asm"
+VenonatRBFrames:		INCLUDE "gfx/pokemon/venonat_rb/frames.asm"
+
+VenomothPlainFrames:		INCLUDE "gfx/pokemon/venomoth/frames.asm"
+VenomothRBFrames:		INCLUDE "gfx/pokemon/venomoth_rb/frames.asm"
+
+LaprasPlainFrames:		INCLUDE "gfx/pokemon/lapras/frames.asm"
+LaprasRBFrames:		INCLUDE "gfx/pokemon/lapras_rb/frames.asm"
+
+FarfetchDPlainFrames:		INCLUDE "gfx/pokemon/farfetch_d/frames.asm"
+FarfetchDRBFrames:		INCLUDE "gfx/pokemon/farfetch_d_rb/frames.asm"
+
+CubonePlainFrames:		INCLUDE "gfx/pokemon/cubone/frames.asm"
+CuboneRBFrames:		INCLUDE "gfx/pokemon/cubone_rb/frames.asm"
+
+MarowakPlainFrames:		INCLUDE "gfx/pokemon/marowak/frames.asm"
+MarowakRBFrames:		INCLUDE "gfx/pokemon/marowak_rb/frames.asm"
+
+ExeggcutePlainFrames:		INCLUDE "gfx/pokemon/exeggcute/frames.asm"
+ExeggcuteRBFrames:		INCLUDE "gfx/pokemon/exeggcute_rb/frames.asm"
+
+ExeggutorPlainFrames:		INCLUDE "gfx/pokemon/exeggutor/frames.asm"
+ExeggutorRBFrames:		INCLUDE "gfx/pokemon/exeggutor_rb/frames.asm"
+
 PichuPlainFrames:		INCLUDE "gfx/pokemon/pichu/frames.asm"
 PichuBetaFrames:		INCLUDE "gfx/pokemon/pichu_beta/frames.asm"
 

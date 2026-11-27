@@ -55,8 +55,8 @@ CosmeticFormSymbols::
 	dw 0					; VILEPLUME (2d)
 	dw 0					; PARAS (2e)
 	dw 0					; PARASECT (2f)
-	dw 0					; VENONAT (30)
-	dw 0					; VENOMOTH (31)
+	dw VenonatFormSymbols		; VENONAT (30)
+	dw VenomothFormSymbols		; VENOMOTH (31)
 	dw 0					; DIGLETT (32)
 	dw 0					; DUGTRIO (33)
 	dw 0					; MEOWTH (34)
@@ -90,7 +90,7 @@ CosmeticFormSymbols::
 	dw 0					; SLOWBRO (50)
 	dw 0					; MAGNEMITE (51)
 	dw 0					; MAGNETON (52)
-	dw 0					; FARFETCHD (53)
+	dw FarfetchDFormSymbols	; FARFETCHD (53)
 	dw 0					; DODUO (54)
 	dw 0					; DODRIO (55)
 	dw 0					; SEEL (56)
@@ -109,20 +109,20 @@ CosmeticFormSymbols::
 	dw 0					; KINGLER (63)
 	dw 0					; VOLTORB (64)
 	dw ElectrodeFormSymbols			; ELECTRODE (65)
-	dw 0					; EXEGGCUTE (66)
-	dw 0					; EXEGGUTOR (67)
-	dw 0					; CUBONE (68)
-	dw 0					; MAROWAK (69)
+	dw ExeggcuteFormSymbols	; EXEGGCUTE (66)
+	dw ExeggutorFormSymbols	; EXEGGUTOR (67)
+	dw CuboneFormSymbols		; CUBONE (68)
+	dw MarowakFormSymbols		; MAROWAK (69)
 	dw 0					; HITMONLEE (6a)
 	dw 0					; HITMONCHAN (6b)
 	dw 0					; LICKITUNG (6c)
 	dw KoffingFormSymbols			; KOFFING (6d)
 	dw WeezingFormSymbols			; WEEZING (6e)
-	dw 0					; RHYHORN (6f)
-	dw 0					; RHYDON (70)
+	dw RhyhornFormSymbols		; RHYHORN (6f)
+	dw RhydonFormSymbols		; RHYDON (70)
 	dw 0					; CHANSEY (71)
 	dw 0					; TANGELA (72)
-	dw 0					; KANGASKHAN (73)
+	dw KangaskhanFormSymbols	; KANGASKHAN (73)
 	dw HorseaFormSymbols			; HORSEA (74)
 	dw SeadraFormSymbols			; SEADRA (75)
 	dw 0					; GOLDEEN (76)
@@ -138,7 +138,7 @@ CosmeticFormSymbols::
 	dw 0					; TAUROS (80)
 	dw MagikarpFormSymbols			; MAGIKARP (81)
 	dw GyaradosFormSymbols			; GYARADOS (82)
-	dw 0					; LAPRAS (83)
+	dw LaprasFormSymbols		; LAPRAS (83)
 	dw 0					; DITTO (84)
 	dw 0					; EEVEE (85)
 	dw 0					; VAPOREON (86)
@@ -528,6 +528,72 @@ AerodactylFormSymbols:
 	db 0
 	db "<CARTRIDGE>"
 	assert_table_length NUM_AERODACTYL_FORMS
+
+RhyhornFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CuboneFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcuteFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_EXEGGUTOR_FORMS
 
 PichuFormSymbols:
 	table_width 1

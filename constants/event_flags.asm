@@ -1627,5 +1627,8 @@
 	const EVENT_BLACKJACK_DECK_BIT_0
 	const EVENT_BLACKJACK_DECK_BIT_1
 
+; Talked to the Union Cave Lapras at least once: the radio's RB Lapras swarm waits for it
+	const EVENT_MET_UNION_CAVE_LAPRAS
+
 	const_next 2304
 DEF NUM_EVENTS EQU const_value

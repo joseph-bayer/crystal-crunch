@@ -64,5 +64,17 @@ SwarmTable::
 	; Alternate-shiny swarms, added after the rows above
 	swarm_def WEEDLE,     PLAIN_FORM,             ROUTE_30, SWARM_GRASS | SWARM_ALT_SHINY
 
+	; Kanto, post Elite Four, added after the rows above
+	; - Grass
+	swarm_def RHYHORN,    RHYHORN_RB_FORM,        ROUTE_15,        SWARM_GRASS
+	swarm_def KANGASKHAN, KANGASKHAN_RB_FORM,     ROCK_TUNNEL_B1F, SWARM_GRASS
+	swarm_def VENONAT,    VENONAT_RB_FORM,        ROUTE_14,        SWARM_GRASS
+	; - Water, once the player has met the Union Cave Lapras
+	swarm_def LAPRAS,     LAPRAS_RB_FORM,         ROUTE_21,        SWARM_WATER, EVENT_MET_UNION_CAVE_LAPRAS
+	; - Grass
+	swarm_def FARFETCH_D, FARFETCH_D_RB_FORM,     ROUTE_6,         SWARM_GRASS
+	swarm_def CUBONE,     CUBONE_RB_FORM,         ROUTE_8,         SWARM_GRASS
+	swarm_def EXEGGCUTE,  EXEGGCUTE_RB_FORM,      ROUTE_18,        SWARM_GRASS
+
 
 	assert_table_length NUM_SWARMS

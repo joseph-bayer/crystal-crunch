@@ -53,4 +53,15 @@ RBFormTable:
 	rb_form MAGIKARP,   MAGIKARP_RB_FORM,     0
 	rb_form GYARADOS,   GYARADOS_RB_FORM,     0
 	rb_form AERODACTYL, AERODACTYL_RB_FORM,   0
-	assert NUM_RB_FORM_ROWS == 40, "RBFormTable should hold 36 RB forms and 4 beta forms"
+	rb_form RHYHORN,    RHYHORN_RB_FORM,      0
+	rb_form RHYDON,     RHYDON_RB_FORM,       0
+	rb_form KANGASKHAN, KANGASKHAN_RB_FORM,   0
+	rb_form VENONAT,    VENONAT_RB_FORM,      0
+	rb_form VENOMOTH,   VENOMOTH_RB_FORM,     0
+	rb_form LAPRAS,     LAPRAS_RB_FORM,       0
+	rb_form FARFETCH_D, FARFETCH_D_RB_FORM,   0
+	rb_form CUBONE,     CUBONE_RB_FORM,       0
+	rb_form MAROWAK,    MAROWAK_RB_FORM,      0
+	rb_form EXEGGCUTE,  EXEGGCUTE_RB_FORM,    0
+	rb_form EXEGGUTOR,  EXEGGUTOR_RB_FORM,    0
+	assert NUM_RB_FORM_ROWS == 51, "RBFormTable should hold 47 RB forms and 4 beta forms"

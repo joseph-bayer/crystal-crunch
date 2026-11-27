@@ -374,6 +374,17 @@ endc
 	dwb RAICHU,     NUM_RAICHU_FORMS     ; 4, running total 115
 	dwb SMEARGLE,   NUM_SMEARGLE_FORMS   ; 6, running total 121
 	dwb AERODACTYL, NUM_AERODACTYL_FORMS ; 2, running total 123
+	dwb RHYHORN,    NUM_RHYHORN_FORMS     ; 2, running total 125
+	dwb RHYDON,     NUM_RHYDON_FORMS      ; 2, running total 127
+	dwb KANGASKHAN, NUM_KANGASKHAN_FORMS  ; 2, running total 129
+	dwb VENONAT,    NUM_VENONAT_FORMS     ; 2, running total 131
+	dwb VENOMOTH,   NUM_VENOMOTH_FORMS    ; 2, running total 133
+	dwb LAPRAS,     NUM_LAPRAS_FORMS      ; 2, running total 135
+	dwb FARFETCH_D, NUM_FARFETCH_D_FORMS  ; 2, running total 137
+	dwb CUBONE,     NUM_CUBONE_FORMS      ; 2, running total 139
+	dwb MAROWAK,    NUM_MAROWAK_FORMS     ; 2, running total 141
+	dwb EXEGGCUTE,  NUM_EXEGGCUTE_FORMS   ; 2, running total 143
+	dwb EXEGGUTOR,  NUM_EXEGGUTOR_FORMS   ; 2, running total 145
 if FILL_PC_ALL_UNOWN_LETTERS
 	dwb UNOWN,    NUM_UNOWN
 endc

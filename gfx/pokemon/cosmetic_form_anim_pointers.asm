@@ -55,8 +55,8 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; VILEPLUME (2d) - no cosmetic forms
 	dw 0					; PARAS (2e) - no cosmetic forms
 	dw 0					; PARASECT (2f) - no cosmetic forms
-	dw 0					; VENONAT (30) - no cosmetic forms
-	dw 0					; VENOMOTH (31) - no cosmetic forms
+	dw VenonatAnimationPointers	; VENONAT (30) - has cosmetic forms
+	dw VenomothAnimationPointers	; VENOMOTH (31) - has cosmetic forms
 	dw 0					; DIGLETT (32) - no cosmetic forms
 	dw 0					; DUGTRIO (33) - no cosmetic forms
 	dw 0					; MEOWTH (34) - no cosmetic forms
@@ -90,7 +90,7 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; SLOWBRO (50) - no cosmetic forms
 	dw 0					; MAGNEMITE (51) - no cosmetic forms
 	dw 0					; MAGNETON (52) - no cosmetic forms
-	dw 0					; FARFETCHD (53) - no cosmetic forms
+	dw FarfetchDAnimationPointers	; FARFETCHD (53) - has cosmetic forms
 	dw 0					; DODUO (54) - no cosmetic forms
 	dw 0					; DODRIO (55) - no cosmetic forms
 	dw 0					; SEEL (56) - no cosmetic forms
@@ -109,20 +109,20 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; KINGLER (63) - no cosmetic forms
 	dw 0					; VOLTORB (64) - no cosmetic forms
 	dw ElectrodeAnimationPointers		; ELECTRODE (65) - has cosmetic forms
-	dw 0					; EXEGGCUTE (66) - no cosmetic forms
-	dw 0					; EXEGGUTOR (67) - no cosmetic forms
-	dw 0					; CUBONE (68) - no cosmetic forms
-	dw 0					; MAROWAK (69) - no cosmetic forms
+	dw ExeggcuteAnimationPointers	; EXEGGCUTE (66) - has cosmetic forms
+	dw ExeggutorAnimationPointers	; EXEGGUTOR (67) - has cosmetic forms
+	dw CuboneAnimationPointers	; CUBONE (68) - has cosmetic forms
+	dw MarowakAnimationPointers	; MAROWAK (69) - has cosmetic forms
 	dw 0					; HITMONLEE (6a) - no cosmetic forms
 	dw 0					; HITMONCHAN (6b) - no cosmetic forms
 	dw 0					; LICKITUNG (6c) - no cosmetic forms
 	dw KoffingAnimationPointers		; KOFFING (6d) - has cosmetic forms
 	dw WeezingAnimationPointers		; WEEZING (6e) - has cosmetic forms
-	dw 0					; RHYHORN (6f) - no cosmetic forms
-	dw 0					; RHYDON (70) - no cosmetic forms
+	dw RhyhornAnimationPointers	; RHYHORN (6f) - has cosmetic forms
+	dw RhydonAnimationPointers	; RHYDON (70) - has cosmetic forms
 	dw 0					; CHANSEY (71) - no cosmetic forms
 	dw 0					; TANGELA (72) - no cosmetic forms
-	dw 0					; KANGASKHAN (73) - no cosmetic forms
+	dw KangaskhanAnimationPointers	; KANGASKHAN (73) - has cosmetic forms
 	dw HorseaAnimationPointers		; HORSEA (74) - has cosmetic forms
 	dw SeadraAnimationPointers		; SEADRA (75) - has cosmetic forms
 	dw 0					; GOLDEEN (76) - no cosmetic forms
@@ -138,7 +138,7 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; TAUROS (80) - no cosmetic forms
 	dw MagikarpAnimationPointers		; MAGIKARP (81) - has cosmetic forms
 	dw GyaradosAnimationPointers		; GYARADOS (82) - has cosmetic forms
-	dw 0					; LAPRAS (83) - no cosmetic forms
+	dw LaprasAnimationPointers	; LAPRAS (83) - has cosmetic forms
 	dw 0					; DITTO (84) - no cosmetic forms
 	dw 0					; EEVEE (85) - no cosmetic forms
 	dw 0					; VAPOREON (86) - no cosmetic forms
@@ -316,8 +316,8 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; VILEPLUME (2d) - no cosmetic forms
 	dw 0                           		; PARAS (2e) - no cosmetic forms
 	dw 0                           		; PARASECT (2f) - no cosmetic forms
-	dw 0                           		; VENONAT (30) - no cosmetic forms
-	dw 0                           		; VENOMOTH (31) - no cosmetic forms
+	dw VenonatAnimationIdlePointers	; VENONAT (30) - has cosmetic forms
+	dw VenomothAnimationIdlePointers	; VENOMOTH (31) - has cosmetic forms
 	dw 0                           		; DIGLETT (32) - no cosmetic forms
 	dw 0                           		; DUGTRIO (33) - no cosmetic forms
 	dw 0                           		; MEOWTH (34) - no cosmetic forms
@@ -351,7 +351,7 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; SLOWBRO (50) - no cosmetic forms
 	dw 0                           		; MAGNEMITE (51) - no cosmetic forms
 	dw 0                           		; MAGNETON (52) - no cosmetic forms
-	dw 0                           		; FARFETCHD (53) - no cosmetic forms
+	dw FarfetchDAnimationIdlePointers	; FARFETCHD (53) - has cosmetic forms
 	dw 0                           		; DODUO (54) - no cosmetic forms
 	dw 0                           		; DODRIO (55) - no cosmetic forms
 	dw 0                           		; SEEL (56) - no cosmetic forms
@@ -370,20 +370,20 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; KINGLER (63) - no cosmetic forms
 	dw 0                           		; VOLTORB (64) - no cosmetic forms
 	dw ElectrodeAnimationIdlePointers	; ELECTRODE (65) - has cosmetic forms
-	dw 0                           		; EXEGGCUTE (66) - no cosmetic forms
-	dw 0                           		; EXEGGUTOR (67) - no cosmetic forms
-	dw 0                           		; CUBONE (68) - no cosmetic forms
-	dw 0                           		; MAROWAK (69) - no cosmetic forms
+	dw ExeggcuteAnimationIdlePointers	; EXEGGCUTE (66) - has cosmetic forms
+	dw ExeggutorAnimationIdlePointers	; EXEGGUTOR (67) - has cosmetic forms
+	dw CuboneAnimationIdlePointers	; CUBONE (68) - has cosmetic forms
+	dw MarowakAnimationIdlePointers	; MAROWAK (69) - has cosmetic forms
 	dw 0                           		; HITMONLEE (6a) - no cosmetic forms
 	dw 0                           		; HITMONCHAN (6b) - no cosmetic forms
 	dw 0                           		; LICKITUNG (6c) - no cosmetic forms
 	dw KoffingAnimationIdlePointers		; KOFFING (6d) - has cosmetic forms
 	dw WeezingAnimationIdlePointers		; WEEZING (6e) - has cosmetic forms
-	dw 0                           		; RHYHORN (6f) - no cosmetic forms
-	dw 0                           		; RHYDON (70) - no cosmetic forms
+	dw RhyhornAnimationIdlePointers	; RHYHORN (6f) - has cosmetic forms
+	dw RhydonAnimationIdlePointers	; RHYDON (70) - has cosmetic forms
 	dw 0                           		; CHANSEY (71) - no cosmetic forms
 	dw 0                           		; TANGELA (72) - no cosmetic forms
-	dw 0                           		; KANGASKHAN (73) - no cosmetic forms
+	dw KangaskhanAnimationIdlePointers	; KANGASKHAN (73) - has cosmetic forms
 	dw HorseaAnimationIdlePointers		; HORSEA (74) - has cosmetic forms
 	dw SeadraAnimationIdlePointers		; SEADRA (75) - has cosmetic forms
 	dw 0                           		; GOLDEEN (76) - no cosmetic forms
@@ -399,7 +399,7 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; TAUROS (80) - no cosmetic forms
 	dw MagikarpAnimationIdlePointers        ; MAGIKARP (81) - no cosmetic forms
 	dw GyaradosAnimationIdlePointers		; GYARADOS (82) - has cosmetic forms
-	dw 0                           		; LAPRAS (83) - no cosmetic forms
+	dw LaprasAnimationIdlePointers	; LAPRAS (83) - has cosmetic forms
 	dw 0                           		; DITTO (84) - no cosmetic forms
 	dw 0                           		; EEVEE (85) - no cosmetic forms
 	dw 0                           		; VAPOREON (86) - no cosmetic forms
@@ -969,6 +969,72 @@ AerodactylAnimationPointers:
 	dw AerodactylRBAnimation
 	assert_table_length NUM_AERODACTYL_FORMS
 
+RhyhornAnimationPointers:
+	table_width 2
+	dw RhyhornPlainAnimation
+	dw RhyhornRBAnimation
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonAnimationPointers:
+	table_width 2
+	dw RhydonPlainAnimation
+	dw RhydonRBAnimation
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanAnimationPointers:
+	table_width 2
+	dw KangaskhanPlainAnimation
+	dw KangaskhanRBAnimation
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatAnimationPointers:
+	table_width 2
+	dw VenonatPlainAnimation
+	dw VenonatRBAnimation
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothAnimationPointers:
+	table_width 2
+	dw VenomothPlainAnimation
+	dw VenomothRBAnimation
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasAnimationPointers:
+	table_width 2
+	dw LaprasPlainAnimation
+	dw LaprasRBAnimation
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDAnimationPointers:
+	table_width 2
+	dw FarfetchDPlainAnimation
+	dw FarfetchDRBAnimation
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CuboneAnimationPointers:
+	table_width 2
+	dw CubonePlainAnimation
+	dw CuboneRBAnimation
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakAnimationPointers:
+	table_width 2
+	dw MarowakPlainAnimation
+	dw MarowakRBAnimation
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcuteAnimationPointers:
+	table_width 2
+	dw ExeggcutePlainAnimation
+	dw ExeggcuteRBAnimation
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorAnimationPointers:
+	table_width 2
+	dw ExeggutorPlainAnimation
+	dw ExeggutorRBAnimation
+	assert_table_length NUM_EXEGGUTOR_FORMS
+
 IgglybuffAnimationIdlePointers:
 	table_width 2
 	dw IgglybuffPlainAnimationIdle
@@ -1140,6 +1206,72 @@ AerodactylAnimationIdlePointers:
 	dw AerodactylPlainAnimationIdle
 	dw AerodactylRBAnimationIdle
 	assert_table_length NUM_AERODACTYL_FORMS
+
+RhyhornAnimationIdlePointers:
+	table_width 2
+	dw RhyhornPlainAnimationIdle
+	dw RhyhornRBAnimationIdle
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonAnimationIdlePointers:
+	table_width 2
+	dw RhydonPlainAnimationIdle
+	dw RhydonRBAnimationIdle
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanAnimationIdlePointers:
+	table_width 2
+	dw KangaskhanPlainAnimationIdle
+	dw KangaskhanRBAnimationIdle
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatAnimationIdlePointers:
+	table_width 2
+	dw VenonatPlainAnimationIdle
+	dw VenonatRBAnimationIdle
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothAnimationIdlePointers:
+	table_width 2
+	dw VenomothPlainAnimationIdle
+	dw VenomothRBAnimationIdle
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasAnimationIdlePointers:
+	table_width 2
+	dw LaprasPlainAnimationIdle
+	dw LaprasRBAnimationIdle
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDAnimationIdlePointers:
+	table_width 2
+	dw FarfetchDPlainAnimationIdle
+	dw FarfetchDRBAnimationIdle
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CuboneAnimationIdlePointers:
+	table_width 2
+	dw CubonePlainAnimationIdle
+	dw CuboneRBAnimationIdle
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakAnimationIdlePointers:
+	table_width 2
+	dw MarowakPlainAnimationIdle
+	dw MarowakRBAnimationIdle
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcuteAnimationIdlePointers:
+	table_width 2
+	dw ExeggcutePlainAnimationIdle
+	dw ExeggcuteRBAnimationIdle
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorAnimationIdlePointers:
+	table_width 2
+	dw ExeggutorPlainAnimationIdle
+	dw ExeggutorRBAnimationIdle
+	assert_table_length NUM_EXEGGUTOR_FORMS
 
 PichuAnimationPointers:
 	table_width 2

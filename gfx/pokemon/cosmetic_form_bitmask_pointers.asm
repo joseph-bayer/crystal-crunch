@@ -55,8 +55,8 @@ CosmeticFormBitmaskPointersTable:
 	dw 0					; VILEPLUME (2d) - no cosmetic forms
 	dw 0					; PARAS (2e) - no cosmetic forms
 	dw 0					; PARASECT (2f) - no cosmetic forms
-	dw 0					; VENONAT (30) - no cosmetic forms
-	dw 0					; VENOMOTH (31) - no cosmetic forms
+	dw VenonatBitmasksPointers	; VENONAT (30) - has cosmetic forms
+	dw VenomothBitmasksPointers	; VENOMOTH (31) - has cosmetic forms
 	dw 0					; DIGLETT (32) - no cosmetic forms
 	dw 0					; DUGTRIO (33) - no cosmetic forms
 	dw 0					; MEOWTH (34) - no cosmetic forms
@@ -90,7 +90,7 @@ CosmeticFormBitmaskPointersTable:
 	dw 0					; SLOWBRO (50) - no cosmetic forms
 	dw 0					; MAGNEMITE (51) - no cosmetic forms
 	dw 0					; MAGNETON (52) - no cosmetic forms
-	dw 0					; FARFETCHD (53) - no cosmetic forms
+	dw FarfetchDBitmasksPointers	; FARFETCHD (53) - has cosmetic forms
 	dw 0					; DODUO (54) - no cosmetic forms
 	dw 0					; DODRIO (55) - no cosmetic forms
 	dw 0					; SEEL (56) - no cosmetic forms
@@ -109,20 +109,20 @@ CosmeticFormBitmaskPointersTable:
 	dw 0					; KINGLER (63) - no cosmetic forms
 	dw 0					; VOLTORB (64) - no cosmetic forms
 	dw ElectrodeBitmasksPointers		; ELECTRODE (65) - has cosmetic forms
-	dw 0					; EXEGGCUTE (66) - no cosmetic forms
-	dw 0					; EXEGGUTOR (67) - no cosmetic forms
-	dw 0					; CUBONE (68) - no cosmetic forms
-	dw 0					; MAROWAK (69) - no cosmetic forms
+	dw ExeggcuteBitmasksPointers	; EXEGGCUTE (66) - has cosmetic forms
+	dw ExeggutorBitmasksPointers	; EXEGGUTOR (67) - has cosmetic forms
+	dw CuboneBitmasksPointers	; CUBONE (68) - has cosmetic forms
+	dw MarowakBitmasksPointers	; MAROWAK (69) - has cosmetic forms
 	dw 0					; HITMONLEE (6a) - no cosmetic forms
 	dw 0					; HITMONCHAN (6b) - no cosmetic forms
 	dw 0					; LICKITUNG (6c) - no cosmetic forms
 	dw KoffingBitmasksPointers		; KOFFING (6d) - has cosmetic forms
 	dw WeezingBitmasksPointers		; WEEZING (6e) - has cosmetic forms
-	dw 0					; RHYHORN (6f) - no cosmetic forms
-	dw 0					; RHYDON (70) - no cosmetic forms
+	dw RhyhornBitmasksPointers	; RHYHORN (6f) - has cosmetic forms
+	dw RhydonBitmasksPointers	; RHYDON (70) - has cosmetic forms
 	dw 0					; CHANSEY (71) - no cosmetic forms
 	dw 0					; TANGELA (72) - no cosmetic forms
-	dw 0					; KANGASKHAN (73) - no cosmetic forms
+	dw KangaskhanBitmasksPointers	; KANGASKHAN (73) - has cosmetic forms
 	dw HorseaBitmasksPointers		; HORSEA (74) - has cosmetic forms
 	dw SeadraBitmasksPointers		; SEADRA (75) - has cosmetic forms
 	dw 0					; GOLDEEN (76) - no cosmetic forms
@@ -138,7 +138,7 @@ CosmeticFormBitmaskPointersTable:
 	dw 0					; TAUROS (80) - no cosmetic forms
 	dw MagikarpBitmasksPointers		; MAGIKARP (81) - no cosmetic forms
 	dw GyaradosBitmasksPointers		; GYARADOS (82) - has cosmetic forms
-	dw 0					; LAPRAS (83) - no cosmetic forms
+	dw LaprasBitmasksPointers	; LAPRAS (83) - has cosmetic forms
 	dw 0					; DITTO (84) - no cosmetic forms
 	dw 0					; EEVEE (85) - no cosmetic forms
 	dw 0					; VAPOREON (86) - no cosmetic forms
@@ -571,6 +571,72 @@ AerodactylBitmasksPointers:
 	dw AerodactylPlainBitmask
 	dw AerodactylRBBitmask
 	assert_table_length NUM_AERODACTYL_FORMS
+
+RhyhornBitmasksPointers:
+	table_width 2
+	dw RhyhornPlainBitmask
+	dw RhyhornRBBitmask
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonBitmasksPointers:
+	table_width 2
+	dw RhydonPlainBitmask
+	dw RhydonRBBitmask
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanBitmasksPointers:
+	table_width 2
+	dw KangaskhanPlainBitmask
+	dw KangaskhanRBBitmask
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatBitmasksPointers:
+	table_width 2
+	dw VenonatPlainBitmask
+	dw VenonatRBBitmask
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothBitmasksPointers:
+	table_width 2
+	dw VenomothPlainBitmask
+	dw VenomothRBBitmask
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasBitmasksPointers:
+	table_width 2
+	dw LaprasPlainBitmask
+	dw LaprasRBBitmask
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDBitmasksPointers:
+	table_width 2
+	dw FarfetchDPlainBitmask
+	dw FarfetchDRBBitmask
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CuboneBitmasksPointers:
+	table_width 2
+	dw CubonePlainBitmask
+	dw CuboneRBBitmask
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakBitmasksPointers:
+	table_width 2
+	dw MarowakPlainBitmask
+	dw MarowakRBBitmask
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcuteBitmasksPointers:
+	table_width 2
+	dw ExeggcutePlainBitmask
+	dw ExeggcuteRBBitmask
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorBitmasksPointers:
+	table_width 2
+	dw ExeggutorPlainBitmask
+	dw ExeggutorRBBitmask
+	assert_table_length NUM_EXEGGUTOR_FORMS
 
 PichuBitmasksPointers:
 	table_width 2

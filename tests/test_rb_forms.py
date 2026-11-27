@@ -12,7 +12,7 @@ import pytest
 from harness import alt_shiny as A
 from harness import constants
 from harness.forms import (form_constant, ot_party_field, party_field, party_struct_length,
-	set_party_field, shorten_party)
+	set_party_field, shorten_party, take_radio_items)
 
 CARRY = 0x10
 GENGAR_SPECIAL = 130 # Red/Blue; the plain form's Sp.Atk/Sp.Def are 130/75
@@ -498,6 +498,13 @@ EGG_FORMS = [
 	("CROBAT", "CROBAT_ROCKET_FORM", MALE_DVS, "DITTO", None, "ZUBAT", None),
 	("KINGDRA", "KINGDRA_BETA_FORM", MALE_DVS, "DITTO", None, "HORSEA", "HORSEA_RB_FORM"),
 	("SEADRA", "SEADRA_RB_FORM", MALE_DVS, "DITTO", None, "HORSEA", "HORSEA_RB_FORM"),
+	("RHYDON", "RHYDON_RB_FORM", MALE_DVS, "DITTO", None, "RHYHORN", "RHYHORN_RB_FORM"),
+	("KANGASKHAN", "KANGASKHAN_RB_FORM", MALE_DVS, "DITTO", None, "KANGASKHAN", "KANGASKHAN_RB_FORM"),
+	("VENOMOTH", "VENOMOTH_RB_FORM", MALE_DVS, "DITTO", None, "VENONAT", "VENONAT_RB_FORM"),
+	("LAPRAS", "LAPRAS_RB_FORM", MALE_DVS, "DITTO", None, "LAPRAS", "LAPRAS_RB_FORM"),
+	("FARFETCH_D", "FARFETCH_D_RB_FORM", MALE_DVS, "DITTO", None, "FARFETCH_D", "FARFETCH_D_RB_FORM"),
+	("MAROWAK", "MAROWAK_RB_FORM", MALE_DVS, "DITTO", None, "CUBONE", "CUBONE_RB_FORM"),
+	("EXEGGUTOR", "EXEGGUTOR_RB_FORM", MALE_DVS, "DITTO", None, "EXEGGCUTE", "EXEGGCUTE_RB_FORM"),
 ]
 
 
@@ -508,6 +515,34 @@ def test_egg_form(game, parent1, form1, dvs1, parent2, form2, species, form):
 		set_breedmon(game, 2, parent2, form2)
 		assert egg_form(game, seed) == (form_constant(form) if form else 0), "seed %d" % seed
 		assert game.peek("wEggMonSpecies") == A.species_id(game, species)
+
+
+EVOLUTION_FRAMES = 3000
+
+
+# (species, its RB form, level, item used or None, what it becomes, that one's RB form)
+RB_EVOLUTIONS = [
+	("EXEGGCUTE", "EXEGGCUTE_RB_FORM", 30, "LEAF_STONE", "EXEGGUTOR", "EXEGGUTOR_RB_FORM"),
+	("VENONAT", "VENONAT_RB_FORM", 31, None, "VENOMOTH", "VENOMOTH_RB_FORM"),
+]
+
+
+@pytest.mark.parametrize("species, form, level, item, evolved, evolved_form", RB_EVOLUTIONS)
+def test_rb_form_keeps_its_form_when_it_evolves(game, species, form, level, item, evolved, evolved_form):
+	take_radio_items(game) # a party, set up without parking the CPU as give_poke's call would
+	slot = 0
+	species_id = A.species_id(game, species)
+	game.poke("wPartySpecies", species_id)
+	set_party_field(game, slot, "Species", species_id)
+	set_party_field(game, slot, "Form", form_constant(form))
+	set_party_field(game, slot, "Level", level)
+	game.poke("wCurItem", A.item_id(game, item) if item else 0)
+	game.poke("wForceEvolution", 1 if item else 0)
+	game.poke("wCurPartyMon", slot)
+	A.call(game, "EvolvePokemon", press_a_every=30, must_return=False, frames=EVOLUTION_FRAMES,
+		from_main_loop=True)
+	assert party_field(game, slot, "Species") == A.species_id(game, evolved)
+	assert party_field(game, slot, "Form") & FORM_MASK == form_constant(evolved_form)
 
 
 def test_rb_and_plain_of_one_line_pick_either_form(game):

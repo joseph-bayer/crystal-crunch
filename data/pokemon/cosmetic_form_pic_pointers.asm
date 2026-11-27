@@ -55,8 +55,8 @@ CosmeticFormPicPointersTable::
 	dw 0					; VILEPLUME (2d) - no cosmetic forms
 	dw 0					; PARAS (2e) - no cosmetic forms
 	dw 0					; PARASECT (2f) - no cosmetic forms
-	dw 0					; VENONAT (30) - no cosmetic forms
-	dw 0					; VENOMOTH (31) - no cosmetic forms
+	dw VenonatPicPointers		; VENONAT (30) - has cosmetic forms
+	dw VenomothPicPointers		; VENOMOTH (31) - has cosmetic forms
 	dw 0					; DIGLETT (32) - no cosmetic forms
 	dw 0					; DUGTRIO (33) - no cosmetic forms
 	dw 0					; MEOWTH (34) - no cosmetic forms
@@ -90,7 +90,7 @@ CosmeticFormPicPointersTable::
 	dw 0					; SLOWBRO (50) - no cosmetic forms
 	dw 0					; MAGNEMITE (51) - no cosmetic forms
 	dw 0					; MAGNETON (52) - no cosmetic forms
-	dw 0					; FARFETCHD (53) - no cosmetic forms
+	dw FarfetchDPicPointers	; FARFETCHD (53) - has cosmetic forms
 	dw 0					; DODUO (54) - no cosmetic forms
 	dw 0					; DODRIO (55) - no cosmetic forms
 	dw 0					; SEEL (56) - no cosmetic forms
@@ -109,20 +109,20 @@ CosmeticFormPicPointersTable::
 	dw 0					; KINGLER (63) - no cosmetic forms
 	dw 0					; VOLTORB (64) - no cosmetic forms
 	dw ElectrodePicPointers			; ELECTRODE (65) - has cosmetic forms
-	dw 0					; EXEGGCUTE (66) - no cosmetic forms
-	dw 0					; EXEGGUTOR (67) - no cosmetic forms
-	dw 0					; CUBONE (68) - no cosmetic forms
-	dw 0					; MAROWAK (69) - no cosmetic forms
+	dw ExeggcutePicPointers	; EXEGGCUTE (66) - has cosmetic forms
+	dw ExeggutorPicPointers	; EXEGGUTOR (67) - has cosmetic forms
+	dw CubonePicPointers		; CUBONE (68) - has cosmetic forms
+	dw MarowakPicPointers		; MAROWAK (69) - has cosmetic forms
 	dw 0					; HITMONLEE (6a) - no cosmetic forms
 	dw 0					; HITMONCHAN (6b) - no cosmetic forms
 	dw 0					; LICKITUNG (6c) - no cosmetic forms
 	dw KoffingPicPointers		; KOFFING (6d) - has cosmetic forms
 	dw WeezingPicPointers			; WEEZING (6e) - has cosmetic forms
-	dw 0					; RHYHORN (6f) - no cosmetic forms
-	dw 0					; RHYDON (70) - no cosmetic forms
+	dw RhyhornPicPointers		; RHYHORN (6f) - has cosmetic forms
+	dw RhydonPicPointers		; RHYDON (70) - has cosmetic forms
 	dw 0					; CHANSEY (71) - no cosmetic forms
 	dw 0					; TANGELA (72) - no cosmetic forms
-	dw 0					; KANGASKHAN (73) - no cosmetic forms
+	dw KangaskhanPicPointers	; KANGASKHAN (73) - has cosmetic forms
 	dw HorseaPicPointers		; HORSEA (74) - has cosmetic forms
 	dw SeadraPicPointers		; SEADRA (75) - has cosmetic forms
 	dw 0					; GOLDEEN (76) - no cosmetic forms
@@ -138,7 +138,7 @@ CosmeticFormPicPointersTable::
 	dw 0					; TAUROS (80) - no cosmetic forms
 	dw MagikarpPicPointers			; MAGIKARP (81) - no cosmetic forms
 	dw GyaradosPicPointers		; GYARADOS (82) - has cosmetic forms
-	dw 0					; LAPRAS (83) - no cosmetic forms
+	dw LaprasPicPointers		; LAPRAS (83) - has cosmetic forms
 	dw 0					; DITTO (84) - no cosmetic forms
 	dw 0					; EEVEE (85) - no cosmetic forms
 	dw 0					; VAPOREON (86) - no cosmetic forms
@@ -751,6 +751,105 @@ AerodactylPicPointers::
 	dba AerodactylRBFrontpic
 	dba AerodactylRBBackpic
 	assert_table_length NUM_AERODACTYL_FORMS
+
+RhyhornPicPointers::
+; entries correspond to Rhyhorn's forms, two apiece
+	table_width 3 * 2
+	dba RhyhornFrontpic
+	dba RhyhornBackpic
+	dba RhyhornRBFrontpic
+	dba RhyhornRBBackpic
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonPicPointers::
+; entries correspond to Rhydon's forms, two apiece
+	table_width 3 * 2
+	dba RhydonFrontpic
+	dba RhydonBackpic
+	dba RhydonRBFrontpic
+	dba RhydonRBBackpic
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanPicPointers::
+; entries correspond to Kangaskhan's forms, two apiece
+	table_width 3 * 2
+	dba KangaskhanFrontpic
+	dba KangaskhanBackpic
+	dba KangaskhanRBFrontpic
+	dba KangaskhanRBBackpic
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatPicPointers::
+; entries correspond to Venonat's forms, two apiece
+	table_width 3 * 2
+	dba VenonatFrontpic
+	dba VenonatBackpic
+	dba VenonatRBFrontpic
+	dba VenonatRBBackpic
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothPicPointers::
+; entries correspond to Venomoth's forms, two apiece
+	table_width 3 * 2
+	dba VenomothFrontpic
+	dba VenomothBackpic
+	dba VenomothRBFrontpic
+	dba VenomothRBBackpic
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasPicPointers::
+; entries correspond to Lapras's forms, two apiece
+	table_width 3 * 2
+	dba LaprasFrontpic
+	dba LaprasBackpic
+	dba LaprasRBFrontpic
+	dba LaprasRBBackpic
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDPicPointers::
+; entries correspond to Farfetch'd's forms, two apiece
+	table_width 3 * 2
+	dba FarfetchDFrontpic
+	dba FarfetchDBackpic
+	dba FarfetchDRBFrontpic
+	dba FarfetchDRBBackpic
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CubonePicPointers::
+; entries correspond to Cubone's forms, two apiece
+	table_width 3 * 2
+	dba CuboneFrontpic
+	dba CuboneBackpic
+	dba CuboneRBFrontpic
+	dba CuboneRBBackpic
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakPicPointers::
+; entries correspond to Marowak's forms, two apiece
+	table_width 3 * 2
+	dba MarowakFrontpic
+	dba MarowakBackpic
+	dba MarowakRBFrontpic
+	dba MarowakRBBackpic
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcutePicPointers::
+; entries correspond to Exeggcute's forms, two apiece
+	table_width 3 * 2
+	dba ExeggcuteFrontpic
+	dba ExeggcuteBackpic
+	dba ExeggcuteRBFrontpic
+	dba ExeggcuteRBBackpic
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorPicPointers::
+; entries correspond to Exeggutor's forms, two apiece
+	table_width 3 * 2
+	dba ExeggutorFrontpic
+	dba ExeggutorBackpic
+	dba ExeggutorRBFrontpic
+	dba ExeggutorRBBackpic
+	assert_table_length NUM_EXEGGUTOR_FORMS
 
 PichuPicPointers::
 ; entries correspond to Pichu's forms, two apiece

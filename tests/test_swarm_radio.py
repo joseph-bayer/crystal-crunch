@@ -36,7 +36,8 @@ SWARM_STATION = "Guild Swarm News"
 SEEDS = range(1, 301)
 
 # Unlock every row that has a story gate, so the pool is as wide as it gets
-STORY_FLAGS = ("EVENT_BEAT_ELITE_FOUR", "EVENT_CLEARED_ROCKET_HIDEOUT", "EVENT_CLEARED_RADIO_TOWER")
+STORY_FLAGS = ("EVENT_BEAT_ELITE_FOUR", "EVENT_CLEARED_ROCKET_HIDEOUT", "EVENT_CLEARED_RADIO_TOWER",
+	"EVENT_MET_UNION_CAVE_LAPRAS")
 
 
 def ids():

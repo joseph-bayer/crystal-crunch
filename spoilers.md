@@ -106,6 +106,17 @@ A Red/Blue or beta Pokémon has no gender, so it breeds as whichever gender its 
 | Staryu        | Red/Blue              | Tune into channel 6.0 |
 | Starmie       | Red/Blue              | Evolve an RB Staryu |
 | Aerodactyl    | Red/Blue              | Get the OLDER AMBER from Old Amber Guy in the Pewter Museum, and have it revived at the Ruins of Alph |
+| Rhyhorn       | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 15 swarm) |
+| Rhydon        | Red/Blue              | Evolve an RB Rhyhorn |
+| Kangaskhan    | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Rock Tunnel B1F swarm) |
+| Venonat       | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 14 swarm) |
+| Venomoth      | Red/Blue              | Evolve an RB Venonat |
+| Lapras        | Red/Blue              | Tune into channel 6.0 after beating the Elite Four and meeting the Union Cave Lapras (a Route 21 swarm, surfing) |
+| Farfetch'd    | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 6 swarm) |
+| Cubone        | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 8 swarm) |
+| Marowak       | Red/Blue              | Evolve an RB Cubone |
+| Exeggcute     | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 18 swarm) |
+| Exeggutor     | Red/Blue              | Evolve an RB Exeggcute with a Leaf Stone |
 | Golbat        | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Weezing       | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Charmeleon    | Team Rocket           | Tune into channel 6.0 after freeing the Radio Tower |

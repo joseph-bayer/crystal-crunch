@@ -55,8 +55,8 @@ CosmeticFormFramePointersTable:
 	dw 0					; VILEPLUME (2d) - no cosmetic forms
 	dw 0					; PARAS (2e) - no cosmetic forms
 	dw 0					; PARASECT (2f) - no cosmetic forms
-	dw 0					; VENONAT (30) - no cosmetic forms
-	dw 0					; VENOMOTH (31) - no cosmetic forms
+	dw VenonatFramesPointers	; VENONAT (30) - has cosmetic forms
+	dw VenomothFramesPointers	; VENOMOTH (31) - has cosmetic forms
 	dw 0					; DIGLETT (32) - no cosmetic forms
 	dw 0					; DUGTRIO (33) - no cosmetic forms
 	dw 0					; MEOWTH (34) - no cosmetic forms
@@ -90,7 +90,7 @@ CosmeticFormFramePointersTable:
 	dw 0					; SLOWBRO (50) - no cosmetic forms
 	dw 0					; MAGNEMITE (51) - no cosmetic forms
 	dw 0					; MAGNETON (52) - no cosmetic forms
-	dw 0					; FARFETCHD (53) - no cosmetic forms
+	dw FarfetchDFramesPointers	; FARFETCHD (53) - has cosmetic forms
 	dw 0					; DODUO (54) - no cosmetic forms
 	dw 0					; DODRIO (55) - no cosmetic forms
 	dw 0					; SEEL (56) - no cosmetic forms
@@ -109,20 +109,20 @@ CosmeticFormFramePointersTable:
 	dw 0					; KINGLER (63) - no cosmetic forms
 	dw 0					; VOLTORB (64) - no cosmetic forms
 	dw ElectrodeFramesPointers		; ELECTRODE (65) - has cosmetic forms
-	dw 0					; EXEGGCUTE (66) - no cosmetic forms
-	dw 0					; EXEGGUTOR (67) - no cosmetic forms
-	dw 0					; CUBONE (68) - no cosmetic forms
-	dw 0					; MAROWAK (69) - no cosmetic forms
+	dw ExeggcuteFramesPointers	; EXEGGCUTE (66) - has cosmetic forms
+	dw ExeggutorFramesPointers	; EXEGGUTOR (67) - has cosmetic forms
+	dw CuboneFramesPointers	; CUBONE (68) - has cosmetic forms
+	dw MarowakFramesPointers	; MAROWAK (69) - has cosmetic forms
 	dw 0					; HITMONLEE (6a) - no cosmetic forms
 	dw 0					; HITMONCHAN (6b) - no cosmetic forms
 	dw 0					; LICKITUNG (6c) - no cosmetic forms
 	dw KoffingFramesPointers		; KOFFING (6d) - has cosmetic forms
 	dw WeezingFramesPointers		; WEEZING (6e) - has cosmetic forms
-	dw 0					; RHYHORN (6f) - no cosmetic forms
-	dw 0					; RHYDON (70) - no cosmetic forms
+	dw RhyhornFramesPointers	; RHYHORN (6f) - has cosmetic forms
+	dw RhydonFramesPointers	; RHYDON (70) - has cosmetic forms
 	dw 0					; CHANSEY (71) - no cosmetic forms
 	dw 0					; TANGELA (72) - no cosmetic forms
-	dw 0					; KANGASKHAN (73) - no cosmetic forms
+	dw KangaskhanFramesPointers	; KANGASKHAN (73) - has cosmetic forms
 	dw HorseaFramesPointers		; HORSEA (74) - has cosmetic forms
 	dw SeadraFramesPointers		; SEADRA (75) - has cosmetic forms
 	dw 0					; GOLDEEN (76) - no cosmetic forms
@@ -138,7 +138,7 @@ CosmeticFormFramePointersTable:
 	dw 0					; TAUROS (80) - no cosmetic forms
 	dw MagikarpFramesPointers		; MAGIKARP (81) - no cosmetic forms
 	dw GyaradosFramesPointers		; GYARADOS (82) - has cosmetic forms
-	dw 0					; LAPRAS (83) - no cosmetic forms
+	dw LaprasFramesPointers	; LAPRAS (83) - has cosmetic forms
 	dw 0					; DITTO (84) - no cosmetic forms
 	dw 0					; EEVEE (85) - no cosmetic forms
 	dw 0					; VAPOREON (86) - no cosmetic forms
@@ -571,6 +571,72 @@ AerodactylFramesPointers:
 	dw AerodactylPlainFrames
 	dw AerodactylRBFrames
 	assert_table_length NUM_AERODACTYL_FORMS
+
+RhyhornFramesPointers:
+	table_width 2
+	dw RhyhornPlainFrames
+	dw RhyhornRBFrames
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonFramesPointers:
+	table_width 2
+	dw RhydonPlainFrames
+	dw RhydonRBFrames
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanFramesPointers:
+	table_width 2
+	dw KangaskhanPlainFrames
+	dw KangaskhanRBFrames
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatFramesPointers:
+	table_width 2
+	dw VenonatPlainFrames
+	dw VenonatRBFrames
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothFramesPointers:
+	table_width 2
+	dw VenomothPlainFrames
+	dw VenomothRBFrames
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasFramesPointers:
+	table_width 2
+	dw LaprasPlainFrames
+	dw LaprasRBFrames
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDFramesPointers:
+	table_width 2
+	dw FarfetchDPlainFrames
+	dw FarfetchDRBFrames
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CuboneFramesPointers:
+	table_width 2
+	dw CubonePlainFrames
+	dw CuboneRBFrames
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakFramesPointers:
+	table_width 2
+	dw MarowakPlainFrames
+	dw MarowakRBFrames
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcuteFramesPointers:
+	table_width 2
+	dw ExeggcutePlainFrames
+	dw ExeggcuteRBFrames
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorFramesPointers:
+	table_width 2
+	dw ExeggutorPlainFrames
+	dw ExeggutorRBFrames
+	assert_table_length NUM_EXEGGUTOR_FORMS
 
 PichuFramesPointers:
 	table_width 2

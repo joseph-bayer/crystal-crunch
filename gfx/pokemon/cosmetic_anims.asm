@@ -165,6 +165,39 @@ StarmieRBAnimation:		INCLUDE "gfx/pokemon/starmie_rb/anim.asm"
 AerodactylPlainAnimation:		INCLUDE "gfx/pokemon/aerodactyl/anim.asm"
 AerodactylRBAnimation:		INCLUDE "gfx/pokemon/aerodactyl_rb/anim.asm"
 
+RhyhornPlainAnimation:		INCLUDE "gfx/pokemon/rhyhorn/anim.asm"
+RhyhornRBAnimation:		INCLUDE "gfx/pokemon/rhyhorn_rb/anim.asm"
+
+RhydonPlainAnimation:		INCLUDE "gfx/pokemon/rhydon/anim.asm"
+RhydonRBAnimation:		INCLUDE "gfx/pokemon/rhydon_rb/anim.asm"
+
+KangaskhanPlainAnimation:		INCLUDE "gfx/pokemon/kangaskhan/anim.asm"
+KangaskhanRBAnimation:		INCLUDE "gfx/pokemon/kangaskhan_rb/anim.asm"
+
+VenonatPlainAnimation:		INCLUDE "gfx/pokemon/venonat/anim.asm"
+VenonatRBAnimation:		INCLUDE "gfx/pokemon/venonat_rb/anim.asm"
+
+VenomothPlainAnimation:		INCLUDE "gfx/pokemon/venomoth/anim.asm"
+VenomothRBAnimation:		INCLUDE "gfx/pokemon/venomoth_rb/anim.asm"
+
+LaprasPlainAnimation:		INCLUDE "gfx/pokemon/lapras/anim.asm"
+LaprasRBAnimation:		INCLUDE "gfx/pokemon/lapras_rb/anim.asm"
+
+FarfetchDPlainAnimation:		INCLUDE "gfx/pokemon/farfetch_d/anim.asm"
+FarfetchDRBAnimation:		INCLUDE "gfx/pokemon/farfetch_d_rb/anim.asm"
+
+CubonePlainAnimation:		INCLUDE "gfx/pokemon/cubone/anim.asm"
+CuboneRBAnimation:		INCLUDE "gfx/pokemon/cubone_rb/anim.asm"
+
+MarowakPlainAnimation:		INCLUDE "gfx/pokemon/marowak/anim.asm"
+MarowakRBAnimation:		INCLUDE "gfx/pokemon/marowak_rb/anim.asm"
+
+ExeggcutePlainAnimation:		INCLUDE "gfx/pokemon/exeggcute/anim.asm"
+ExeggcuteRBAnimation:		INCLUDE "gfx/pokemon/exeggcute_rb/anim.asm"
+
+ExeggutorPlainAnimation:		INCLUDE "gfx/pokemon/exeggutor/anim.asm"
+ExeggutorRBAnimation:		INCLUDE "gfx/pokemon/exeggutor_rb/anim.asm"
+
 PichuPlainAnimation:		INCLUDE "gfx/pokemon/pichu/anim.asm"
 PichuBetaAnimation:		INCLUDE "gfx/pokemon/pichu_beta/anim.asm"
 

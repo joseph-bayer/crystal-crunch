@@ -21,6 +21,13 @@
 ;
 ; A species entry covers every one of its forms. A form that wants something different goes in
 ; IconPaletteOrderForms below, which is checked first.
+;
+; The species table has a section of its own, out of the full color bank, and is read with
+; GetFarByte; IconPaletteOrderForms stays beside the code that scans it.
+
+PUSHS
+
+SECTION "Icon Palette Orders", ROMX
 
 	db ICON_PAL_NORMAL ; EGG is -3
 	db ICON_PAL_NORMAL ; unused
@@ -285,6 +292,8 @@ IconPaletteOrders:
 	db ICON_PAL_NORMAL                   ; NEW_MON_4
 	db ICON_PAL_NORMAL                   ; NEW_MON_5
 	assert_table_length NUM_POKEMON
+
+POPS
 
 ; Per-form overrides, checked before the species table. Entries are
 ; (species index, form number, order), so only the forms that differ need listing.

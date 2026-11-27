@@ -479,6 +479,105 @@ INCBIN	"gfx/pokemon/aerodactyl_rb/normal.gbcpal", middle_colors
 INCLUDE "gfx/pokemon/dmg_shiny.pal"
 	assert_table_length NUM_AERODACTYL_FORMS
 
+RhyhornPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/rhyhorn/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/rhyhorn/shiny.pal"
+INCBIN	"gfx/pokemon/rhyhorn_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_RHYHORN_FORMS
+
+RhydonPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/rhydon/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/rhydon/shiny.pal"
+INCBIN	"gfx/pokemon/rhydon_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_RHYDON_FORMS
+
+KangaskhanPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/kangaskhan/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/kangaskhan/shiny.pal"
+INCBIN	"gfx/pokemon/kangaskhan_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_KANGASKHAN_FORMS
+
+VenonatPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/venonat/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/venonat/shiny.pal"
+INCBIN	"gfx/pokemon/venonat_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_VENONAT_FORMS
+
+VenomothPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/venomoth/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/venomoth/shiny.pal"
+INCBIN	"gfx/pokemon/venomoth_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_VENOMOTH_FORMS
+
+LaprasPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/lapras/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/lapras/shiny.pal"
+INCBIN	"gfx/pokemon/lapras_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_LAPRAS_FORMS
+
+FarfetchDPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/farfetch_d/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/farfetch_d/shiny.pal"
+INCBIN	"gfx/pokemon/farfetch_d_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_FARFETCH_D_FORMS
+
+CubonePalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/cubone/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/cubone/shiny.pal"
+INCBIN	"gfx/pokemon/cubone_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_CUBONE_FORMS
+
+MarowakPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/marowak/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/marowak/shiny.pal"
+INCBIN	"gfx/pokemon/marowak_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_MAROWAK_FORMS
+
+ExeggcutePalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/exeggcute/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/exeggcute/shiny.pal"
+INCBIN	"gfx/pokemon/exeggcute_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_EXEGGCUTE_FORMS
+
+ExeggutorPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/exeggutor/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/exeggutor/shiny.pal"
+INCBIN	"gfx/pokemon/exeggutor_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_EXEGGUTOR_FORMS
+
 PichuPalettes:
 	; 4 middle palettes, normal and shiny, with 2 colors each
 	table_width COLOR_SIZE * 2 * 2

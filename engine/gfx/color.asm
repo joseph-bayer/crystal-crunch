@@ -518,10 +518,13 @@ GetMonIconPaletteOrder::
 	dec hl ; the table starts at species index 1
 	ld de, IconPaletteOrders
 	add hl, de
-	; fallthrough
+	ld a, BANK(IconPaletteOrders)
+	call GetFarByte
+	jr .got_order
 
 .found
 	ld a, [hl]
+.got_order
 	pop bc
 	pop de
 	pop hl

@@ -199,6 +199,7 @@ ROMX $40
 ROMX $41
 	"bank41"
 	"Alt Shiny Palettes"
+	"Icon Palette Orders"
 ROMX $42
 	"Intro Logo"
 	"Credits"

@@ -165,6 +165,39 @@ StarmieRBAnimationIdle:		INCLUDE "gfx/pokemon/starmie_rb/anim_idle.asm"
 AerodactylPlainAnimationIdle:		INCLUDE "gfx/pokemon/aerodactyl/anim_idle.asm"
 AerodactylRBAnimationIdle:		INCLUDE "gfx/pokemon/aerodactyl_rb/anim_idle.asm"
 
+RhyhornPlainAnimationIdle:		INCLUDE "gfx/pokemon/rhyhorn/anim_idle.asm"
+RhyhornRBAnimationIdle:		INCLUDE "gfx/pokemon/rhyhorn_rb/anim_idle.asm"
+
+RhydonPlainAnimationIdle:		INCLUDE "gfx/pokemon/rhydon/anim_idle.asm"
+RhydonRBAnimationIdle:		INCLUDE "gfx/pokemon/rhydon_rb/anim_idle.asm"
+
+KangaskhanPlainAnimationIdle:		INCLUDE "gfx/pokemon/kangaskhan/anim_idle.asm"
+KangaskhanRBAnimationIdle:		INCLUDE "gfx/pokemon/kangaskhan_rb/anim_idle.asm"
+
+VenonatPlainAnimationIdle:		INCLUDE "gfx/pokemon/venonat/anim_idle.asm"
+VenonatRBAnimationIdle:		INCLUDE "gfx/pokemon/venonat_rb/anim_idle.asm"
+
+VenomothPlainAnimationIdle:		INCLUDE "gfx/pokemon/venomoth/anim_idle.asm"
+VenomothRBAnimationIdle:		INCLUDE "gfx/pokemon/venomoth_rb/anim_idle.asm"
+
+LaprasPlainAnimationIdle:		INCLUDE "gfx/pokemon/lapras/anim_idle.asm"
+LaprasRBAnimationIdle:		INCLUDE "gfx/pokemon/lapras_rb/anim_idle.asm"
+
+FarfetchDPlainAnimationIdle:		INCLUDE "gfx/pokemon/farfetch_d/anim_idle.asm"
+FarfetchDRBAnimationIdle:		INCLUDE "gfx/pokemon/farfetch_d_rb/anim_idle.asm"
+
+CubonePlainAnimationIdle:		INCLUDE "gfx/pokemon/cubone/anim_idle.asm"
+CuboneRBAnimationIdle:		INCLUDE "gfx/pokemon/cubone_rb/anim_idle.asm"
+
+MarowakPlainAnimationIdle:		INCLUDE "gfx/pokemon/marowak/anim_idle.asm"
+MarowakRBAnimationIdle:		INCLUDE "gfx/pokemon/marowak_rb/anim_idle.asm"
+
+ExeggcutePlainAnimationIdle:		INCLUDE "gfx/pokemon/exeggcute/anim_idle.asm"
+ExeggcuteRBAnimationIdle:		INCLUDE "gfx/pokemon/exeggcute_rb/anim_idle.asm"
+
+ExeggutorPlainAnimationIdle:		INCLUDE "gfx/pokemon/exeggutor/anim_idle.asm"
+ExeggutorRBAnimationIdle:		INCLUDE "gfx/pokemon/exeggutor_rb/anim_idle.asm"
+
 PichuPlainAnimationIdle:		INCLUDE "gfx/pokemon/pichu/anim_idle.asm"
 PichuBetaAnimationIdle:		INCLUDE "gfx/pokemon/pichu_beta/anim_idle.asm"
 

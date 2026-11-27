@@ -27,6 +27,7 @@ UnionCaveB2FLaprasCallback:
 
 UnionCaveLapras:
 	faceplayer
+	setevent EVENT_MET_UNION_CAVE_LAPRAS
 	cry LAPRAS
 	loadwildmon LAPRAS, 20
 	startbattle

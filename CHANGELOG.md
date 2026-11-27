@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Shinies and swarms
+- **New Red/Blue forms**: Rhyhorn, Rhydon, Kangaskhan, Venonat, Venomoth, Lapras, Farfetch'd, Cubone, Marowak, Exeggcute and Exeggutor.
+- **New swarms** after the Elite Four, one for each new line: RB Rhyhorn on Route 15, Kangaskhan in Rock Tunnel B1F, Venonat on Route 14, Farfetch'd on Route 6, Cubone on Route 8, Exeggcute on Route 18, and Lapras on Route 21's water, once you've met the Lapras in Union Cave.
+
 ## 2.0
 
 > **Upgrading a v1.x save:** save inside a Pokémon Center before you switch to 2.0. Some places got new walls (Route 2's old mini forest and parts of Route 17), and a save made standing on one of those spots loads you inside the wall.

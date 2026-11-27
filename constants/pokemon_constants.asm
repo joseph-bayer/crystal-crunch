@@ -593,6 +593,72 @@ DEF NUM_STARMIE_FORMS EQU const_value ; 2
   const AERODACTYL_RB_FORM    ; 1 -- its Red/Blue sprite; revived from the Older Amber
 DEF NUM_AERODACTYL_FORMS EQU const_value ; 2
 
+; Rhyhorn forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const RHYHORN_PLAIN_FORM ; 0
+  const RHYHORN_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_RHYHORN_FORMS EQU const_value ; 2
+
+; Rhydon forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const RHYDON_PLAIN_FORM ; 0
+  const RHYDON_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_RHYDON_FORMS EQU const_value ; 2
+
+; Kangaskhan forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const KANGASKHAN_PLAIN_FORM ; 0
+  const KANGASKHAN_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_KANGASKHAN_FORMS EQU const_value ; 2
+
+; Venonat forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const VENONAT_PLAIN_FORM ; 0
+  const VENONAT_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_VENONAT_FORMS EQU const_value ; 2
+
+; Venomoth forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const VENOMOTH_PLAIN_FORM ; 0
+  const VENOMOTH_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_VENOMOTH_FORMS EQU const_value ; 2
+
+; Lapras forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const LAPRAS_PLAIN_FORM ; 0
+  const LAPRAS_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_LAPRAS_FORMS EQU const_value ; 2
+
+; FarfetchD forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const FARFETCH_D_PLAIN_FORM ; 0
+  const FARFETCH_D_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_FARFETCH_D_FORMS EQU const_value ; 2
+
+; Cubone forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const CUBONE_PLAIN_FORM ; 0
+  const CUBONE_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_CUBONE_FORMS EQU const_value ; 2
+
+; Marowak forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const MAROWAK_PLAIN_FORM ; 0
+  const MAROWAK_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_MAROWAK_FORMS EQU const_value ; 2
+
+; Exeggcute forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const EXEGGCUTE_PLAIN_FORM ; 0
+  const EXEGGCUTE_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_EXEGGCUTE_FORMS EQU const_value ; 2
+
+; Exeggutor forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const EXEGGUTOR_PLAIN_FORM ; 0
+  const EXEGGUTOR_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_EXEGGUTOR_FORMS EQU const_value ; 2
+
 ; Arbok forms
   const_def 0 ; Note that forms are now 0-indexed
   const ARBOK_PLAIN_FORM  ; 0
