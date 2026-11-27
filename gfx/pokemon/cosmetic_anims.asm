@@ -198,6 +198,15 @@ ExeggcuteRBAnimation:		INCLUDE "gfx/pokemon/exeggcute_rb/anim.asm"
 ExeggutorPlainAnimation:		INCLUDE "gfx/pokemon/exeggutor/anim.asm"
 ExeggutorRBAnimation:		INCLUDE "gfx/pokemon/exeggutor_rb/anim.asm"
 
+DratiniPlainAnimation:		INCLUDE "gfx/pokemon/dratini/anim.asm"
+DratiniRBAnimation:		INCLUDE "gfx/pokemon/dratini_rb/anim.asm"
+
+DragonairPlainAnimation:		INCLUDE "gfx/pokemon/dragonair/anim.asm"
+DragonairRBAnimation:		INCLUDE "gfx/pokemon/dragonair_rb/anim.asm"
+
+DragonitePlainAnimation:		INCLUDE "gfx/pokemon/dragonite/anim.asm"
+DragoniteRBAnimation:		INCLUDE "gfx/pokemon/dragonite_rb/anim.asm"
+
 PichuPlainAnimation:		INCLUDE "gfx/pokemon/pichu/anim.asm"
 PichuBetaAnimation:		INCLUDE "gfx/pokemon/pichu_beta/anim.asm"
 

@@ -385,6 +385,9 @@ endc
 	dwb MAROWAK,    NUM_MAROWAK_FORMS     ; 2, running total 141
 	dwb EXEGGCUTE,  NUM_EXEGGCUTE_FORMS   ; 2, running total 143
 	dwb EXEGGUTOR,  NUM_EXEGGUTOR_FORMS   ; 2, running total 145
+	dwb DRATINI,    NUM_DRATINI_FORMS     ; 2, running total 147
+	dwb DRAGONAIR,  NUM_DRAGONAIR_FORMS   ; 2, running total 149
+	dwb DRAGONITE,  NUM_DRAGONITE_FORMS   ; 2, running total 151
 if FILL_PC_ALL_UNOWN_LETTERS
 	dwb UNOWN,    NUM_UNOWN
 endc

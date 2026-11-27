@@ -154,9 +154,9 @@ CosmeticFormPicPointersTable::
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
 	dw 0					; MOLTRES (92) - no cosmetic forms
-	dw 0					; DRATINI (93) - no cosmetic forms
-	dw 0					; DRAGONAIR (94) - no cosmetic forms
-	dw 0					; DRAGONITE (95) - no cosmetic forms
+	dw DratiniPicPointers		; DRATINI (93) - has cosmetic forms
+	dw DragonairPicPointers	; DRAGONAIR (94) - has cosmetic forms
+	dw DragonitePicPointers	; DRAGONITE (95) - has cosmetic forms
 	dw 0					; MEWTWO (96) - no cosmetic forms
 	dw 0					; MEW (97) - no cosmetic forms
 	dw 0					; CHIKORITA (98) - no cosmetic forms
@@ -850,6 +850,33 @@ ExeggutorPicPointers::
 	dba ExeggutorRBFrontpic
 	dba ExeggutorRBBackpic
 	assert_table_length NUM_EXEGGUTOR_FORMS
+
+DratiniPicPointers::
+; entries correspond to Dratini's forms, two apiece
+	table_width 3 * 2
+	dba DratiniFrontpic
+	dba DratiniBackpic
+	dba DratiniRBFrontpic
+	dba DratiniRBBackpic
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairPicPointers::
+; entries correspond to Dragonair's forms, two apiece
+	table_width 3 * 2
+	dba DragonairFrontpic
+	dba DragonairBackpic
+	dba DragonairRBFrontpic
+	dba DragonairRBBackpic
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragonitePicPointers::
+; entries correspond to Dragonite's forms, two apiece
+	table_width 3 * 2
+	dba DragoniteFrontpic
+	dba DragoniteBackpic
+	dba DragoniteRBFrontpic
+	dba DragoniteRBBackpic
+	assert_table_length NUM_DRAGONITE_FORMS
 
 PichuPicPointers::
 ; entries correspond to Pichu's forms, two apiece

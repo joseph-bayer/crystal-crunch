@@ -198,6 +198,15 @@ ExeggcuteRBAnimationIdle:		INCLUDE "gfx/pokemon/exeggcute_rb/anim_idle.asm"
 ExeggutorPlainAnimationIdle:		INCLUDE "gfx/pokemon/exeggutor/anim_idle.asm"
 ExeggutorRBAnimationIdle:		INCLUDE "gfx/pokemon/exeggutor_rb/anim_idle.asm"
 
+DratiniPlainAnimationIdle:		INCLUDE "gfx/pokemon/dratini/anim_idle.asm"
+DratiniRBAnimationIdle:		INCLUDE "gfx/pokemon/dratini_rb/anim_idle.asm"
+
+DragonairPlainAnimationIdle:		INCLUDE "gfx/pokemon/dragonair/anim_idle.asm"
+DragonairRBAnimationIdle:		INCLUDE "gfx/pokemon/dragonair_rb/anim_idle.asm"
+
+DragonitePlainAnimationIdle:		INCLUDE "gfx/pokemon/dragonite/anim_idle.asm"
+DragoniteRBAnimationIdle:		INCLUDE "gfx/pokemon/dragonite_rb/anim_idle.asm"
+
 PichuPlainAnimationIdle:		INCLUDE "gfx/pokemon/pichu/anim_idle.asm"
 PichuBetaAnimationIdle:		INCLUDE "gfx/pokemon/pichu_beta/anim_idle.asm"
 

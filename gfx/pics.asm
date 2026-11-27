@@ -859,3 +859,14 @@ ExeggcuteRBFrontpic: INCBIN "gfx/pokemon/exeggcute_rb/front.animated.2bpp.lz"
 ExeggcuteRBBackpic:  INCBIN "gfx/pokemon/exeggcute_rb/back.2bpp.lz"
 ExeggutorRBFrontpic: INCBIN "gfx/pokemon/exeggutor_rb/front.animated.2bpp.lz"
 ExeggutorRBBackpic:  INCBIN "gfx/pokemon/exeggutor_rb/back.2bpp.lz"
+
+
+SECTION "Pics 24", ROMX
+
+; The Red/Blue Dratini line
+DratiniRBFrontpic: INCBIN "gfx/pokemon/dratini_rb/front.animated.2bpp.lz"
+DratiniRBBackpic:  INCBIN "gfx/pokemon/dratini_rb/back.2bpp.lz"
+DragonairRBFrontpic: INCBIN "gfx/pokemon/dragonair_rb/front.animated.2bpp.lz"
+DragonairRBBackpic:  INCBIN "gfx/pokemon/dragonair_rb/back.2bpp.lz"
+DragoniteRBFrontpic: INCBIN "gfx/pokemon/dragonite_rb/front.animated.2bpp.lz"
+DragoniteRBBackpic:  INCBIN "gfx/pokemon/dragonite_rb/back.2bpp.lz"

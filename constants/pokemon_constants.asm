@@ -659,6 +659,24 @@ DEF NUM_EXEGGCUTE_FORMS EQU const_value ; 2
   const EXEGGUTOR_RB_FORM    ; 1 -- its Red/Blue sprite
 DEF NUM_EXEGGUTOR_FORMS EQU const_value ; 2
 
+; Dratini forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const DRATINI_PLAIN_FORM ; 0
+  const DRATINI_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_DRATINI_FORMS EQU const_value ; 2
+
+; Dragonair forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const DRAGONAIR_PLAIN_FORM ; 0
+  const DRAGONAIR_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_DRAGONAIR_FORMS EQU const_value ; 2
+
+; Dragonite forms
+  const_def 0 ; Note that forms are now 0-indexed
+  const DRAGONITE_PLAIN_FORM ; 0
+  const DRAGONITE_RB_FORM    ; 1 -- its Red/Blue sprite
+DEF NUM_DRAGONITE_FORMS EQU const_value ; 2
+
 ; Arbok forms
   const_def 0 ; Note that forms are now 0-indexed
   const ARBOK_PLAIN_FORM  ; 0

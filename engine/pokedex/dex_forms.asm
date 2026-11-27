@@ -82,6 +82,9 @@ DexFormFlagRows:
 	dex_form_flags MAROWAK,    1, 1
 	dex_form_flags EXEGGCUTE,  1, 1
 	dex_form_flags EXEGGUTOR,  1, 1
+	dex_form_flags DRATINI,    1, 1
+	dex_form_flags DRAGONAIR,  1, 1
+	dex_form_flags DRAGONITE,  1, 1
 	dw 0 ; end
 	assert DEX_FORM_FLAGS <= DEX_FORM_FLAG_CAPACITY, "DexFormFlagRows needs more than DEX_FORM_FLAG_CAPACITY"
 	assert DEX_FORM_FLAG_CAPACITY <= 256, "flag numbers are a byte"

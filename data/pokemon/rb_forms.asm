@@ -64,4 +64,7 @@ RBFormTable:
 	rb_form MAROWAK,    MAROWAK_RB_FORM,      0
 	rb_form EXEGGCUTE,  EXEGGCUTE_RB_FORM,    0
 	rb_form EXEGGUTOR,  EXEGGUTOR_RB_FORM,    0
-	assert NUM_RB_FORM_ROWS == 51, "RBFormTable should hold 47 RB forms and 4 beta forms"
+	rb_form DRATINI,    DRATINI_RB_FORM,      0
+	rb_form DRAGONAIR,  DRAGONAIR_RB_FORM,    0
+	rb_form DRAGONITE,  DRAGONITE_RB_FORM,    0
+	assert NUM_RB_FORM_ROWS == 54, "RBFormTable should hold 50 RB forms and 4 beta forms"

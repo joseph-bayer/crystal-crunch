@@ -58,6 +58,43 @@ GetRBFormSpecial::
 	pop hl
 	ret
 
+GetRBForm::
+; a = species ID.
+; Returns carry and a = its Red/Blue (or beta) form if it has one, else no carry and a = PLAIN_FORM.
+; Preserves bc, de and hl.
+	push hl
+	push de
+	push bc
+	call GetPokemonIndexFromID
+	ld de, RBFormTable
+	ld b, NUM_RB_FORM_ROWS
+.loop
+	ld a, [de]
+	inc de
+	cp l
+	jr nz, .next
+	ld a, [de]
+	cp h
+	jr nz, .next
+	inc de
+	ld a, [de]
+	scf
+	jr .done
+
+.next
+	inc de
+	inc de
+	inc de
+	dec b
+	jr nz, .loop
+	assert PLAIN_FORM == 0
+	xor a
+.done
+	pop bc
+	pop de
+	pop hl
+	ret
+
 ApplyRBFormStats::
 ; Called by CalcMonStats after GetBaseData has filled wCurBaseData.
 ; hl = the mon's EVs - 1 (MON_EVS - 1), b = TRUE if EVs count.

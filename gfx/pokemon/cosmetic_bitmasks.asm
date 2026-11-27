@@ -198,6 +198,15 @@ ExeggcuteRBBitmask:		INCLUDE "gfx/pokemon/exeggcute_rb/bitmask.asm"
 ExeggutorPlainBitmask:		INCLUDE "gfx/pokemon/exeggutor/bitmask.asm"
 ExeggutorRBBitmask:		INCLUDE "gfx/pokemon/exeggutor_rb/bitmask.asm"
 
+DratiniPlainBitmask:		INCLUDE "gfx/pokemon/dratini/bitmask.asm"
+DratiniRBBitmask:		INCLUDE "gfx/pokemon/dratini_rb/bitmask.asm"
+
+DragonairPlainBitmask:		INCLUDE "gfx/pokemon/dragonair/bitmask.asm"
+DragonairRBBitmask:		INCLUDE "gfx/pokemon/dragonair_rb/bitmask.asm"
+
+DragonitePlainBitmask:		INCLUDE "gfx/pokemon/dragonite/bitmask.asm"
+DragoniteRBBitmask:		INCLUDE "gfx/pokemon/dragonite_rb/bitmask.asm"
+
 PichuPlainBitmask:		INCLUDE "gfx/pokemon/pichu/bitmask.asm"
 PichuBetaBitmask:		INCLUDE "gfx/pokemon/pichu_beta/bitmask.asm"
 

@@ -578,6 +578,33 @@ INCBIN	"gfx/pokemon/exeggutor_rb/normal.gbcpal", middle_colors
 INCLUDE "gfx/pokemon/dmg_shiny.pal"
 	assert_table_length NUM_EXEGGUTOR_FORMS
 
+DratiniPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/dratini/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dratini/shiny.pal"
+INCBIN	"gfx/pokemon/dratini_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairPalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/dragonair/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dragonair/shiny.pal"
+INCBIN	"gfx/pokemon/dragonair_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragonitePalettes:
+	; 2 middle palettes, normal and shiny, with 2 colors each
+	table_width COLOR_SIZE * 2 * 2
+INCBIN	"gfx/pokemon/dragonite/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dragonite/shiny.pal"
+INCBIN	"gfx/pokemon/dragonite_rb/normal.gbcpal", middle_colors
+INCLUDE "gfx/pokemon/dmg_shiny.pal"
+	assert_table_length NUM_DRAGONITE_FORMS
+
 PichuPalettes:
 	; 4 middle palettes, normal and shiny, with 2 colors each
 	table_width COLOR_SIZE * 2 * 2

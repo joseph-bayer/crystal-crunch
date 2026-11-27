@@ -8,7 +8,7 @@ Two bugs this guards against:
   because the "already caught" check tested the wrong register."""
 
 from harness.forms import (SHINY_MASK, answer_prompts, ot_party_field, out_of_battle,
-	party_field, press_until, shorten_party, super_nerd_menu, take_radio_items, throw_ball,
+	party_field, shorten_party, super_nerd_menu, take_radio_items, throw_ball,
 	wait_for_battle_menu, wait_until)
 
 # Any form byte a previous battle could have left behind: a shiny form 1.
@@ -23,18 +23,16 @@ def test_trainer_mon_dont_inherit_the_last_form(game):
 	# What the last wild battle would leave behind
 	game.poke("wEnemyMonForm", LEFTOVER_FORM)
 
-	# Brock's party has no forms in its data
-	super_nerd_menu(game, "BROCK PIC")
-	press_until(game, lambda: "YES" in game.screen_text(), "the battle's yes/no")
-	game.choose("YES")
+	# The debug SCREENS scientist's party has moves but no forms in its data
+	super_nerd_menu(game, "HP BATTLES", "SCREENS")
 	wait_until(game, lambda: game.peek("wBattleMode") == 2 and game.peek("wOTPartyCount") > 0,
-		"Brock's battle")
+		"the scientist's battle")
 	wait_for_battle_menu(game)
 
 	count = game.peek("wOTPartyCount")
 	forms = [ot_party_field(game, slot, "Form") for slot in range(count)]
-	assert forms == [0] * count, "Brock's mon should all be plain, not %s" % forms
-	assert game.peek("wEnemyMonForm") == 0, "the mon Brock sent out should be plain"
+	assert forms == [0] * count, "the scientist's mon should all be plain, not %s" % forms
+	assert game.peek("wEnemyMonForm") == 0, "the mon the scientist sent out should be plain"
 
 
 def test_caught_mon_keeps_its_form(game):

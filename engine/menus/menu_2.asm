@@ -111,6 +111,37 @@ DisplayCoinCaseBalance:
 	hlcoord 13, 1
 	jmp PrintNum
 
+CoinsVerticalMenu:
+; The script's verticalmenu, with the coin balance in the menu's empty top row, for a menu too tall
+; to leave room for DisplayCoinCaseBalance's box. The menu's box starts at the top of the screen
+; and ends at column 17. Sets wScriptVar as verticalmenu does: the chosen item, or 0 for B.
+	xor a
+	ldh [hBGMapMode], a
+	call MenuBox
+	call UpdateSprites
+	; the menu's strings are in the script's bank (this also copies the menu data to wMenuData)
+	ld a, [wScriptBank]
+	ld hl, PlaceVerticalMenuItems
+	call FarCall_hl
+	hlcoord 8, 1
+	ld de, CoinString
+	rst PlaceString
+	ld de, wCoins
+	lb bc, 2, 4
+	hlcoord 13, 1
+	call PrintNum
+	call ApplyTilemap
+	call InitVerticalMenuCursor
+	call StaticMenuJoypad
+	call MenuClickSound
+	bit B_PAD_B, a
+	ld a, [wMenuCursorY]
+	jr z, .chosen
+	xor a
+.chosen
+	ld [wScriptVar], a
+	ret
+
 DisplayMoneyAndCoinBalance:
 	hlcoord 5, 0
 	lb bc, 3, 13

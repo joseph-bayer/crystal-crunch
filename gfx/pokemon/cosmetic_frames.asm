@@ -198,6 +198,15 @@ ExeggcuteRBFrames:		INCLUDE "gfx/pokemon/exeggcute_rb/frames.asm"
 ExeggutorPlainFrames:		INCLUDE "gfx/pokemon/exeggutor/frames.asm"
 ExeggutorRBFrames:		INCLUDE "gfx/pokemon/exeggutor_rb/frames.asm"
 
+DratiniPlainFrames:		INCLUDE "gfx/pokemon/dratini/frames.asm"
+DratiniRBFrames:		INCLUDE "gfx/pokemon/dratini_rb/frames.asm"
+
+DragonairPlainFrames:		INCLUDE "gfx/pokemon/dragonair/frames.asm"
+DragonairRBFrames:		INCLUDE "gfx/pokemon/dragonair_rb/frames.asm"
+
+DragonitePlainFrames:		INCLUDE "gfx/pokemon/dragonite/frames.asm"
+DragoniteRBFrames:		INCLUDE "gfx/pokemon/dragonite_rb/frames.asm"
+
 PichuPlainFrames:		INCLUDE "gfx/pokemon/pichu/frames.asm"
 PichuBetaFrames:		INCLUDE "gfx/pokemon/pichu_beta/frames.asm"
 

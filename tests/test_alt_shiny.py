@@ -221,7 +221,7 @@ def test_alternate_scizor_is_gold(game):
 
 
 @pytest.mark.parametrize("species, forms", [
-	("DRATINI", 1), ("DRAGONAIR", 1), ("DRAGONITE", 1),
+	("DRATINI", 2), ("DRAGONAIR", 2), ("DRAGONITE", 2), # plain and RB
 	("MAGIKARP", 4), ("GYARADOS", 4), ("MARILL", 1), ("AZUMARILL", 1), # plain, XS, XL and RB: every form shares the alternate
 ])
 def test_dragon_line_and_magikarp_line_alternates(game, species, forms):

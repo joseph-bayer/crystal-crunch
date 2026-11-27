@@ -154,9 +154,9 @@ CosmeticFormBitmaskPointersTable:
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
 	dw 0					; MOLTRES (92) - no cosmetic forms
-	dw 0					; DRATINI (93) - no cosmetic forms
-	dw 0					; DRAGONAIR (94) - no cosmetic forms
-	dw 0					; DRAGONITE (95) - no cosmetic forms
+	dw DratiniBitmasksPointers	; DRATINI (93) - has cosmetic forms
+	dw DragonairBitmasksPointers	; DRAGONAIR (94) - has cosmetic forms
+	dw DragoniteBitmasksPointers	; DRAGONITE (95) - has cosmetic forms
 	dw 0					; MEWTWO (96) - no cosmetic forms
 	dw 0					; MEW (97) - no cosmetic forms
 	dw 0					; CHIKORITA (98) - no cosmetic forms
@@ -637,6 +637,24 @@ ExeggutorBitmasksPointers:
 	dw ExeggutorPlainBitmask
 	dw ExeggutorRBBitmask
 	assert_table_length NUM_EXEGGUTOR_FORMS
+
+DratiniBitmasksPointers:
+	table_width 2
+	dw DratiniPlainBitmask
+	dw DratiniRBBitmask
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairBitmasksPointers:
+	table_width 2
+	dw DragonairPlainBitmask
+	dw DragonairRBBitmask
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragoniteBitmasksPointers:
+	table_width 2
+	dw DragonitePlainBitmask
+	dw DragoniteRBBitmask
+	assert_table_length NUM_DRAGONITE_FORMS
 
 PichuBitmasksPointers:
 	table_width 2

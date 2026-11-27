@@ -154,9 +154,9 @@ CosmeticFormSymbols::
 	dw 0					; ARTICUNO (90)
 	dw 0					; ZAPDOS (91)
 	dw 0					; MOLTRES (92)
-	dw 0					; DRATINI (93)
-	dw 0					; DRAGONAIR (94)
-	dw 0					; DRAGONITE (95)
+	dw DratiniFormSymbols		; DRATINI (93)
+	dw DragonairFormSymbols	; DRAGONAIR (94)
+	dw DragoniteFormSymbols	; DRAGONITE (95)
 	dw 0					; MEWTWO (96)
 	dw 0					; MEW (97)
 	dw 0					; CHIKORITA (98)
@@ -594,6 +594,24 @@ ExeggutorFormSymbols:
 	db 0
 	db "<CARTRIDGE>"
 	assert_table_length NUM_EXEGGUTOR_FORMS
+
+DratiniFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragoniteFormSymbols:
+	table_width 1
+	db 0
+	db "<CARTRIDGE>"
+	assert_table_length NUM_DRAGONITE_FORMS
 
 PichuFormSymbols:
 	table_width 1

@@ -15,18 +15,36 @@ Special::
 INCLUDE "data/events/special_pointers.asm"
 
 GameCornerPrizeMonCheckDex:
+; The prize in wScriptVar, plain: if it's new to the Pokédex, mark it caught and show its entry.
+	assert PLAIN_FORM == 0
+	xor a
+	jr GameCornerPrizeCheckDex
+
+GameCornerPrizeRBMonCheckDex:
+; The same, for a prize given in its Red/Blue form.
+	ld a, [wScriptVar]
+	farcall GetRBForm
+	; fallthrough
+
+GameCornerPrizeCheckDex:
+; a = the prize's form, which the new entry shows
+	push af
 	ld a, [wScriptVar]
 	call CheckCaughtMon
-	ret nz
+	jr nz, .caught
 	ld a, [wScriptVar]
 	call SetSeenAndCaughtMon
 	call FadeToMenu
 	ld a, [wScriptVar]
 	ld [wNamedObjectIndex], a
-	xor a
-	ld [wForm], a ; prizes are plain, and the new entry shows the form in wForm
+	pop af
+	ld [wForm], a
 	farcall NewPokedexEntry
 	jmp ExitAllMenus
+
+.caught
+	pop af
+	ret
 
 UnusedSetSeenMon:
 	ld a, [wScriptVar]

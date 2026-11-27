@@ -240,8 +240,8 @@ GoldenrodGameCornerPrizeMonVendorScript:
 	db STATICMENU_CURSOR ; flags
 	db 4 ; items
 	db "ABRA        100@"
-	db "PORYGON      800@"
-	db "DRATINI     1500@"
+	db "PORYGON     800@"
+	db "DRATINI    1500@"
 	db "CANCEL@"
 
 GoldenrodGameCornerPharmacistScript:

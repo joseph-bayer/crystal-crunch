@@ -170,6 +170,10 @@ SpecialsPointers::
 	add_special Gen1Tutor
 	add_special CheckPartyForRBAerodactyl
 
+; Celadon Game Corner
+	add_special GameCornerPrizeRBMonCheckDex
+	add_special CoinsVerticalMenu
+
 if DEF(_DEBUG)
 	add_special RestartClock ; the phone debug NPC's clock tool
 endc

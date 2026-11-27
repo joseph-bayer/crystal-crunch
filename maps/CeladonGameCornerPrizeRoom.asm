@@ -4,6 +4,7 @@ DEF CELADONGAMECORNERPRIZEROOM_TM15_COINS     EQU 7500
 DEF CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS  EQU 2222
 DEF CELADONGAMECORNERPRIZEROOM_WOBBUFFET_COINS  EQU 5555
 DEF CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS EQU 8888
+DEF CELADONGAMECORNERPRIZEROOM_RB_DRATINI_COINS EQU 9900
 
 	object_const_def
 	const CELADONGAMECORNERPRIZEROOM_GENTLEMAN
@@ -130,13 +131,13 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	iffalse CeladonPrizeRoom_NoCoinCase
 .loop
 	writetext CeladonPrizeRoom_AskWhichPrizeText
-	special DisplayCoinCaseBalance
 	loadmenu .MenuHeader
-	verticalmenu
+	special CoinsVerticalMenu ; five prizes leave no room for the coin box, so the menu shows the balance
 	closewindow
 	ifequal 1, .Pikachu
 	ifequal 2, .Wobbuffet
 	ifequal 3, .Larvitar
+	ifequal 4, .RBDratini
 	sjump CeladonPrizeRoom_CancelPurchaseScript
 
 .Pikachu:
@@ -193,18 +194,37 @@ CeladonGameCornerPrizeRoomPokemonVendor:
 	takecoins CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS
 	sjump .loop
 
+.RBDratini:
+	checkcoins CELADONGAMECORNERPRIZEROOM_RB_DRATINI_COINS
+	ifequal HAVE_LESS, CeladonPrizeRoom_notenoughcoins
+	readvar VAR_PARTYCOUNT
+	ifequal PARTY_LENGTH, CeladonPrizeRoom_notenoughroom
+	getmonname STRING_BUFFER_3, DRATINI
+	scall CeladonPrizeRoom_askbuy
+	iffalse CeladonPrizeRoom_CancelPurchaseScript
+	waitsfx
+	playsound SFX_TRANSACTION
+	writetext CeladonPrizeRoom_HereYouGoText
+	waitbutton
+	loadmonindex 4, DRATINI
+	special GameCornerPrizeRBMonCheckDex
+	givepoke DRATINI, 25, NO_ITEM, DRATINI_RB_FORM
+	takecoins CELADONGAMECORNERPRIZEROOM_RB_DRATINI_COINS
+	sjump .loop
+
 .MenuHeader:
 	db MENU_BACKUP_TILES ; flags
-	menu_coords 0, 2, 17, TEXTBOX_Y - 1
+	menu_coords 0, 0, 17, TEXTBOX_Y - 1
 	dw .MenuData
 	db 1 ; default option
 
 .MenuData:
 	db STATICMENU_CURSOR ; flags
-	db 4 ; items
+	db 5 ; items
 	db "PIKACHU    {d:CELADONGAMECORNERPRIZEROOM_PIKACHU_COINS}@"
-	db "WOBBUFFET    {d:CELADONGAMECORNERPRIZEROOM_WOBBUFFET_COINS}@"
+	db "WOBBUFFET  {d:CELADONGAMECORNERPRIZEROOM_WOBBUFFET_COINS}@"
 	db "LARVITAR   {d:CELADONGAMECORNERPRIZEROOM_LARVITAR_COINS}@"
+	db "RB DRATINI {d:CELADONGAMECORNERPRIZEROOM_RB_DRATINI_COINS}@"
 	db "CANCEL@"
 
 CeladonGameCornerPrizeRoomGentlemanText:

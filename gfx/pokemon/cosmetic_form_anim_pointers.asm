@@ -154,9 +154,9 @@ CosmeticFormAnimationPointerTable:
 	dw 0					; ARTICUNO (90) - no cosmetic forms
 	dw 0					; ZAPDOS (91) - no cosmetic forms
 	dw 0					; MOLTRES (92) - no cosmetic forms
-	dw 0					; DRATINI (93) - no cosmetic forms
-	dw 0					; DRAGONAIR (94) - no cosmetic forms
-	dw 0					; DRAGONITE (95) - no cosmetic forms
+	dw DratiniAnimationPointers	; DRATINI (93) - has cosmetic forms
+	dw DragonairAnimationPointers	; DRAGONAIR (94) - has cosmetic forms
+	dw DragoniteAnimationPointers	; DRAGONITE (95) - has cosmetic forms
 	dw 0					; MEWTWO (96) - no cosmetic forms
 	dw 0					; MEW (97) - no cosmetic forms
 	dw 0					; CHIKORITA (98) - no cosmetic forms
@@ -415,9 +415,9 @@ CosmeticFormIdleAnimationPointers:
 	dw 0                           		; ARTICUNO (90) - no cosmetic forms
 	dw 0                           		; ZAPDOS (91) - no cosmetic forms
 	dw 0                           		; MOLTRES (92) - no cosmetic forms
-	dw 0                           		; DRATINI (93) - no cosmetic forms
-	dw 0                           		; DRAGONAIR (94) - no cosmetic forms
-	dw 0                           		; DRAGONITE (95) - no cosmetic forms
+	dw DratiniAnimationIdlePointers	; DRATINI (93) - has cosmetic forms
+	dw DragonairAnimationIdlePointers	; DRAGONAIR (94) - has cosmetic forms
+	dw DragoniteAnimationIdlePointers	; DRAGONITE (95) - has cosmetic forms
 	dw 0                           		; MEWTWO (96) - no cosmetic forms
 	dw 0                           		; MEW (97) - no cosmetic forms
 	dw 0                           		; CHIKORITA (98) - no cosmetic forms
@@ -1035,6 +1035,24 @@ ExeggutorAnimationPointers:
 	dw ExeggutorRBAnimation
 	assert_table_length NUM_EXEGGUTOR_FORMS
 
+DratiniAnimationPointers:
+	table_width 2
+	dw DratiniPlainAnimation
+	dw DratiniRBAnimation
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairAnimationPointers:
+	table_width 2
+	dw DragonairPlainAnimation
+	dw DragonairRBAnimation
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragoniteAnimationPointers:
+	table_width 2
+	dw DragonitePlainAnimation
+	dw DragoniteRBAnimation
+	assert_table_length NUM_DRAGONITE_FORMS
+
 IgglybuffAnimationIdlePointers:
 	table_width 2
 	dw IgglybuffPlainAnimationIdle
@@ -1272,6 +1290,24 @@ ExeggutorAnimationIdlePointers:
 	dw ExeggutorPlainAnimationIdle
 	dw ExeggutorRBAnimationIdle
 	assert_table_length NUM_EXEGGUTOR_FORMS
+
+DratiniAnimationIdlePointers:
+	table_width 2
+	dw DratiniPlainAnimationIdle
+	dw DratiniRBAnimationIdle
+	assert_table_length NUM_DRATINI_FORMS
+
+DragonairAnimationIdlePointers:
+	table_width 2
+	dw DragonairPlainAnimationIdle
+	dw DragonairRBAnimationIdle
+	assert_table_length NUM_DRAGONAIR_FORMS
+
+DragoniteAnimationIdlePointers:
+	table_width 2
+	dw DragonitePlainAnimationIdle
+	dw DragoniteRBAnimationIdle
+	assert_table_length NUM_DRAGONITE_FORMS
 
 PichuAnimationPointers:
 	table_width 2

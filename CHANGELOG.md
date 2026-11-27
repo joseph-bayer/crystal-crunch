@@ -3,8 +3,12 @@
 ## Unreleased
 
 ### Shinies and swarms
-- **New Red/Blue forms**: Rhyhorn, Rhydon, Kangaskhan, Venonat, Venomoth, Lapras, Farfetch'd, Cubone, Marowak, Exeggcute and Exeggutor.
+- **New Red/Blue forms**: Rhyhorn, Rhydon, Kangaskhan, Venonat, Venomoth, Lapras, Farfetch'd, Cubone, Marowak, Exeggcute, Exeggutor, Dratini, Dragonair and Dragonite.
+- **RB Dratini** is a new prize at the Celadon Game Corner: 9900 coins for a Lv 25 one. The prize menu shows your coins at its top.
 - **New swarms** after the Elite Four, one for each new line: RB Rhyhorn on Route 15, Kangaskhan in Rock Tunnel B1F, Venonat on Route 14, Farfetch'd on Route 6, Cubone on Route 8, Exeggcute on Route 18, and Lapras on Route 21's water, once you've met the Lapras in Union Cave.
+
+### Trainers
+- **Kanto's trainers use Red/Blue forms**: the Kanto gym leaders, their gyms, the rival at Mt. Moon and the trainers on Kanto's routes send out Red/Blue forms (and beta Crobat and Kingdra) of the Pokémon that have one. So do the Open League's Kanto and Gen 1 seats (Brock, Misty, Lt. Surge, Erika, Janine, Blue, Lorelei, Agatha, Giovanni and Toru), and their partners in the rooms match.
 
 ## 2.0
 

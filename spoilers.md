@@ -117,6 +117,9 @@ A Red/Blue or beta Pokémon has no gender, so it breeds as whichever gender its 
 | Marowak       | Red/Blue              | Evolve an RB Cubone |
 | Exeggcute     | Red/Blue              | Tune into channel 6.0 after beating the Elite Four (a Route 18 swarm) |
 | Exeggutor     | Red/Blue              | Evolve an RB Exeggcute with a Leaf Stone |
+| Dratini       | Red/Blue              | A Celadon Game Corner prize: 9900 coins, Lv 25 |
+| Dragonair     | Red/Blue              | Evolve an RB Dratini |
+| Dragonite     | Red/Blue              | Evolve an RB Dragonair |
 | Golbat        | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Weezing       | Team Rocket           | Tune into channel 6.0 after clearing the Mahogany hideout |
 | Charmeleon    | Team Rocket           | Tune into channel 6.0 after freeing the Radio Tower |
