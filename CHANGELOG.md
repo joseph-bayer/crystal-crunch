@@ -10,6 +10,11 @@
 ### Trainers
 - **Kanto's trainers use Red/Blue forms**: the Kanto gym leaders, their gyms, the rival at Mt. Moon and the trainers on Kanto's routes send out Red/Blue forms (and beta Crobat and Kingdra) of the Pokémon that have one. So do the Open League's Kanto and Gen 1 seats (Brock, Misty, Lt. Surge, Erika, Janine, Blue, Lorelei, Agatha, Giovanni and Toru), and their partners in the rooms match.
 
+### Blackjack
+- **Pick the music** on Blackjack's title screen: Ronald's theme, the Game Corner's music, or the Pokémon TCG's duel theme. Up and Down move between DECK and MUSIC, the one you're on in white, and the game remembers your pick. Press START to play: A no longer starts the game, so it can't be pressed by mistake while picking.
+- **Sounds** as you move through the options, change them and sit down at the table.
+- **The dealer's hole card flips over** when she turns it.
+
 ## 2.0
 
 > **Upgrading a v1.x save:** save inside a Pokémon Center before you switch to 2.0. Some places got new walls (Route 2's old mini forest and parts of Route 17), and a save made standing on one of those spots loads you inside the wall.

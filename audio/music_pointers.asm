@@ -112,4 +112,5 @@ Music:
 	dba Music_TcgClub2
 	dba Music_PuzzleTotodile
 	dba Music_TcgRonald
+	dba Music_TcgDuelTheme1
 	assert_table_length NUM_MUSIC_SONGS

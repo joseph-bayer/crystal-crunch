@@ -121,7 +121,7 @@ def start(game, start_coins=500):
 	"""Into the game, past the title screen with the deck it opens on."""
 	to_the_title(game, start_coins)
 	your_turns(game)
-	game.press("a", hold=4, after=10)
+	game.press("start", hold=4, after=10)
 	wait_for_bet(game)
 
 
@@ -1429,7 +1429,9 @@ def test_the_deal_sound_is_peck_at_full_volume():
 	assert deal == (peck[0], "15", peck[2], peck[3]), (peck, deal)
 
 
-def test_turning_the_hole_card_is_silent(game):
+def test_turning_the_hole_card_plays_the_deal_sound(game):
+	"""The flip plays the deal's card sound, once (the reveal was silent before; Card Flip's sound,
+	almost 3 seconds, was far too long)."""
 	start(game)
 	rig(game, card(10), card(10), card(9), card(7))
 	bet(game, 10)
@@ -1437,7 +1439,7 @@ def test_turning_the_hole_card_is_silent(game):
 	sounds = record_sounds(game)
 	stand(game)
 	result(game, "You win! +10")
-	assert sfx_constants()["SFX_CHOOSE_A_CARD"] not in sounds, sounds
+	assert sounds.count(sfx_constants()["SFX_DEAL_CARD"]) == 1, sounds
 
 
 def sfx_constants():
@@ -1732,10 +1734,13 @@ def test_the_first_cards_top_left_corners_are_sprites(game):
 	assert all(y == 0 for y, _, _, _ in corner_sprites(game)), "gone with the cards"
 
 
+DECK_ENTRY_SIZE = 11 # BlackjackDecks: four pointers, the back colours' count, the flip frames
+
+
 def test_each_deck_counts_its_back_colours(game):
 	bank, address = game.pyboy.symbol_lookup("BlackjackDecks")
 	for i, deck in enumerate(["french", "spaceworld"]):
-		count = game.pyboy.memory[bank, address + i * 9 + 8]
+		count = game.pyboy.memory[bank, address + i * DECK_ENTRY_SIZE + 8]
 		assert count == len(deck_palettes(deck)) // 8 - 4 >= 1, deck
 
 
@@ -1763,7 +1768,7 @@ def test_the_goldenrod_dealer_starts_the_game(game):
 	give_coin_case(game)
 	set_coins(game, 100)
 	ask_the_dealer(game)
-	game.press("a", hold=4, after=10)
+	game.press("start", hold=4, after=10) # past the title
 	wait_for_bet(game)
 	assert in_the_game(game)
 
@@ -1796,7 +1801,8 @@ def music_constants():
 
 
 def music(game):
-	low, high = game.peek("wMusicID", 0, 2)
+	"""The song playing, from its first channel: wMusicID holds the last sound effect's number too."""
+	low, high = game.peek("wChannel1MusicID", 0, 2)
 	return high << 8 | low
 
 
@@ -1819,9 +1825,14 @@ def test_ronalds_theme_is_converted_from_poketcg():
 
 # The title screen
 
-TITLE_TILES = 24 + 17 # the felt pattern's 6x4 tiles, then a tile for each cell of text
+TITLE_TILES = 24 + 29 # the felt pattern's 6x4 tiles, then a tile for each cell of text
 TITLE_TEXT_TILES = 24
-TITLE_LINES = {"start": (7, 10, 0, 6), "label": (8, 12, 6, 3), "deck": (6, 13, 9, 8)} # x, y, first cell, cells
+TITLE_MASKS = 0x580 # in wDecompressScratch: each text cell's letter rows and shadow rows
+# x, y, first cell, cells; with one deck, MUSIC moves up to DECK's rows (TITLE_LINES_ONE_DECK)
+TITLE_LINES = {"start": (7, 10, 0, 6), "label": (8, 12, 6, 3), "deck": (6, 13, 9, 8),
+	"music_label": (8, 15, 17, 4), "music": (6, 16, 21, 8)}
+TITLE_LINES_ONE_DECK = {"start": (7, 10, 0, 6), "music_label": (8, 12, 17, 4), "music": (6, 13, 21, 8)}
+TITLE_PAL_GREY = 2 # the option not highlighted
 # The logo: Meowth centred on top of the sign, its two frames taking turns; tiles from $80
 TITLE_SIGN = (5, 6, 10, 2) # x, y, width, height
 TITLE_MEOWTH = (8, 3, 4, 3)
@@ -1877,7 +1888,9 @@ def title_loops(game):
 		def hook(n):
 			n[0] += 1
 			shown = 0x8000 if game.pyboy.memory[0xff40] & 0x10 else 0x9000
-			game.title_snapshot = (game.peek("wBlackjackTitleShift"),
+			# the frame before a step, the felt has already moved on, its tiles not yet shown
+			ahead = 1 if game.peek("wBlackjackTitleClock") == 1 else 0
+			game.title_snapshot = ((game.peek("wBlackjackTitleShift") - ahead) % 32,
 				bytes(game.pyboy.memory[0, shown + i] for i in range(TITLE_TILES * 16)))
 		game.pyboy.hook_register(bank, address, hook, game.blackjack_titles)
 	return game.blackjack_titles[0]
@@ -1921,7 +1934,7 @@ def title_cells(text, x, cells):
 def title_masks(game, line):
 	"""Each cell of a line as the game drew it: its letter rows and shadow rows."""
 	x, _, first, cells = TITLE_LINES[line]
-	data = game.peek("wDecompressScratch", 0x480 + first * 16, cells * 16)
+	data = game.peek("wDecompressScratch", TITLE_MASKS + first * 16, cells * 16)
 	return [(data[c * 16:c * 16 + 16:2], data[c * 16 + 1:c * 16 + 16:2]) for c in range(cells)]
 
 
@@ -1931,7 +1944,7 @@ def title_line(game, line):
 	x, _, _, cells = TITLE_LINES[line]
 	masks = title_masks(game, line)
 	chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZ▶◀"
-	for length in range(1, 15):
+	for length in range(1, 17):
 		start = 80 - 2 * length - x * 8
 		if start < 0:
 			break
@@ -2036,16 +2049,19 @@ def test_the_title_screen_layout(game, decks):
 	x, y, w, h = TITLE_SIGN
 	assert title_bg_cells(game, *TITLE_SIGN) == logo_png_cells(0, LOGO_SIGN_PNG_Y, w, h), "the sign"
 	assert title_meowth_on_screen(game) in (0, 1)
-	lines = {line: TITLE_LINES[line] for line in (("start", "label", "deck") if decks == 2 else ("start",))}
+	lines = TITLE_LINES if decks == 2 else TITLE_LINES_ONE_DECK
 	for line, (x, y, first, cells) in lines.items():
 		assert tiles[y][x:x + cells] == [TITLE_TEXT_TILES + first + c for c in range(cells)], line
+	# with two options, the one not highlighted (MUSIC, to start with) in the grey palette
+	grey_rows = (15, 16) if decks == 2 else ()
 	for y in range(18):
 		for x in range(20):
 			in_logo = any(lx <= x < lx + lw and ly <= y < ly + lh for lx, ly, lw, lh in (TITLE_SIGN, TITLE_MEOWTH))
 			in_text = any(ty == y and tx <= x < tx + cells for tx, ty, _, cells in lines.values())
+			if not in_logo:
+				assert attrs[y][x] == (TITLE_PAL_GREY if y in grey_rows else 0), (x, y)
 			if not in_logo and not in_text:
 				assert tiles[y][x] == (y % 4) * 6 + x % 6, (x, y)
-				assert attrs[y][x] == 0, (x, y)
 	logo = (GFX / "logo.2bpp").read_bytes()
 	assert logo[:16] == LOGO_BACKGROUND, "logo.2bpp's tile 0, left out, is the background"
 	assert bytes(game.pyboy.memory[0, 0x8800 + i] for i in range(len(logo) - 16)) == logo[16:]
@@ -2125,7 +2141,7 @@ def felt_plain_colour(game):
 
 def test_the_title_screen_palettes(game):
 	to_the_title(game)
-	pals = bytes(game.peek("wBGPals1", 0, 16))
+	pals = bytes(game.peek("wBGPals1", 0, 24))
 	text = (GFX / "blackjack.pal").read_text(encoding="utf-8")
 	colours = []
 	for r, g, b in re.findall(r"RGB\s+(\d+),\s*(\d+),\s*(\d+)", text):
@@ -2134,6 +2150,9 @@ def test_the_title_screen_palettes(game):
 	assert pals[:4] == colours[0] + colours[1], "your side's greens"
 	assert pals[4:8] == bytes([0xff, 0x7f, 0, 0]), "white for the text, then black"
 	assert pals[8:16] == b"".join(colours[8:12]), "the logo in the sidebar's palette"
+	grey = 19 | 19 << 5 | 19 << 10
+	assert pals[16:24] == colours[0] + colours[1] + bytes([grey & 0xff, grey >> 8, 0, 0]), \
+		"the felt's greens, grey text, black"
 
 
 def test_left_and_right_do_nothing_with_one_deck(game):
@@ -2161,11 +2180,11 @@ def test_left_and_right_pick_an_unlocked_deck(game):
 	assert title_deck(game) == 0
 
 
-def test_a_plays_the_deck_shown(game):
+def test_start_plays_the_deck_shown(game):
 	game.set_event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
 	to_the_title(game)
 	tap(game, "right")
-	tap(game, "a")
+	tap(game, "start")
 	wait_for_bet(game)
 	assert in_the_game(game)
 	for name, first, count in (("suits", SUIT_TILES, 4), ("pictures", PICTURE_TILES, 48),
@@ -2179,11 +2198,18 @@ def test_a_plays_the_deck_shown(game):
 	assert game.pyboy.memory[0xff40] & 0x10 == 0, "the table's tiles in vTiles2"
 
 
-def test_start_plays_too(game):
+def test_a_does_nothing_on_the_title(game):
+	"""Only START sits you down: A could be taken for picking a deck or music."""
+	game.set_event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
 	to_the_title(game)
-	tap(game, "start")
-	wait_for_bet(game)
-	assert in_the_game(game)
+	sounds = record_sounds(game)
+	for _ in range(3):
+		tap(game, "a")
+	game.wait(30)
+	assert not in_the_game(game)
+	assert title_loops(game) > 0 and game.peek("wBlackjackTitleOption") == 0
+	assert title_deck(game) == 0 and game.peek("wBlackjackTitleMusic") == 0
+	assert sounds == [], sounds
 
 
 def test_b_on_the_title_goes_back_to_the_map(game):
@@ -2203,7 +2229,7 @@ def test_the_deck_is_remembered(game):
 	set_coins(game, 500)
 	ask_the_dealer(game)
 	tap(game, "right")
-	tap(game, "a")
+	tap(game, "start")
 	wait_for_bet(game)
 	assert game.event_flag("EVENT_BLACKJACK_DECK_BIT_0")
 	assert not game.event_flag("EVENT_BLACKJACK_DECK_BIT_1")
@@ -2237,7 +2263,7 @@ def test_picking_default_clears_the_remembered_deck(game):
 	to_the_title(game)
 	assert title_deck(game) == 1
 	tap(game, "left")
-	tap(game, "a")
+	tap(game, "start")
 	wait_for_bet(game)
 	assert not game.event_flag("EVENT_BLACKJACK_DECK_BIT_0")
 	assert not game.event_flag("EVENT_BLACKJACK_DECK_BIT_1")
@@ -2264,7 +2290,7 @@ def test_the_text_is_white_over_the_moving_felt(game):
 	shift, tiles = game.title_snapshot
 	model = felt_model(shift)
 	for line, (x, y, first, cells) in TITLE_LINES.items():
-		drawn = title_cells(title_line(game, line), x, cells)
+		drawn = title_cells(title_line(game, line), x, cells) # white or grey, both colour 2
 		for c in range(cells):
 			under = [row[:] for row in model[(y % 4) * 6 + (x + c) % 6]]
 			ink, shadow = drawn[c]
@@ -2439,3 +2465,204 @@ def test_goldenrods_old_drink_is_gone(game):
 	assert "drink" not in game.screen_text()
 
 
+# The title's options, sounds and music, and the hole card's flip
+
+MUSIC_NAMES = ["RONALD", "GAME CORNER", "TCG DUEL"]
+MUSIC_SONGS = ["MUSIC_TCG_RONALD", "MUSIC_GAME_CORNER", "MUSIC_TCG_DUEL_THEME_1"]
+FLIP_STEP_FRAMES = 1
+HOLE_X = 3 # the dealer's second card's column
+# after the back as sprites: each frame's first tile (VRAM bank 1), its columns, its pixels from the
+# card's left edge; the back's 42 tiles, then the blank card's
+FLIP_FRAMES = [(0, 3, 4), (18, 2, 8), (30, 1, 12), (36, 1, 12), (42 + 30, 1, 12), (42 + 18, 2, 8), (42, 3, 4)]
+
+
+def option_rows_on_screen(game):
+	"""The palettes on screen of DECK's two rows and of MUSIC's (with two decks)."""
+	attrs = screen_attrs(game)
+	return set(attrs[12] + attrs[13]), set(attrs[15] + attrs[16])
+
+
+def test_up_and_down_move_the_highlight(game):
+	"""With two decks: the highlighted option white with its arrows, the other grey without, and
+	the menu's blip as the highlight moves."""
+	game.set_event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
+	to_the_title(game)
+	sfx = sfx_constants()
+	assert game.peek("wBlackjackTitleOption") == 0, "DECK, the top option"
+	assert title_line(game, "deck") == "◀ DEFAULT ▶"
+	assert title_line(game, "music") == "RONALD"
+	assert option_rows_on_screen(game) == ({0}, {TITLE_PAL_GREY})
+	sounds = record_sounds(game)
+	tap(game, "down")
+	game.wait(4)
+	assert game.peek("wBlackjackTitleOption") == 1
+	assert title_line(game, "deck") == "DEFAULT"
+	assert title_line(game, "music") == "◀ RONALD ▶"
+	assert option_rows_on_screen(game) == ({TITLE_PAL_GREY}, {0})
+	assert sounds == [sfx["SFX_READ_TEXT_2"]], sounds
+	tap(game, "up")
+	game.wait(4)
+	assert game.peek("wBlackjackTitleOption") == 0
+	assert option_rows_on_screen(game) == ({0}, {TITLE_PAL_GREY})
+	assert sounds == [sfx["SFX_READ_TEXT_2"]] * 2, sounds
+
+
+def test_up_and_down_do_nothing_with_one_deck(game):
+	to_the_title(game)
+	assert game.peek("wBlackjackTitleOption") == 1, "MUSIC, the only option"
+	assert title_line(game, "music") == "◀ RONALD ▶"
+	sounds = record_sounds(game)
+	for button in ("up", "down"):
+		tap(game, button)
+		assert game.peek("wBlackjackTitleOption") == 1
+	assert sounds == [], sounds
+
+
+def test_left_and_right_change_the_music_and_play_it(game):
+	to_the_title(game)
+	songs = music_constants()
+	sounds = record_sounds(game)
+	for button, index in (("right", 1), ("right", 2), ("right", 0), ("left", 2)):
+		tap(game, button)
+		game.wait(10)
+		assert game.peek("wBlackjackTitleMusic") == index
+		assert title_line(game, "music") == "◀ %s ▶" % MUSIC_NAMES[index]
+		assert music(game) == songs[MUSIC_SONGS[index]], MUSIC_NAMES[index]
+	assert sounds == [sfx_constants()["SFX_SWITCH_POCKETS"]] * 4, sounds
+
+
+def test_changing_the_deck_plays_the_pocket_click(game):
+	game.set_event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
+	to_the_title(game)
+	sounds = record_sounds(game)
+	tap(game, "right")
+	assert title_deck(game) == 1
+	assert sounds == [sfx_constants()["SFX_SWITCH_POCKETS"]], sounds
+
+
+def test_sitting_down_plays_the_coin_sound(game):
+	to_the_title(game)
+	sounds = record_sounds(game)
+	tap(game, "start")
+	wait_for_bet(game)
+	assert sounds[:1] == [sfx_constants()["SFX_PAY_DAY"]], sounds
+
+
+def test_the_music_carries_on_to_the_table(game):
+	to_the_title(game)
+	tap(game, "left") # TCG DUEL
+	tap(game, "start")
+	wait_for_bet(game)
+	assert music(game) == music_constants()["MUSIC_TCG_DUEL_THEME_1"]
+
+
+def test_the_music_is_remembered(game):
+	give_coin_case(game)
+	set_coins(game, 500)
+	ask_the_dealer(game)
+	wait_for_title(game)
+	tap(game, "left") # TCG DUEL, number 2
+	tap(game, "start")
+	wait_for_bet(game)
+	assert not game.event_flag("EVENT_BLACKJACK_MUSIC_BIT_0")
+	assert game.event_flag("EVENT_BLACKJACK_MUSIC_BIT_1")
+	game.wait(10)
+	game.press("b", hold=4, after=10)
+	answer_leave(game, yes=True)
+	assert left_the_game(game)
+	ask_the_dealer(game, warp=False)
+	wait_for_title(game)
+	assert game.peek("wBlackjackTitleMusic") == 2
+	assert title_line(game, "music") == "◀ TCG DUEL ▶"
+	game.wait(10)
+	assert music(game) == music_constants()["MUSIC_TCG_DUEL_THEME_1"]
+
+
+def test_a_music_past_the_last_isnt_remembered(game):
+	game.set_event_flag("EVENT_BLACKJACK_MUSIC_BIT_0")
+	game.set_event_flag("EVENT_BLACKJACK_MUSIC_BIT_1") # music 3
+	to_the_title(game)
+	assert game.peek("wBlackjackTitleMusic") == 0
+	game.wait(10)
+	assert music(game) == music_constants()["MUSIC_TCG_RONALD"]
+
+
+def test_the_flip_frames_are_in_vram_bank_1(game):
+	start(game)
+	vram = bytes(game.pyboy.memory[1, 0x8000 + i] for i in range(78 * 16))
+	assert vram[:42 * 16] == (DECKS / "french" / "flip.2bpp").read_bytes(), "the deck's back"
+	assert vram[42 * 16:] == (GFX / "flip_blank.2bpp").read_bytes(), "the blank card"
+
+
+def test_the_flip_art_is_in_tile_boxes():
+	from PIL import Image
+	for path, width in ((DECKS / "french" / "flip.png", 56), (DECKS / "spaceworld" / "flip.png", 56),
+			(GFX / "flip_blank.png", 48)):
+		assert Image.open(path).size == (width, 48), path
+
+
+def flip_sprites(oam_bytes):
+	"""The visible sprites of the sliding card's 24: (y, x, tile, attributes)."""
+	sprites = [tuple(oam_bytes[i * 4:i * 4 + 4]) for i in range(24)]
+	return [s for s in sprites if s[0]]
+
+
+def test_the_hole_card_flips_over(game):
+	"""The back as sprites, then the seven frames in order, a step every FLIP_STEP_FRAMES, then the
+	face on the table."""
+	start(game)
+	rig(game, card(10), card(10), card(9), card(7, POLIWAG)) # the dealer stands on 17
+	bet(game, 10)
+	wait_for_turn(game)
+	snaps = []
+	for symbol in ("Blackjack_FlipHole.frame", "Blackjack_HideSlidingCard"):
+		bank, address = game.pyboy.symbol_lookup(symbol)
+		game.pyboy.hook_register(bank, address, lambda s: snaps.append(
+			(s, game.pyboy.frame_count * 154 + game.pyboy.memory[0xff44], bytes(game.peek("wShadowOAM", 0, 96)))),
+			symbol) # when, in scanlines (154 a frame)
+	stand(game)
+	result(game, "You win! +10")
+	frames = [snap for snap in snaps if snap[0] == "Blackjack_FlipHole.frame"]
+	assert len(frames) == 7, len(frames)
+	last = next(snap for snap in snaps if snap[0] == "Blackjack_HideSlidingCard" and snap[1] > frames[-1][1])
+	back = flip_sprites(frames[0][2])
+	assert len(back) == 24 and all(not attr & 0x08 for _, _, _, attr in back), "the whole back, bank 0"
+	assert [t for _, _, t, _ in back] == list(range(BACK_TILES, BACK_TILES + 24))
+	shown = [snap[2] for snap in frames[1:]] + [last[2]] # each frame, as the next step began
+	for (first, columns, offset), oam_bytes in zip(FLIP_FRAMES, shown):
+		sprites = flip_sprites(oam_bytes)
+		expected = [(16 + 8 + r * 8, 8 + HOLE_X * 8 + offset + c * 8, first + c * 6 + r)
+			for c in range(columns) for r in range(6)]
+		assert [(y, x, t) for y, x, t, _ in sprites] == expected, (first, columns, offset)
+		assert all(attr & 0x08 for _, _, _, attr in sprites), "VRAM bank 1"
+		palette = POLIWAG if first >= 42 else BACK_PAL # the face side in the hole card's palette
+		assert all(attr & 7 == palette for _, _, _, attr in sprites), (first, palette)
+	# every frame a step long, the last too: only the hole card's cells are sent at the end, in one
+	# VBlank, not the whole screen (3 frames) or a whole redraw (6)
+	steps = [b[1] - a[1] for a, b in zip(frames, frames[1:])] + [last[1] - frames[-1][1]]
+	assert all(abs(step - FLIP_STEP_FRAMES * 154) < 154 // 2 for step in steps), str(steps)
+	assert not flip_sprites(bytes(game.peek("wShadowOAM", 0, 96))), "the sprites gone after"
+
+
+def test_the_duel_theme_is_converted_from_poketcg():
+	root = Path(__file__).resolve().parent.parent
+	text = (root / "audio" / "music" / "tcgdueltheme1.asm").read_text(encoding="utf-8")
+	assert text.startswith("Music_TcgDuelTheme1:\n\tchannel_count 4\n")
+	waves = re.findall(r"^\tdn ([^;\n]+)", (root / "audio" / "wave_samples.asm").read_text(encoding="utf-8"), re.M)
+	assert [int(v) for v in waves[12].split(",")] == [14] * 16 + [0] * 16, "wave 12: TCG's wave 4"
+
+
+
+@pytest.mark.parametrize("decks", [1, 2])
+def test_the_title_never_slows_the_music(game, decks):
+	"""The music moves on once a frame, every frame: a felt step that ran past its frame, waiting
+	for VBlank with interrupts off, once swallowed a VBlank now and then (572 in 600), and the music
+	dragged by about 5%."""
+	if decks == 2:
+		game.set_event_flag("EVENT_BLACKJACK_SPACEWORLD_DECK")
+	to_the_title(game)
+	updates = [0]
+	bank, address = game.pyboy.symbol_lookup("_UpdateSound")
+	game.pyboy.hook_register(bank, address, lambda n: n.__setitem__(0, n[0] + 1), updates)
+	game.wait(600)
+	assert updates[0] == 600, updates[0]

@@ -1630,5 +1630,9 @@
 ; Talked to the Union Cave Lapras at least once: the radio's RB Lapras swarm waits for it
 	const EVENT_MET_UNION_CAVE_LAPRAS
 
+; The blackjack music last picked on the title screen: its number in two flags (BJ_MUSIC_*)
+	const EVENT_BLACKJACK_MUSIC_BIT_0
+	const EVENT_BLACKJACK_MUSIC_BIT_1
+
 	const_next 2304
 DEF NUM_EVENTS EQU const_value

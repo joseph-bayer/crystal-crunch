@@ -75,3 +75,10 @@ DEF BLACKJACK_BLACKJACK       EQU 21
 	const BJ_DECK_FRENCH     ; 0, the one the game uses
 	const BJ_DECK_SPACEWORLD ; 1
 DEF NUM_BJ_DECKS EQU const_value
+
+; blackjack music: the title screen's MUSIC option (BlackjackMusic)
+	const_def
+	const BJ_MUSIC_RONALD      ; 0, the first time
+	const BJ_MUSIC_GAME_CORNER ; 1
+	const BJ_MUSIC_TCG_DUEL    ; 2
+DEF NUM_BJ_MUSIC EQU const_value

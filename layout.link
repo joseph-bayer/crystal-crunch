@@ -333,6 +333,8 @@ ROMX $7a
 	"Pokedex Graphics"
 ROMX $7b
 	"Battle Tower Text"
+	"Extra Songs 3"
+	"Blackjack Flip GFX"
 ROMX $7c
 	"Battle Tower Trainer Data"
 	"Blackjack"

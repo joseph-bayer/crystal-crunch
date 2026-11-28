@@ -847,6 +847,8 @@ wBlackjackSlideDistY:: db ; how far it travels down
 wBlackjackSlideAccX:: db ; the fraction of a pixel moved so far, in steps of 1 / BJ_SLIDE_FRAMES
 wBlackjackSlideAccY:: db
 wBlackjackSlidePalette:: db
+wBlackjackFlipFacePalette:: db ; the hole card's own, for the flip's face side
+wBlackjackFlipAttributes:: db ; scratch: a flip frame's sprites' attributes
 ; the sidebar
 wBlackjackMeowth:: db ; MEOWTH_*
 wBlackjackMeowthFrame:: db ; the frame on screen, or -1 for none yet
@@ -868,13 +870,16 @@ wBlackjackGlyphLeft:: db ; scratch: drawing a tile of small text
 wBlackjackGlyphRight:: db
 ; the title screen
 wBlackjackTitleDeck:: db ; the deck shown, then played with
+wBlackjackTitleMusic:: db ; the music playing, then carried on at the table (BJ_MUSIC_*)
+wBlackjackTitleOption:: db ; the option highlighted (BJ_TITLE_OPTION_*)
+wBlackjackTitleDecks:: db ; TRUE when more than one deck is unlocked, so DECK shows
 wBlackjackTitleShift:: db ; how many pixels down the felt has moved, wrapping at its pattern's height
 wBlackjackTitleSet:: db ; which copy of the moving tiles is on screen: 0 in vTiles2, 1 in vTiles0
 wBlackjackTitleClock:: db ; frames to the felt's next step
 wBlackjackTitleMeowth:: db ; the logo's Meowth: which of its two frames is on screen
 wBlackjackTitleMeowthClock:: db ; frames to its other frame
 wBlackjackTitleCount:: db ; scratch
-wBlackjackTitleLine:: ds 16 ; scratch: the deck's line of text
+wBlackjackTitleLine:: ds 16 ; scratch: the deck's or the music's line of text
 wBlackjackTitleLineEnd::
 
 NEXTU

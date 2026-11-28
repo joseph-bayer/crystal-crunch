@@ -304,6 +304,9 @@ gfx/blackjack/card_parts.2bpp: tools/gfx += --trim-whitespace
 gfx/blackjack/meowth.2bpp: rgbgfx += --unique-tiles
 gfx/blackjack/sidebar.2bpp: rgbgfx += --unique-tiles
 gfx/blackjack/logo.2bpp: rgbgfx += --unique-tiles
+# The hole card's flip frames, column by column, so each frame's tiles run on from its first
+gfx/blackjack/flip_blank.2bpp: rgbgfx += --columns
+gfx/blackjack/decks/%/flip.2bpp: rgbgfx += --columns
 gfx/blackjack/%.tilemap: gfx/blackjack/%.png
 	$(RGBGFX) --colors dmg=e4 --unique-tiles --tilemap $@ $<
 

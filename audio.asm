@@ -155,6 +155,11 @@ INCLUDE "audio/music/tcgronald.asm"
 INCLUDE "audio/music/goldenrodcity.asm"
 
 
+SECTION "Extra Songs 3", ROMX
+
+INCLUDE "audio/music/tcgdueltheme1.asm"
+
+
 SECTION "Sound Effects", ROMX
 
 INCLUDE "audio/sfx.asm"

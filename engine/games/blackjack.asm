@@ -102,9 +102,22 @@ DEF wBlackjackSidebarTiles EQUS "wDecompressScratch"
 DEF BJ_FIELD_INK EQUS "(wDecompressScratch + $180)" ; a field's ink, tile by tile, before it's drawn
 DEF BJ_MAX_FIELD_TILES EQU 5
 
-; BlackjackDecks: suits, pictures and back gfx, palettes, and how many back colours follow the
-; suits' palettes
-DEF BJ_DECK_ENTRY_SIZE EQU 4 * 2 + 1
+; BlackjackDecks: suits, pictures and back gfx, palettes, how many back colours follow the suits'
+; palettes, and the hole card's flip frames (in "Blackjack Flip GFX")
+DEF BJ_DECK_FLIP       EQU 4 * 2 + 1
+DEF BJ_DECK_ENTRY_SIZE EQU BJ_DECK_FLIP + 2
+
+; The hole card's flip: its back as sprites, then the back narrowing to its edge and a blank card
+; widening back out (BlackjackFlipFrames), each step BJ_FLIP_STEP_FRAMES, then the face. The frames'
+; tiles go in VRAM bank 1's vTiles0, which nothing else at the table uses, each frame's tiles column
+; by column: the deck's back at 24, 16 and 8 pixels wide and edge-on, then the blank card at 24, 16
+; and 8.
+DEF BJ_FLIP_STEP_FRAMES   EQU 1
+DEF BJ_FLIP_BACK_TILES    EQU (3 + 2 + 1 + 1) * BJ_CARD_HEIGHT
+DEF BJ_FLIP_BLANK_TILES   EQU (3 + 2 + 1) * BJ_CARD_HEIGHT
+DEF BJTILE0B1_FLIP_BACK   EQU $00
+DEF BJTILE0B1_FLIP_BLANK  EQU BJTILE0B1_FLIP_BACK + BJ_FLIP_BACK_TILES
+	assert BJTILE0B1_FLIP_BLANK + BJ_FLIP_BLANK_TILES <= $80, "the flip's tiles fit VRAM bank 1's vTiles0"
 
 ; The screen: the table on the left, with the dealer's hand, a gap and your hand on the felt; the
 ; sidebar on the right, with the totals in small text at the top and Meowth's window at the bottom;
@@ -121,6 +134,7 @@ DEF BJ_PLAYER_ROW   EQU 10
 DEF BJ_MAX_SHOWN    EQU 6 ; later cards go in the last one's spot
 	assert BJ_HAND_X + (BJ_MAX_SHOWN - 1) * 2 + BJ_CARD_WIDTH <= BJ_TABLE_WIDTH, \
 		"a full hand fits the table"
+DEF BJ_HOLE_X       EQU BJ_HAND_X + 1 * 2 ; the dealer's second card, as Blackjack_DrawHand places it
 ; The sidebar: the owner's picture above Meowth, with the totals' numbers and the bet menu drawn
 ; over it in the small font
 DEF BJ_SHEET_ROWS     EQU 12 ; rows 0-11
@@ -203,23 +217,38 @@ DEF BJ_TITLE_TEXTURE_PIXEL_ROWS EQU BJ_TITLE_TEXTURE_HEIGHT * TILE_HEIGHT
 		"the felt's rows wrap with a mask"
 DEF BJ_TITLE_FELT_TILES     EQU BJ_TITLE_TEXTURE_WIDTH * BJ_TITLE_TEXTURE_HEIGHT
 DEF BJ_TITLE_STEP_FRAMES    EQU 2
-; the text: START, the deck control's label, and the control: "◀ " and " ▶" around the deck's name
-; while more than one deck is unlocked. Each line is the sidebar's small font in white, with a black
-; shadow a pixel down and right, centred on the screen to the pixel, in cells of its own.
-DEF BJ_TITLE_NAME_LENGTH  EQU 10 ; the longest deck name
+	assert BJ_TITLE_STEP_FRAMES >= 2, "a step's felt is made the frame before it"
+; the text: START, then two options, each a label and its value: DECK (only while more than one
+; deck is unlocked) and MUSIC. The highlighted option's value has "◀ " and " ▶" round it (spaces on
+; the other's), and its rows are in the felt's palette, white; the other's are in the grey one.
+; Without DECK, MUSIC takes DECK's rows. Each line is the sidebar's small font with a black shadow a
+; pixel down and right, centred on the screen to the pixel, in cells of its own.
+DEF BJ_TITLE_NAME_LENGTH  EQU 11 ; the longest deck or music name
 DEF BJ_SMALL_WIDTH        EQU 4 ; a small character's pixels across, its gap included
 DEF BJ_TITLE_START_LENGTH EQU 10 ; "PUSH START"
 DEF BJ_TITLE_LABEL_LENGTH EQU 4 ; "DECK"
 DEF BJ_TITLE_DECK_LENGTH  EQU BJ_TITLE_NAME_LENGTH + 4 ; "◀ " name " ▶"
+DEF BJ_TITLE_MUSIC_LABEL_LENGTH EQU 5 ; "MUSIC"
+DEF BJ_TITLE_MUSIC_LENGTH EQU BJ_TITLE_NAME_LENGTH + 4
 DEF BJ_TITLE_START_CELLS  EQU 6
 DEF BJ_TITLE_LABEL_CELLS  EQU 3
 DEF BJ_TITLE_DECK_CELLS   EQU 8
+DEF BJ_TITLE_MUSIC_LABEL_CELLS EQU 4
+DEF BJ_TITLE_MUSIC_CELLS  EQU 8
 DEF BJ_TITLE_START_Y      EQU 10
 DEF BJ_TITLE_LABEL_Y      EQU 12
 DEF BJ_TITLE_DECK_Y       EQU 13
+DEF BJ_TITLE_MUSIC_LABEL_Y EQU 15 ; with DECK; without it, DECK's rows
+DEF BJ_TITLE_MUSIC_Y      EQU 16
 DEF BJ_TITLE_START_X      EQU (SCREEN_WIDTH - BJ_TITLE_START_CELLS) / 2
 DEF BJ_TITLE_LABEL_X      EQU (SCREEN_WIDTH - BJ_TITLE_LABEL_CELLS) / 2
 DEF BJ_TITLE_DECK_X       EQU (SCREEN_WIDTH - BJ_TITLE_DECK_CELLS) / 2
+DEF BJ_TITLE_MUSIC_LABEL_X EQU (SCREEN_WIDTH - BJ_TITLE_MUSIC_LABEL_CELLS) / 2
+DEF BJ_TITLE_MUSIC_X      EQU (SCREEN_WIDTH - BJ_TITLE_MUSIC_CELLS) / 2
+; wBlackjackTitleOption
+	const_def
+	const BJ_TITLE_OPTION_DECK
+	const BJ_TITLE_OPTION_MUSIC
 ; A line of n characters starts SCREEN_WIDTH_PX / 2 - 2n pixels in (its last gap left out), so its
 ; cells must reach that far left and, with the shadow, as far right; a shorter line fits too.
 MACRO bj_title_line_fits
@@ -231,12 +260,17 @@ ENDM
 	bj_title_line_fits BJ_TITLE_START_LENGTH, BJ_TITLE_START_X, BJ_TITLE_START_CELLS
 	bj_title_line_fits BJ_TITLE_LABEL_LENGTH, BJ_TITLE_LABEL_X, BJ_TITLE_LABEL_CELLS
 	bj_title_line_fits BJ_TITLE_DECK_LENGTH, BJ_TITLE_DECK_X, BJ_TITLE_DECK_CELLS
-	assert BJ_TITLE_START_CELLS <= BJ_TITLE_DECK_CELLS && BJ_TITLE_LABEL_CELLS <= BJ_TITLE_DECK_CELLS, \
+	bj_title_line_fits BJ_TITLE_MUSIC_LABEL_LENGTH, BJ_TITLE_MUSIC_LABEL_X, BJ_TITLE_MUSIC_LABEL_CELLS
+	bj_title_line_fits BJ_TITLE_MUSIC_LENGTH, BJ_TITLE_MUSIC_X, BJ_TITLE_MUSIC_CELLS
+	assert BJ_TITLE_START_CELLS <= BJ_TITLE_DECK_CELLS && BJ_TITLE_LABEL_CELLS <= BJ_TITLE_DECK_CELLS && \
+		BJ_TITLE_MUSIC_LABEL_CELLS <= BJ_TITLE_DECK_CELLS && BJ_TITLE_MUSIC_CELLS <= BJ_TITLE_DECK_CELLS, \
 		"the deck line is the widest"
 DEF BJ_TITLE_START_CELL   EQU 0
 DEF BJ_TITLE_LABEL_CELL   EQU BJ_TITLE_START_CELL + BJ_TITLE_START_CELLS
 DEF BJ_TITLE_DECK_CELL    EQU BJ_TITLE_LABEL_CELL + BJ_TITLE_LABEL_CELLS
-DEF BJ_TITLE_TEXT_CELLS   EQU BJ_TITLE_DECK_CELL + BJ_TITLE_DECK_CELLS
+DEF BJ_TITLE_MUSIC_LABEL_CELL EQU BJ_TITLE_DECK_CELL + BJ_TITLE_DECK_CELLS
+DEF BJ_TITLE_MUSIC_CELL   EQU BJ_TITLE_MUSIC_LABEL_CELL + BJ_TITLE_MUSIC_LABEL_CELLS
+DEF BJ_TITLE_TEXT_CELLS   EQU BJ_TITLE_MUSIC_CELL + BJ_TITLE_MUSIC_CELLS
 ; tiles: the felt's, then the text's, in both copies; the logo's from $80, which both share
 DEF BJTILE_TITLE_FELT     EQU $00
 DEF BJTILE_TITLE_TEXT     EQU BJTILE_TITLE_FELT + BJ_TITLE_FELT_TILES
@@ -271,24 +305,33 @@ DEF BJTILE_TITLE_LOGO      EQU $80 - 1 ; logo.2bpp's tile 1 at $80
 ; right one the left one flipped. Their tile follows the felt's copy in vTiles0.
 DEF BJTILE_TITLE_CORNER    EQU BJTILE_TITLE_FELT + BJ_TITLE_TILES
 	assert BJTILE_TITLE_CORNER < $80, "the corner sprites' tile is below the logo's"
-	assert BJ_TITLE_START_Y < BJ_TITLE_LABEL_Y && BJ_TITLE_LABEL_Y < BJ_TITLE_DECK_Y && \
-		BJ_TITLE_DECK_Y < SCREEN_HEIGHT, "the text's lines in order, on the screen"
-DEF BJ_TITLE_PAL_FELT     EQU 0
+	assert BJ_TITLE_START_Y < BJ_TITLE_LABEL_Y && BJ_TITLE_LABEL_Y + 1 == BJ_TITLE_DECK_Y && \
+		BJ_TITLE_DECK_Y < BJ_TITLE_MUSIC_LABEL_Y && BJ_TITLE_MUSIC_LABEL_Y + 1 == BJ_TITLE_MUSIC_Y && \
+		BJ_TITLE_MUSIC_Y < SCREEN_HEIGHT, "the text's lines in order, each option's two rows together"
+	assert BJ_TITLE_LABEL_Y >= SCREEN_HEIGHT / 3 * 2, \
+		"the options are in the tilemap's bottom third, whose attributes go over when the highlight moves"
+DEF BJ_TITLE_PAL_FELT     EQU 0 ; the text white
 DEF BJ_TITLE_PAL_LOGO     EQU 1 ; the sidebar's
+DEF BJ_TITLE_PAL_GREY     EQU 2 ; the felt's, the text grey: the option not highlighted
 ; in WRAM bank 6's scratch: the tiles to send (on a 16-byte boundary, for GDMA), the felt's
 ; pattern, each text cell's pixels row by row (the letters', then the shadow's), and a line's
 ; letters being drawn, row by row, a spare byte on each row's end
 DEF BJ_TITLE_TILE_BUFFER EQUS "wDecompressScratch"
-DEF BJ_TITLE_TEXTURE     EQUS "(wDecompressScratch + $300)"
-DEF BJ_TITLE_MASKS       EQUS "(wDecompressScratch + $480)"
-DEF BJ_TITLE_LINE_INK    EQUS "(wDecompressScratch + $600)"
+DEF BJ_TITLE_TEXTURE     EQUS "(wDecompressScratch + $400)"
+DEF BJ_TITLE_MASKS       EQUS "(wDecompressScratch + $580)"
+DEF BJ_TITLE_LINE_INK    EQUS "(wDecompressScratch + $780)"
 DEF BJ_TITLE_LINE_STRIDE EQU BJ_TITLE_DECK_CELLS + 1
-	assert BJ_TITLE_TILES tiles <= $300 && \
+	assert BJ_TITLE_TILES tiles <= $400 && \
 		BJ_TITLE_TEXTURE_PIXEL_ROWS * BJ_TITLE_TEXTURE_ROW <= $180 && \
-		BJ_TITLE_TEXT_CELLS * TILE_HEIGHT * 2 <= $180 && \
-		TILE_HEIGHT * BJ_TITLE_LINE_STRIDE <= $100, "the title's scratch doesn't overlap"
-	assert BJ_TITLE_DECK_LENGTH + 1 <= wBlackjackTitleLineEnd - wBlackjackTitleLine, \
-		"the deck's line fits wBlackjackTitleLine"
+		BJ_TITLE_TEXT_CELLS * TILE_HEIGHT * 2 <= $200 && \
+		TILE_HEIGHT * BJ_TITLE_LINE_STRIDE <= $100 && $880 <= $100 tiles, "the title's scratch doesn't overlap"
+	assert BJ_TITLE_DECK_LENGTH + 1 <= wBlackjackTitleLineEnd - wBlackjackTitleLine && \
+		BJ_TITLE_MUSIC_LENGTH + 1 <= wBlackjackTitleLineEnd - wBlackjackTitleLine, \
+		"the deck's and the music's lines fit wBlackjackTitleLine"
+	assert NUM_BJ_MUSIC <= 4, "the music last picked fits two event flags"
+	assert BJ_MUSIC_RONALD == 0, "the title falls back on music 0"
+	assert EVENT_BLACKJACK_DECK_BIT_1 == EVENT_BLACKJACK_DECK_BIT_0 + 1 && \
+		EVENT_BLACKJACK_MUSIC_BIT_1 == EVENT_BLACKJACK_MUSIC_BIT_0 + 1, "each number's two flags together"
 	assert NUM_BJ_DECKS <= 4, "the deck last picked fits two event flags"
 	assert BJ_DECK_FRENCH == 0, "the title falls back on deck 0, the one always unlocked"
 
@@ -397,6 +440,7 @@ _Blackjack:
 	ld c, NUM_BJ_FELT_CORNER_JOBS
 	call Blackjack_CornerJobs
 	call Blackjack_BackCorners
+	call Blackjack_LoadFlipFrames
 	xor a
 	ldh [rVBK], a
 	dec a
@@ -440,8 +484,9 @@ _Blackjack:
 	ret
 
 Blackjack_Title:
-; The title screen, with Ronald's theme, which carries on at the table. Left and Right change the
-; deck, A or START plays it (wBlackjackTitleDeck), and B returns carry to leave.
+; The title screen, with the music picked, which carries on at the table. Up and Down move the
+; highlight between DECK and MUSIC, Left and Right change the highlighted one, START plays with
+; them (wBlackjackTitleDeck, wBlackjackTitleMusic; A does nothing), and B returns carry to leave.
 	call ClearBGPalettes
 	call ClearTilemap
 	call ClearSprites
@@ -450,6 +495,14 @@ Blackjack_Title:
 	call DelayFrame
 	call DisableLCD
 	call Blackjack_TitleSavedDeck
+	call Blackjack_TitleSavedMusic
+; DECK only while there's another deck to pick; the highlight opens on the top option
+	assert TRUE == 1 && BJ_TITLE_OPTION_DECK == 0 && BJ_TITLE_OPTION_MUSIC == 1
+	call Blackjack_MoreThanOneDeck ; a = -1 or 0
+	and TRUE
+	ld [wBlackjackTitleDecks], a
+	xor 1
+	ld [wBlackjackTitleOption], a
 	ld hl, BlackjackTitleLogoGFX
 	ld de, vTiles1 tile (BJTILE_TITLE_LOGO + 1 - $80)
 	ld bc, BlackjackTitleLogoGFXEnd - BlackjackTitleLogoGFX
@@ -478,7 +531,11 @@ Blackjack_Title:
 	lb bc, BJ_TITLE_LABEL_CELLS, BJ_TITLE_LABEL_CELL
 	ld d, BJ_TITLE_LABEL_X
 	call Blackjack_TitleLine
-	call Blackjack_TitleDeckLine
+	ld hl, BlackjackTitleMusicLabelText
+	lb bc, BJ_TITLE_MUSIC_LABEL_CELLS, BJ_TITLE_MUSIC_LABEL_CELL
+	ld d, BJ_TITLE_MUSIC_LABEL_X
+	call Blackjack_TitleLine
+	call Blackjack_TitleOptionLines
 	ldh a, [rWBK]
 	push af
 	ld a, BANK(wDecompressScratch)
@@ -507,19 +564,21 @@ Blackjack_Title:
 	lb de, %11100100, %11100100
 	call DmgToCgbObjPals
 	call DelayFrame
-	ld de, MUSIC_TCG_RONALD
-	call PlayMusic
+	call Blackjack_TitlePlayMusic
 
 .loop
 	xor a
 	ldh [hBGMapMode], a ; Meowth's cells, if they changed, went over in the last VBlank
 	call JoyTextDelay
 	ldh a, [hJoyLast]
-	and PAD_A | PAD_START
+	and PAD_START ; only START: A could be taken for picking a deck or music
 	jr nz, .play
 	ldh a, [hJoyLast]
 	bit B_PAD_B, a
 	jr nz, .leave
+	and PAD_UP | PAD_DOWN
+	jr nz, .move
+	ldh a, [hJoyLast]
 	ld c, 1
 	bit B_PAD_RIGHT, a
 	jr nz, .change
@@ -527,12 +586,19 @@ Blackjack_Title:
 	bit B_PAD_LEFT, a
 	jr z, .wait
 .change
-	call Blackjack_TitleChangeDeck
+	call Blackjack_TitleChange
+	jr .wait
+
+.move
+	call Blackjack_TitleMove
 .wait
 	call Blackjack_TitleMeowthTick
 	ld hl, wBlackjackTitleClock
 	dec [hl]
 	jr z, .step
+	ld a, [hl]
+	dec a
+	call z, Blackjack_TitlePrepareStep ; a frame to go
 	call DelayFrame
 	jr .loop
 
@@ -542,7 +608,12 @@ Blackjack_Title:
 	jr .loop
 
 .play
+; the sound of winning coins, heard out before the screen goes
+	ld de, SFX_PAY_DAY
+	call PlaySFX
+	call WaitSFX
 	call Blackjack_TitleSaveDeck
+	call Blackjack_TitleSaveMusic
 	call .Close
 	and a
 	ret
@@ -560,15 +631,27 @@ Blackjack_Title:
 	ldh [rLCDC], a
 	ret
 
-Blackjack_TitleStep:
-; Move the felt a pixel left and a pixel down, with the text over it, into the copy of the tiles
-; not on screen, then show that copy from the start of the next VBlank.
+Blackjack_TitlePrepareStep:
+; The frame before a step: the felt turned a pixel left and a pixel down, its tiles made, so the
+; step itself only has the text to draw over them. Split in two, a step fits its frames.
 	ldh a, [rWBK]
 	push af
 	ld a, BANK(wDecompressScratch)
 	ldh [rWBK], a
 	call Blackjack_TitleTurn
-	call Blackjack_TitleBuild
+	call Blackjack_TitleBuildFelt
+	pop af
+	ldh [rWBK], a
+	ret
+
+Blackjack_TitleStep:
+; The text over the felt's tiles Blackjack_TitlePrepareStep made, into the copy of the tiles not on
+; screen, then show that copy from the start of the next VBlank.
+	ldh a, [rWBK]
+	push af
+	ld a, BANK(wDecompressScratch)
+	ldh [rWBK], a
+	call Blackjack_TitleBuildText ; the felt's tiles were made the frame before
 	ld a, [wBlackjackTitleSet]
 	and a
 	ld hl, vTiles0 tile BJTILE_TITLE_FELT
@@ -712,42 +795,21 @@ Blackjack_TitleTurn:
 	ret
 
 Blackjack_TitleBuild:
-; The felt's tiles from its pattern, moved wBlackjackTitleShift pixels down, then the text's tiles
-; over them, into BJ_TITLE_TILE_BUFFER, with WRAM bank 6 in.
-	ld de, BJ_TITLE_TILE_BUFFER
-	ld a, [wBlackjackTitleShift]
-	cpl
-	inc a
-	and BJ_TITLE_TEXTURE_PIXEL_ROWS - 1 ; the pattern's row at the top of the screen
-	ld b, BJ_TITLE_TEXTURE_HEIGHT
-.tile_row
-	push bc
-	ld c, 0 ; the column's first byte in a pixel row
-.tile
-	push af
-	push bc
-	call .Tile
-	pop bc
-	pop af
-	inc c
-	inc c
-	ld h, a
-	ld a, c
-	cp BJ_TITLE_TEXTURE_ROW
-	ld a, h
-	jr c, .tile
-	add TILE_HEIGHT
-	and BJ_TITLE_TEXTURE_PIXEL_ROWS - 1
-	pop bc
-	dec b
-	jr nz, .tile_row
-
+; The felt's tiles, then the text's over them, into BJ_TITLE_TILE_BUFFER, with WRAM bank 6 in.
+	call Blackjack_TitleBuildFelt
+; fallthrough
+Blackjack_TitleBuildText:
 ; each cell of text: the felt tile under it, the letters' pixels in colour 2 (white) and the
 ; shadow's in colour 3 (black)
+	ld de, BJ_TITLE_TILE_BUFFER + BJ_TITLE_FELT_TILES tiles
 	ld a, BJ_TITLE_TEXT_CELLS
 	ld [wBlackjackTitleCount], a
 	ld bc, BJ_TITLE_MASKS
 	ld hl, BlackjackTitleCellFelt
+	ld a, [wBlackjackTitleDecks]
+	and a
+	jr nz, .cell
+	ld hl, BlackjackTitleCellFeltOneDeck ; MUSIC on DECK's rows
 .cell
 	ld a, [hli]
 	push hl
@@ -791,6 +853,39 @@ Blackjack_TitleBuild:
 	dec [hl]
 	pop hl
 	jr nz, .cell
+	ret
+
+
+Blackjack_TitleBuildFelt:
+; The felt's tiles from its pattern, moved wBlackjackTitleShift pixels down, into
+; BJ_TITLE_TILE_BUFFER, with WRAM bank 6 in.
+	ld de, BJ_TITLE_TILE_BUFFER
+	ld a, [wBlackjackTitleShift]
+	cpl
+	inc a
+	and BJ_TITLE_TEXTURE_PIXEL_ROWS - 1 ; the pattern's row at the top of the screen
+	ld b, BJ_TITLE_TEXTURE_HEIGHT
+.tile_row
+	push bc
+	ld c, 0 ; the column's first byte in a pixel row
+.tile
+	push af
+	push bc
+	call .Tile
+	pop bc
+	pop af
+	inc c
+	inc c
+	ld h, a
+	ld a, c
+	cp BJ_TITLE_TEXTURE_ROW
+	ld a, h
+	jr c, .tile
+	add TILE_HEIGHT
+	and BJ_TITLE_TEXTURE_PIXEL_ROWS - 1
+	pop bc
+	dec b
+	jr nz, .tile_row
 	ret
 
 .Tile:
@@ -843,24 +938,56 @@ Blackjack_TitleBuild:
 	jr nz, .pixel_row
 	ret
 
+Blackjack_TitleOptionLines:
+; Both options' values, the highlighted one's with its arrows.
+	call Blackjack_TitleDeckLine
+; fallthrough
+Blackjack_TitleMusicLine:
+; The music's name, between "◀ " and " ▶" while MUSIC is highlighted.
+	ld a, [wBlackjackTitleOption]
+	cp BJ_TITLE_OPTION_MUSIC
+	ld a, [wBlackjackTitleMusic]
+	ld hl, BlackjackMusicNames
+	lb bc, BJ_TITLE_MUSIC_CELLS, BJ_TITLE_MUSIC_CELL
+	ld d, BJ_TITLE_MUSIC_X
+	jr Blackjack_TitleValueLine
+
 Blackjack_TitleDeckLine:
-; The deck's name between "◀ " and " ▶". It's on screen only while more than one deck is unlocked.
+; The deck's name, between "◀ " and " ▶" while DECK is highlighted. It's on screen only while more
+; than one deck is unlocked.
+	ld a, [wBlackjackTitleOption]
+	assert BJ_TITLE_OPTION_DECK == 0
+	and a
+	ld a, [wBlackjackTitleDeck]
+	ld hl, BlackjackDeckNames
+	lb bc, BJ_TITLE_DECK_CELLS, BJ_TITLE_DECK_CELL
+	ld d, BJ_TITLE_DECK_X
+; fallthrough
+Blackjack_TitleValueLine:
+; Name a from the table of pointers at hl, between "◀ " and " ▶" if z (spaces in their place
+; otherwise, so the name stays put), into b cells from cell c, which start at column d.
+	push bc
+	push de
+	push af
+	ld e, a
+	ld d, 0
+	add hl, de
+	add hl, de
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
 	ld de, wBlackjackTitleLine
+	pop af
+	push af
 	ld a, "◀"
+	jr z, .left
+	ld a, " "
+.left
 	ld [de], a
 	inc de
 	ld a, " "
 	ld [de], a
 	inc de
-	ld a, [wBlackjackTitleDeck]
-	ld hl, BlackjackDeckNames
-	ld c, a
-	ld b, 0
-	add hl, bc
-	add hl, bc
-	ld a, [hli]
-	ld h, [hl]
-	ld l, a
 .copy
 	ld a, [hli]
 	cp "@"
@@ -873,14 +1000,18 @@ Blackjack_TitleDeckLine:
 	ld a, " "
 	ld [de], a
 	inc de
+	pop af
 	ld a, "▶"
+	jr z, .right
+	ld a, " "
+.right
 	ld [de], a
 	inc de
 	ld a, "@"
 	ld [de], a
+	pop de
+	pop bc
 	ld hl, wBlackjackTitleLine
-	lb bc, BJ_TITLE_DECK_CELLS, BJ_TITLE_DECK_CELL
-	ld d, BJ_TITLE_DECK_X
 ; fallthrough
 Blackjack_TitleLine:
 ; The text at hl, centred on the screen to the pixel, into b cells from cell c, which start at
@@ -1148,9 +1279,10 @@ Blackjack_TitleTilemap:
 	lb bc, 1, BJ_TITLE_START_CELLS
 	ld a, BJTILE_TITLE_TEXT + BJ_TITLE_START_CELL
 	call .Box
-; the deck's label and name only while there's another deck to pick: with one, just the felt
-	call Blackjack_MoreThanOneDeck
-	jr z, .logo
+; the deck's label and name only while there's another deck to pick: with one, MUSIC on their rows
+	ld a, [wBlackjackTitleDecks]
+	and a
+	jr z, .one_deck
 	hlcoord BJ_TITLE_LABEL_X, BJ_TITLE_LABEL_Y
 	lb bc, 1, BJ_TITLE_LABEL_CELLS
 	ld a, BJTILE_TITLE_TEXT + BJ_TITLE_LABEL_CELL
@@ -1158,6 +1290,26 @@ Blackjack_TitleTilemap:
 	hlcoord BJ_TITLE_DECK_X, BJ_TITLE_DECK_Y
 	lb bc, 1, BJ_TITLE_DECK_CELLS
 	ld a, BJTILE_TITLE_TEXT + BJ_TITLE_DECK_CELL
+	call .Box
+	hlcoord BJ_TITLE_MUSIC_LABEL_X, BJ_TITLE_MUSIC_LABEL_Y
+	ld de, (BJ_TITLE_MUSIC_Y - BJ_TITLE_MUSIC_LABEL_Y) * SCREEN_WIDTH + BJ_TITLE_MUSIC_X - BJ_TITLE_MUSIC_LABEL_X
+	jr .music
+
+.one_deck
+	hlcoord BJ_TITLE_MUSIC_LABEL_X, BJ_TITLE_LABEL_Y
+	ld de, (BJ_TITLE_DECK_Y - BJ_TITLE_LABEL_Y) * SCREEN_WIDTH + BJ_TITLE_MUSIC_X - BJ_TITLE_MUSIC_LABEL_X
+.music
+; its label at hl, its value de on from there
+	push de
+	push hl
+	lb bc, 1, BJ_TITLE_MUSIC_LABEL_CELLS
+	ld a, BJTILE_TITLE_TEXT + BJ_TITLE_MUSIC_LABEL_CELL
+	call .Box
+	pop hl
+	pop de
+	add hl, de
+	lb bc, 1, BJ_TITLE_MUSIC_CELLS
+	ld a, BJTILE_TITLE_TEXT + BJ_TITLE_MUSIC_CELL
 	call .Box
 .logo
 	ld de, BlackjackTitleSignTilemap
@@ -1178,7 +1330,8 @@ Blackjack_TitleTilemap:
 	hlcoord BJ_TITLE_MEOWTH_X, BJ_TITLE_MEOWTH_Y, wAttrmap
 	lb bc, BJ_TITLE_MEOWTH_HEIGHT, BJ_TITLE_MEOWTH_WIDTH
 	ld a, BJ_TITLE_PAL_LOGO
-	jmp FillBoxWithByte
+	call FillBoxWithByte
+	jr Blackjack_TitleOptionAttrs
 
 .Box:
 ; b rows of c tiles at hl, numbered on from a, row by row
@@ -1198,6 +1351,146 @@ Blackjack_TitleTilemap:
 	jr nz, .box_row
 	ret
 
+Blackjack_TitleOptionAttrs:
+; The highlighted option's two rows in the felt's palette (white text), the other's in the grey
+; one. With one deck, MUSIC (the only option) stays white.
+	ld a, [wBlackjackTitleDecks]
+	and a
+	ret z
+	ld a, [wBlackjackTitleOption]
+	assert BJ_TITLE_OPTION_DECK == 0
+	and a
+	lb de, BJ_TITLE_PAL_FELT, BJ_TITLE_PAL_GREY ; DECK's, MUSIC's
+	jr z, .got_palettes
+	lb de, BJ_TITLE_PAL_GREY, BJ_TITLE_PAL_FELT
+.got_palettes
+	push de
+	hlcoord 0, BJ_TITLE_LABEL_Y, wAttrmap
+	ld bc, 2 * SCREEN_WIDTH
+	ld a, d
+	rst ByteFill
+	pop de
+	hlcoord 0, BJ_TITLE_MUSIC_LABEL_Y, wAttrmap
+	ld bc, 2 * SCREEN_WIDTH
+	ld a, e
+	rst ByteFill
+	ret
+
+Blackjack_TitleMove:
+; Up or Down: the highlight to the other option, with the menu's blip, the arrows with it, and the
+; rows' palettes sent in the next VBlank. With one deck there's no other option.
+	ld a, [wBlackjackTitleDecks]
+	and a
+	ret z
+	ld hl, wBlackjackTitleOption
+	ld a, [hl]
+	xor 1
+	ld [hl], a
+	ld de, SFX_READ_TEXT_2
+	call PlaySFX
+	call Blackjack_TitleOptionLines ; drawn into the tiles at the felt's next step
+	call Blackjack_TitleOptionAttrs
+	ld a, 2 ; the bottom third, which holds the options
+	ldh [hBGMapThird], a
+	ldh [hBGMapMode], a ; 2: that third of BG map 0's attributes
+	call DelayFrame
+	xor a
+	ldh [hBGMapMode], a
+	ret
+
+Blackjack_TitleChange:
+; Left or Right (c = -1 or 1): the highlighted option's next value. A change plays the bag's pocket
+; sound; a new music starts at once.
+	ld a, [wBlackjackTitleOption]
+	cp BJ_TITLE_OPTION_MUSIC
+	jr z, .music
+	ld a, [wBlackjackTitleDeck]
+	push af
+	call Blackjack_TitleChangeDeck
+	pop bc
+	ld a, [wBlackjackTitleDeck]
+	cp b
+	ret z ; no other deck
+	ld de, SFX_SWITCH_POCKETS
+	jmp PlaySFX
+
+.music
+	ld a, [wBlackjackTitleMusic]
+	add c
+	cp NUM_BJ_MUSIC
+	jr c, .in_range
+	ld a, NUM_BJ_MUSIC - 1 ; before the first: the last
+	bit 7, c
+	jr nz, .in_range
+	xor a ; past the last: the first
+.in_range
+	ld [wBlackjackTitleMusic], a
+	ld de, SFX_SWITCH_POCKETS
+	call PlaySFX
+	call Blackjack_TitleMusicLine
+; fallthrough
+Blackjack_TitlePlayMusic:
+; The music picked, wBlackjackTitleMusic
+	ld a, [wBlackjackTitleMusic]
+	ld e, a
+	ld d, 0
+	ld hl, BlackjackMusic
+	add hl, de
+	ld e, [hl]
+	jmp PlayMusic
+
+Blackjack_TitleSavedMusic:
+; The music last picked, from its two event flags, or the first if it's past the last.
+	ld de, EVENT_BLACKJACK_MUSIC_BIT_0
+	call Blackjack_GetTwoFlags
+	cp NUM_BJ_MUSIC
+	jr c, .got_music
+	xor a
+.got_music
+	ld [wBlackjackTitleMusic], a
+	ret
+
+Blackjack_TitleSaveMusic:
+; The music picked into its two event flags.
+	ld a, [wBlackjackTitleMusic]
+	ld de, EVENT_BLACKJACK_MUSIC_BIT_0
+	jr Blackjack_SetTwoFlags
+
+Blackjack_GetTwoFlags:
+; a = the number held in event flags de (bit 0) and de + 1 (bit 1)
+	push de
+	inc de
+	ld b, CHECK_FLAG
+	call EventFlagAction ; a = 0 if it's clear
+	pop de
+	jr z, .no_two
+	ld a, 2
+.no_two
+	push af
+	ld b, CHECK_FLAG
+	call EventFlagAction
+	pop bc
+	ld a, b
+	ret z
+	inc a
+	ret
+
+Blackjack_SetTwoFlags:
+; The number a (0-3) into event flags de (bit 0) and de + 1 (bit 1)
+	assert RESET_FLAG == 0 && SET_FLAG == 1
+	push af
+	push de
+	and 1
+	ld b, a
+	call EventFlagAction
+	pop de
+	inc de
+	pop af
+	srl a
+	and 1
+	ld b, a
+	jmp EventFlagAction
+
 Blackjack_TitlePalettes:
 ; The felt in your side's greens, white for the text, and the sidebar's for the logo.
 	ldh a, [rWBK]
@@ -1214,6 +1507,13 @@ Blackjack_TitlePalettes:
 	assert BJ_TITLE_PAL_LOGO == BJ_TITLE_PAL_FELT + 1
 	ld hl, BlackjackPalettes + (BJPAL_SIDEBAR - BJPAL_FELT) palettes
 	ld bc, 1 palettes
+	rst CopyBytes
+	assert BJ_TITLE_PAL_GREY == BJ_TITLE_PAL_LOGO + 1
+	ld hl, BlackjackPalettes ; the felt's
+	ld bc, 2 * 2
+	rst CopyBytes
+	ld hl, BlackjackTitleGreyTextColours
+	ld bc, 2 * 2
 	rst CopyBytes
 ; the corner sprites' colours 1 and 2 are the felt's two greens, as at the table; the title's
 ; felt is your side's, so its plain green is colour 2
@@ -1301,21 +1601,8 @@ Blackjack_IsDeckUnlocked:
 
 Blackjack_TitleSavedDeck:
 ; The deck last picked, from its two event flags, or deck 0 if it isn't unlocked.
-	ld de, EVENT_BLACKJACK_DECK_BIT_1
-	ld b, CHECK_FLAG
-	call EventFlagAction
-	jr z, .no_two
-	ld a, 2
-.no_two
-	push af
 	ld de, EVENT_BLACKJACK_DECK_BIT_0
-	ld b, CHECK_FLAG
-	call EventFlagAction
-	pop bc
-	ld a, b
-	jr z, .no_one
-	inc a
-.no_one
+	call Blackjack_GetTwoFlags
 	ld [wBlackjackTitleDeck], a
 	cp NUM_BJ_DECKS
 	jr nc, .first
@@ -1328,19 +1615,9 @@ Blackjack_TitleSavedDeck:
 
 Blackjack_TitleSaveDeck:
 ; The deck picked into its two event flags.
-	assert RESET_FLAG == 0 && SET_FLAG == 1
 	ld a, [wBlackjackTitleDeck]
-	push af
-	and 1
-	ld b, a
 	ld de, EVENT_BLACKJACK_DECK_BIT_0
-	call EventFlagAction
-	pop af
-	srl a
-	and 1
-	ld b, a
-	ld de, EVENT_BLACKJACK_DECK_BIT_1
-	jmp EventFlagAction
+	jmp Blackjack_SetTwoFlags
 
 Blackjack_LoadPalettes:
 ; The felt's and the text's; the deck's go in around them.
@@ -2534,14 +2811,148 @@ Blackjack_PlaceSlidingCard:
 	ret
 
 Blackjack_RevealHole:
-	ld hl, wBlackjackHoleHidden
-	ld a, [hl]
+	ld a, [wBlackjackHoleHidden]
 	and a
 	ret z
-	ld [hl], FALSE
-	call Blackjack_Refresh
+	call Blackjack_FlipHole
 	ld c, BJ_DEAL_FRAMES
 	jmp DelayFrames
+
+Blackjack_FlipHole:
+; Turn the hole card (the dealer's second) over where it lies, with the deal's sound: its back as
+; sprites over it, the table redrawn under them without it, the back narrowing to its edge and a
+; blank card widening (BlackjackFlipFrames), then the table with it face up.
+	ld a, BLACKJACK_FACE_DOWN
+	call Blackjack_GetCardTiles
+	ld [wBlackjackSlidePalette], a
+	ld a, BJ_HOLE_X * TILE_WIDTH
+	ld [wBlackjackSlideX], a
+	ld a, BJ_DEALER_ROW * TILE_HEIGHT
+	ld [wBlackjackSlideY], a
+	call Blackjack_PlaceSlidingCard
+	ld de, SFX_DEAL_CARD
+	call PlaySFX
+	ld hl, wBlackjackDealerCount
+	ld a, [hl]
+	push af
+	ld [hl], 1
+	call Blackjack_Refresh ; leaves hBGMapMode 0, so the tilemap goes over only when sent
+	pop af
+	ld [wBlackjackDealerCount], a
+; the dealer's hand face up in the tilemap now; when the flip ends only the hole card's cells are
+; sent, in one VBlank, so the last frame lasts a step like the others
+	xor a
+	ld [wBlackjackHoleHidden], a
+	ld hl, wBlackjackDealerHand
+	ld a, [wBlackjackDealerCount]
+	ld c, a
+	ld b, FALSE
+	decoord BJ_HAND_X, BJ_DEALER_ROW
+	call Blackjack_DrawHand
+; the face side's frames in the hole card's own palette
+	ld a, [wBlackjackDealerHand + 1]
+	call Blackjack_GetCardTiles
+	ld [wBlackjackFlipFacePalette], a
+	ld c, BJ_FLIP_STEP_FRAMES
+	call DelayFrames
+	ld hl, BlackjackFlipFrames
+	ld b, NUM_BJ_FLIP_FRAMES
+.frame
+	push bc
+	push hl
+	call Blackjack_PlaceFlipFrame
+	pop hl
+	pop bc
+	push bc
+	push hl
+	dec b
+	ld c, BJ_FLIP_STEP_FRAMES
+	call nz, DelayFrames ; the last frame's wait is the hole card's send, which waits for a VBlank
+	pop hl
+	ld bc, BJ_FLIP_FRAME_SIZE
+	add hl, bc
+	pop bc
+	dec b
+	jr nz, .frame
+	call Blackjack_SendHoleCard
+	call Blackjack_HideSlidingCard
+	jmp Blackjack_UpdateSidebar ; THEM's whole total
+
+Blackjack_PlaceFlipFrame:
+; The flip's frame at hl (BlackjackFlipFrames) as sprites over the hole card, from VRAM bank 1, in
+; the back's palette or, on the face side, the hole card's; the rest of the sliding card's sprites
+; hidden.
+	ld a, TRUE
+	ldh [hOAMUpdate], a
+	push hl
+	ld hl, wShadowOAM
+	ld bc, BJ_CARD_WIDTH * BJ_CARD_HEIGHT * OBJ_SIZE
+	xor a
+	rst ByteFill
+	pop hl
+	ld a, [hli]
+	ld e, a ; the frame's first tile
+	ld a, [hli]
+	ld d, a ; its columns
+	ld a, [hli]
+	add BJ_HOLE_X * TILE_WIDTH + OAM_X_OFS
+	ld b, a ; x
+	ld a, [hl]
+	and a
+	ld a, [wBlackjackSlidePalette]
+	jr z, .got_palette
+	ld a, [wBlackjackFlipFacePalette]
+.got_palette
+	or OAM_BANK1
+	ld [wBlackjackFlipAttributes], a
+	ld hl, wShadowOAM
+.column
+	ld c, BJ_DEALER_ROW * TILE_HEIGHT + OAM_Y_OFS ; y
+	ld a, BJ_CARD_HEIGHT
+.row
+	push af
+	ld a, c
+	ld [hli], a
+	add TILE_HEIGHT
+	ld c, a
+	ld a, b
+	ld [hli], a
+	ld a, e
+	ld [hli], a
+	inc e ; the tiles run down each column, then on to the next
+	ld a, [wBlackjackFlipAttributes]
+	ld [hli], a
+	pop af
+	dec a
+	jr nz, .row
+	ld a, b
+	add TILE_WIDTH
+	ld b, a
+	dec d
+	jr nz, .column
+	xor a
+	ldh [hOAMUpdate], a
+	ret
+
+Blackjack_LoadFlipFrames:
+; With the LCD off and VRAM bank 1 in: the flip's frames, the blank card's and the deck's back's,
+; from "Blackjack Flip GFX".
+	ld hl, BlackjackFlipBlankGFX
+	ld de, vTiles0 tile BJTILE0B1_FLIP_BLANK
+	ld bc, BJ_FLIP_BLANK_TILES tiles
+	ld a, BANK(BlackjackFlipBlankGFX)
+	call FarCopyBytes
+	ld a, [wBlackjackTitleDeck]
+	ld hl, BlackjackDecks + BJ_DECK_FLIP
+	ld bc, BJ_DECK_ENTRY_SIZE
+	rst AddNTimes
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+	ld de, vTiles0 tile BJTILE0B1_FLIP_BACK
+	ld bc, BJ_FLIP_BACK_TILES tiles
+	ld a, BANK(BlackjackFlipBlankGFX) ; every deck's are in that section
+	jmp FarCopyBytes
 
 Blackjack_PlayerTotal:
 	ld hl, wBlackjackPlayerHand
@@ -2665,42 +3076,69 @@ Blackjack_SendRegion:
 	ld a, 1
 	ldh [rVBK], a
 	hlcoord BJ_SIDEBAR_X, BJ_BOX_TOP, wAttrmap
-	call .Copy
+	call .Box
 	xor a
 	ldh [rVBK], a
 	hlcoord BJ_SIDEBAR_X, BJ_BOX_TOP
-	call .Copy
+	call .Box
 	reti
 
-.Copy:
+.Box:
+	ld de, BJ_BOX_TOP * TILEMAP_WIDTH + BJ_SIDEBAR_X
+	lb bc, BJ_BOX_HEIGHT, BJ_SIDEBAR_WIDTH
+	jr Blackjack_CopyCells
+
+Blackjack_SendHoleCard:
+; Write the hole card's cells' attributes and tiles straight to the BG map, all in one VBlank: at the
+; end of its flip, only they changed.
+	di
+.wait
+	ldh a, [rLY]
+	cp SCREEN_HEIGHT_PX
+	jr nz, .wait
+	ld a, 1
+	ldh [rVBK], a
+	hlcoord BJ_HOLE_X, BJ_DEALER_ROW, wAttrmap
+	call .Box
+	xor a
+	ldh [rVBK], a
+	hlcoord BJ_HOLE_X, BJ_DEALER_ROW
+	call .Box
+	reti
+
+.Box:
+	ld de, BJ_DEALER_ROW * TILEMAP_WIDTH + BJ_HOLE_X
+	lb bc, BJ_CARD_HEIGHT, BJ_CARD_WIDTH
+; fallthrough
+Blackjack_CopyCells:
+; Copy b rows of c cells from hl (in wTilemap or wAttrmap) to the BG map at offset de, in VBlank's
+; time. The BG map starts on a 256-byte boundary.
 	ldh a, [hBGMapAddress + 1]
+	add d
 	ld d, a
-	ld e, 0
-	push hl
-	ld hl, BJ_BOX_TOP * TILEMAP_WIDTH + BJ_SIDEBAR_X
-	add hl, de
-	ld d, h
-	ld e, l
-	pop hl
-	ld b, BJ_BOX_HEIGHT
 .row
-	ld c, BJ_SIDEBAR_WIDTH
+	push bc
 .cell
 	ld a, [hli]
 	ld [de], a
 	inc de
 	dec c
 	jr nz, .cell
-	push bc
-	ld bc, SCREEN_WIDTH - BJ_SIDEBAR_WIDTH
-	add hl, bc
-	ld a, e
-	add TILEMAP_WIDTH - BJ_SIDEBAR_WIDTH
+	pop bc
+	ld a, SCREEN_WIDTH
+	sub c
+	add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+	ld a, TILEMAP_WIDTH
+	sub c
+	add e
 	ld e, a
 	adc d
 	sub e
 	ld d, a
-	pop bc
 	dec b
 	jr nz, .row
 	ret
@@ -3787,6 +4225,11 @@ BlackjackTitleTextColours:
 	RGB 31, 31, 31 ; the text
 	RGB 00, 00, 00
 
+BlackjackTitleGreyTextColours:
+; the grey palette's: the option not highlighted
+	RGB 19, 19, 19 ; the text
+	RGB 00, 00, 00
+
 BlackjackTitlePatternTiles:
 ; Each of the felt pattern's 6x4 tiles, row by row, as a tile of felt.png: the table's bands, the
 ; first with the paw at BJ_FELT_FIRST_X, the next at BJ_FELT_SECOND_X, blank elsewhere
@@ -3815,7 +4258,18 @@ BlackjackTitleCellFelt:
 	bj_title_cells BJ_TITLE_START_X, BJ_TITLE_START_Y, BJ_TITLE_START_CELLS
 	bj_title_cells BJ_TITLE_LABEL_X, BJ_TITLE_LABEL_Y, BJ_TITLE_LABEL_CELLS
 	bj_title_cells BJ_TITLE_DECK_X, BJ_TITLE_DECK_Y, BJ_TITLE_DECK_CELLS
+	bj_title_cells BJ_TITLE_MUSIC_LABEL_X, BJ_TITLE_MUSIC_LABEL_Y, BJ_TITLE_MUSIC_LABEL_CELLS
+	bj_title_cells BJ_TITLE_MUSIC_X, BJ_TITLE_MUSIC_Y, BJ_TITLE_MUSIC_CELLS
 	assert @ - BlackjackTitleCellFelt == BJ_TITLE_TEXT_CELLS
+
+BlackjackTitleCellFeltOneDeck:
+; with one deck, MUSIC on DECK's rows (DECK's own cells aren't on screen)
+	bj_title_cells BJ_TITLE_START_X, BJ_TITLE_START_Y, BJ_TITLE_START_CELLS
+	bj_title_cells BJ_TITLE_LABEL_X, BJ_TITLE_LABEL_Y, BJ_TITLE_LABEL_CELLS
+	bj_title_cells BJ_TITLE_DECK_X, BJ_TITLE_DECK_Y, BJ_TITLE_DECK_CELLS
+	bj_title_cells BJ_TITLE_MUSIC_LABEL_X, BJ_TITLE_LABEL_Y, BJ_TITLE_MUSIC_LABEL_CELLS
+	bj_title_cells BJ_TITLE_MUSIC_X, BJ_TITLE_DECK_Y, BJ_TITLE_MUSIC_CELLS
+	assert @ - BlackjackTitleCellFeltOneDeck == BJ_TITLE_TEXT_CELLS
 
 BlackjackTitleStartText:
 	db "PUSH START@"
@@ -3824,6 +4278,35 @@ BlackjackTitleStartText:
 BlackjackTitleLabelText:
 	db "DECK@"
 	assert @ - BlackjackTitleLabelText - 1 == BJ_TITLE_LABEL_LENGTH
+
+BlackjackTitleMusicLabelText:
+	db "MUSIC@"
+	assert @ - BlackjackTitleMusicLabelText - 1 == BJ_TITLE_MUSIC_LABEL_LENGTH
+
+BlackjackMusic:
+; each BJ_MUSIC_*'s song
+	table_width 1
+	db MUSIC_TCG_RONALD       ; BJ_MUSIC_RONALD
+	db MUSIC_GAME_CORNER      ; BJ_MUSIC_GAME_CORNER
+	db MUSIC_TCG_DUEL_THEME_1 ; BJ_MUSIC_TCG_DUEL
+	assert_table_length NUM_BJ_MUSIC
+
+BlackjackMusicNames:
+; as the title screen shows them
+	table_width 2
+	dw .Ronald     ; BJ_MUSIC_RONALD
+	dw .GameCorner ; BJ_MUSIC_GAME_CORNER
+	dw .TcgDuel    ; BJ_MUSIC_TCG_DUEL
+	assert_table_length NUM_BJ_MUSIC
+.Ronald:
+	db "RONALD@"
+	assert @ - .Ronald - 1 <= BJ_TITLE_NAME_LENGTH
+.GameCorner:
+	db "GAME CORNER@"
+	assert @ - .GameCorner - 1 <= BJ_TITLE_NAME_LENGTH
+.TcgDuel:
+	db "TCG DUEL@"
+	assert @ - .TcgDuel - 1 <= BJ_TITLE_NAME_LENGTH
 
 BlackjackDeckNames:
 ; as the title screen shows them
@@ -3851,6 +4334,20 @@ INCLUDE "gfx/blackjack/blackjack.pal"
 	assert @ - BlackjackPalettes == NUM_BJ_PALETTES palettes
 	assert BJPAL_FELT + NUM_BJ_PALETTES == PAL_BG_TEXT + 1, "blackjack.pal ends with the text's"
 
+BlackjackFlipFrames:
+; The hole card's flip, after its back: the back at 24, 16 and 8 pixels wide, edge-on, then the blank
+; card at 8, 16 and 24 (the frames' PNGs, column by column): its first tile, its columns, the pixels
+; from the card's left edge to its own, and TRUE on the face side (the hole card's palette)
+DEF BJ_FLIP_FRAME_SIZE EQU 4
+	db BJTILE0B1_FLIP_BACK  + 0 * BJ_CARD_HEIGHT, 3, 4,  FALSE
+	db BJTILE0B1_FLIP_BACK  + 3 * BJ_CARD_HEIGHT, 2, 8,  FALSE
+	db BJTILE0B1_FLIP_BACK  + 5 * BJ_CARD_HEIGHT, 1, 12, FALSE
+	db BJTILE0B1_FLIP_BACK  + 6 * BJ_CARD_HEIGHT, 1, 12, FALSE ; edge-on: its two columns at the tile's pixels 3-4
+	db BJTILE0B1_FLIP_BLANK + 5 * BJ_CARD_HEIGHT, 1, 12, TRUE
+	db BJTILE0B1_FLIP_BLANK + 3 * BJ_CARD_HEIGHT, 2, 8,  TRUE
+	db BJTILE0B1_FLIP_BLANK + 0 * BJ_CARD_HEIGHT, 3, 4,  TRUE
+DEF NUM_BJ_FLIP_FRAMES EQU (@ - BlackjackFlipFrames) / BJ_FLIP_FRAME_SIZE
+
 BlackjackDecks:
 ; Each deck: its suits, its pictures, its back, its palettes (the four suits', then one or more for
 ; the back: the same back in different colours), and how many back colours it has
@@ -3859,10 +4356,12 @@ BlackjackDecks:
 	dw BlackjackFrenchSuitsGFX, BlackjackFrenchPicturesGFX
 	dw BlackjackFrenchBackGFX, BlackjackFrenchPalettes
 	db (BlackjackFrenchPalettesEnd - BlackjackFrenchPalettes) / PALETTE_SIZE - BLACKJACK_NUM_SUITS
+	dw BlackjackFrenchFlipGFX
 	; BJ_DECK_SPACEWORLD
 	dw BlackjackSpaceworldSuitsGFX, BlackjackSpaceworldPicturesGFX
 	dw BlackjackSpaceworldBackGFX, BlackjackSpaceworldPalettes
 	db (BlackjackSpaceworldPalettesEnd - BlackjackSpaceworldPalettes) / PALETTE_SIZE - BLACKJACK_NUM_SUITS
+	dw BlackjackSpaceworldFlipGFX
 	assert_table_length NUM_BJ_DECKS
 
 ; A deck's files, each the size BlackjackDecks expects. They are written out per deck, not made by
@@ -3938,3 +4437,21 @@ BlackjackSmallFontGFX:
 ; 4x8 characters, two to a tile: a space, 0-9, A-Z, the cursor, "?"
 INCBIN "gfx/blackjack/small_font.1bpp"
 	assert @ - BlackjackSmallFontGFX == (BJ_SMALL_QUESTION + 2) / 2 * TILE_HEIGHT
+
+
+; The hole card's flip frames, kept apart from Blackjack's bank for its room; copied in with the
+; deck (Blackjack_LoadFlipFrames). See BJ_FLIP_STEP_FRAMES.
+PUSHS
+SECTION "Blackjack Flip GFX", ROMX
+
+BlackjackFlipBlankGFX:
+INCBIN "gfx/blackjack/flip_blank.2bpp"
+	assert @ - BlackjackFlipBlankGFX == BJ_FLIP_BLANK_TILES tiles
+BlackjackFrenchFlipGFX:
+INCBIN "gfx/blackjack/decks/french/flip.2bpp"
+	assert @ - BlackjackFrenchFlipGFX == BJ_FLIP_BACK_TILES tiles
+BlackjackSpaceworldFlipGFX:
+INCBIN "gfx/blackjack/decks/spaceworld/flip.2bpp"
+	assert @ - BlackjackSpaceworldFlipGFX == BJ_FLIP_BACK_TILES tiles
+
+POPS
