@@ -393,6 +393,35 @@ if FILL_PC_ALL_UNOWN_LETTERS
 endc
 	dw 0
 
+GiveDebugBalls::
+; 10 of each ball but the Master and Friend Balls, which the radio gives 99 of: to see each ball's
+; picture on the stats screen and try changing a Pokémon's ball. A loop, since ten more giveitems
+; don't fit the player's room's script bank. Reach it with
+;   callasm GiveDebugBalls
+	ld bc, FIRST_BALL_ITEM
+.ball
+	push bc
+	ld a, c
+	cp LOW(MASTER_BALL)
+	jr z, .next
+	cp LOW(FRIEND_BALL)
+	jr z, .next
+	ld h, b
+	ld l, c
+	call GetItemIDFromIndex
+	ld [wCurItem], a
+	ld a, 10
+	ld [wItemQuantityChange], a
+	ld hl, wNumItems
+	call ReceiveItem
+.next
+	pop bc
+	inc bc
+	ld a, c
+	cp LOW(FIRST_BALL_ITEM + NUM_BALL_ITEM_POCKET)
+	jr nz, .ball
+	ret
+
 GiveDebugDolls::
 ; Unlock the Pokemon dolls whose species have cosmetic forms, so the doll objects in the player's
 ; room can be used to see what form a SPRITE_POKEMON map object actually draws. Reach it with

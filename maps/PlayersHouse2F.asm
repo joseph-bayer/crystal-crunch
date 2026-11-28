@@ -67,6 +67,7 @@ if DEF(_DEBUG)
 	giveitem MAX_REPEL, 99
 	giveitem MASTER_BALL, 99
 	giveitem FRIEND_BALL, 99
+	callasm GiveDebugBalls ; and 10 of every other ball
 	giveitem BICYCLE
 	; giveitem MOPED
 	giveitem GOOD_ROD

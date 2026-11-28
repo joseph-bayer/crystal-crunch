@@ -396,7 +396,7 @@ StatsScreen_InitUpperHalf:
 	call StatsScreen_PlacePageSwitchArrows
 	call StatsScreen_PlaceShinyIcon
 	call PlaceCaughtBall
-	jr PlaceCosmeticFormSymbol
+	jmp PlaceCosmeticFormSymbol
 
 .PlaceHPBar:
 	ld hl, wTempMonHP
@@ -474,13 +474,27 @@ StatsScreen_PlaceShinyIcon:
 	ret
 
 PlaceCaughtBall:
-; Display the pokeball type number used to catch this Pokemon on stats screen
-; Place pokeball type at coordinate (19, 0)
-	ld hl, wTempMon + MON_CAUGHTBALL
-	ld a, [hl]
+; The ball this Pokémon is in, at (8, 6): its own picture from caught_balls.png copied over tile $32,
+; in its colours (palette 6, _CGB_StatsScreenHPPals). A number past the last ball shows the Poké
+; Ball's picture.
+	ld a, [wTempMon + MON_CAUGHTBALL]
 	and CAUGHT_BALL_MASK
+	cp NUM_CAUGHT_BALLS
+	jr c, .got_ball
+	ld a, CAUGHT_POKE_BALL
+.got_ball
+	swap a ; a tile's 16 bytes
+	ld e, a
+	ld d, 0
+	ld hl, CaughtBallsGFX
+	add hl, de
+	ld d, h
+	ld e, l
+	ld hl, vTiles2 tile STATS_CAUGHT_BALL_TILE
+	lb bc, BANK(CaughtBallsGFX), 1
+	call Get2bpp
 	hlcoord 8, 6
-  	ld [hl], $32 ; pokeball tile
+	ld [hl], STATS_CAUGHT_BALL_TILE
 
 ; Uncomment to debug ball type being assigned correctly
 ; 	; Convert ball type (0-11) to display character
@@ -1306,3 +1320,8 @@ CheckFaintedFrzSlp:
 .fainted_frz_slp
 	scf
 	ret
+
+CaughtBallsGFX:
+; a picture for each ball, in caught-ball order (MASTER_BALL first)
+INCBIN "gfx/stats/caught_balls.2bpp"
+	assert @ - CaughtBallsGFX == NUM_CAUGHT_BALLS tiles

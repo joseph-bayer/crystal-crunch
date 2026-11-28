@@ -239,6 +239,11 @@ ItemEffectsBalls:
 
 PokeBallEffect:
 	ld a, [wBattleMode]
+	and a
+	jr nz, .in_battle
+	farjp ChangeCaughtBallEffect ; outside battle: put a party Pokémon in this ball
+
+.in_battle
 	dec a
 	jmp nz, UseBallInTrainerBattle
 
@@ -3018,3 +3023,107 @@ GetMthMoveOfCurrentMon:
 	ld b, 0
 	add hl, bc
 	ret
+
+
+PUSHS
+SECTION "Change Caught Ball", ROMX
+
+ChangeCaughtBallEffect:
+; A ball used from the Bag outside battle (PokeBallEffect, which far-jumps here: item effects' bank
+; has no room): a party Pokémon (not an Egg) is put in it, after a YES.
+; The ball is used up and the old one is gone. A Pokémon already in this ball keeps it, and nothing
+; is used.
+	ld b, PARTYMENUACTION_HEALING_ITEM
+	farcall UseItem_SelectMon
+	jr c, .not_used
+; e = this ball's caught-ball number, its name in wStringBuffer2, the Pokémon's in wStringBuffer1
+	ld a, [wCurItem]
+	call GetItemIndexFromID
+	ld a, l
+	sub LOW(FIRST_BALL_ITEM)
+	ld e, a
+	push de
+	ld a, [wCurItem]
+	ld [wNamedObjectIndex], a
+	call GetItemName
+	ld hl, wStringBuffer1
+	ld de, wStringBuffer2
+	ld bc, ITEM_NAME_LENGTH
+	rst CopyBytes
+	call GetCurNickname
+	pop de
+	ld a, MON_CAUGHTBALL
+	call GetPartyParamLocation
+	ld a, [hl]
+	and CAUGHT_BALL_MASK
+	cp e
+	jr z, .already
+	push de
+	ld hl, PlaceInBallText
+	call PrintText
+	call YesNoBox
+	pop de
+	jr c, .not_used
+	ld a, MON_CAUGHTBALL
+	call GetPartyParamLocation
+	ld a, [hl]
+	and ~CAUGHT_BALL_MASK
+	or e
+	ld [hl], a
+	ld de, SFX_BALL_POOF
+	call WaitPlaySFX
+	ld hl, NowInBallText
+	call PrintText
+	call ClearPalettes
+; used up, as UseDisposableItem does
+	ld hl, wNumItems
+	ld a, 1
+	ld [wItemQuantityChange], a
+	jmp TossItem
+
+.already
+	ld hl, AlreadyInABallText
+	ld a, e
+	cp CAUGHT_ULTRA_BALL
+	jr nz, .got_article
+	ld hl, AlreadyInAnBallText
+.got_article
+	call PrintText
+.not_used
+; nothing used, as RareCandy_StatBooster_ExitMenu does
+	xor a
+	ld [wItemEffectSucceeded], a
+	jmp ClearPalettes
+
+PlaceInBallText:
+	text "Place @"
+	text_ram wStringBuffer1
+	text_start
+	line "in @"
+	text_ram wStringBuffer2
+	text "?"
+	done
+
+NowInBallText:
+	text_ram wStringBuffer1
+	text " is now in"
+	line "the @"
+	text_ram wStringBuffer2
+	text "!"
+	prompt
+
+AlreadyInABallText:
+	text "It's already in a"
+	line "@"
+	text_ram wStringBuffer2
+	text "!"
+	prompt
+
+AlreadyInAnBallText:
+	text "It's already in an"
+	line "@"
+	text_ram wStringBuffer2
+	text "!"
+	prompt
+
+POPS

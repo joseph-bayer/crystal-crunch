@@ -10,6 +10,10 @@
 ### Trainers
 - **Kanto's trainers use Red/Blue forms**: the Kanto gym leaders, their gyms, the rival at Mt. Moon and the trainers on Kanto's routes send out Red/Blue forms (and beta Crobat and Kingdra) of the Pokémon that have one. So do the Open League's Kanto and Gen 1 seats (Brock, Misty, Lt. Surge, Erika, Janine, Blue, Lorelei, Agatha, Giovanni and Toru), and their partners in the rooms match.
 
+### Pokémon
+- **Change a Pokémon's ball**: USE a ball from the Bag outside battle and pick a party Pokémon to place it in that ball. The ball is used up and the old one is gone; a Pokémon already in that ball, or an Egg, can't.
+- **Each ball has its own picture** on the stats screen, in two colours.
+
 ### Blackjack
 - **Pick the music** on Blackjack's title screen: Ronald's theme, the Game Corner's music, or the Pokémon TCG's duel theme. Up and Down move between DECK and MUSIC, the one you're on in white, and the game remembers your pick. Press START to play: A no longer starts the game, so it can't be pressed by mistake while picking.
 - **Sounds** as you move through the options, change them and sit down at the table.

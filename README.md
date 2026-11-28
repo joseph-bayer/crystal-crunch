@@ -408,6 +408,7 @@ Red/Blue forms, and the beta Pichu, Igglybuff, Crobat and Kingdra, play like the
 <summary>Show details</summary>
 
 - Kurt makes Apricorn balls instantly, and can make several at once.
+- You can swap the Pokeball that a Pokemon is kept in by selecting "USE" from the item menu while in the overworld.
 - When nothing bites, you're asked "Fish again?" so you can recast without reopening the bag.
 - When a Repel wears off and you have another of the same kind, you're asked whether to use another.
 - Legendaries and one-of-a-kind Pokémon you knock out or run from come back after you beat the Elite Four. One you catch never comes back.

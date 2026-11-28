@@ -265,6 +265,8 @@ DEF CAUGHT_EGG_LEVEL EQU 1
 
 ; caught ball constants
 DEF CAUGHT_BALL_MASK EQU %00001111   ; 4 bits for ball type (0-15)
+DEF NUM_CAUGHT_BALLS EQU NUM_BALL_ITEM_POCKET ; 0-11, a ball each, in ball item order
+DEF STATS_CAUGHT_BALL_TILE EQU $32 ; the stats screen's caught ball, its picture copied in per Pokémon
 
 ; ball ID to caught ball conversion
 ; converts item ID (0x0200-0x020B) to caught ball value (0-11)
